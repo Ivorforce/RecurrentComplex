@@ -15,7 +15,6 @@ import ivorius.reccomplex.commands.parameters.RCParameters;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.ICommandSender;
 
@@ -42,7 +41,7 @@ public class CommandNaturalAll extends CommandVirtual
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .named("floor-expansion").any("0", "1", "2")
                 .named("space-distance-to-floor").any("3", "2", "1")
                 .named("space-max-closed-sides").any("3", "4", "5")

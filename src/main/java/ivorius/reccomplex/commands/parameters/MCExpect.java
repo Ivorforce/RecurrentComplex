@@ -31,7 +31,7 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
 
     }
 
-    public static <T extends MCExpect<T>> T startMC()
+    public static <T extends MCExpect<T>> T expectMC()
     {
         //noinspection unchecked
         return (T) new MCExpect();

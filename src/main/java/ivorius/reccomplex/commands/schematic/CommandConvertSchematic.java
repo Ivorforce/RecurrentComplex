@@ -64,7 +64,7 @@ public class CommandConvertSchematic extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .next(SchematicLoader.currentSchematicFileNames()
                         .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()))
                 .named("from").structure()

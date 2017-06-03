@@ -63,7 +63,7 @@ public class CommandAs extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .entity(server)
                 .command()
                 .commandArguments(parameters.get().move(1),

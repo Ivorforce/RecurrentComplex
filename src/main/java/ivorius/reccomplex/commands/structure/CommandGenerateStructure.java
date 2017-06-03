@@ -119,7 +119,7 @@ public class CommandGenerateStructure extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .structure()
                 .surfacePos("x", "z")
                 .named("dimension").dimension()

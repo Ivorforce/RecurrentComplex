@@ -17,7 +17,7 @@ public class IvExpect<T extends IvExpect<T>> extends MCExpect<T>
 
     }
 
-    public static <T extends IvExpect<T>> T startIV()
+    public static <T extends IvExpect<T>> T expectIv()
     {
         //noinspection unchecked
         return (T) new IvExpect();

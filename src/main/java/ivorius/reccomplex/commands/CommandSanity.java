@@ -223,7 +223,7 @@ public class CommandSanity extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .flag("silent")
                 .flag("short")
                 .get(server, sender, args, targetPos);

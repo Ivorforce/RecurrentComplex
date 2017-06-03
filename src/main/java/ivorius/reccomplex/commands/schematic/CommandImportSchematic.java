@@ -6,7 +6,6 @@
 package ivorius.reccomplex.commands.schematic;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.operation.OperationRegistry;
@@ -79,7 +78,7 @@ public class CommandImportSchematic extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .schematic()
                 .pos("x", "y", "z")
                 .named("rotation").rotation()

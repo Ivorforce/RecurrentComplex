@@ -76,7 +76,7 @@ public class CommandSelectSetBiome extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .biome()
                 .get(server, sender, args, pos);
     }

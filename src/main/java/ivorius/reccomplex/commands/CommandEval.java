@@ -57,7 +57,7 @@ public class CommandEval extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .next(RCConfig.globalToggles.keySet().stream().map(s -> "global:" + s).collect(Collectors.toSet()))
                 .get(server, sender, args, pos);
     }

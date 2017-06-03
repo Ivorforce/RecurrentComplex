@@ -32,7 +32,7 @@ public class CommandBiomeDict extends CommandSplit
     {
         super(RCConfig.commandPrefix + "biome");
 
-        add(new SimpleCommand("search", () -> RCExpect.startRC().skip(1).required("terms"))
+        add(new SimpleCommand("search", () -> RCExpect.expectRC().skip(1).required("terms"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
@@ -48,7 +48,7 @@ public class CommandBiomeDict extends CommandSplit
             }
         });
 
-        add(new SimpleCommand("types", () -> RCExpect.startRC().biome().required("biome"))
+        add(new SimpleCommand("types", () -> RCExpect.expectRC().biome().required("biome"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
@@ -64,7 +64,7 @@ public class CommandBiomeDict extends CommandSplit
             }
         });
 
-        add(new SimpleCommand("list", () -> RCExpect.startRC().biomeType().required("biome type"))
+        add(new SimpleCommand("list", () -> RCExpect.expectRC().biomeType().required("biome type"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException

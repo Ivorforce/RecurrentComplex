@@ -6,7 +6,6 @@
 package ivorius.reccomplex.commands.structure.sight;
 
 import ivorius.ivtoolkit.blocks.BlockAreas;
-import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.RCExpect;
@@ -61,7 +60,7 @@ public class CommandSightAdd extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .randomString().repeat()
                 .get(server, sender, args, targetPos);
     }

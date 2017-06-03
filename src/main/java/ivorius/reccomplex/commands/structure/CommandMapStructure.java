@@ -79,7 +79,7 @@ public class CommandMapStructure extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .structure()
                 .virtualCommand()
                 .commandArguments(parameters.get().move(1), sender).repeat()

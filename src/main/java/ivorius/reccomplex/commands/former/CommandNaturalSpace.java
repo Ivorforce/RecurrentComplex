@@ -9,7 +9,6 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.world.MockWorld;
-import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.block.BlockGenericSpace;
 import ivorius.reccomplex.block.RCBlocks;
 import ivorius.reccomplex.capability.SelectionOwner;
@@ -144,7 +143,7 @@ public class CommandNaturalSpace extends CommandVirtual
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .named("distance-to-floor").any("3", "2", "1")
                 .named("max-closed-sides").any("3", "4", "5")
                 .get(server, sender, args, pos);

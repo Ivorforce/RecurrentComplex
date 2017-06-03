@@ -49,7 +49,7 @@ public class CommandSetProperty extends CommandVirtual
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet()))
                 .next(args1 -> TransformerProperty.propertyValueStream(args1[0]).collect(Collectors.toSet()))
                 .named("exp").block()

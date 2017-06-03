@@ -7,10 +7,14 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
@@ -25,6 +29,7 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -61,17 +66,18 @@ public class CommandGenerateStructure extends CommandBase
 
     @Override
     @ParametersAreNonnullByDefault
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, "mirror");
+        RCParameters parameters = RCParameters.of(args, "mirror", "select");
 
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
-        WorldServer world = parameters.mc("dimension").dimension(server, commandSender).require();
+        WorldServer world = parameters.mc("dimension").dimension(server, sender).require();
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(null);
         GenerationType generationType = parameters.rc("gen").generationType(structure).require();
-        BlockSurfacePos pos = parameters.surfacePos("x", "z", commandSender.getPosition(), false).require();
+        BlockSurfacePos pos = parameters.surfacePos("x", "z", sender.getPosition(), false).require();
         String seed = parameters.get("seed").first().optional().orElse(null);
+        boolean select = parameters.has("select");
 
         Placer placer = generationType.placer();
 
@@ -80,22 +86,30 @@ public class CommandGenerateStructure extends CommandBase
                 .structureID(structureID).randomPosition(pos, placer).fromCenter(true)
                 .transform(transform);
 
-        if (structure instanceof GenericStructure && world == commandSender.getEntityWorld())
+        Optional<StructureBoundingBox> boundingBox = generator.boundingBox();
+        if (!boundingBox.isPresent())
+            throw ServerTranslations.commandException("commands.strucGen.noPlace");
+
+        if (structure instanceof GenericStructure && world == sender.getEntityWorld())
         {
             GenericStructure genericStructureInfo = (GenericStructure) structure;
 
-            Optional<BlockPos> lowerCoord = generator.lowerCoord();
-            if (lowerCoord.isPresent())
-                OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationType.id(), generator.transform(), lowerCoord.get(), false)
-                        .withSeed(seed)
-                        .withStructureID(structureID).prepare(world), commandSender);
-            else
-                throw ServerTranslations.commandException("commands.strucGen.noPlace");
+            BlockPos lowerCoord = StructureBoundingBoxes.min(boundingBox.get());
+
+            OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationType.id(), generator.transform(), lowerCoord, false)
+                    .withSeed(seed)
+                    .withStructureID(structureID).prepare(world), sender);
         }
         else
         {
             if (generator.generate() == null)
                 throw ServerTranslations.commandException("commands.strucGen.noPlace");
+        }
+
+        if (select)
+        {
+            SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
+            owner.setSelection(RCBlockAreas.from(boundingBox.get()));
         }
     }
 
@@ -116,6 +130,7 @@ public class CommandGenerateStructure extends CommandBase
                 .named("rotation").rotation()
                 .named("seed").randomString()
                 .flag("mirror")
+                .flag("select")
                 .get(server, sender, args, pos);
 
         //        else if (args.length == 6)

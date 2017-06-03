@@ -8,11 +8,14 @@ package ivorius.reccomplex.commands.clipboard;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.RCEntityInfo;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
@@ -23,6 +26,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -55,11 +59,11 @@ public class CommandPaste extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, "mirror", "generate");
+        RCParameters parameters = RCParameters.of(args, "mirror", "generate", "select");
 
-        EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
+        EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(sender);
         RCEntityInfo entityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);
 
         NBTTagCompound worldData = entityInfo.getWorldDataClipboard();
@@ -67,18 +71,32 @@ public class CommandPaste extends CommandBase
         if (worldData == null)
             throw ServerTranslations.commandException("commands.strucPaste.noClipboard");
 
-        BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
+        WorldServer world = (WorldServer) sender.getEntityWorld();
+        BlockPos pos = parameters.pos("x", "y", "z", sender.getPosition(), false).require();
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         String seed = parameters.get("seed").first().optional().orElse(null);
         boolean generate = parameters.has("generate");
+        boolean select = parameters.has("select");
 
-        GenericStructure structureInfo = GenericStructure.createDefaultStructure();
-        structureInfo.worldDataCompound = worldData;
+        GenericStructure structure = GenericStructure.createDefaultStructure();
+        structure.worldDataCompound = worldData;
 
         // TODO Generate with generation info?
-        OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, pos, generate)
+        OperationRegistry.queueOperation(new OperationGenerateStructure(structure, null, transform, pos, generate)
                 .withSeed(seed)
-                .prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
+                .prepare(world), sender);
+
+        if (select)
+        {
+            StructureGenerator<?> generator = new StructureGenerator<>(structure).transform(transform).lowerCoord(pos);
+
+            // Can never not place so don't handle
+            //noinspection OptionalGetWithoutIsPresent
+            StructureBoundingBox boundingBox = generator.boundingBox().get();
+
+            SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
+            owner.setSelection(RCBlockAreas.from(boundingBox));
+        }
     }
 
     @Nonnull
@@ -91,6 +109,7 @@ public class CommandPaste extends CommandBase
                 .named("seed").randomString()
                 .flag("mirror")
                 .flag("generate")
+                .flag("select")
                 .get(server, sender, args, pos);
     }
 }

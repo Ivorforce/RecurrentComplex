@@ -7,13 +7,18 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
+import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -21,9 +26,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by lukas on 25.05.14.
@@ -48,23 +55,34 @@ public class CommandImportStructure extends CommandBase
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, "mirror");
+        RCParameters parameters = RCParameters.of(args, "mirror", "select");
 
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
-        WorldServer world = parameters.mc("dimension").dimension(server, commandSender).require();
+        WorldServer world = parameters.mc("dimension").dimension(server, sender).require();
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
-        BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
+        BlockPos pos = parameters.pos("x", "y", "z", sender.getPosition(), false).require();
+        boolean select = parameters.has("select");
 
-        if (structure instanceof GenericStructure && world == commandSender.getEntityWorld())
+        StructureGenerator<?> generator = new StructureGenerator<>(structure).world(world)
+                .transform(transform).lowerCoord(pos).asSource(true);
+
+        // Can never not place so don't handle
+        //noinspection OptionalGetWithoutIsPresent
+        StructureBoundingBox boundingBox = generator.boundingBox().get();
+
+        if (structure instanceof GenericStructure && world == sender.getEntityWorld())
             OperationRegistry.queueOperation(new OperationGenerateStructure((GenericStructure) structure, structureID, transform, pos, true)
-                    .withStructureID(structureID).prepare(world), commandSender);
+                    .withStructureID(structureID).prepare(world), sender);
         else
+            generator.generate();
+
+        if (select)
         {
-            new StructureGenerator<>(structure).world(world)
-                    .transform(transform).lowerCoord(pos).asSource(true).generate();
+            SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
+            owner.setSelection(RCBlockAreas.from(boundingBox));
         }
     }
 
@@ -77,6 +95,7 @@ public class CommandImportStructure extends CommandBase
                 .named("dimension").dimension()
                 .named("rotation").rotation()
                 .flag("mirror")
+                .flag("select")
                 .get(server, sender, args, pos);
     }
 }

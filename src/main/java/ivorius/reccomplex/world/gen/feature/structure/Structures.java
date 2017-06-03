@@ -17,9 +17,9 @@ import javax.annotation.Nonnull;
  */
 public class Structures
 {
-    public static StructureBoundingBox structureBoundingBox(@Nonnull BlockPos coord, @Nonnull int[] size)
+    public static StructureBoundingBox boundingBox(@Nonnull BlockPos coord, @Nonnull int[] size)
     {
-        return new StructureBoundingBox(coord, coord.add(size[0], size[1], size[2]));
+        return new StructureBoundingBox(coord, coord.add(size[0] - 1, size[1] - 1, size[2] - 1));
     }
 
     public static StructureBoundingBox chunkBoundingBox(ChunkPos chunkPos)

@@ -38,6 +38,13 @@ public abstract class SimpleCommand extends CommandBase
         this.expector = expector;
     }
 
+    public SimpleCommand(String name, Supplier<Expect<?>> expector)
+    {
+        this.name = name;
+        this.usage = String.format("%s %s", name, expector.get().usage());
+        this.expector = expector;
+    }
+
     @Override
     public int getRequiredPermissionLevel()
     {

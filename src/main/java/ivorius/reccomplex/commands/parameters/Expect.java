@@ -15,6 +15,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static net.minecraft.command.CommandBase.getListOfStringsMatchingLastWord;
 
@@ -137,9 +138,22 @@ public class Expect<T extends Expect<T>>
                 .map(p -> Parameters.flagPrefix + p).collect(Collectors.toList()));
     }
 
+    public String usage()
+    {
+        return String.format("%s %s",
+                IntStream.range(0, params.get(null).completion.size())
+                        .mapToObj(i -> String.format("[%d]", i))
+                        .reduce("", (l, r) -> String.format("%s %s", l, r)),
+                params.keySet().stream()
+                        .filter(Objects::nonNull)
+                        .map(p -> String.format("--%s [%s]", p, p))
+                        .reduce("", (l, r) -> String.format("%s %s", l, r))
+        );
+    }
+
     public interface Completer
     {
-        public Collection<String> complete(MinecraftServer server, ICommandSender sender, String[] argss, @Nullable BlockPos pos);
+        Collection<String> complete(MinecraftServer server, ICommandSender sender, String[] argss, @Nullable BlockPos pos);
     }
 
     protected class Param

@@ -67,7 +67,7 @@ public class CommandBiomeDict extends CommandSplit
             }
         });
 
-        add(new SimpleCommand("list", "<biome type", () -> RCExpect.startRC().next(RCAccessorBiomeDictionary.getMap().keySet()))
+        add(new SimpleCommand("list", "<biome type>", () -> RCExpect.startRC().next(RCAccessorBiomeDictionary.getMap().keySet()))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException

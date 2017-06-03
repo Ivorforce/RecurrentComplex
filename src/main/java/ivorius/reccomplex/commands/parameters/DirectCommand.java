@@ -31,6 +31,12 @@ public class DirectCommand extends SimpleCommand
         this.consumer = consumer;
     }
 
+    public DirectCommand(String name, Supplier<Expect<?>> expector, Consumer<ICommandSender> consumer)
+    {
+        super(name, expector);
+        this.consumer = consumer;
+    }
+
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {

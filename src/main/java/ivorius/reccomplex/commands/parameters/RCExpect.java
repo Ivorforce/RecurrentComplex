@@ -32,38 +32,43 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
 
     public T structurePredicate()
     {
-        return structure();
+        return structure()
+                .optional("structure predicate");
     }
 
     public T structure()
     {
-        return next(StructureRegistry.INSTANCE.ids());
+        return next(StructureRegistry.INSTANCE.ids())
+                .optional("structure");
     }
 
     public T schematic()
     {
         return next(SchematicLoader.currentSchematicFileNames()
-                .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()));
+                .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()))
+                .optional("schematic");
     }
 
     public T rotation()
     {
-        return any("0", "1", "2", "3");
+        return any("0", "1", "2", "3").optional("rotation");
     }
 
     public T resourceDirectory()
     {
-        return any((Object[]) ResourceDirectory.values());
+        return any((Object[]) ResourceDirectory.values()).optional("directory");
     }
 
     public T metadata()
     {
-        return next(IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList()));
+        return next(IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList()))
+                .optional("metadata");
     }
 
     public T virtualCommand()
     {
         return next((server, sender, args, pos) -> server.getCommandManager().getCommands().entrySet().stream()
-                .filter(e -> e.getValue() instanceof CommandVirtual).map(Map.Entry::getKey).collect(Collectors.toList()));
+                .filter(e -> e.getValue() instanceof CommandVirtual).map(Map.Entry::getKey).collect(Collectors.toList()))
+                .optional("virtual command");
     }
 }

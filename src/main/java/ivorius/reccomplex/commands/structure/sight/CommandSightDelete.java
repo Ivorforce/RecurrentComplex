@@ -29,7 +29,7 @@ public class CommandSightDelete extends CommandSplit
     {
         super("forget");
 
-        add(new SimpleCommand("id", "<id>", () -> RCExpect.startRC().skip(1))
+        add(new SimpleCommand("id", () -> RCExpect.startRC().skip(1).required("id"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
@@ -46,7 +46,7 @@ public class CommandSightDelete extends CommandSplit
             }
         });
 
-        add(new SimpleCommand("all", "[x] [y] [z]", () -> RCExpect.startRC().xyz())
+        add(new SimpleCommand("all", () -> RCExpect.startRC().xyz())
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException

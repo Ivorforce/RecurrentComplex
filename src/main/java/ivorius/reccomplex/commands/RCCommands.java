@@ -68,6 +68,7 @@ public class RCCommands
 
     public static ICommand reopen;
 
+    public static CommandSelect select;
     public static CommandSight sight;
 
     public static ICommand biomeDict;
@@ -98,7 +99,7 @@ public class RCCommands
 
         event.registerServerCommand(new CommandReload());
 
-        event.registerServerCommand(new CommandSelect());
+        event.registerServerCommand(select = new CommandSelect());
 
         if (!RecurrentComplex.isLite())
         {

@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.random.Person;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -146,20 +147,43 @@ public class Expect<T extends Expect<T>>
     /**
      * Useful only for usage()
      */
-    public T description(String description)
+    public T description(String key)
+    {
+        return descriptionU(IvTranslations.get(key));
+    }
+
+    public T descriptionU(String description)
     {
         getOrCreate(cur).description(description);
         return identity();
     }
 
-    public T optional(String name)
+    public T optional(String key)
     {
-        return description(cur != null ? String.format("[%s]", name) : String.format("<%s>", name));
+        return optional(IvTranslations.get(key));
     }
 
-    public T required(String name)
+    public T optionalU(String description)
     {
-        return description(cur != null ? String.format("[%s]", name) : String.format("<%s>", name));
+        return descriptionU(String.format("[%s]", description));
+    }
+
+    public T required()
+    {
+        Param param = getOrCreate(cur);
+        String prev = param.descriptions.get(param.descriptions.size() - 1);
+        param.description(String.format("<%s>", prev.substring(1, prev.length() - 1)));
+        return identity();
+    }
+
+    public T required(String key)
+    {
+        return requiredU(IvTranslations.get(key));
+    }
+
+    public T requiredU(String description)
+    {
+        return descriptionU(String.format("<%s>", description));
     }
 
     public String usage()

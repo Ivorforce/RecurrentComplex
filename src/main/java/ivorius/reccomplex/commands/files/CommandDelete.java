@@ -71,7 +71,7 @@ public class CommandDelete extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        RCExpect<?> expect = RCExpect.startRC();
+        RCExpect<?> expect = RCExpect.expectRC();
 
         expect.next(RecurrentComplex.saver.keySet());
         expect.next(Optional.ofNullable(RecurrentComplex.saver.get(args[0])).map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()));

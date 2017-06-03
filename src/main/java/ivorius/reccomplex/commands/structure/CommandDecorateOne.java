@@ -58,7 +58,7 @@ public class CommandDecorateOne extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .xz()
                 .get(server, sender, args, pos);
     }

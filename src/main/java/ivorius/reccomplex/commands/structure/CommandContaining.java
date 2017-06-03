@@ -11,7 +11,6 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
-import ivorius.reccomplex.commands.structure.CommandSearchStructure;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
@@ -76,7 +75,7 @@ public class CommandContaining extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .block()
                 .get(server, sender, args, targetPos);
     }

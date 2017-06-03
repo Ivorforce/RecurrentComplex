@@ -32,7 +32,7 @@ public class Expect<T extends Expect<T>>
         getOrCreate(null);
     }
 
-    public static <T extends Expect<T>> T start()
+    public static <T extends Expect<T>> T expect()
     {
         //noinspection unchecked
         return (T) new Expect();

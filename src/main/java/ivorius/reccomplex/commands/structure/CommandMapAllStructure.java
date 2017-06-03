@@ -116,7 +116,7 @@ public class CommandMapAllStructure extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .virtualCommand()
                 .commandArguments(parameters.get(), sender)
                 .named("exp").structure()

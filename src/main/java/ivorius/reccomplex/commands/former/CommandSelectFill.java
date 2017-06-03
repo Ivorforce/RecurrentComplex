@@ -49,7 +49,7 @@ public class CommandSelectFill extends CommandVirtual
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .block()
                 .metadata()
                 .named("shape").any("cube", "sphere")

@@ -103,7 +103,7 @@ public class CommandPaste extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .pos("x", "y", "z")
                 .named("rotation").rotation()
                 .named("seed").randomString()

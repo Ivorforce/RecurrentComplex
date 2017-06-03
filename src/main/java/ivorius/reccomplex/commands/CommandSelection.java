@@ -59,7 +59,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(set = new Command("set", "[x] [y] [z] --first --second", () -> RCExpect.startRC().xyz().flag("first").flag("second"))
+        add(set = new Command("set", "[x] [y] [z] --first --second", () -> RCExpect.expectRC().xyz().flag("first").flag("second"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -93,7 +93,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("crop", "[positioned block expression]", () -> RCExpect.startRC().block())
+        add(new Command("crop", "[positioned block expression]", () -> RCExpect.expectRC().block())
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -113,7 +113,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("wand", "[positioned block expression]", () -> RCExpect.startRC().block())
+        add(new Command("wand", "[positioned block expression]", () -> RCExpect.expectRC().block())
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -147,7 +147,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("shrink", "[all] --x [x] --y [y] --z [z]", () -> RCExpect.startRC()
+        add(new Command("shrink", "[all] --x [x] --y [y] --z [z]", () -> RCExpect.expectRC()
                 .any("1", "2", "3")
                 .named("x").any("1", "2", "3")
                 .named("y").any("1", "2", "3")
@@ -164,7 +164,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("expand", "[all] --x [x] --y [y] --z [z]", () -> RCExpect.startRC()
+        add(new Command("expand", "[all] --x [x] --y [y] --z [z]", () -> RCExpect.expectRC()
                 .any("1", "2", "3")
                 .named("x").any("1", "2", "3")
                 .named("y").any("1", "2", "3")

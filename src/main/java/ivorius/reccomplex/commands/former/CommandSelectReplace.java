@@ -50,7 +50,7 @@ public class CommandSelectReplace extends CommandVirtual
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .block()
                 .block().repeat()
                 .named("metadata")

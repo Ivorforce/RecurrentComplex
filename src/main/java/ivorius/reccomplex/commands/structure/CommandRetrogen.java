@@ -118,7 +118,7 @@ public class CommandRetrogen extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .named("exp").structurePredicate()
                 .named("dimension").dimension()
                 .get(server, sender, args, pos);

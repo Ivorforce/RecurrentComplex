@@ -77,7 +77,7 @@ public class MazeRuleConnect extends MazeRule
     public void readFromNBT(NBTTagCompound compound)
     {
         start.clear();
-        start.addAll(NBTCompoundObjects.readListFrom(compound, "start", SavedMazePath::new));
+        start.addAll(NBTCompoundObjects.readListFrom(compound, "expect", SavedMazePath::new));
 
         end.clear();
         end.addAll(NBTCompoundObjects.readListFrom(compound, "end", SavedMazePath::new));
@@ -88,7 +88,7 @@ public class MazeRuleConnect extends MazeRule
     @Override
     public void writeToNBT(NBTTagCompound compound)
     {
-        NBTCompoundObjects.writeListTo(compound, "start", start);
+        NBTCompoundObjects.writeListTo(compound, "expect", start);
         NBTCompoundObjects.writeListTo(compound, "end", end);
 
         compound.setBoolean("preventConnection", preventConnection);

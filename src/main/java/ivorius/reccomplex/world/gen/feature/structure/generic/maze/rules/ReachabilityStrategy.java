@@ -484,7 +484,7 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
         {
             return "Ability{" +
                     "destination=" + destination +
-                    "start=" + start +
+                    "expect=" + start +
                     ", rooms=" + rooms +
                     ", exits=" + exits +
                     '}';

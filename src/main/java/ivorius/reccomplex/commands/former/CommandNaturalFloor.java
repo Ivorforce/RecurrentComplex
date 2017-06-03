@@ -17,7 +17,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.block.RCBlocks;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
@@ -115,7 +114,7 @@ public class CommandNaturalFloor extends CommandVirtual
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        return RCExpect.startRC()
+        return RCExpect.expectRC()
                 .named("expansion").any("0", "1", "2")
                 .get(server, sender, args, pos);
     }

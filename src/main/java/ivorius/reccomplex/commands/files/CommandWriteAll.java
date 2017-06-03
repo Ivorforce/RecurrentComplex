@@ -93,7 +93,7 @@ public class CommandWriteAll extends CommandBase
     {
         RCParameters parameters = RCParameters.of(args);
 
-        RCExpect<?> expect = RCExpect.startRC();
+        RCExpect<?> expect = RCExpect.expectRC();
         // Can't chain because of compiler bug :|
 
         expect.next(RecurrentComplex.saver.keySet());

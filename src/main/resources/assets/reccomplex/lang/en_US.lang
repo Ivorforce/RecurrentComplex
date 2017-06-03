@@ -96,7 +96,7 @@ commands.selectCopy.success=Copied (%s) to clipboard
 commands.strucPaste.usage=/#paste --x [x] --y [y] --z [z] --rotation [rotation] --mirror --generate --seed [seed] --select
 commands.strucPaste.noClipboard=You have to copy an area first!
 
-commands.selectMove.usage=/#move --x [x] --y [y] --z [z] -r [rotations] --mirror
+commands.selectMove.usage=/#move --x [x] --y [y] --z [z] -r [rotations] --mirror --noselect
 
 commands.selectDuplicate.usage=/#duplicate --x [x] --y [y] --z [z] --rotation [rotation] --mirror
 

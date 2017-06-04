@@ -59,7 +59,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(set = new Command("set", "[x] [y] [z] --first --second", () -> RCExpect.expectRC().xyz().flag("first").flag("second"))
+        add(set = new Command("set", () -> RCExpect.expectRC().xyz().flag("first").flag("second"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -93,7 +93,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("crop", "[positioned block expression]", () -> RCExpect.expectRC().block())
+        add(new Command("crop",  () -> RCExpect.expectRC().block().optionalU("positioned block expression"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -113,7 +113,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("wand", "[positioned block expression]", () -> RCExpect.expectRC().block())
+        add(new Command("wand", () -> RCExpect.expectRC().block().optionalU("positioned block expression"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -147,11 +147,11 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("shrink", "[all] --x [x] --y [y] --z [z]", () -> RCExpect.expectRC()
-                .any("1", "2", "3")
-                .named("x").any("1", "2", "3")
-                .named("y").any("1", "2", "3")
-                .named("z").any("1", "2", "3")
+        add(new Command("shrink", () -> RCExpect.expectRC()
+                .any("1", "2", "3").optionalU("all")
+                .named("x").any("1", "2", "3").optionalU("x")
+                .named("y").any("1", "2", "3").optionalU("y")
+                .named("z").any("1", "2", "3").optionalU("z")
         )
         {
             @Override
@@ -164,11 +164,11 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("expand", "[all] --x [x] --y [y] --z [z]", () -> RCExpect.expectRC()
-                .any("1", "2", "3")
-                .named("x").any("1", "2", "3")
-                .named("y").any("1", "2", "3")
-                .named("z").any("1", "2", "3")
+        add(new Command("expand", () -> RCExpect.expectRC()
+                .any("1", "2", "3").optionalU("all")
+                .named("x").any("1", "2", "3").optionalU("x")
+                .named("y").any("1", "2", "3").optionalU("y")
+                .named("z").any("1", "2", "3").optionalU("z")
         )
         {
             @Override
@@ -201,6 +201,11 @@ public class CommandSelection extends CommandSplit
         public Command(String name)
         {
             super(name);
+        }
+
+        public Command(String name, Supplier<Expect<?>> expector)
+        {
+            super(name, expector);
         }
 
         public Command(String name, String usage, Supplier<Expect<?>> expector)

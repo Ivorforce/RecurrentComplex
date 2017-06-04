@@ -7,12 +7,18 @@ package ivorius.reccomplex.commands.parameters;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
+import ivorius.reccomplex.RecurrentComplex;
 import joptsimple.internal.Strings;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.io.IOException;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 /**
@@ -75,27 +81,33 @@ public class Parameters
 
     public static String[] quoted(String[] args)
     {
-        List<String> list = Lists.newArrayList();
+        String full = Strings.join(args, " ");
+        StringReader reader = new StringReader(full);
+        StreamTokenizer tokenizer = new StreamTokenizer(reader);
+        tokenizer.resetSyntax();
+        tokenizer.wordChars(0, Integer.MAX_VALUE);
+        tokenizer.whitespaceChars(0, ' ');
+        tokenizer.quoteChar('"');
 
-        int lastQuote = -1;
-        for (int i = 0; i < args.length; i++)
+        List<String> quoted = new ArrayList<>();
+        try
         {
-            if (lastQuote == -1 && args[i].indexOf("\"") == 0)
-                lastQuote = i;
-
-            if (lastQuote == -1)
-                list.add(args[i]);
-            else if (lastQuote >= 0 && args[i].lastIndexOf("\"") == args[i].length() - 1)
-            {
-                list.add(Strings.join(Arrays.asList(args).subList(lastQuote, i + 1), " "));
-                lastQuote = -1;
+            while(tokenizer.nextToken() != -1) {
+                quoted.add(tokenizer.sval);
             }
         }
+        catch (IOException e)
+        {
+            // Should never happen
+            RecurrentComplex.logger.error("Error reading string", e);
+        }
 
-        if (lastQuote >= 0)
-            list.add(Strings.join(Arrays.asList(args).subList(lastQuote, args.length), " "));
+        reader.close();
 
-        return list.stream().toArray(String[]::new);
+        if (args[args.length - 1].length() == 0)
+            quoted.add(""); // Suggested param
+
+        return quoted.stream().toArray(String[]::new);
     }
 
     @Nonnull

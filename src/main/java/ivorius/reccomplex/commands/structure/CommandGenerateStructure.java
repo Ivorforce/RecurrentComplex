@@ -132,11 +132,5 @@ public class CommandGenerateStructure extends CommandBase
                 .flag("mirror")
                 .flag("select")
                 .get(server, sender, args, pos);
-
-        //        else if (args.length == 6)
-//            return getListOfStringsMatchingLastWord(args, "0", "2", "5");
-//        else if (args.length == 7)
-//            return getListOfStringsMatchingLastWord(args, "fade", "up", "down", "fog");
     }
-
 }

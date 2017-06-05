@@ -5,13 +5,18 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import com.google.common.primitives.Doubles;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.random.Person;
+import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -28,6 +33,7 @@ import java.util.stream.Stream;
 public class Expect<T extends Expect<T>>
 {
     protected final Map<String, SuggestParameter> params = new HashMap<>();
+    protected final Multimap<String, String> aliases = HashMultimap.create();
     protected final Set<String> shortParams = new HashSet<>();
     protected final Set<String> flags = new HashSet<>();
 
@@ -98,6 +104,7 @@ public class Expect<T extends Expect<T>>
             params.put(alias, param);
             if (p.getRight()) shortParams.add(p.getKey());
         }
+        this.aliases.putAll(name, Arrays.asList(aliases));
 
         return identity();
     }
@@ -261,17 +268,42 @@ public class Expect<T extends Expect<T>>
 
     public String usage()
     {
-        return String.format("%s %s",
+        return String.format("%s%s%s%s%s", TextFormatting.RESET, TextFormatting.YELLOW,
                 params.get(null).descriptions.stream()
-                        .reduce("", (l, r) -> String.format("%s %s", l, r)),
+                        .map(s -> s + " ")
+                        .reduce("", (l, r) -> l + r),
+                TextFormatting.RESET,
                 params.entrySet().stream()
                         .filter(e -> e.getKey() != null)
+                        .filter(e -> e.getKey().equals(e.getValue().name))
                         .flatMap(e -> e.getValue().descriptions.stream()
-                                .map(d -> String.format("%s%s %s", Parameters.prefix(shortParams.contains(e.getKey())),
-                                        e.getKey(), d))
+                                .map(desc -> String.format("%s%s %s%s%s", Parameters.prefix(shortParams.contains(e.getKey())),
+                                        keyRepresentation(e.getKey()), TextFormatting.YELLOW, desc, TextFormatting.RESET
+                                ))
                         )
                         .reduce("", (l, r) -> String.format("%s %s", l, r))
         );
+    }
+
+    protected String keyRepresentation(String key)
+    {
+        List<String> aliases = Lists.newArrayList(this.aliases.get(key));
+        if (aliases.size() == 0)
+            return key;
+
+        for (Iterator<String> iterator = aliases.iterator(); iterator.hasNext(); )
+        {
+            String alias = iterator.next();
+            if (key.contains(alias))
+            {
+                key = key.replaceFirst(alias, String.format("%s%s%s", TextFormatting.AQUA, alias, TextFormatting.RESET));
+                iterator.remove();
+            }
+        }
+
+        aliases.add(0, key);
+
+        return Strings.join(aliases, "|");
     }
 
     public interface Completer

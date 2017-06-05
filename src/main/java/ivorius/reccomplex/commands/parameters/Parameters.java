@@ -103,7 +103,7 @@ public class Parameters
 
         reader.close();
 
-        if (args[args.length - 1].length() == 0)
+        if (args.length > 0 && args[args.length - 1].length() == 0)
             quoted.add(""); // Suggested param
 
         return quoted.stream().toArray(String[]::new);

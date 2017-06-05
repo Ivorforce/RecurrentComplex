@@ -59,12 +59,14 @@ public class CommandMapAllStructure extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .alias("directory", "d")
+        );
 
         ResourceExpression expression = new ResourceExpression(StructureRegistry.INSTANCE::has);
         IvOptional.ifAbsent(parameters.rc("exp").expression(expression).optional(), () -> expression.setExpression(""));
 
-        ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+        ResourceDirectory directory = parameters.rc("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
         CommandVirtual virtual = parameters.rc().virtualCommand(server).require();
 
@@ -120,7 +122,7 @@ public class CommandMapAllStructure extends CommandBase
                 .virtualCommand()
                 .commandArguments(parameters.get(), sender)
                 .named("exp").structure()
-                .named("dir").resourceDirectory()
+                .named("directory").resourceDirectory()
                 .get(server, sender, args, pos);
     }
 }

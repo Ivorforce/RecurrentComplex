@@ -65,7 +65,10 @@ public class CommandSanity extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p.flags("silent", "short"));
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .flag("silent", "s")
+                .flag("short", "h")
+        );
         boolean sane = true;
 
         if (StructureRegistry.INSTANCE.ids().isEmpty())

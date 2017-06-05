@@ -45,9 +45,11 @@ public class CommandVisitFiles extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .alias("directory", "d")
+        );
 
-        ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+        ResourceDirectory directory = parameters.rc("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
         OpenGlHelper.openFile(directory.toFile());
     }
@@ -56,7 +58,7 @@ public class CommandVisitFiles extends CommandBase
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
     {
         return RCExpect.expectRC()
-                .named("dir").resourceDirectory()
+                .named("directory", "d").resourceDirectory()
                 .get(server, sender, args, targetPos);
     }
 }

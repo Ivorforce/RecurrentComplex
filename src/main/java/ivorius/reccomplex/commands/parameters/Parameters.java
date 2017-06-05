@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -56,11 +56,10 @@ public class Parameters
         this.alias = blueprint.alias;
     }
 
-    public static Parameters of(String[] args, Consumer<Parameters> c)
+    public static Parameters of(String[] args, Function<Parameters, Parameters> c)
     {
         Parameters parameters = new Parameters();
-        if (c != null) c.accept(parameters);
-        return parameters.build(args);
+        return (c != null ? c.apply(parameters) : parameters).build(args);
     }
 
     public static String[] quoted(String[] args)
@@ -174,13 +173,18 @@ public class Parameters
         return this;
     }
 
+    public Parameters flag(String flag, String... aliases)
+    {
+        requireUnbuilt();
+        declaredFlags.add(root(flag));
+        alias(flag, aliases);
+        return this;
+    }
+
     public Parameters flags(Collection<String> flags)
     {
         for (String flag : flags)
-        {
-            requireUnbuilt();
-            declaredFlags.add(root(flag));
-        }
+            flag(flag);
         return this;
     }
 

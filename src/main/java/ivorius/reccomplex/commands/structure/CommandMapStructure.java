@@ -50,11 +50,13 @@ public class CommandMapStructure extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .alias("directory", "d")
+        );
 
         String id = parameters.get().first().require();
         GenericStructure structure = parameters.rc().genericStructure().require();
-        ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+        ResourceDirectory directory = parameters.rc("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
         CommandVirtual virtual = parameters.rc().move(1).virtualCommand(server).require();
 
         IvWorldData worldData = structure.constructWorldData();
@@ -83,7 +85,7 @@ public class CommandMapStructure extends CommandBase
                 .structure()
                 .virtualCommand()
                 .commandArguments(parameters.get().move(1), sender).repeat()
-                .named("dir").resourceDirectory()
+                .named("directory").resourceDirectory()
                 .get(server, sender, args, pos);
     }
 }

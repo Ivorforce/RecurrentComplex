@@ -127,7 +127,7 @@ public class Parameters
         String curName = null;
         for (String arg : raw)
         {
-            if (hasLongPrefix(arg)) // Quoted arguments can never be arguments
+            if (hasLongPrefix(arg))
             {
                 flags.add(curName = root(arg.substring(LONG_FLAG_PREFIX.length())));
                 if (declaredFlags.contains(curName)) curName = null;

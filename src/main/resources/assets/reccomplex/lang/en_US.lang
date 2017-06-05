@@ -148,8 +148,7 @@ commands.rcretro.count=Retro-Generated %s chunks!
 
 commands.rcsave.noregistry=No such registry id!
 commands.rcsave.nodirectory=No such directory id!
-commands.rcsave.noelement=No such element!
-commands.rcsaveall.result=Saved %s elements to '%s'. %s failed.
+commands.rcsaveall.result=Saved %s elements to %s. %s failed.
 commands.rcmap.nonvirtual=Cannot map with this command!
 commands.rcmap.nonvirtual.arguments=Cannot map with these command arguments!
 commands.rcmapall.result=Saved %s elements to %s. %s failed. %s skipped.
@@ -168,7 +167,7 @@ inventoryGen.inactive=%sInactive%s
 reccomplex.server.status=<Recurrent Complex> Loaded %s active structures: %s %s %s %s
 
 reccomplex.save.permission=You do not have permission to save!
-reccomplex.save.failure=Failed to save %s to '%s'
+reccomplex.save.failure=Failed to save %s to %s
 reccomplex.save.full=%s: %s
 reccomplex.save.success=Saved %s to %s
 reccomplex.save.submit=[Submit]

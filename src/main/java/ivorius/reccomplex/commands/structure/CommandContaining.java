@@ -54,7 +54,7 @@ public class CommandContaining extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .block().descriptionU("block expression");
+                .block().requiredU("block expression");
     }
 
     @Override

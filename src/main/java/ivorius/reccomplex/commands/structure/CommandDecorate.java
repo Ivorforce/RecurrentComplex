@@ -49,8 +49,8 @@ public class CommandDecorate extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .xyz()
-                .xyz()
+                .xyz().required()
+                .xyz().required()
                 .named("exp").structurePredicate();
     }
 

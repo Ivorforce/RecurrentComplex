@@ -8,24 +8,21 @@ package ivorius.reccomplex.commands.preview;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.operation.Operation;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Created by lukas on 03.08.14.
  */
-public class CommandPreview extends CommandBase
+public class CommandPreview extends CommandExpecting
 {
     @Override
     public String getName()
@@ -39,15 +36,16 @@ public class CommandPreview extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender commandSender)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.rcpreview.usage");
+        return RCExpect.expectRC()
+                .any((Object[]) Operation.PreviewType.keys()).requiredU("type");
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         EntityPlayer player = getCommandSenderAsPlayer(commandSender);
         RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(player, null);
@@ -60,13 +58,5 @@ public class CommandPreview extends CommandBase
         RCEntityInfo.sendPreviewTypeToClients(player);
 
         commandSender.sendMessage(ServerTranslations.format("commands.rcpreview.success", previewType.key));
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        return RCExpect.expectRC()
-                .any((Object[]) Operation.PreviewType.keys())
-                .get(server, sender, args, pos);
     }
 }

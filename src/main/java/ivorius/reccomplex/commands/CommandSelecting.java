@@ -7,22 +7,19 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
-import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.command.CommandBase;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
+import ivorius.reccomplex.commands.parameters.*;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Created by lukas on 03.08.14.
  */
-public class CommandSelecting extends CommandBase
+public class CommandSelecting extends CommandExpecting
 {
     @Override
     public String getName()
@@ -36,31 +33,24 @@ public class CommandSelecting extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender commandSender)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.rcselecting.usage");
+        return RCExpect.expectRC()
+                .xyz()
+                .xyz()
+                .skip(1).repeat();
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         BlockPos p1 = parameters.mc().pos(commandSender.getPosition(), false).require();
         BlockPos p2 = parameters.mc().move(3).pos(commandSender.getPosition(), false).require();
         String command = parameters.get().move(6).text().optional().orElse("");
 
         server.commandManager.executeCommand(new SelectingSender(commandSender, p1, p2), command);
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        return RCExpect.expectRC()
-                .xyz()
-                .xyz()
-                .skip(1).repeat()
-                .get(server, sender, args, pos);
     }
 
     public static class SelectingSender extends DelegatingSender implements SelectionOwner

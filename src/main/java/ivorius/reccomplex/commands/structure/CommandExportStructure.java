@@ -9,26 +9,19 @@ import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameter;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandExportStructure extends CommandBase
+public class CommandExportStructure extends CommandExpecting
 {
     public static GenericStructure getNewGenericStructure(ICommandSender commandSender, RCParameter parameter) throws CommandException
     {
@@ -59,23 +52,16 @@ public class CommandExportStructure extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
-    {
-        return ServerTranslations.usage("commands.strucExport.usage");
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .named("from").structure()
-                .get(server, sender, args, pos);
+                .named("from").structure();
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
         String structureID = parameters.get().first().optional().orElse(null);

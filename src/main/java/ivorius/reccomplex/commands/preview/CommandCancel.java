@@ -8,8 +8,8 @@ package ivorius.reccomplex.commands.preview;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.parameters.SimpleCommand;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,23 +18,12 @@ import net.minecraft.server.MinecraftServer;
 /**
  * Created by lukas on 03.08.14.
  */
-public class CommandCancel extends CommandBase
+public class CommandCancel extends SimpleCommand
 {
-    @Override
-    public String getName()
+    public CommandCancel()
     {
-        return RCConfig.commandPrefix + "cancel";
-    }
-
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
-    }
-
-    @Override
-    public String getUsage(ICommandSender commandSender)
-    {
-        return ServerTranslations.usage("commands.rccancel.usage");
+        super(RCConfig.commandPrefix + "cancel");
+        permitFor(2);
     }
 
     @Override

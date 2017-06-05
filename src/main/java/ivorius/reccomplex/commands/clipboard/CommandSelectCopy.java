@@ -6,25 +6,31 @@
 package ivorius.reccomplex.commands.clipboard;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.world.MockWorld;
+import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.RCTextStyle;
-import net.minecraft.command.CommandBase;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.Expecting;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import ivorius.ivtoolkit.tools.IvWorldData;
-import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.RCEntityInfo;
-import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.command.ICommandSender;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectCopy extends CommandVirtual
+public class CommandSelectCopy extends CommandExpecting implements CommandVirtual
 {
     @Override
     public String getName()
@@ -33,9 +39,9 @@ public class CommandSelectCopy extends CommandVirtual
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.selectCopy.usage");
+        return RCExpect.expectRC();
     }
 
     public int getRequiredPermissionLevel()

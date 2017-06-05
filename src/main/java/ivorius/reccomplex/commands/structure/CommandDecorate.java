@@ -8,28 +8,25 @@ package ivorius.reccomplex.commands.structure;
 import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
-import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
 import java.util.function.Predicate;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandDecorate extends CommandBase
+public class CommandDecorate extends CommandExpecting
 {
     @Nonnull
     protected static BlockSurfacePos getChunkPos(BlockSurfacePos point)
@@ -49,15 +46,18 @@ public class CommandDecorate extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.decorate.usage");
+        return RCExpect.expectRC()
+                .xyz()
+                .xyz()
+                .named("exp").structurePredicate();
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         BlockSurfaceArea area = new BlockSurfaceArea(
                 parameters.iv().surfacePos(commandSender.getPosition(), false).require(),
@@ -68,15 +68,5 @@ public class CommandDecorate extends CommandBase
 
         WorldServer world = (WorldServer) commandSender.getEntityWorld();
         chunkArea.forEach(coord -> WorldGenStructures.decorate(world, world.rand, new ChunkPos(coord.x, coord.z), structurePredicate));
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        return RCExpect.expectRC()
-                .xyz()
-                .xyz()
-                .named("exp").structurePredicate()
-                .get(server, sender, args, pos);
     }
 }

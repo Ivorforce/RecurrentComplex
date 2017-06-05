@@ -9,16 +9,16 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -26,13 +26,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandImportStructure extends CommandBase
+public class CommandImportStructure extends CommandExpecting
 {
     @Override
     public String getName()
@@ -46,20 +43,21 @@ public class CommandImportStructure extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.strucImport.usage");
+        return RCExpect.expectRC()
+                .structure()
+                .pos("x", "y", "z")
+                .named("dimension", "d").dimension()
+                .named("rotation", "r").rotation()
+                .flag("mirror", "m")
+                .flag("select", "s");
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .alias("dimension", "d")
-                .alias("rotation", "r")
-                .flag("mirror", "m")
-                .flag("select", "s")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
@@ -86,18 +84,5 @@ public class CommandImportStructure extends CommandBase
             SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
             owner.setSelection(RCBlockAreas.from(boundingBox));
         }
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        return RCExpect.expectRC()
-                .structure()
-                .pos("x", "y", "z")
-                .named("dimension").dimension()
-                .named("rotation").rotation()
-                .flag("mirror")
-                .flag("select")
-                .get(server, sender, args, pos);
     }
 }

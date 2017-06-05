@@ -5,8 +5,6 @@
 
 package ivorius.reccomplex.commands.parameters;
 
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -18,7 +16,7 @@ import java.util.function.Supplier;
 /**
  * Created by lukas on 01.06.17.
  */
-public abstract class SimpleCommand extends CommandBase implements Expecting
+public abstract class SimpleCommand extends CommandExpecting
 {
     public String name;
 
@@ -30,6 +28,7 @@ public abstract class SimpleCommand extends CommandBase implements Expecting
     public SimpleCommand(String name)
     {
         this.name = name;
+        this.usage = "";
     }
 
     public SimpleCommand(String name, Supplier<Expect<?>> expector)

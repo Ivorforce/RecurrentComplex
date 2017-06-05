@@ -7,18 +7,18 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileSuffixFilter;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -26,10 +26,8 @@ import net.minecraft.world.chunk.storage.RegionFileCache;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
@@ -38,7 +36,7 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandRetrogen extends CommandBase
+public class CommandRetrogen extends CommandExpecting
 {
     public static Stream<Pair<Integer, Integer>> existingRegions(File worldDir)
     {
@@ -97,17 +95,17 @@ public class CommandRetrogen extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.rcretro.usage");
+        return RCExpect.expectRC()
+                .named("exp").structurePredicate().optionalU("resource expression: only generate these structures")
+                .named("dimension", "d").dimension();
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .alias("dimension", "d")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         Predicate<Structure> structurePredicate = parameters.rc("exp").structurePredicate().optional().orElse(null);
         WorldServer world = parameters.mc("dimension").dimension(server, commandSender).require();
@@ -116,14 +114,4 @@ public class CommandRetrogen extends CommandBase
 
         commandSender.sendMessage(ServerTranslations.format("commands.rcretro.count", String.valueOf(count)));
     }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        return RCExpect.expectRC()
-                .named("exp").structurePredicate()
-                .named("dimension", "d").dimension()
-                .get(server, sender, args, pos);
-    }
-
 }

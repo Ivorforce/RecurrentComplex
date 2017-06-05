@@ -6,27 +6,26 @@
 package ivorius.reccomplex.commands.schematic;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandImportSchematic extends CommandBase
+public class CommandImportSchematic extends CommandExpecting
 {
     @Nonnull
     protected static SchematicFile parseSchematic(String schematicName) throws CommandException
@@ -55,9 +54,13 @@ public class CommandImportSchematic extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.rcimportschematic.usage");
+        return RCExpect.expectRC()
+                .schematic()
+                .pos("x", "y", "z")
+                .named("rotation", "r").rotation()
+                .flag("mirror", "m");
     }
 
     @Override
@@ -75,17 +78,6 @@ public class CommandImportSchematic extends CommandBase
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
         OperationRegistry.queueOperation(new OperationGenerateSchematic(schematicFile, transform, pos), commandSender);
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        return RCExpect.expectRC()
-                .schematic()
-                .pos("x", "y", "z")
-                .named("rotation").rotation()
-                .flag("mirror")
-                .get(server, sender, args, pos);
     }
 
     @Override

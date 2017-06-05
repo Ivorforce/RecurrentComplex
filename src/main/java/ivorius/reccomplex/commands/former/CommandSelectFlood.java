@@ -13,28 +13,26 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.RCBlockLogic;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.PreloadedBooleanExpression;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFlood extends CommandVirtual
+public class CommandSelectFlood extends CommandExpecting implements CommandVirtual
 {
     public static final int MAX_FLOOD = 50 * 50 * 50;
 
@@ -45,19 +43,12 @@ public class CommandSelectFlood extends CommandVirtual
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
-    {
-        return ServerTranslations.usage("commands.selectFlood.usage");
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public Expect<?> expect()
     {
         return RCExpect.expectRC()
                 .block()
                 .metadata()
-                .directionExpression()
-                .get(server, sender, args, pos);
+                .directionExpression();
     }
 
     public int getRequiredPermissionLevel()
@@ -68,7 +59,7 @@ public class CommandSelectFlood extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);

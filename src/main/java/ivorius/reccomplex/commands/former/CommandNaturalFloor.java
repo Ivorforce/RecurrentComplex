@@ -12,8 +12,7 @@ import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.block.RCBlocks;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -32,7 +31,7 @@ import java.util.Set;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandNaturalFloor extends CommandVirtual
+public class CommandNaturalFloor extends CommandExpecting implements CommandVirtual
 {
     public static void placeNaturalFloor(MockWorld world, BlockArea area, double lowerExpansion)
     {
@@ -106,17 +105,10 @@ public class CommandNaturalFloor extends CommandVirtual
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
-    {
-        return ServerTranslations.usage("commands.selectFloor.usage");
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .named("expansion").any("0", "1", "2")
-                .get(server, sender, args, pos);
+                .named("expansion", "e").any("0", "1", "2");
     }
 
     public int getRequiredPermissionLevel()
@@ -127,9 +119,7 @@ public class CommandNaturalFloor extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .alias("expansion", "e")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
         double expandFloor = parameters.get("expansion").doubleAt(0).optional().orElse(1.);

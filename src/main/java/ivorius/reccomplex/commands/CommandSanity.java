@@ -7,23 +7,20 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.commands.structure.CommandSearchStructure;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStrategy;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.IRegistry;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
@@ -32,10 +29,8 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 
-import javax.annotation.Nullable;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.function.BiPredicate;
 import java.util.stream.Stream;
@@ -43,8 +38,18 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandSanity extends CommandBase
+public class CommandSanity extends CommandExpecting
 {
+    public static <K, T> Stream<T> values(IRegistry<K, T> registry)
+    {
+        return registry.getKeys().stream().map(registry::getObject);
+    }
+
+    public static Stream<World> dimensions(MinecraftServer server)
+    {
+        return Stream.of(DimensionManager.getIDs()).map(server::worldServerForDimension);
+    }
+
     @Override
     public String getName()
     {
@@ -57,18 +62,17 @@ public class CommandSanity extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.rcsanity.usage");
+        return RCExpect.expectRC()
+                .flag("silent")
+                .flag("short");
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .flag("silent", "s")
-                .flag("short", "h")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
         boolean sane = true;
 
         if (StructureRegistry.INSTANCE.ids().isEmpty())
@@ -193,16 +197,6 @@ public class CommandSanity extends CommandBase
             commandSender.sendMessage(new TextComponentString("No specific problems found!"));
     }
 
-    public static <K, T> Stream<T> values(IRegistry<K, T> registry)
-    {
-        return registry.getKeys().stream().map(registry::getObject);
-    }
-
-    public static Stream<World> dimensions(MinecraftServer server)
-    {
-        return Stream.of(DimensionManager.getIDs()).map(server::worldServerForDimension);
-    }
-
     protected <T extends GenerationType> boolean addGenerationLog(ICommandSender commandSender, Class<T> tClass, BiPredicate<Structure<?>, T> predicate, String msg)
     {
         return addStructureLog(commandSender, (s, structure) -> structure.generationTypes(tClass).stream().allMatch(gen -> predicate.test(structure, gen)), msg);
@@ -221,14 +215,5 @@ public class CommandSanity extends CommandBase
         }
 
         return true;
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
-    {
-        return RCExpect.expectRC()
-                .flag("silent")
-                .flag("short")
-                .get(server, sender, args, targetPos);
     }
 }

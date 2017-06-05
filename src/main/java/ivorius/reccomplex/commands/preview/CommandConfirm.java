@@ -8,8 +8,8 @@ package ivorius.reccomplex.commands.preview;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.parameters.SimpleCommand;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,23 +19,12 @@ import net.minecraft.world.WorldServer;
 /**
  * Created by lukas on 03.08.14.
  */
-public class CommandConfirm extends CommandBase
+public class CommandConfirm extends SimpleCommand
 {
-    @Override
-    public String getName()
+    public CommandConfirm()
     {
-        return RCConfig.commandPrefix + "confirm";
-    }
-
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
-    }
-
-    @Override
-    public String getUsage(ICommandSender commandSender)
-    {
-        return ServerTranslations.usage("commands.rcconfirm.usage");
+        super(RCConfig.commandPrefix + "confirm");
+        permitFor(2);
     }
 
     @Override

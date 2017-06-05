@@ -12,8 +12,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.utils.optional.IvOptional;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSetProperty extends CommandVirtual
+public class CommandSetProperty extends CommandExpecting implements CommandVirtual
 {
     @Override
     public String getName()
@@ -40,20 +39,12 @@ public class CommandSetProperty extends CommandVirtual
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
-    {
-        return ServerTranslations.usage("commands.selectProperty.usage");
-    }
-
-    @Nonnull
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet()))
-                .next(params -> params.get().first().tryGet().map(TransformerProperty::propertyValueStream))
-                .named("exp").block()
-                .get(server, sender, args, pos);
+                .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet())).requiredU("key")
+                .next(params -> params.get().first().tryGet().map(TransformerProperty::propertyValueStream)).requiredU("value")
+                .named("exp").block().optionalU("positioned block expression");
     }
 
     public int getRequiredPermissionLevel()
@@ -64,7 +55,7 @@ public class CommandSetProperty extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
         IvOptional.ifAbsent(parameters.rc("exp").expression(matcher).optional(), () -> matcher.setExpression(""));

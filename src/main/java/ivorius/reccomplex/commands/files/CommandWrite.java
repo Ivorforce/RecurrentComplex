@@ -8,24 +8,21 @@ package ivorius.reccomplex.commands.files;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Created by lukas on 03.08.14.
  */
-public class CommandWrite extends CommandBase
+public class CommandWrite extends CommandExpecting
 {
     @Override
     public String getName()
@@ -39,17 +36,22 @@ public class CommandWrite extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender commandSender)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.rcsave.usage");
+        RCExpect<?> expect = RCExpect.expectRC();
+        // Can't chain because of compiler bug :|
+
+        expect.next(RecurrentComplex.saver.keySet());
+        expect.next(params -> params.get().first().tryGet().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()));
+        expect.named("directory", "d").resourceDirectory();
+
+        return expect;
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .alias("directory", "d")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         String adapterID = parameters.get().first().require();
         String id = parameters.get().at(1).require();
@@ -69,18 +71,5 @@ public class CommandWrite extends CommandBase
             RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
             RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);
         }
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        RCExpect<?> expect = RCExpect.expectRC();
-        // Can't chain because of compiler bug :|
-
-        expect.next(RecurrentComplex.saver.keySet());
-        expect.next(params -> params.get().first().tryGet().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()));
-        expect.named("directory", "d").resourceDirectory();
-
-        return expect.get(server, sender, args, pos);
     }
 }

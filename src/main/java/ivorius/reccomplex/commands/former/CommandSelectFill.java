@@ -13,18 +13,14 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
-import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.commands.parameters.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -32,7 +28,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFill extends CommandVirtual
+public class CommandSelectFill extends CommandExpecting implements CommandVirtual
 {
     @Override
     public String getName()
@@ -41,19 +37,12 @@ public class CommandSelectFill extends CommandVirtual
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
-    {
-        return ServerTranslations.usage("commands.selectFill.usage");
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public Expect<?> expect()
     {
         return RCExpect.expectRC()
                 .block()
                 .metadata()
-                .named("shape").any("cube", "sphere")
-                .get(server, sender, args, pos);
+                .named("shape", "s").any("cube", "sphere");
     }
 
     public int getRequiredPermissionLevel()
@@ -64,9 +53,7 @@ public class CommandSelectFill extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .alias("shape", "s")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         Block dstBlock = parameters.mc().block(commandSender).require();
         int[] dstMeta = parameters.rc().move(1).metadatas().optional().orElse(new int[1]);

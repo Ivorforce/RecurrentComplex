@@ -12,8 +12,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import net.minecraft.block.Block;
@@ -32,7 +31,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectReplace extends CommandVirtual
+public class CommandSelectReplace extends CommandExpecting implements CommandVirtual
 {
     @Override
     public String getName()
@@ -41,21 +40,13 @@ public class CommandSelectReplace extends CommandVirtual
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
-    {
-        return ServerTranslations.usage("commands.selectReplace.usage");
-    }
-
-    @Nonnull
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public Expect<?> expect()
     {
         return RCExpect.expectRC()
                 .block()
                 .block().repeat()
                 .named("metadata", "m")
-                .metadata()
-                .get(server, sender, args, pos);
+                .metadata();
     }
 
     public int getRequiredPermissionLevel()
@@ -66,9 +57,7 @@ public class CommandSelectReplace extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .alias("metadata", "m")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         Block dstBlock = parameters.mc().block(commandSender).require();
         int[] dstMeta = parameters.rc("metadata").metadatas().optional().orElse(new int[1]);

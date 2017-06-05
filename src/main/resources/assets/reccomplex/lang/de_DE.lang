@@ -53,71 +53,36 @@ commands.rc.noEntityInfo=Der Eintrag beinhaltet keine Strukturinfo! Dies ist ein
 commands.structure.notGeneric=Struktur '%s' ist nicht generisch!
 commands.structure.notRegistered=Keine Struktur mit dem Namen '%s' gefunden!
 
-commands.strucExport.usage=/#export [Entwurfsname]
-
-commands.strucEdit.usage=/#edit <Strukturname>
-
-commands.strucGen.usage=/#gen <Strukturname> [x] [z] [Dimension]
 commands.strucGen.noStructure=Keine Struktur mit dem Namen '%s' registriert.
 
-commands.strucImport.usage=/#import <structureName> [x] [y] [z] [Rotationen (im Uhrzeigersinn)] [Spiegeln (an x):true|false]
 commands.strucImport.noStructure=Keine Struktur mit dem Namen '%s' registriert.
 
-commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
 commands.selectSet.get=Auswahl: %s zu %s
 commands.selectSet.point.none=§oNirgendwo§r
 
-commands.selectShift.usage=/#shift <x> <y> <z>
-commands.selectCrop.usage=/#crop
-commands.selectShrink.usage=/#shrink <x> <y> <z>
-commands.selectExpand.usage=/#expand <x> <y> <z>
 
 commands.selectModify.noSelection=Spieler hat keine komplette Auswahl.
 commands.selectModify.invalidMetadata=Metadata muss auf diese weise angegeben werden: '0,1,5', aber war: '%s'
 
-commands.selectFill.usage=/#fill <block> [metadata1,metadata2,metadata3...]
-
-commands.selectReplace.usage=/#replace <Ziel> <metadata1,metadata2,metadata3...> <Quelle: positioned block expression>
-
-commands.selectFillSphere.usage=/#sphere <Block> [metadata1,metadata2,metadata3...]
-
-commands.selectFloor.usage=/#floor [Ausdehnung]
-commands.selectSpace.usage=/#space[ [Entfernung-zum-Boden] [max-geschlossene-seiten]
-commands.selectNatural.usage=/#natural [/#floor-ausdehnung]
-
-commands.strucReload.usage=/#reload [CUSTOM|MODDED]
 commands.strucReload.success=Alle %s-Dateien wurden neu geladen.
 
-commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Kopierte %s, %s, %s bis %s, %s, %s in die Zwischenablage.
 
-commands.strucPaste.usage=/#paste [x] [y] [z] [Rotation] [Spiegeln:true|false]
 commands.strucPaste.noClipboard=Zuerst muss ein Gebiet kopiert werden!
-commands.strucPasteGen.usage=/#pastegen [x] [y] [z] [Rotation] [Spiegeln:true|false]
 
-commands.selectMove.usage=/#move <x> <y> <z> [Rotationen (im Uhrzeigersinn)] [Spiegeln (an x):true|false]
-
-commands.selectDuplicate.usage=/#duplicate <x> <y> <z> [Rotationen (im Uhrzeigersinn)] [Spiegeln (an x):true|false]
-
-commands.rcpreview.usage=/#preview <none|bounds|shape>
 commands.rcpreview.invalid=Ungültiger Vorschautyp
 commands.rcpreview.success=Vorschautyp wurde auf '%s' gesetzt
 
 commands.rc.noOperation=Keine Operation in der Warteschleife
 commands.rc.queuedOp=Operation in der Vorschau - %s oder %s
-commands.rcconfirm.usage=/#confirm
 commands.rcconfirm.run=Führt die Operation aus
-commands.rccancel.usage=/#cancel
 commands.rccancel.run=Bricht die Operation ab
 
-commands.strucImportSchematic.usage=/#importschematic "<Schematic Name>" [x] [y] [z] [Rotationen (im Uhrzeigersinn)] [Spiegeln (an x):true|false]
 commands.strucImportSchematic.missing=Die Datei '%s' in %s konnte nicht gefunden werden
 commands.strucImportSchematic.format=Die Datei '%s' ist in einem ununterstüzten Format (%s)
 
-commands.strucExportSchematic.usage=/#exportschematic <Schematic Name>
 commands.strucExportSchematic.success=Exportiert Schematic nach '%s'
 
-commands.biomedict.usage=/#biome <types|list> id (get: Biom ID, list: Biomtyp ID)
 commands.biomedict.get=Biometypen für %s: %s
 commands.biomedict.get.number=%s biome
 commands.biomedict.list=Biome des Typs %s: %s
@@ -125,39 +90,30 @@ commands.biomedict.list.number=%s Biomtypen
 commands.biomedict.nobiome=Kein Biom mit der ID '%s'
 commands.biomedict.notype=Kein Biomtyp mit der ID '%s'
 
-commands.dimensiondict.usage=/#dimension <types|list> id (get: Dimension ID, list: Dimensionstyp ID)
 commands.dimensiondict.get=Dimensionstypen for %d: %s
 commands.dimensiondict.get.number=%s Dimensionen
 commands.dimensiondict.list=Dimensionen des Typs %s: %s
 commands.dimensiondict.list.number=%s Typen
 
-commands.rcvisual.usage=/#visual rulers <true|false>
 commands.rcvisual.enabled='%s' Erfolgreich aktiviert
 commands.rcvisual.disabled='%s' Erfolgreich deaktiviert
 
-commands.whatisthis.usage=/#whatisthis [x] [y] [z]
 commands.whatisthis.none=Dort ist Nichts!
 commands.whatisthis.one=Das ist: %s
 commands.whatisthis.many=Das ist irgenwas von, oder alles von: %s
 
-commands.rclookup.usage=/#lookup <Struktur>
 commands.rclookup.reply.silent=%s: §bInaktiv§r, von: '%s', ist %s, %s
 commands.rclookup.reply.generates=%s: §bGeneriert§r, von: '%s', ist %s, %s
 commands.rclookup.reply.noauthor=§oUnbekannt§r
 commands.rclookup.reply.nolink=§oKein Link verfügbar§r
 commands.rclookup.reply.comment=Kommentar: %s
 
-commands.rclist.usage=/#list [Seite]
 commands.rclist.previous=Vorherige Seite
 commands.rclist.next=Nächste Seite
 
-commands.rcsearch.usage=/#search
 commands.rcsearch.lookup=Nachschlagen
 
-commands.rcfiles.usage=/#files
 
-commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max>
-commands.rcdecorateone.usage=/#decorateone [x] [z]
 commands.rcdecorateone.none=Keine geeigneten Strukturen gefunden!
 
 inventoryGen.vanilla=Vanilla Generator

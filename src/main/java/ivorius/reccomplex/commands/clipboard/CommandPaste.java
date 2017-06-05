@@ -10,6 +10,8 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
 import ivorius.reccomplex.operation.OperationRegistry;
@@ -18,7 +20,6 @@ import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -28,14 +29,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
-
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandPaste extends CommandBase
+public class CommandPaste extends CommandExpecting
 {
     public CommandPaste()
     {
@@ -53,20 +50,21 @@ public class CommandPaste extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.strucPaste.usage");
+        return RCExpect.expectRC()
+                .pos("x", "y", "z")
+                .named("rotation", "r").rotation()
+                .named("seed").randomString()
+                .flag("mirror", "m")
+                .flag("generate", "g")
+                .flag("select", "s");
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .flag("generate", "g")
-                .flag("select", "s")
-                .alias("rotation", "r")
-                .flag("mirror", "m")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(sender);
         RCEntityInfo entityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);
@@ -102,19 +100,5 @@ public class CommandPaste extends CommandBase
             SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
             owner.setSelection(RCBlockAreas.from(boundingBox));
         }
-    }
-
-    @Nonnull
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        return RCExpect.expectRC()
-                .pos("x", "y", "z")
-                .named("rotation").rotation()
-                .named("seed").randomString()
-                .flag("mirror", "m")
-                .flag("generate")
-                .flag("select")
-                .get(server, sender, args, pos);
     }
 }

@@ -11,17 +11,15 @@ import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.OperationMulti;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,13 +28,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectMove extends CommandBase
+public class CommandSelectMove extends CommandExpecting
 {
     @Override
     public String getName()
@@ -45,9 +40,13 @@ public class CommandSelectMove extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.selectMove.usage");
+        return RCExpect.expectRC()
+                .pos("x", "y", "z")
+                .named("rotation", "r").rotation()
+                .flag("mirror", "m")
+                .flag("noselect", "s");
     }
 
     public int getRequiredPermissionLevel()
@@ -58,10 +57,7 @@ public class CommandSelectMove extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .flag("mirror", "m")
-                .flag("noselect", "s")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
@@ -88,16 +84,5 @@ public class CommandSelectMove extends CommandBase
             StructureBoundingBox boundingBox = generator.boundingBox().get();
             selectionOwner.setSelection(RCBlockAreas.from(boundingBox));
         }
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        return RCExpect.expectRC()
-                .pos("x", "y", "z")
-                .named("rotation").rotation()
-                .flag("mirror")
-                .flag("noselect")
-                .get(server, sender, args, pos);
     }
 }

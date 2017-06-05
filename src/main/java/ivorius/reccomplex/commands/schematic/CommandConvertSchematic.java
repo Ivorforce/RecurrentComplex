@@ -5,29 +5,24 @@
 
 package ivorius.reccomplex.commands.schematic;
 
-import ivorius.reccomplex.commands.structure.CommandExportStructure;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
+import ivorius.reccomplex.commands.structure.CommandExportStructure;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
-import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandConvertSchematic extends CommandBase
+public class CommandConvertSchematic extends CommandExpecting
 {
     @Override
     public String getName()
@@ -36,15 +31,17 @@ public class CommandConvertSchematic extends CommandBase
     }
 
     @Override
-    public String getUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.rcconvertschematic.usage");
+        return RCExpect.expectRC()
+                .schematic()
+                .named("from").structure();
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
@@ -59,16 +56,6 @@ public class CommandConvertSchematic extends CommandBase
         structure.worldDataCompound = CommandExportSchematic.toWorldData(schematicFile).createTagCompound();
 
         PacketEditStructureHandler.openEditStructure(structure, schematicName, player);
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        return RCExpect.expectRC()
-                .next(SchematicLoader.currentSchematicFileNames()
-                        .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()))
-                .named("from").structure()
-                .get(server, sender, args, pos);
     }
 
     @Override

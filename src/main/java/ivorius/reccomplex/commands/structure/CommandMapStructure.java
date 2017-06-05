@@ -46,7 +46,7 @@ public class CommandMapStructure extends CommandExpecting
                 .structure()
                 .virtualCommand()
                 .commandArguments(p -> p.get().move(1)).repeat()
-                .named("directory").resourceDirectory();
+                .named("directory", "d").resourceDirectory();
     }
 
     @Override

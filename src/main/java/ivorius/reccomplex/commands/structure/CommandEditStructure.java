@@ -37,7 +37,8 @@ public class CommandEditStructure extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .structure();
+                .structure()
+                .named("from").structure();
     }
 
     @Override
@@ -47,8 +48,15 @@ public class CommandEditStructure extends CommandExpecting
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         String id = parameters.get().first().require();
-        GenericStructure structure = parameters.rc().genericStructure().require();
+        GenericStructure base = parameters.rc().genericStructure().require();
+        GenericStructure from = parameters.rc("from").genericStructure().optional().orElse(base);
 
-        PacketEditStructureHandler.openEditStructure(structure, id, entityPlayerMP);
+        if (base != from)
+        {
+            from = from.copyAsGenericStructure();
+            from.worldDataCompound = base.worldDataCompound.copy();
+        }
+
+        PacketEditStructureHandler.openEditStructure(from, id, entityPlayerMP);
     }
 }

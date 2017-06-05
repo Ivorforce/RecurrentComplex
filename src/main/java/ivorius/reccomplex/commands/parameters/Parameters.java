@@ -32,15 +32,16 @@ public class Parameters
 
     protected final Set<String> flags;
     protected final ListMultimap<String, String> params;
-
-    protected final Map<String, String> alias = new HashMap<>();
     protected final List<String> order;
+
+    protected final Map<String, String> alias;
 
     public Parameters(Set<String> flags, ListMultimap<String, String> params, List<String> order)
     {
         this.flags = flags;
         this.params = params;
         this.order = order;
+        this.alias = new HashMap<>();
     }
 
     public Parameters(Parameters blueprint)
@@ -48,6 +49,7 @@ public class Parameters
         this.flags = blueprint.flags;
         this.params = blueprint.params;
         this.order = blueprint.order;
+        this.alias = blueprint.alias;
     }
 
     protected static <T> T of(String[] args, String[] flags, Function<Parameters, T> fun)

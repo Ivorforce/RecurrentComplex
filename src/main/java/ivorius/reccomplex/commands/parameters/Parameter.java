@@ -52,7 +52,7 @@ public class Parameter
 
     protected static String parameterName(Parameter parameter, int index)
     {
-        return String.format("%s (%d)", parameter.name != null ? " " + Parameters.flagPrefix + parameter.name : "", Math.max(parameter.moved, 0) + index);
+        return String.format("%s (%d)", parameter.name != null ? " " + Parameters.LONG_FLAG_PREFIX + parameter.name : "", Math.max(parameter.moved, 0) + index);
     }
 
     public Parameter move(int idx)

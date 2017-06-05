@@ -5,11 +5,13 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import com.google.common.primitives.Doubles;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.random.Person;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,9 +26,11 @@ import static net.minecraft.command.CommandBase.getListOfStringsMatchingLastWord
  */
 public class Expect<T extends Expect<T>>
 {
-    protected final Map<String, Param> params = new HashMap<>();
+    protected final Map<String, SuggestParameter> params = new HashMap<>();
+    protected final Set<String> shortParams = new HashSet<>();
     protected final Set<String> flags = new HashSet<>();
-    protected String cur;
+
+    protected String currentName;
 
     Expect()
     {
@@ -45,16 +49,41 @@ public class Expect<T extends Expect<T>>
         return (T) this;
     }
 
-    public T named(@Nonnull String name)
+    public T named(@Nonnull String name, String... aliases)
     {
-        getOrCreate(cur = name);
+        Pair<String, Boolean> p = name(name);
+
+        SuggestParameter param = getOrCreate(currentName = p.getKey());
+        if (p.getRight()) shortParams.add(p.getKey());
+
+        for (String alias : aliases)
+        {
+            p = name(alias);
+            params.put(alias, param);
+            if (p.getRight()) shortParams.add(p.getKey());
+        }
+
         return identity();
     }
 
-    public T flag(@Nonnull String name)
+    private Pair<String, Boolean> name(String name)
+    {
+        boolean isShort = false;
+        if (name.startsWith(Parameters.LONG_FLAG_PREFIX))
+            name = name.substring(Parameters.LONG_FLAG_PREFIX.length());
+        else if (name.length() == 1)
+            isShort = true;
+        else if (name.startsWith(Parameters.SHORT_FLAG_PREFIX))
+            throw new IllegalArgumentException();
+
+        return Pair.of(name, isShort);
+    }
+
+    public T flag(@Nonnull String name, String... aliases)
     {
         flags.add(name);
-        return named(name);
+        Collections.addAll(flags, aliases);
+        return named(name, aliases);
     }
 
     public T skip(int num)
@@ -64,17 +93,17 @@ public class Expect<T extends Expect<T>>
 
     public T next(Completer completion)
     {
-        Param cur = getOrCreate(this.cur);
+        SuggestParameter cur = getOrCreate(this.currentName);
         cur.next(completion);
         return identity();
     }
 
     @Nonnull
-    protected Param getOrCreate(String id)
+    protected SuggestParameter getOrCreate(@Nullable String name)
     {
-        Param param = params.get(id);
+        SuggestParameter param = params.get(name);
         if (param == null)
-            params.put(this.cur, param = new Param());
+            params.put(currentName, param = new SuggestParameter(name));
         return param;
     }
 
@@ -101,7 +130,7 @@ public class Expect<T extends Expect<T>>
 
     public T repeat()
     {
-        Param cur = params.get(this.cur);
+        SuggestParameter cur = params.get(this.currentName);
         if (cur == null) throw new IllegalStateException();
         cur.repeat = true;
         return identity();
@@ -118,30 +147,47 @@ public class Expect<T extends Expect<T>>
         String[] paramArray = quoted.toArray(new String[quoted.size()]);
 
         Parameters parameters = Parameters.of(args, flags.stream().toArray(String[]::new));
+        this.params.forEach((key, param) ->
+        {
+            if (!Objects.equals(param.name, key))
+                parameters.alias(param.name, key);
+        });
 
         String lastID = parameters.order.get(parameters.order.size() - 1);
         Parameter entered = lastID != null ? parameters.get(lastID) : parameters.get();
-        Param param = this.params.get(lastID);
+        SuggestParameter param = this.params.get(lastID);
 
+        String currentArg = quoted.get(quoted.size() - 1);
+        boolean longFlag = currentArg.startsWith(Parameters.LONG_FLAG_PREFIX);
+        boolean shortFlag = currentArg.startsWith(Parameters.SHORT_FLAG_PREFIX) && Doubles.tryParse(currentArg) == null;
         if (param != null && (entered.count() <= param.completions.size() || param.repeat)
                 // It notices we are entering a parameter so it won't be added to the parameters args anyway
-                && !quoted.get(quoted.size() - 1).startsWith(Parameters.flagPrefix))
+                && !longFlag && !shortFlag)
         {
-            return param.completions.get(Math.min(entered.count() - 1, param.completions.size() - 1)).complete(server, sender, paramArray, pos).stream()
+            List<String> suggest = param.completions.get(Math.min(entered.count() - 1, param.completions.size() - 1)).complete(server, sender, paramArray, pos).stream()
                     // More than one word, let's wrap this in quotes
                     .map(s -> s.contains(" ") && !s.startsWith("\"") ? String.format("\"%s\"", s) : s)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toCollection(ArrayList::new));
+            return suggest;
         }
 
-        return remaining(paramArray, parameters.flags);
+        List<String> suggest = new ArrayList<>();
+        suggest.addAll(remaining(paramArray, parameters, false));
+        suggest.addAll(remaining(paramArray, parameters, true));
+        return suggest;
     }
 
     @Nonnull
-    public List<String> remaining(String[] paramArray, Set<String> flags)
+    public List<String> remaining(String[] paramArray, Parameters parameters, boolean useShort)
     {
-        return getListOfStringsMatchingLastWord(paramArray, this.params.keySet().stream()
-                .filter(p -> p != null && !flags.contains(p))
-                .map(p -> Parameters.flagPrefix + p).collect(Collectors.toList()));
+        return getListOfStringsMatchingLastWord(paramArray, this.params.entrySet().stream()
+                .filter(e -> e.getKey() != null)
+                .filter(e -> !parameters.has(e.getKey()) // For flags
+                        || parameters.get(e.getKey()).count() < e.getValue().completions.size() || e.getValue().repeat)
+                .map(Map.Entry::getKey)
+                .filter(p -> shortParams.contains(p) == useShort)
+                .map(p -> (shortParams.contains(p) ? Parameters.SHORT_FLAG_PREFIX : Parameters.LONG_FLAG_PREFIX) + p)
+                .collect(Collectors.toList()));
     }
 
     /**
@@ -154,7 +200,7 @@ public class Expect<T extends Expect<T>>
 
     public T descriptionU(String description)
     {
-        getOrCreate(cur).description(description);
+        params.get(currentName).description(description);
         return identity();
     }
 
@@ -170,7 +216,7 @@ public class Expect<T extends Expect<T>>
 
     public T required()
     {
-        Param param = getOrCreate(cur);
+        SuggestParameter param = params.get(currentName);
         String prev = param.descriptions.get(param.descriptions.size() - 1);
         param.description(String.format("<%s>", prev.substring(1, prev.length() - 1)));
         return identity();
@@ -205,20 +251,26 @@ public class Expect<T extends Expect<T>>
         Collection<String> complete(MinecraftServer server, ICommandSender sender, String[] argss, @Nullable BlockPos pos);
     }
 
-    protected class Param
+    protected class SuggestParameter
     {
+        protected String name;
         protected final List<Completer> completions = new ArrayList<>();
         protected final List<String> descriptions = new ArrayList<>();
         protected boolean repeat;
 
-        public Param next(Completer completion)
+        public SuggestParameter(String name)
+        {
+            this.name = name;
+        }
+
+        public SuggestParameter next(Completer completion)
         {
             completions.add(completion);
             descriptions.add(String.format("[%d]", completions.size()));
             return this;
         }
 
-        public Param description(String description)
+        public SuggestParameter description(String description)
         {
             descriptions.remove(descriptions.size() - 1);
             descriptions.add(description);

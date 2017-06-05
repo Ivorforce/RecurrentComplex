@@ -62,6 +62,21 @@ public class Parameters
         return (c != null ? c.apply(parameters) : parameters).build(args);
     }
 
+    public static String prefix(boolean isShort)
+    {
+        return isShort ? SHORT_FLAG_PREFIX : LONG_FLAG_PREFIX;
+    }
+
+    public static boolean hasLongPrefix(String name)
+    {
+        return name.startsWith(LONG_FLAG_PREFIX);
+    }
+
+    public static boolean hasShortPrefix(String name)
+    {
+        return name.startsWith(SHORT_FLAG_PREFIX) && Doubles.tryParse(name) == null;
+    }
+
     public static String[] quoted(String[] args)
     {
         String full = Strings.join(args, " ");
@@ -112,12 +127,12 @@ public class Parameters
         String curName = null;
         for (String arg : raw)
         {
-            if (arg.startsWith(LONG_FLAG_PREFIX)) // Quoted arguments can never be arguments
+            if (hasLongPrefix(arg)) // Quoted arguments can never be arguments
             {
                 flags.add(curName = root(arg.substring(LONG_FLAG_PREFIX.length())));
                 if (declaredFlags.contains(curName)) curName = null;
             }
-            else if (arg.startsWith(SHORT_FLAG_PREFIX) && Doubles.tryParse(arg) == null)
+            else if (hasShortPrefix(arg))
             {
                 List<String> curFlags = arg.substring(SHORT_FLAG_PREFIX.length()).chars().mapToObj(c -> String.valueOf((char) c)).collect(Collectors.toList());
 

@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands.parameters;
 import com.google.common.primitives.Doubles;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.random.Person;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -18,8 +19,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static net.minecraft.command.CommandBase.getListOfStringsMatchingLastWord;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 30.05.17.
@@ -41,6 +42,30 @@ public class Expect<T extends Expect<T>>
     {
         //noinspection unchecked
         return (T) new Expect();
+    }
+
+    public static List<String> toStrings(Object arg)
+    {
+        while (arg instanceof Optional)
+            //noinspection unchecked
+            arg = ((Optional) arg).orElse(Collections.emptyList());
+        if (arg instanceof IntStream)
+            arg = ((IntStream) arg).mapToObj(String::valueOf);
+        if (arg instanceof Collection<?>)
+            arg = ((Collection) arg).stream();
+        if (arg instanceof Stream<?>)
+            return ((Stream<?>) arg).map(Object::toString).collect(Collectors.toList());
+        return Collections.singletonList(arg.toString());
+    }
+
+    public static List<String> matching(String arg, Object completion)
+    {
+        return CommandBase.getListOfStringsMatchingLastWord(new String[]{arg}, toStrings(completion));
+    }
+
+    public static List<String> matchingAny(String arg, Object... suggest)
+    {
+        return CommandBase.getListOfStringsMatchingLastWord(new String[]{arg}, Arrays.asList(suggest));
     }
 
     protected T identity()
@@ -112,14 +137,14 @@ public class Expect<T extends Expect<T>>
         return next(Arrays.asList(completion));
     }
 
-    public T next(Collection<?> completion)
+    public T next(Object completion)
     {
-        return next((server, sender, args, pos) -> getListOfStringsMatchingLastWord(args, completion));
+        return next((server, sender, params, pos) -> matching(params.last(), completion));
     }
 
-    public T next(Function<String[], ? extends Collection<String>> completion)
+    public T next(Function<Parameters, ?> completion)
     {
-        return next((server, sender, args, pos) -> completion.apply(args));
+        return next((server, sender, params, pos) -> completion.apply(params));
     }
 
     public T randomString()
@@ -143,9 +168,6 @@ public class Expect<T extends Expect<T>>
 
     public List<String> get(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        List<String> quoted = Arrays.stream(Parameters.quoted(args)).map(Parameters::trimQuotes).collect(Collectors.toList());
-        String[] paramArray = quoted.toArray(new String[quoted.size()]);
-
         Parameters parameters = Parameters.of(args, flags.stream().toArray(String[]::new));
         this.params.forEach((key, param) ->
         {
@@ -157,37 +179,36 @@ public class Expect<T extends Expect<T>>
         Parameter entered = lastID != null ? parameters.get(lastID) : parameters.get();
         SuggestParameter param = this.params.get(lastID);
 
-        String currentArg = quoted.get(quoted.size() - 1);
+        String currentArg = parameters.last();
         boolean longFlag = currentArg.startsWith(Parameters.LONG_FLAG_PREFIX);
         boolean shortFlag = currentArg.startsWith(Parameters.SHORT_FLAG_PREFIX) && Doubles.tryParse(currentArg) == null;
         if (param != null && (entered.count() <= param.completions.size() || param.repeat)
                 // It notices we are entering a parameter so it won't be added to the parameters args anyway
                 && !longFlag && !shortFlag)
         {
-            List<String> suggest = param.completions.get(Math.min(entered.count() - 1, param.completions.size() - 1)).complete(server, sender, paramArray, pos).stream()
+            return toStrings(param.completions.get(Math.min(entered.count() - 1, param.completions.size() - 1)).complete(server, sender, parameters, pos)).stream()
                     // More than one word, let's wrap this in quotes
                     .map(s -> s.contains(" ") && !s.startsWith("\"") ? String.format("\"%s\"", s) : s)
                     .collect(Collectors.toCollection(ArrayList::new));
-            return suggest;
         }
 
         List<String> suggest = new ArrayList<>();
-        suggest.addAll(remaining(paramArray, parameters, false));
-        suggest.addAll(remaining(paramArray, parameters, true));
-        return suggest;
+        suggest.addAll(remaining(currentArg, parameters, false));
+        suggest.addAll(remaining(currentArg, parameters, true));
+        return matching(parameters.last(), suggest);
     }
 
     @Nonnull
-    public List<String> remaining(String[] paramArray, Parameters parameters, boolean useShort)
+    public List<String> remaining(String currentArg, Parameters parameters, boolean useShort)
     {
-        return getListOfStringsMatchingLastWord(paramArray, this.params.entrySet().stream()
+        return matching(currentArg, this.params.entrySet().stream()
                 .filter(e -> e.getKey() != null)
                 .filter(e -> !parameters.has(e.getKey()) // For flags
                         || parameters.get(e.getKey()).count() < e.getValue().completions.size() || e.getValue().repeat)
                 .map(Map.Entry::getKey)
                 .filter(p -> shortParams.contains(p) == useShort)
                 .map(p -> (shortParams.contains(p) ? Parameters.SHORT_FLAG_PREFIX : Parameters.LONG_FLAG_PREFIX) + p)
-                .collect(Collectors.toList()));
+        );
     }
 
     /**
@@ -248,7 +269,7 @@ public class Expect<T extends Expect<T>>
 
     public interface Completer
     {
-        Collection<String> complete(MinecraftServer server, ICommandSender sender, String[] argss, @Nullable BlockPos pos);
+        Object complete(MinecraftServer server, ICommandSender sender, Parameters parameters, @Nullable BlockPos pos);
     }
 
     protected class SuggestParameter

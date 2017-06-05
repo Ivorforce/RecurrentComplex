@@ -19,8 +19,6 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static net.minecraft.command.CommandBase.getListOfStringsMatchingLastWord;
-
 /**
  * Created by lukas on 31.05.17.
  */
@@ -51,19 +49,19 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
 
     public T x()
     {
-        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index(), pos))
+        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), 0, pos))
                 .optionalU("x");
     }
 
     public T y()
     {
-        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index() - 1, pos))
+        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), -1, pos))
                 .optionalU("y");
     }
 
     public T z()
     {
-        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args, index() - 2, pos))
+        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), -2, pos))
                 .optionalU("z");
     }
 
@@ -80,7 +78,7 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
 
     public T dimension()
     {
-        return next(args -> getListOfStringsMatchingLastWord(args, Arrays.stream(DimensionManager.getIDs()).map(String::valueOf).collect(Collectors.toList())))
+        return next(Arrays.stream(DimensionManager.getIDs()))
                 .optionalU("dimension");
     }
 

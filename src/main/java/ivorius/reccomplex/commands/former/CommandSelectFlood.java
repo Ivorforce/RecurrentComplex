@@ -56,16 +56,7 @@ public class CommandSelectFlood extends CommandVirtual
         return RCExpect.expectRC()
                 .block()
                 .metadata()
-                .next(args1 ->
-                {
-                    List<String> ret = new ArrayList<>();
-
-                    ret.addAll(Arrays.stream(EnumFacing.values()).map(EnumFacing::getName2).collect(Collectors.toList()));
-                    ret.addAll(Arrays.stream(EnumFacing.Axis.values()).map(EnumFacing.Axis::getName).collect(Collectors.toList()));
-                    Collections.addAll(ret, "horizontal", "vertical");
-
-                    return ret;
-                }).repeat()
+                .directionExpression()
                 .get(server, sender, args, pos);
     }
 

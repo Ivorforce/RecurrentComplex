@@ -34,10 +34,8 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 25.05.14.
@@ -68,7 +66,8 @@ public class CommandGenerateStructure extends CommandBase
     @ParametersAreNonnullByDefault
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, "mirror", "select");
+        RCParameters parameters = RCParameters.of(args, "mirror", "m", "select");
+        parameters.alias("mirror", "m");
 
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
@@ -117,19 +116,17 @@ public class CommandGenerateStructure extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        RCParameters parameters = RCParameters.of(args);
-
         return RCExpect.expectRC()
                 .structure()
                 .surfacePos("x", "z")
                 .named("dimension").dimension()
                 .named("gen")
-                .next((String[] args1) -> parameters.rc().genericStructure().tryGet()
-                        .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id).collect(Collectors.toList()))
-                        .orElse(Collections.emptyList()))
+                .next(params -> new RCParameters(params).rc().genericStructure().tryGet()
+                        .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id))
+                )
                 .named("rotation").rotation()
                 .named("seed").randomString()
-                .flag("mirror")
+                .flag("mirror", "m")
                 .flag("select")
                 .get(server, sender, args, pos);
     }

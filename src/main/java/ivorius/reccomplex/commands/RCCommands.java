@@ -15,7 +15,6 @@ import ivorius.reccomplex.commands.clipboard.CommandSelectCopy;
 import ivorius.reccomplex.commands.files.CommandDelete;
 import ivorius.reccomplex.commands.files.CommandReload;
 import ivorius.reccomplex.commands.files.CommandWrite;
-import ivorius.reccomplex.commands.files.CommandWriteAll;
 import ivorius.reccomplex.commands.former.*;
 import ivorius.reccomplex.commands.info.CommandBiomeDict;
 import ivorius.reccomplex.commands.info.CommandDimensionDict;
@@ -82,7 +81,7 @@ public class RCCommands
         event.registerServerCommand(sanity = new CommandSanity());
 
         event.registerServerCommand(new CommandWrite());
-        event.registerServerCommand(new CommandWriteAll());
+        event.registerServerCommand(new CommandWrite());
         event.registerServerCommand(new CommandDelete());
 
         if (RCConfig.asCommandPermissionLevel >= 0)

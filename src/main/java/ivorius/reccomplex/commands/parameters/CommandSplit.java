@@ -10,6 +10,7 @@ import joptsimple.internal.Strings;
 import net.minecraft.command.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -71,7 +72,7 @@ public class CommandSplit extends CommandBase
     @Override
     public String getUsage(ICommandSender sender)
     {
-        return String.format("/%s <%s>", getName(),
+        return String.format("%s %s%s<%s>", getName(), TextFormatting.RESET, TextFormatting.YELLOW,
                 Strings.join(Lists.newArrayList(commands.keySet()), "|"));
     }
 

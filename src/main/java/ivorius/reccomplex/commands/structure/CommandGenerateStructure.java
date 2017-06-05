@@ -11,10 +11,7 @@ import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
@@ -39,18 +36,12 @@ import java.util.Optional;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandGenerateStructure extends CommandExpecting
+public class CommandGenerateStructure extends SimpleCommand
 {
-    @Nonnull
-    @Override
-    public String getName()
+    public CommandGenerateStructure()
     {
-        return RCConfig.commandPrefix + "gen";
-    }
-
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
+        super(RCConfig.commandPrefix + "gen");
+        permitFor(2);
     }
 
     @Override
@@ -63,9 +54,9 @@ public class CommandGenerateStructure extends CommandExpecting
                 .named("gen")
                 .next(params -> new RCParameters(params).rc().genericStructure().tryGet()
                         .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id))
-                )
+                ).optionalU("generation type id")
                 .named("rotation", "r").rotation()
-                .named("seed").randomString()
+                .named("seed").randomString().optionalU("seed")
                 .flag("mirror", "m")
                 .flag("select", "s");
     }

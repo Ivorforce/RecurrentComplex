@@ -47,7 +47,9 @@ public class CommandWrite extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .alias("directory", "d")
+        );
 
         String adapterID = parameters.get().first().require();
         String id = parameters.get().at(1).require();
@@ -57,7 +59,7 @@ public class CommandWrite extends CommandBase
         if (!RecurrentComplex.saver.registry(adapterID).ids().contains(id))
             throw ServerTranslations.commandException("commands.rcsave.noelement");
 
-        ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+        ResourceDirectory directory = parameters.rc("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
         if (RCCommands.informSaveResult(RecurrentComplex.saver.trySave(directory.toPath(), adapterID, id), commandSender, directory, adapterID, id))
         {
@@ -77,7 +79,7 @@ public class CommandWrite extends CommandBase
 
         expect.next(RecurrentComplex.saver.keySet());
         expect.next(params -> params.get().first().tryGet().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()));
-        expect.named("dir").resourceDirectory();
+        expect.named("directory", "d").resourceDirectory();
 
         return expect.get(server, sender, args, pos);
     }

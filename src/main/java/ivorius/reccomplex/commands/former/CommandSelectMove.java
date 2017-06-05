@@ -58,7 +58,10 @@ public class CommandSelectMove extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p.flags("mirror", "noselect"));
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .flag("mirror", "m")
+                .flag("noselect", "s")
+        );
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);

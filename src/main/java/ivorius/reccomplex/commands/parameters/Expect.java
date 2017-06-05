@@ -68,6 +68,17 @@ public class Expect<T extends Expect<T>>
         return CommandBase.getListOfStringsMatchingLastWord(new String[]{arg}, Arrays.asList(suggest));
     }
 
+    public Parameters declare(Parameters parameters)
+    {
+        parameters.flags(flags);
+        this.params.forEach((key, param) ->
+        {
+            if (!Objects.equals(param.name, key))
+                parameters.alias(param.name, key);
+        });
+        return parameters;
+    }
+
     protected T identity()
     {
         //noinspection unchecked
@@ -168,15 +179,7 @@ public class Expect<T extends Expect<T>>
 
     public List<String> get(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        Parameters parameters = Parameters.of(args, p ->
-        {
-            p.flags(flags);
-            this.params.forEach((key, param) ->
-            {
-                if (!Objects.equals(param.name, key))
-                    p.alias(param.name, key);
-            });
-        });
+        Parameters parameters = Parameters.of(args, this::declare);
 
         String lastID = parameters.order.get(parameters.order.size() - 1);
         Parameter entered = lastID != null ? parameters.get(lastID) : parameters.get();

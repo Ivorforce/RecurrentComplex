@@ -54,14 +54,16 @@ public class CommandWriteAll extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .alias("directory", "d")
+        );
 
         String adapterID = parameters.get().first().require();
 
         if (!RecurrentComplex.saver.has(adapterID))
             throw ServerTranslations.commandException("commands.rcsaveall.noregistry");
 
-        ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+        ResourceDirectory directory = parameters.rc("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
         Optional<FileSaverAdapter<?>> adapterOptional = Optional.ofNullable(RecurrentComplex.saver.get(adapterID));
         Set<String> ids = adapterOptional.map(a -> a.getRegistry().ids()).orElse(Collections.emptySet());
 
@@ -96,7 +98,7 @@ public class CommandWriteAll extends CommandBase
 
         expect.next(RecurrentComplex.saver.keySet());
         expect.next(params -> params.get().first().tryGet().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()));
-        expect.named("dir").resourceDirectory();
+        expect.named("directory", "d").resourceDirectory();
 
         return expect.get(server, sender, args, pos);
     }

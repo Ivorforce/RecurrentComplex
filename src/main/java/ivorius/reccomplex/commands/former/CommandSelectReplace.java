@@ -53,7 +53,7 @@ public class CommandSelectReplace extends CommandVirtual
         return RCExpect.expectRC()
                 .block()
                 .block().repeat()
-                .named("metadata")
+                .named("metadata", "m")
                 .metadata()
                 .get(server, sender, args, pos);
     }
@@ -66,7 +66,9 @@ public class CommandSelectReplace extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .alias("metadata", "m")
+        );
 
         Block dstBlock = parameters.mc().block(commandSender).require();
         int[] dstMeta = parameters.rc("metadata").metadatas().optional().orElse(new int[1]);

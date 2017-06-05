@@ -49,7 +49,9 @@ public class CommandDelete extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .alias("directory", "d")
+        );
 
         String adapterID = parameters.get().first().require();
         String id = parameters.get().at(1).require();
@@ -59,7 +61,7 @@ public class CommandDelete extends CommandBase
         if (!RecurrentComplex.saver.registry(adapterID).ids().contains(id))
             throw ServerTranslations.commandException("commands.rcsave.noelement");
 
-        ResourceDirectory directory = parameters.rc("dir").resourceDirectory().require();
+        ResourceDirectory directory = parameters.rc("directory").resourceDirectory().require();
 
         RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(directory.toPath(), adapterID, id), commandSender, adapterID, id, directory);
 
@@ -75,7 +77,7 @@ public class CommandDelete extends CommandBase
 
         expect.next(RecurrentComplex.saver.keySet());
         expect.next(Optional.ofNullable(RecurrentComplex.saver.get(args[0])).map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()));
-        expect.named("dir").resourceDirectory();
+        expect.named("directory", "d").resourceDirectory();
 
         return expect.get(server, sender, args, pos);
     }

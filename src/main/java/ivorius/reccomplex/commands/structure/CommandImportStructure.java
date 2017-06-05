@@ -54,7 +54,12 @@ public class CommandImportStructure extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p.flags("mirror", "select"));
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .alias("dimension", "d")
+                .alias("rotation", "r")
+                .flag("mirror", "m")
+                .flag("select", "s")
+        );
 
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();

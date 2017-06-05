@@ -105,7 +105,9 @@ public class CommandRetrogen extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .alias("dimension", "d")
+        );
 
         Predicate<Structure> structurePredicate = parameters.rc("exp").structurePredicate().optional().orElse(null);
         WorldServer world = parameters.mc("dimension").dimension(server, commandSender).require();
@@ -120,7 +122,7 @@ public class CommandRetrogen extends CommandBase
     {
         return RCExpect.expectRC()
                 .named("exp").structurePredicate()
-                .named("dimension").dimension()
+                .named("dimension", "d").dimension()
                 .get(server, sender, args, pos);
     }
 

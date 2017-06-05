@@ -67,8 +67,10 @@ public class CommandGenerateStructure extends CommandBase
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args, p -> p
-                .flags("mirror", "select")
-                .alias("mirror", "m")
+                .alias("dimension", "d")
+                .alias("rotation", "r")
+                .flag("mirror", "m")
+                .flag("select", "s")
         );
 
         String structureID = parameters.get().first().require();

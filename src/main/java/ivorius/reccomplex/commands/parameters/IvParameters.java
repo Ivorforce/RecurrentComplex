@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 31.05.17.
@@ -23,7 +24,7 @@ public class IvParameters extends MCParameters
         super(blueprint);
     }
 
-    public static IvParameters of(String[] args, Consumer<Parameters> c)
+    public static IvParameters of(String[] args, Function<Parameters, Parameters> c)
     {
         return new IvParameters(Parameters.of(args, c));
     }

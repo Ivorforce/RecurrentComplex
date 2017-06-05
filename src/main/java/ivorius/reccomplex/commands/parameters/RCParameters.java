@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands.parameters;
 
 import javax.annotation.Nonnull;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 31.05.17.
@@ -18,7 +18,7 @@ public class RCParameters extends IvParameters
         super(blueprint);
     }
 
-    public static RCParameters of(String[] args, Consumer<Parameters> c)
+    public static RCParameters of(String[] args, Function<Parameters, Parameters> c)
     {
         return new RCParameters(Parameters.of(args, c));
     }

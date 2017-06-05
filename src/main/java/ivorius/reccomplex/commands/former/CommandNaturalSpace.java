@@ -161,7 +161,10 @@ public class CommandNaturalSpace extends CommandVirtual
         RCCommands.assertSize(commandSender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .alias("distance-to-floor", "d")
+                .alias("max-closed-sides", "s")
+        );
 
         int floorDistance = parameters.get("distance-to-floor").intAt(0).optional().orElse(0) + 1;
         int maxClosedSides = parameters.get("max-closed-sides").intAt(1).optional().orElse(3);

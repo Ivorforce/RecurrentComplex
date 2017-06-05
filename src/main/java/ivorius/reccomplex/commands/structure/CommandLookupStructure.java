@@ -7,10 +7,10 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCTextStyle;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;

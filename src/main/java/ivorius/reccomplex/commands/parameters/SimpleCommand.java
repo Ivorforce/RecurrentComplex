@@ -34,7 +34,7 @@ public abstract class SimpleCommand extends CommandExpecting
     public SimpleCommand(String name, Supplier<Expect<?>> expector)
     {
         this.name = name;
-        this.usage =  expector.get().usage();
+        this.usage = expector.get().usage();
         this.expector = expector;
     }
 

@@ -5,10 +5,10 @@
 
 package ivorius.reccomplex.commands.schematic;
 
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.commands.structure.CommandExportStructure;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;

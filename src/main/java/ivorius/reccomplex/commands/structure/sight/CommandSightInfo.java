@@ -27,7 +27,7 @@ public class CommandSightInfo extends SimpleCommand
 {
     public CommandSightInfo()
     {
-        super("info",  () -> RCExpect.expectRC().skip(1).requiredU("id"));
+        super("info", () -> RCExpect.expectRC().skip(1).requiredU("id"));
     }
 
     @Override

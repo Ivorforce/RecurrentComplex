@@ -53,7 +53,9 @@ public class IvParameter extends Parameter
     public Result<AxisAlignedTransform2D> transform(boolean mirror) throws CommandException
     {
         if (has(1) || mirror)
-            return first().missable().map(CommandBase::parseInt).orElse(0).map(r -> AxisAlignedTransform2D.from(r, mirror));
+            return first().missable().map(CommandBase::parseInt)
+                    .map(i -> i > 40 ? i / 90 : i)
+                    .orElse(0).map(r -> AxisAlignedTransform2D.from(r, mirror));
         return Result.empty();
     }
 }

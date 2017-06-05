@@ -55,9 +55,14 @@ public class Parameter
         return String.format("%s (%d)", parameter.name != null ? " " + Parameters.LONG_FLAG_PREFIX + parameter.name : "", Math.max(parameter.moved, 0) + index);
     }
 
+    public boolean isSet()
+    {
+        return moved >= 0;
+    }
+
     public Parameter move(int idx)
     {
-        return new Parameter(moved >= 0 ? moved + idx : moved, name, params.subList(Math.min(idx, params.size()), params.size()));
+        return new Parameter(isSet() ? moved + idx : moved, name, params.subList(Math.min(idx, params.size()), params.size()));
     }
 
     public Result<String> first()
@@ -87,7 +92,7 @@ public class Parameter
 
     protected void require(int size) throws CommandException
     {
-        if (moved < 0)
+        if (!isSet())
             throw new ArgumentMissingException(this, size);
         if (!has(size))
             throw new ParameterNotFoundException(this, size);

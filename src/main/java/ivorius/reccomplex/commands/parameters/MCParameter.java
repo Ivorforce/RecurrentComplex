@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.ivtoolkit.math.MinecraftTransforms;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import net.minecraft.block.Block;
@@ -15,6 +16,7 @@ import net.minecraft.command.NumberInvalidException;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
@@ -87,5 +89,12 @@ public class MCParameter extends Parameter
     public Result<Entity> entity(MinecraftServer server, ICommandSender sender)
     {
         return first().map(s -> CommandBase.getEntity(server, sender, s));
+    }
+
+    public Result<Rotation> rotation()
+    {
+        return first().missable().map(CommandBase::parseInt)
+                .map(i -> i > 40 ? i / 90 : i)
+                .map(MinecraftTransforms::to);
     }
 }

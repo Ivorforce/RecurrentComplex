@@ -108,4 +108,9 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
         return next((server, sender, parameters, pos) -> Arrays.stream(server.getOnlinePlayerNames()))
                 .optionalU("entity");
     }
+
+    public T rotation()
+    {
+        return any("0", "90", "180", "270").optionalU("rotation");
+    }
 }

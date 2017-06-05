@@ -50,11 +50,6 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
                 .optionalU("schematic");
     }
 
-    public T rotation()
-    {
-        return any("0", "1", "2", "3").optionalU("rotation");
-    }
-
     public T resourceDirectory()
     {
         return any((Object[]) ResourceDirectory.values()).optionalU("directory");

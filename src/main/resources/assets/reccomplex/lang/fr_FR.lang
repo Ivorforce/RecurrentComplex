@@ -52,69 +52,35 @@ commands.rc.noEntityInfo=L'entité ne contient pas d'infos de structure ! Ceci e
 commands.structure.notGeneric=La structure '%s' n'est pas générique !
 commands.structure.notRegistered=Aucune structure trouvée au nom de '%s'!
 
-commands.strucExport.usage=/#export [Nom-de-plan]
-
-commands.strucEdit.usage=/#edit <Nom-de-structure>
-
-commands.strucGen.usage=/#gen <Nom-de-structure> [x] [z]
 commands.strucGen.noStructure=Aucune structure enregistrée au nom de '%s'
 
-commands.strucImport.usage=/#import <Nom-de-structure> [x] [y] [z] [clockwise-rotations] [mirror x:true|false]
 commands.strucImport.noStructure=Aucune structure enregistrée au nom de '%s'
 
-commands.selectSet.usage=/#select <both|clear|point1|point2> [x] [y] [z]
 commands.selectSet.get=Sélection: %s à %s
 commands.selectSet.point.none=§onulpart§r
-
-commands.selectShift.usage=/#shift <x> <y> <z>
-commands.selectCrop.usage=/#crop
-commands.selectShrink.usage=/#shrink <x> <y> <z>
-commands.selectExpand.usage=/#expand <x> <y> <z>
 
 commands.selectModify.noSelection=Le joueur n'a pas de sélection complète
 commands.selectModify.invalidMetadata=les metadata devraient être saisi comme '0,1,5', mais ils sont '%s'
 
-commands.selectFill.usage=/#fill <bloc> [metadata1,metadata2,metadata3...]
-
-commands.selectReplace.usage=/#replace <dest> <destmetadata1,metadata2,metadata3...> <src positioned block expression>
-
-commands.selectFillSphere.usage=/#sphere <bloc> [metadata1,metadata2,metadata3...]
-
-commands.selectNatural.usage=/#natural [naturalFloorExpansion]
-
-commands.strucReload.usage=/#reload [CUSTOM|MODDED]
 commands.strucReload.success=Recharge toutes les structures et les générateurs d'inventaire (%s)
 
-commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Copie de %s, %s, %s à %s, %s, %s dans le presse-papier
 
-commands.strucPaste.usage=/#paste [x] [y] [z]
 commands.strucPaste.noClipboard=Vous devez d'abord copier une zone!
-commands.strucPasteGen.usage=/#pastegen [x] [y] [z]
 
-commands.selectMove.usage=/#move <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
-
-commands.selectDuplicate.usage=/#duplicate <x> <y> <z> [clockwise-rotations] [mirror x:true|false]
-
-commands.rcpreview.usage=/#preview <none|bounds|shape>
 commands.rcpreview.invalid=Type d'aperçu invalide
 commands.rcpreview.success=Type d'aperçu mis à '%s'
 
 commands.rc.noOperation=Pas d'opération en file d'attente
 commands.rc.queuedOp=Opération en apperçu - %s ou %s
-commands.rcconfirm.usage=/#confirm
 commands.rcconfirm.run=Lance l'opération
-commands.rccancel.usage=/#cancel
 commands.rccancel.run=Annule l'opération
 
-commands.strucImportSchematic.usage=commands.strucImportSchematic.usage=/#importschematic "<nom-du-schéma>" [x] [y] [z] [rotations (clockwise)] [mirror x:true|false]
 commands.strucImportSchematic.missing=Le fichier '%s' n'a pas été trouvé dans %s
 commands.strucImportSchematic.format=Le fichier '%s' a un format non supporté (%s)
 
-commands.strucExportSchematic.usage=/#exportschematic <schematic name>
 commands.strucExportSchematic.success=Schéma exporté vers '%s'
 
-commands.biomedict.usage=/#biome <types|list> id (get: Biome ID, list: Biome Type ID)
 commands.biomedict.get=Types de biome pour %s: %s
 commands.biomedict.get.number=%s biomes
 commands.biomedict.list=Biomes de type %s: %s
@@ -122,22 +88,18 @@ commands.biomedict.list.number=%s types de biome
 commands.biomedict.nobiome=Pas de biome avec l'ID '%s'
 commands.biomedict.notype=Pas de types de biome avec l'ID '%s'
 
-commands.dimensiondict.usage=/#dimension <types|list> id (get: Dimension ID, list: Dimension Type ID)
 commands.dimensiondict.get=Types de dimension pour %d: %s
 commands.dimensiondict.get.number=%s dimensions
 commands.dimensiondict.list=Dimensions de type %s: %s
 commands.dimensiondict.list.number=%s types
 
-commands.rcvisual.usage=/#visual rulers <true|false>
 commands.rcvisual.enabled='%s' activés avec succès
 commands.rcvisual.disabled='%s' désactivés avec succès
 
-commands.whatisthis.usage=/#whatisthis [x] [y] [z]
 commands.whatisthis.none=Il n'y as rien ici !
 commands.whatisthis.one=Ceci est : %s
 commands.whatisthis.many=Ceci est quelque ou tout de : %s
 
-commands.rclookup.usage=/#lookup <structure>
 commands.rclookup.reply.silent=%s: §bInactif§r, Par : '%s', is %s, %s
 commands.rclookup.reply.generates=%s: §bGénératé§r, Par: '%s', is %s, %s
 commands.rclookup.reply.noauthor=§oInconnu§r

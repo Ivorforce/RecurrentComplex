@@ -8,23 +8,17 @@ package ivorius.reccomplex.commands.structure.sight;
 import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSightAdd extends CommandBase
+public class CommandSightAdd extends CommandExpecting
 {
     @Override
     public String getCommandName()
@@ -33,9 +27,10 @@ public class CommandSightAdd extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.rcremember.usage");
+        return RCExpect.expectRC()
+                .randomString().requiredU("name").repeat();
     }
 
     public int getRequiredPermissionLevel()
@@ -46,7 +41,7 @@ public class CommandSightAdd extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         WorldStructureGenerationData generationData = WorldStructureGenerationData.get(commandSender.getEntityWorld());
         SelectionOwner owner = RCCommands.getSelectionOwner(commandSender, null, true);
@@ -55,13 +50,5 @@ public class CommandSightAdd extends CommandBase
 
         generationData.addEntry(WorldStructureGenerationData.CustomEntry.from(name, BlockAreas.toBoundingBox(owner.getSelection())));
         commandSender.addChatMessage(ServerTranslations.format("commands.rcremember.success", name));
-    }
-
-    @Override
-    public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos)
-    {
-        return RCExpect.expectRC()
-                .randomString().repeat()
-                .get(server, sender, args, targetPos);
     }
 }

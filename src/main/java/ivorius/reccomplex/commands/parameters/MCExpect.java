@@ -9,15 +9,13 @@ import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.DimensionManager;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 31.05.17.
@@ -94,19 +92,20 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
                 .optionalU("command");
     }
 
-    public T commandArguments(Parameter parameter, ICommandSender sender)
+    public T commandArguments(Function<Parameters, Parameter> parameter)
     {
-        return next((server1, sender1, args1, pos1) ->
+        return next((server1, sender, params, pos1) ->
         {
-            Optional<ICommand> other = parameter.first().tryGet().map(server1.getCommandManager().getCommands()::get);
-            return other.map(c -> c.getTabCompletions(server1, sender, parameter.move(1).varargs(), pos1)).orElse(Collections.emptyList());
+            Parameter parameterGet = parameter.apply(params);
+            Optional<ICommand> other = parameterGet.first().tryGet().map(server1.getCommandManager().getCommands()::get);
+            return other.map(c -> c.getTabCompletions(server1, sender, parameterGet.move(1).varargs(), pos1)).orElse(Collections.emptyList());
         })
                 .optionalU("args...");
     }
 
-    public T entity(MinecraftServer server)
+    public T entity()
     {
-        return any((Object[]) server.getOnlinePlayerNames())
+        return next((server, sender, parameters, pos) -> Arrays.stream(server.getOnlinePlayerNames()))
                 .optionalU("entity");
     }
 }

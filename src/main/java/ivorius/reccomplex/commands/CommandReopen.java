@@ -7,9 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.commands.parameters.SimpleCommand;
 import ivorius.reccomplex.network.PacketReopenGui;
-import ivorius.reccomplex.utils.ServerTranslations;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -18,23 +17,12 @@ import net.minecraft.server.MinecraftServer;
 /**
  * Created by lukas on 03.08.14.
  */
-public class CommandReopen extends CommandBase
+public class CommandReopen extends SimpleCommand
 {
-    @Override
-    public String getCommandName()
+    public CommandReopen()
     {
-        return RCConfig.commandPrefix + "reopen";
-    }
-
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
-    }
-
-    @Override
-    public String getCommandUsage(ICommandSender commandSender)
-    {
-        return ServerTranslations.usage("commands.rcreopen.usage");
+        super(RCConfig.commandPrefix + "reopen");
+        permitFor(2);
     }
 
     @Override

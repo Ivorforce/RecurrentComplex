@@ -11,13 +11,11 @@ import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,13 +23,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectDuplicate extends CommandBase
+public class CommandSelectDuplicate extends CommandExpecting
 {
     @Override
     public String getCommandName()
@@ -40,9 +35,12 @@ public class CommandSelectDuplicate extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.selectDuplicate.usage");
+        return RCExpect.expectRC()
+                .pos("x", "y", "z")
+                .named("rotation", "r").rotation()
+                .flag("mirror", "m");
     }
 
     public int getRequiredPermissionLevel()
@@ -53,10 +51,7 @@ public class CommandSelectDuplicate extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .alias("rotation", "r")
-                .flag("mirror", "m")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         BlockArea area = selectionOwner.getSelection();
@@ -72,15 +67,4 @@ public class CommandSelectDuplicate extends CommandBase
 
         OperationRegistry.queueOperation(new OperationGenerateStructure(structureInfo, null, transform, pos, true).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
     }
-
-    @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        return RCExpect.expectRC()
-                .pos("x", "y", "z")
-                .named("rotation").rotation()
-                .flag("mirror")
-                .get(server, sender, args, pos);
-    }
-
 }

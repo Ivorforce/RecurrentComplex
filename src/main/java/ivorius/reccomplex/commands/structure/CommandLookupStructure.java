@@ -7,31 +7,28 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCTextStyle;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandLookupStructure extends CommandBase
+public class CommandLookupStructure extends CommandExpecting
 {
     @Override
     public String getCommandName()
@@ -45,15 +42,16 @@ public class CommandLookupStructure extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.rclookup.usage");
+        return RCExpect.expectRC()
+                .structure();
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         String id = parameters.get().first().require();
         GenericStructure structure = parameters.rc().genericStructure().require();
@@ -77,13 +75,5 @@ public class CommandLookupStructure extends CommandBase
 
         if (!metadata.comment.trim().isEmpty())
             commandSender.sendMessage(ServerTranslations.format("commands.rclookup.reply.comment", metadata.comment));
-    }
-
-    @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        return RCExpect.expectRC()
-                .structure()
-                .get(server, sender, args, pos);
     }
 }

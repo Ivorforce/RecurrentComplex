@@ -8,9 +8,12 @@ package ivorius.reccomplex.commands.structure;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.RCTextStyle;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -27,7 +30,7 @@ import java.util.List;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandListStructures extends CommandBase
+public class CommandListStructures extends CommandExpecting
 {
     public static final int RESULTS_PER_PAGE = 20;
 
@@ -77,15 +80,16 @@ public class CommandListStructures extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.rclist.usage");
+        return RCExpect.expectRC().any(0).optionalU("page");
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        int page = args.length >= 1 ? parseInt(args[0]) : 0;
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        int page = parameters.get().intAt(0).optional().orElse(0);
 
         List<String> structureNames = new ArrayList<>();
         structureNames.addAll(StructureRegistry.INSTANCE.ids());

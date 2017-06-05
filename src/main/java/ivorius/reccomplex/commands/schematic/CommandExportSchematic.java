@@ -11,24 +11,22 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandExportSchematic extends CommandBase
+public class CommandExportSchematic extends CommandExpecting
 {
     public static SchematicFile toSchematic(IvWorldData worldData)
     {
@@ -61,23 +59,16 @@ public class CommandExportSchematic extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
-    {
-        return ServerTranslations.usage("commands.rcexportschematic.usage");
-    }
-
-    @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .schematic()
-                .get(server, sender, args, pos);
+                .schematic();
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         BlockArea area = selectionOwner.getSelection();

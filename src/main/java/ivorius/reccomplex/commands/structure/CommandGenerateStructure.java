@@ -11,8 +11,10 @@ import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
@@ -23,7 +25,6 @@ import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -32,15 +33,13 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
 import java.util.Optional;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandGenerateStructure extends CommandBase
+public class CommandGenerateStructure extends CommandExpecting
 {
     @Nonnull
     @Override
@@ -54,24 +53,28 @@ public class CommandGenerateStructure extends CommandBase
         return 2;
     }
 
-    @Nonnull
     @Override
-    @ParametersAreNonnullByDefault
-    public String getCommandUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.strucGen.usage");
+        return RCExpect.expectRC()
+                .structure()
+                .surfacePos("x", "z")
+                .named("dimension", "d").dimension()
+                .named("gen")
+                .next(params -> new RCParameters(params).rc().genericStructure().tryGet()
+                        .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id))
+                )
+                .named("rotation", "r").rotation()
+                .named("seed").randomString()
+                .flag("mirror", "m")
+                .flag("select", "s");
     }
 
     @Override
     @ParametersAreNonnullByDefault
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .alias("dimension", "d")
-                .alias("rotation", "r")
-                .flag("mirror", "m")
-                .flag("select", "s")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();
@@ -114,24 +117,5 @@ public class CommandGenerateStructure extends CommandBase
             SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
             owner.setSelection(RCBlockAreas.from(boundingBox.get()));
         }
-    }
-
-    @Nonnull
-    @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        return RCExpect.expectRC()
-                .structure()
-                .surfacePos("x", "z")
-                .named("dimension").dimension()
-                .named("gen")
-                .next(params -> new RCParameters(params).rc().genericStructure().tryGet()
-                        .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id))
-                )
-                .named("rotation").rotation()
-                .named("seed").randomString()
-                .flag("mirror", "m")
-                .flag("select")
-                .get(server, sender, args, pos);
     }
 }

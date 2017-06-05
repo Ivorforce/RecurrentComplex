@@ -6,11 +6,9 @@
 package ivorius.reccomplex.commands.structure.sight;
 
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -18,7 +16,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +23,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandSightCheck extends CommandBase
+public class CommandSightCheck extends CommandExpecting
 {
     private String name;
 
@@ -47,15 +44,9 @@ public class CommandSightCheck extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
-    {
-        return ServerTranslations.usage("commands.whatisthis.usage");
-    }
-
-    @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, null);
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
         World world = commandSender.getEntityWorld();
 
         BlockPos pos = parameters.mc().pos(commandSender.getPosition(), false).require();
@@ -69,10 +60,9 @@ public class CommandSightCheck extends CommandBase
     }
 
     @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .xyz()
-                .get(server, sender, args, pos);
+                .xyz();
     }
 }

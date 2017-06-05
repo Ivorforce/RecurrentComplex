@@ -34,7 +34,7 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
     public T structurePredicate()
     {
         return structure()
-                .optionalU("structure predicate");
+                .optionalU("resource expression");
     }
 
     public T structure()
@@ -80,6 +80,6 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
         ret.addAll(Arrays.stream(EnumFacing.Axis.values()).map(EnumFacing.Axis::getName).collect(Collectors.toList()));
         Collections.addAll(ret, "horizontal", "vertical");
 
-        return next(ret);
+        return next(ret).optionalU("direction expression");
     }
 }

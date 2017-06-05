@@ -14,8 +14,7 @@ import ivorius.reccomplex.block.RCBlocks;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -33,7 +32,7 @@ import java.util.Set;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandNaturalSpace extends CommandVirtual
+public class CommandNaturalSpace extends CommandExpecting implements CommandVirtual
 {
     public static int sidesClosed(MockWorld world, BlockPos coord, BlockArea area)
     {
@@ -135,18 +134,11 @@ public class CommandNaturalSpace extends CommandVirtual
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
-    {
-        return ServerTranslations.usage("commands.selectSpace.usage");
-    }
-
-    @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
+    public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .named("distance-to-floor").any("3", "2", "1")
-                .named("max-closed-sides").any("3", "4", "5")
-                .get(server, sender, args, pos);
+                .named("distance-to-floor", "d").any("3", "2", "1")
+                .named("max-closed-sides", "s").any("3", "4", "5");
     }
 
     public int getRequiredPermissionLevel()
@@ -161,10 +153,7 @@ public class CommandNaturalSpace extends CommandVirtual
         RCCommands.assertSize(commandSender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .alias("distance-to-floor", "d")
-                .alias("max-closed-sides", "s")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         int floorDistance = parameters.get("distance-to-floor").intAt(0).optional().orElse(0) + 1;
         int maxClosedSides = parameters.get("max-closed-sides").intAt(1).optional().orElse(3);

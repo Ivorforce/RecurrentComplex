@@ -10,25 +10,23 @@ import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.CommandSelecting;
 import ivorius.reccomplex.commands.CommandVirtual;
+import ivorius.reccomplex.commands.parameters.Expect;
 import ivorius.reccomplex.commands.parameters.RCExpect;
 import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
 /**
  * Created by lukas on 03.08.14.
  */
-public class CommandMapStructure extends CommandBase
+public class CommandMapStructure extends CommandExpecting
 {
     @Override
     public String getCommandName()
@@ -42,17 +40,19 @@ public class CommandMapStructure extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender commandSender)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.rcmap.usage");
+        return RCExpect.expectRC()
+                .structure()
+                .virtualCommand()
+                .commandArguments(p -> p.get().move(1)).repeat()
+                .named("directory").resourceDirectory();
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, p -> p
-                .alias("directory", "d")
-        );
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         String id = parameters.get().first().require();
         GenericStructure structure = parameters.rc().genericStructure().require();
@@ -74,18 +74,5 @@ public class CommandMapStructure extends CommandBase
 
         structure.worldDataCompound = worldData.createTagCompound();
         PacketSaveStructureHandler.write(commandSender, structure, id, directory, true, true);
-    }
-
-    @Override
-    public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
-    {
-        RCParameters parameters = RCParameters.of(args, null);
-
-        return RCExpect.expectRC()
-                .structure()
-                .virtualCommand()
-                .commandArguments(parameters.get().move(1), sender).repeat()
-                .named("directory").resourceDirectory()
-                .get(server, sender, args, pos);
     }
 }

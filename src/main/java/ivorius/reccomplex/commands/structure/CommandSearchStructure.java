@@ -10,6 +10,10 @@ import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCTextStyle;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -17,7 +21,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import joptsimple.internal.Strings;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -35,7 +38,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 25.05.14.
  */
-public class CommandSearchStructure extends CommandBase
+public class CommandSearchStructure extends CommandExpecting
 {
     public static final int MAX_RESULTS = 20;
 
@@ -116,18 +119,24 @@ public class CommandSearchStructure extends CommandBase
     }
 
     @Override
-    public String getCommandUsage(ICommandSender var1)
+    public Expect<?> expect()
     {
-        return ServerTranslations.usage("commands.rcsearch.usage");
+        return RCExpect.expectRC()
+                .skip(1).requiredU("terms").repeat();
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
+        RCParameters parameters = RCParameters.of(args, expect()::declare);
+
         if (args.length >= 1)
         {
             postResultMessage(commandSender,
-                    RCTextStyle::structure, search(StructureRegistry.INSTANCE.ids(), name -> searchRank(Arrays.asList(args), keywords(name, StructureRegistry.INSTANCE.get(name))))
+                    RCTextStyle::structure,
+                    search(StructureRegistry.INSTANCE.ids(),
+                            name -> searchRank(parameters.get().varargsList(), keywords(name, StructureRegistry.INSTANCE.get(name)))
+                    )
             );
         }
         else

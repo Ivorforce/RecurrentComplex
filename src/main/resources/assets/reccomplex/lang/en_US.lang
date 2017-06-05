@@ -59,15 +59,9 @@ commands.rc.large.error=The selection is too big! (And if it weren't, this comma
 commands.structure.notGeneric=Structure '%s' is not generic!
 commands.structure.notRegistered=No structure found by name '%s'!
 
-commands.strucExport.usage=/#export --from [structure id]
-
-commands.strucEdit.usage=/#edit <structureName>
-
-commands.strucGen.usage=/#gen <structure name> --x [x] --z [z] --dimension [dimension] --gen [generation id] --rotation [rotation] --mirror --seed [seed] --select
 commands.strucGen.noPlace=The structure can't find anywhere suitable to spawn!
 commands.strucGen.noStructure=No structure registered by the name of '%s'
 
-commands.strucImport.usage=/#import <structure name> --x [x] --y [y] --z [z] --dimension [dimension] --rotation [rotation] --mirror --select
 commands.strucImport.noStructure=No structure registered by the name of '%s'
 
 commands.selectSet.get=Selection: %s
@@ -76,54 +70,28 @@ commands.selectSet.size=Size: %s (%s blocks)
 commands.selectModify.noSelection=Player does not have a complete selection
 commands.selectModify.invalidMetadata=Metadata must be entered like '0,1,5', but was '%s'
 
-commands.selectFill.usage=/#fill <block> [metadata1,metadata2,metadata3...] --shape [cube|sphere]
-
-commands.selectReplace.usage=/#replace <dest> <src positioned block expression> --metadata [destination metadata 1,2,3...]
-commands.selectProperty.usage=/#property <key> <value> --exp [positioned block matcher]
-
-commands.selectFlood.usage=/#flood <block> [metadata1,metadata2,metadata3...] <facing expression>
-
-commands.selectFloor.usage=floor --expansion [expansion]
-commands.selectSpace.usage=space --distance-to-floor [distance] --max-closed-sides [sides]
-commands.selectNatural.usage=smart --floor-expansion [expansion] --space-distance-to-floor [distance] --space-max-closed-sides [sides]
-
-commands.strucReload.usage=/#reload [CUSTOM|MODDED]
 commands.strucReload.success=Reloaded all %s files.
 
-commands.selectCopy.usage=/#copy
 commands.selectCopy.success=Copied (%s) to clipboard
 
-commands.strucPaste.usage=/#paste --x [x] --y [y] --z [z] --rotation [rotation] --mirror --generate --seed [seed] --select
 commands.strucPaste.noClipboard=You have to copy an area first!
 
-commands.selectMove.usage=/#move --x [x] --y [y] --z [z] -r [rotations] --mirror --noselect
-
-commands.selectDuplicate.usage=/#duplicate --x [x] --y [y] --z [z] --rotation [rotation] --mirror
-
-commands.rcpreview.usage=/#preview <none|bounds|shape>
 commands.rcpreview.invalid=Invalid preview type
 commands.rcpreview.success=Preview type set to '%s'
 
 commands.rc.noOperation=No currently queued operation
 commands.rc.queuedOp=Operation in preview - %s or %s
-commands.rcconfirm.usage=/#confirm
 commands.rcconfirm.run=Run the operation
-commands.rccancel.usage=/#cancel
 commands.rccancel.run=Cancel the operation
 
-commands.rcreopen.usage=/#reopen
 commands.rcreopen.run=Re-Open GUI
 commands.rcreopen.nogui=No GUI to reopen!
 commands.rcreopen.fail=Failed to reopen GUI!
 commands.rc.didhide=Hidden GUI - %s?
 
-commands.rcimportschematic.usage=import "<Schematic Name>" --x [x] --y [y] --z [z] --rotation [rotation] --mirror
 commands.rcimportschematic.missing=The file '%s' was not found in %s
 commands.rcimportschematic.format=The file '%s' has an unsupported format (%s)
 
-commands.rcconvertschematic.usage=convert "<Schematic Name>" --from <structure ID>
-
-commands.strucExportSchematic.usage=/#exportschematic <schematic name>
 commands.strucExportSchematic.success=Exported schematic to '%s'
 
 commands.biomedict.get=Biome Types for %s: %s
@@ -138,11 +106,9 @@ commands.dimensiondict.get.number=Lookup (%s dimensions)
 commands.dimensiondict.list=Dimensions of Type %s: %s
 commands.dimensiondict.list.number=Lookup (%s types)
 
-commands.rcvisual.usage=/#visual rulers <true|false>
 commands.rcvisual.enabled='%s' successfully enabled
 commands.rcvisual.disabled='%s' successfully disabled
 
-commands.whatisthis.usage=/#whatisthis [x] [y] [z]
 commands.whatisthis.none=There is nothing here!
 commands.whatisthis.one=This is: %s
 commands.whatisthis.many=This is any, or all of: %s
@@ -162,60 +128,34 @@ commands.rcforget.forget=Forget %s
 commands.rcforget.success=Forgot %s!
 commands.rcforgetall.success=Forgot %s structures!
 
-commands.rcremember.usage=remember <name>
 commands.rcremember.success=Remembered %s!
 
-commands.rclookup.usage=/#lookup <structure>
 commands.rclookup.reply.silent=%s: §bInactive§r, by: %s, is %s, %s
 commands.rclookup.reply.generates=%s: §bGenerates§r, by: %s, is %s, %s
 commands.rclookup.reply.noauthor=§oUnknown§r
 commands.rclookup.reply.nolink=§oNo link provided§r
 commands.rclookup.reply.comment=Comment: %s
 
-commands.rclist.usage=/#list [page]
 commands.rclist.previous=Previous Page
 commands.rclist.next=Next Page
 commands.rclist.none=No Structures
 
-commands.rcsearch.usage=/#search
 commands.rcsearch.empty=No results!
 commands.rcsearch.lookup=Look Up
 
-commands.rccontaining.usage=/#containing <block expression>
-
-commands.rcfiles.usage=/#files --dir [directory]
-
-commands.rcdecorate.usage=/#decorate <x min> <z min> <x max> <z max> --exp [resource matcher: only generate these structures]
-commands.rcdecorateone.usage=/#decorateone [x] [z]
 commands.rcdecorateone.none=No suitable structures found!
-commands.rcretro.usage=/#retro --dimension [dimension] --exp [resource matcher: only generate these structures]
 commands.rcretro.count=Retro-Generated %s chunks!
 
-commands.rcenable.usage=/#enable <registry id> <element id>
-commands.rcdisable.usage=/#enable <registry id> <element id>
-commands.rcsave.usage=/#write <registry id> <element id> --dir [directory]
 commands.rcsave.noregistry=No such registry id!
 commands.rcsave.nodirectory=No such directory id!
 commands.rcsave.noelement=No such element!
-commands.rcsaveall.usage=/#writeall <registry id> [resource expression] --dir [directory]
 commands.rcsaveall.result=Saved %s elements to '%s'. %s failed.
-commands.rcdelete.usage=/#delete <registry id> <element id> -dir <directory>
-commands.rcmap.usage=/#map <structure id> <command> [args...] -dir [directory]
 commands.rcmap.nonvirtual=Cannot map with this command!
 commands.rcmap.nonvirtual.arguments=Cannot map with these command arguments!
-commands.rcmapall.usage=/#mapall <command> [args...] --exp [resource expression] --dir [directory]
 commands.rcmapall.result=Saved %s elements to %s. %s failed. %s skipped.
 
-commands.rcas.usage=/#as <entity> <command>
-commands.rcselecting.usage=/#selecting <x1> <y1> <z1> <x2> <y2> <z2> <command>
-
-commands.rcsetbiome.usage=/#setbiome <biome ID>
-
-commands.rceval.usage=/#eval <dependency expression>
 commands.rceval.result.true=True
 commands.rceval.result.false=False
-
-commands.rcsanity.usage=/#sanity --silent --short
 
 inventoryGen.vanilla=Vanilla Generator
 inventoryGen.custom=Custom Generator

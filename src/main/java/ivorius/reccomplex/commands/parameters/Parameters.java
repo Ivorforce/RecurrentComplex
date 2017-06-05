@@ -7,18 +7,16 @@ package ivorius.reccomplex.commands.parameters;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
 import ivorius.reccomplex.RecurrentComplex;
 import joptsimple.internal.Strings;
-import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -29,20 +27,22 @@ public class Parameters
     public static final String SHORT_FLAG_PREFIX = "-";
     public static final String LONG_FLAG_PREFIX = "--";
 
-    protected final List<String> raw;
-    protected final Set<String> flags;
-    protected final ListMultimap<String, String> params;
-    protected final List<String> order;
+    protected List<String> raw;
+    protected Set<String> flags;
+    protected ListMultimap<String, String> params;
+    protected List<String> order;
 
-    protected final Map<String, String> alias;
+    protected Set<String> declaredFlags;
+    protected Map<String, String> alias;
 
-    public Parameters(List<String> raw, Set<String> flags, ListMultimap<String, String> params, List<String> order)
+    public Parameters()
     {
-        this.raw = raw;
-        this.flags = flags;
-        this.params = params;
-        this.order = order;
-        this.alias = new HashMap<>();
+        flags = new HashSet<>();
+        params = ArrayListMultimap.create();
+        order = new ArrayList<>();
+
+        declaredFlags = new HashSet<>();
+        alias = new HashMap<>();
     }
 
     public Parameters(Parameters blueprint)
@@ -51,63 +51,16 @@ public class Parameters
         this.flags = blueprint.flags;
         this.params = blueprint.params;
         this.order = blueprint.order;
+
+        this.declaredFlags = blueprint.declaredFlags;
         this.alias = blueprint.alias;
     }
 
-    protected static <T> T of(String[] args, String[] flags, Function<Parameters, T> fun)
+    public static Parameters of(String[] args, Consumer<Parameters> c)
     {
-        Set<String> foundFlags = new HashSet<>();
-        List<String> order = new ArrayList<>();
-        ListMultimap<String, String> named = ArrayListMultimap.create();
-
-        order.add(null);
-
-        String curName = null;
-        List<String> raw = Arrays.asList(quoted(args));
-        for (String arg : raw)
-        {
-            if (arg.startsWith(LONG_FLAG_PREFIX)) // Quoted arguments can never be arguments
-            {
-                foundFlags.add(curName = arg.substring(LONG_FLAG_PREFIX.length()));
-                if (ArrayUtils.contains(flags, curName)) curName = null;
-            }
-            else if (arg.startsWith(SHORT_FLAG_PREFIX) && Doubles.tryParse(arg) == null)
-            {
-                List<String> curFlags = arg.substring(SHORT_FLAG_PREFIX.length()).chars().mapToObj(c -> String.valueOf((char) c)).collect(Collectors.toList());
-
-                for (int i = 0; i < curFlags.size(); i++)
-                {
-                    String flag = curFlags.get(i);
-                    if (curName != null)
-                    {
-                        String rest = Strings.join(curFlags.subList(i, curFlags.size()), "");
-                        // Direct input, e.g. -fusers/foo/file.png
-                        if (rest.length() > 0)
-                        {
-                            order.add(curName);
-                            named.put(curName, rest);
-                            curName = null;
-                            break;
-                        }
-                    }
-                    foundFlags.add(curName = flag);
-                    if (ArrayUtils.contains(flags, curName)) curName = null;
-                }
-            }
-            else
-            {
-                order.add(curName);
-                named.put(curName, arg);
-                curName = null;
-            }
-        }
-
-        return fun.apply(new Parameters(raw, foundFlags, named, order));
-    }
-
-    public static Parameters of(String[] args, String... flags)
-    {
-        return of(args, flags, Parameters::new);
+        Parameters parameters = new Parameters();
+        if (c != null) c.accept(parameters);
+        return parameters.build(args);
     }
 
     public static String[] quoted(String[] args)
@@ -151,31 +104,89 @@ public class Parameters
         return trimmed;
     }
 
-    public void alias(String parent, String... aliases)
+    public Parameters build(String[] args)
     {
-        List<String> result = new ArrayList<>();
-        List<String> sources = Lists.newArrayList(aliases);
-        sources.add(parent);
+        raw = Arrays.asList(quoted(args));
 
-        for (int i = 0; i < order.size(); i++)
+        order.add(null);
+
+        String curName = null;
+        for (String arg : raw)
         {
-            String s = order.get(i);
-            if (sources.contains(s))
+            if (arg.startsWith(LONG_FLAG_PREFIX)) // Quoted arguments can never be arguments
             {
-                result.add(params.get(s).remove(0));
-                order.remove(i);
-                order.add(i, parent);
+                flags.add(curName = root(arg.substring(LONG_FLAG_PREFIX.length())));
+                if (declaredFlags.contains(curName)) curName = null;
+            }
+            else if (arg.startsWith(SHORT_FLAG_PREFIX) && Doubles.tryParse(arg) == null)
+            {
+                List<String> curFlags = arg.substring(SHORT_FLAG_PREFIX.length()).chars().mapToObj(c -> String.valueOf((char) c)).collect(Collectors.toList());
+
+                for (int i = 0; i < curFlags.size(); i++)
+                {
+                    flags.add(curName = root(curFlags.get(i)));
+                    if (declaredFlags.contains(curName))
+                        curName = null;
+                    else if (curFlags.size() > i + 1)
+                    {
+                        // Direct input, e.g. -fusers/foo/file.png
+                        String rest = Strings.join(curFlags.subList(i + 1, curFlags.size()), "");
+                        order.add(curName);
+                        params.put(curName, rest);
+                        curName = null;
+                    }
+                }
+            }
+            else
+            {
+                order.add(curName);
+                params.put(curName, arg);
+                curName = null;
             }
         }
+
+        return this;
+    }
+
+    public void requireBuilt() throws IllegalStateException
+    {
+        if (raw == null)
+            throw new IllegalStateException();
+    }
+
+    public void requireUnbuilt() throws IllegalStateException
+    {
+        if (raw != null)
+            throw new IllegalStateException();
+    }
+
+    public Parameters alias(String parent, String... aliases)
+    {
+        requireUnbuilt();
+        parent = root(parent);
 
         for (String alias : aliases)
             this.alias.put(alias, parent);
 
-        // Should be empty by now
-        params.get(parent).addAll(result);
-
-        if (flags.removeAll(sources))
+        if (flags.removeAll(Arrays.asList(aliases)))
             flags.add(parent);
+
+        return this;
+    }
+
+    public Parameters flags(Collection<String> flags)
+    {
+        for (String flag : flags)
+        {
+            requireUnbuilt();
+            declaredFlags.add(root(flag));
+        }
+        return this;
+    }
+
+    public Parameters flags(String... flags)
+    {
+        return flags(Arrays.asList(flags));
     }
 
     public String root(String name)
@@ -188,11 +199,13 @@ public class Parameters
 
     public List<String> raw()
     {
+        requireBuilt();
         return Collections.unmodifiableList(raw);
     }
 
     public String last()
     {
+        requireBuilt();
         return raw.get(raw.size() - 1);
     }
 
@@ -203,23 +216,26 @@ public class Parameters
 
     public Map<String, Parameter> entries()
     {
+        requireBuilt();
         return flags.stream().collect(Collectors.toMap(k -> k,
                 k -> new Parameter(k, params.get(k))));
     }
 
     public boolean has(@Nonnull String flag)
     {
-        flag = root(flag);
-        return flags.contains(flag);
+        requireBuilt();
+        return flags.contains(root(flag));
     }
 
     public Parameter get()
     {
+        requireBuilt();
         return new Parameter(null, params.get(null));
     }
 
     public Parameter get(@Nonnull String name)
     {
+        requireBuilt();
         name = root(name);
         return new Parameter(has(name) && !params.containsKey(name) ? -1 : 0, name, params.get(name));
     }

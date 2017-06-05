@@ -168,11 +168,14 @@ public class Expect<T extends Expect<T>>
 
     public List<String> get(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        Parameters parameters = Parameters.of(args, flags.stream().toArray(String[]::new));
-        this.params.forEach((key, param) ->
+        Parameters parameters = Parameters.of(args, p ->
         {
-            if (!Objects.equals(param.name, key))
-                parameters.alias(param.name, key);
+            p.flags(flags);
+            this.params.forEach((key, param) ->
+            {
+                if (!Objects.equals(param.name, key))
+                    p.alias(param.name, key);
+            });
         });
 
         String lastID = parameters.order.get(parameters.order.size() - 1);

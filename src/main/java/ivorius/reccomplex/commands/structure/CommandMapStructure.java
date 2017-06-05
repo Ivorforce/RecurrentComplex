@@ -50,7 +50,7 @@ public class CommandMapStructure extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         String id = parameters.get().first().require();
         GenericStructure structure = parameters.rc().genericStructure().require();
@@ -77,7 +77,7 @@ public class CommandMapStructure extends CommandBase
     @Override
     public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         return RCExpect.expectRC()
                 .structure()

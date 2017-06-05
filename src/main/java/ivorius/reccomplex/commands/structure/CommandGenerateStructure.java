@@ -66,8 +66,10 @@ public class CommandGenerateStructure extends CommandBase
     @ParametersAreNonnullByDefault
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, "mirror", "m", "select");
-        parameters.alias("mirror", "m");
+        RCParameters parameters = RCParameters.of(args, p -> p
+                .flags("mirror", "select")
+                .alias("mirror", "m")
+        );
 
         String structureID = parameters.get().first().require();
         Structure<?> structure = parameters.rc().structure().require();

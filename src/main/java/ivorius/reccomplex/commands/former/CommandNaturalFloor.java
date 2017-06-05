@@ -127,7 +127,7 @@ public class CommandNaturalFloor extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         BlockArea area = RCCommands.getSelectionOwner(commandSender, null, true).getSelection();
         double expandFloor = parameters.get("expansion").doubleAt(0).optional().orElse(1.);

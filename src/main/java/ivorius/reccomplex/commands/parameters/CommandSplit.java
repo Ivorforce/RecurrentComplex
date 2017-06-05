@@ -31,7 +31,7 @@ public class CommandSplit extends CommandBase
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                IvParameters parameters = IvParameters.of(args);
+                Parameters parameters = Parameters.of(args, null);
                 throw new WrongUsageException(parameters.get().first().map(commands::get).optional()
                         .orElse(CommandSplit.this).getUsage(sender)
                 );

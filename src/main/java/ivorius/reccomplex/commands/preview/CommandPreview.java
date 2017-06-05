@@ -47,7 +47,7 @@ public class CommandPreview extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         EntityPlayer player = getCommandSenderAsPlayer(commandSender);
         RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(player, null);

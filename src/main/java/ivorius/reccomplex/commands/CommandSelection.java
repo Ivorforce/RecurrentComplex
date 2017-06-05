@@ -217,7 +217,7 @@ public class CommandSelection extends CommandSplit
         public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
         {
             SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
-            RCParameters parameters = RCParameters.of(args);
+            RCParameters parameters = RCParameters.of(args, null);
             execute(server, sender, parameters, owner);
         }
 

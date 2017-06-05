@@ -57,7 +57,7 @@ public class CommandDecorate extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         BlockSurfaceArea area = new BlockSurfaceArea(
                 parameters.iv().surfacePos(commandSender.getPosition(), false).require(),

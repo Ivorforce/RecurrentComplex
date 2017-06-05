@@ -66,7 +66,7 @@ public class CommandSelectReplace extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         Block dstBlock = parameters.mc().block(commandSender).require();
         int[] dstMeta = parameters.rc("metadata").metadatas().optional().orElse(new int[1]);

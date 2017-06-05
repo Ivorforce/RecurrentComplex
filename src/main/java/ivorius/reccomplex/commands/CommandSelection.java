@@ -93,7 +93,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("crop",  () -> RCExpect.expectRC().block().optionalU("positioned block expression"))
+        add(new Command("crop", () -> RCExpect.expectRC().block().optionalU("positioned block expression"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException

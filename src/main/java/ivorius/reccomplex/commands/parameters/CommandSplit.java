@@ -27,7 +27,7 @@ public class CommandSplit extends CommandBase
 
     public CommandSplit()
     {
-        add(new SimpleCommand("help",  () -> RCExpect.expectRC().next(commands.keySet()).required("command"))
+        add(new SimpleCommand("help", () -> RCExpect.expectRC().next(commands.keySet()).required("command"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException

@@ -11,7 +11,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**

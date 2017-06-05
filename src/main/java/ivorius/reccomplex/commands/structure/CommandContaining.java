@@ -63,7 +63,7 @@ public class CommandContaining extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         BlockExpression matcher = parameters.rc().expression(new BlockExpression(RecurrentComplex.specialRegistry)).require();
 

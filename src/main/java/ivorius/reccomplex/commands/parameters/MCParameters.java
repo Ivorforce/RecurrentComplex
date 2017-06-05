@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands.parameters;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 /**
  * Created by lukas on 31.05.17.
@@ -19,9 +20,9 @@ public class MCParameters extends Parameters
         super(blueprint);
     }
 
-    public static MCParameters of(String[] args, String... flags)
+    public static MCParameters of(String[] args, Consumer<Parameters> c)
     {
-        return of(args, flags, MCParameters::new);
+        return new MCParameters(Parameters.of(args, c));
     }
 
     public MCParameter mc()

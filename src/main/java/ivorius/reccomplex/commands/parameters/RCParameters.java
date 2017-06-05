@@ -5,11 +5,8 @@
 
 package ivorius.reccomplex.commands.parameters;
 
-import com.google.common.collect.ListMultimap;
-import net.minecraft.command.CommandException;
-
 import javax.annotation.Nonnull;
-import java.util.Set;
+import java.util.function.Consumer;
 
 /**
  * Created by lukas on 31.05.17.
@@ -21,9 +18,9 @@ public class RCParameters extends IvParameters
         super(blueprint);
     }
 
-    public static RCParameters of(String[] args, String... flags)
+    public static RCParameters of(String[] args, Consumer<Parameters> c)
     {
-        return of(args, flags, RCParameters::new);
+        return new RCParameters(Parameters.of(args, c));
     }
 
     public RCParameter rc()

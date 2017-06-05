@@ -63,7 +63,7 @@ public class CommandImportSchematic extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, "mirror");
+        RCParameters parameters = RCParameters.of(args, p -> p.flags("mirror"));
 
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.rcimportschematic.usage");

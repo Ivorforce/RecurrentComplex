@@ -45,7 +45,7 @@ public class CommandVisitFiles extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         ResourceDirectory directory = parameters.rc("dir").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 

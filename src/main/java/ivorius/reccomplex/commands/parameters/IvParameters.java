@@ -11,6 +11,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
+import java.util.function.Consumer;
 
 /**
  * Created by lukas on 31.05.17.
@@ -22,9 +23,9 @@ public class IvParameters extends MCParameters
         super(blueprint);
     }
 
-    public static IvParameters of(String[] args, String... flags)
+    public static IvParameters of(String[] args, Consumer<Parameters> c)
     {
-        return of(args, flags, IvParameters::new);
+        return new IvParameters(Parameters.of(args, c));
     }
 
     public IvParameter iv()

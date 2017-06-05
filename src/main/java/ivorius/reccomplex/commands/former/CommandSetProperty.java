@@ -64,7 +64,7 @@ public class CommandSetProperty extends CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
         IvOptional.ifAbsent(parameters.rc("exp").expression(matcher).optional(), () -> matcher.setExpression(""));

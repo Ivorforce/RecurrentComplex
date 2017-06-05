@@ -44,7 +44,7 @@ public class CommandSelecting extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         BlockPos p1 = parameters.mc().pos(commandSender.getPosition(), false).require();
         BlockPos p2 = parameters.mc().move(3).pos(commandSender.getPosition(), false).require();

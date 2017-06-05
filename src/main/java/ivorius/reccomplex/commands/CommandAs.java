@@ -44,7 +44,7 @@ public class CommandAs extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         Entity entity = parameters.mc().entity(server, commandSender).require();
         String command = buildString(args, 1);
@@ -61,7 +61,7 @@ public class CommandAs extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         return RCExpect.expectRC()
                 .entity(server)

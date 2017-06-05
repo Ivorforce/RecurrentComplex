@@ -55,7 +55,7 @@ public class CommandSightCheck extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
         World world = commandSender.getEntityWorld();
 
         BlockPos pos = parameters.mc().pos(commandSender.getPosition(), false).require();

@@ -59,7 +59,7 @@ public class CommandMapAllStructure extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         ResourceExpression expression = new ResourceExpression(StructureRegistry.INSTANCE::has);
         IvOptional.ifAbsent(parameters.rc("exp").expression(expression).optional(), () -> expression.setExpression(""));
@@ -114,7 +114,7 @@ public class CommandMapAllStructure extends CommandBase
     @Override
     public List<String> getTabCompletionOptions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         return RCExpect.expectRC()
                 .virtualCommand()

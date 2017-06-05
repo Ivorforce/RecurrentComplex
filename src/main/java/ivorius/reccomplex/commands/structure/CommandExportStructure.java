@@ -75,7 +75,7 @@ public class CommandExportStructure extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
         String structureID = parameters.get().first().optional().orElse(null);

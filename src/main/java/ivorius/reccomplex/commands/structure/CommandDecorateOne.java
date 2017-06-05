@@ -46,7 +46,7 @@ public class CommandDecorateOne extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
         WorldServer entityWorld = (WorldServer) commandSender.getEntityWorld();
 
         BlockSurfacePos pos = parameters.iv().surfacePos(commandSender.getPosition(), false).require();

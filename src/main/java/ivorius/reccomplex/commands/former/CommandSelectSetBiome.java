@@ -57,7 +57,7 @@ public class CommandSelectSetBiome extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args);
+        RCParameters parameters = RCParameters.of(args, null);
 
         Biome biome = parameters.mc().biome().require();
         byte biomeID = (byte) (Biome.REGISTRY.getIDForObject(biome) & 255);

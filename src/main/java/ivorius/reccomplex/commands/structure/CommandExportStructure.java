@@ -54,6 +54,7 @@ public class CommandExportStructure extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
+                .randomString().description("structure id")
                 .named("from").structure();
     }
 
@@ -64,14 +65,14 @@ public class CommandExportStructure extends CommandExpecting
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
         String structureID = parameters.get().first().optional().orElse(null);
-        GenericStructure genericStructureInfo = getNewGenericStructure(commandSender, parameters.rc("from"));
+        GenericStructure from = getNewGenericStructure(commandSender, parameters.rc("from"));
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
 
-        genericStructureInfo.worldDataCompound = IvWorldData.capture(commandSender.getEntityWorld(), selectionOwner.getSelection(), true)
+        from.worldDataCompound = IvWorldData.capture(commandSender.getEntityWorld(), selectionOwner.getSelection(), true)
                 .createTagCompound();
 
-        PacketEditStructureHandler.openEditStructure(genericStructureInfo, structureID, player);
+        PacketEditStructureHandler.openEditStructure(from, structureID, player);
     }
 }

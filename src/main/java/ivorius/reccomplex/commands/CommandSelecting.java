@@ -40,7 +40,8 @@ public class CommandSelecting extends CommandExpecting
         return RCExpect.expectRC()
                 .xyz()
                 .xyz()
-                .skip(1).repeat();
+                .command()
+                .commandArguments(p -> p.get().move(6)).repeat();
     }
 
     @Override

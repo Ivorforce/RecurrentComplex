@@ -28,20 +28,20 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketEditStructure, IMessage>
 {
-    public static void openEditStructure(GenericStructure structureInfo, String structureID, EntityPlayerMP player)
+    public static void openEditStructure(GenericStructure structure, String id, EntityPlayerMP player)
     {
-        if (structureID == null)
-            structureID = "NewStructure";
+        if (id == null)
+            id = "NewStructure";
 
         RCEntityInfo entityInfo = RCEntityInfo.get(player, null);
 
         if (entityInfo != null)
-            entityInfo.setCachedExportStructureBlockDataNBT(structureInfo.worldDataCompound);
+            entityInfo.setCachedExportStructureBlockDataNBT(structure.worldDataCompound);
 
-        SimpleLeveledRegistry<Structure<?>>.Status status = StructureRegistry.INSTANCE.status(structureID);
+        SimpleLeveledRegistry<Structure<?>>.Status status = StructureRegistry.INSTANCE.status(id);
 
-        RecurrentComplex.network.sendTo(new PacketEditStructure(structureInfo, structureID,
-                SaveDirectoryData.defaultData(structureID, status != null && status.isActive(),
+        RecurrentComplex.network.sendTo(new PacketEditStructure(structure, id,
+                SaveDirectoryData.defaultData(id, status != null && status.isActive(),
                         RecurrentComplex.loader.tryFindIDs(ResourceDirectory.ACTIVE.toPath(), RCFileSuffix.STRUCTURE),
                         RecurrentComplex.loader.tryFindIDs(ResourceDirectory.INACTIVE.toPath(), RCFileSuffix.STRUCTURE))
         ), player);

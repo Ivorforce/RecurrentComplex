@@ -72,8 +72,8 @@ public class CommandSplit extends CommandBase
     @Override
     public String getUsage(ICommandSender sender)
     {
-        return String.format("%s %s%s<%s>", getName(), TextFormatting.RESET, TextFormatting.YELLOW,
-                Strings.join(Lists.newArrayList(commands.keySet()), "|"));
+        return String.format("%s %s<%s%s%s>", getName(), TextFormatting.RESET, TextFormatting.YELLOW,
+                Strings.join(Lists.newArrayList(commands.keySet()), TextFormatting.RESET + "|" + TextFormatting.YELLOW), TextFormatting.RESET);
     }
 
     @Override

@@ -275,9 +275,9 @@ public class Expect<T extends Expect<T>>
                 params.entrySet().stream()
                         .filter(e -> e.getKey() != null)
                         .filter(e -> e.getKey().equals(e.getValue().name))
-                        .flatMap(e -> e.getValue().descriptions.stream()
-                                .map(desc -> String.format("%s%s %s%s%s", Parameters.prefix(shortParams.contains(e.getKey())),
-                                        keyRepresentation(e.getKey()), TextFormatting.YELLOW, desc, TextFormatting.RESET
+                        .flatMap(e -> flags.contains(e.getKey()) ? Stream.of(keyRepresentation(e.getKey())) : e.getValue().descriptions.stream()
+                                .map(desc -> String.format("%s %s%s%s", keyRepresentation(e.getKey()),
+                                        TextFormatting.YELLOW, desc, TextFormatting.RESET
                                 ))
                         )
                         .reduce("", (l, r) -> String.format("%s %s", l, r))
@@ -287,8 +287,6 @@ public class Expect<T extends Expect<T>>
     protected String keyRepresentation(String key)
     {
         List<String> aliases = Lists.newArrayList(this.aliases.get(key));
-        if (aliases.size() == 0)
-            return key;
 
         for (Iterator<String> iterator = aliases.iterator(); iterator.hasNext(); )
         {
@@ -302,7 +300,7 @@ public class Expect<T extends Expect<T>>
 
         aliases.add(0, key);
 
-        return Strings.join(aliases, "|");
+        return Parameters.prefix(shortParams.contains(key)) + Strings.join(aliases, "|");
     }
 
     public interface Completer

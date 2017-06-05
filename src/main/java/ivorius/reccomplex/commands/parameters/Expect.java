@@ -186,8 +186,8 @@ public class Expect<T extends Expect<T>>
         SuggestParameter param = this.params.get(lastID);
 
         String currentArg = parameters.last();
-        boolean longFlag = currentArg.startsWith(Parameters.LONG_FLAG_PREFIX);
-        boolean shortFlag = currentArg.startsWith(Parameters.SHORT_FLAG_PREFIX) && Doubles.tryParse(currentArg) == null;
+        boolean longFlag = Parameters.hasLongPrefix(currentArg);
+        boolean shortFlag = Parameters.hasShortPrefix(currentArg);
         if (param != null && (entered.count() <= param.completions.size() || param.repeat)
                 // It notices we are entering a parameter so it won't be added to the parameters args anyway
                 && !longFlag && !shortFlag)
@@ -213,7 +213,7 @@ public class Expect<T extends Expect<T>>
                         || parameters.get(e.getKey()).count() < e.getValue().completions.size() || e.getValue().repeat)
                 .map(Map.Entry::getKey)
                 .filter(p -> shortParams.contains(p) == useShort)
-                .map(p -> (shortParams.contains(p) ? Parameters.SHORT_FLAG_PREFIX : Parameters.LONG_FLAG_PREFIX) + p)
+                .map(p -> Parameters.prefix(shortParams.contains(p)) + p)
         );
     }
 
@@ -267,7 +267,8 @@ public class Expect<T extends Expect<T>>
                 params.entrySet().stream()
                         .filter(e -> e.getKey() != null)
                         .flatMap(e -> e.getValue().descriptions.stream()
-                                .map(d -> String.format("--%s %s", e.getKey(), d))
+                                .map(d -> String.format("%s%s %s", Parameters.prefix(shortParams.contains(e.getKey())),
+                                        e.getKey(), d))
                         )
                         .reduce("", (l, r) -> String.format("%s %s", l, r))
         );

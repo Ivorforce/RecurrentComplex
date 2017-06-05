@@ -9,8 +9,9 @@ import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
+import net.minecraft.util.EnumFacing;
 
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -70,5 +71,15 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
         return next((server, sender, args, pos) -> server.getCommandManager().getCommands().entrySet().stream()
                 .filter(e -> e.getValue() instanceof CommandVirtual).map(Map.Entry::getKey).collect(Collectors.toList()))
                 .optionalU("virtual command");
+    }
+
+    public T directionExpression()
+    {
+        List<String> ret = new ArrayList<>();
+        ret.addAll(Arrays.stream(EnumFacing.values()).map(EnumFacing::getName2).collect(Collectors.toList()));
+        ret.addAll(Arrays.stream(EnumFacing.Axis.values()).map(EnumFacing.Axis::getName).collect(Collectors.toList()));
+        Collections.addAll(ret, "horizontal", "vertical");
+
+        return next(ret);
     }
 }

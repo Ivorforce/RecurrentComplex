@@ -8,7 +8,6 @@ package ivorius.reccomplex.commands.parameters;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
 import com.google.common.primitives.Doubles;
 import ivorius.reccomplex.RecurrentComplex;
 import joptsimple.internal.Strings;
@@ -30,14 +29,16 @@ public class Parameters
     public static final String SHORT_FLAG_PREFIX = "-";
     public static final String LONG_FLAG_PREFIX = "--";
 
+    protected final List<String> raw;
     protected final Set<String> flags;
     protected final ListMultimap<String, String> params;
     protected final List<String> order;
 
     protected final Map<String, String> alias;
 
-    public Parameters(Set<String> flags, ListMultimap<String, String> params, List<String> order)
+    public Parameters(List<String> raw, Set<String> flags, ListMultimap<String, String> params, List<String> order)
     {
+        this.raw = raw;
         this.flags = flags;
         this.params = params;
         this.order = order;
@@ -46,6 +47,7 @@ public class Parameters
 
     public Parameters(Parameters blueprint)
     {
+        this.raw = blueprint.raw;
         this.flags = blueprint.flags;
         this.params = blueprint.params;
         this.order = blueprint.order;
@@ -61,7 +63,8 @@ public class Parameters
         order.add(null);
 
         String curName = null;
-        for (String arg : quoted(args))
+        List<String> raw = Arrays.asList(quoted(args));
+        for (String arg : raw)
         {
             if (arg.startsWith(LONG_FLAG_PREFIX)) // Quoted arguments can never be arguments
             {
@@ -99,7 +102,7 @@ public class Parameters
             }
         }
 
-        return fun.apply(new Parameters(foundFlags, named, order));
+        return fun.apply(new Parameters(raw, foundFlags, named, order));
     }
 
     public static Parameters of(String[] args, String... flags)
@@ -181,6 +184,21 @@ public class Parameters
         while ((other = alias.get(name)) != null)
             name = other;
         return name;
+    }
+
+    public List<String> raw()
+    {
+        return Collections.unmodifiableList(raw);
+    }
+
+    public String last()
+    {
+        return raw.get(raw.size() - 1);
+    }
+
+    public String[] lastAsArray()
+    {
+        return new String[]{last()};
     }
 
     public Map<String, Parameter> entries()

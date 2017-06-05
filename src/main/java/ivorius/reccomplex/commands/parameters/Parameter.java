@@ -274,6 +274,12 @@ public class Parameter
             return Optional.ofNullable(t);
         }
 
+        public T get()
+        {
+            //noinspection OptionalGetWithoutIsPresent
+            return tryGet().get();
+        }
+
         public Optional<T> tryGet()
         {
             T t = null;

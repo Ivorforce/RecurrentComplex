@@ -51,7 +51,7 @@ public class CommandSetProperty extends CommandVirtual
     {
         return RCExpect.expectRC()
                 .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet()))
-                .next(args1 -> TransformerProperty.propertyValueStream(args1[0]).collect(Collectors.toSet()))
+                .next(params -> params.get().first().tryGet().map(TransformerProperty::propertyValueStream))
                 .named("exp").block()
                 .get(server, sender, args, pos);
     }

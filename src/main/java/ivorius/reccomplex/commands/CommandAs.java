@@ -35,8 +35,8 @@ public class CommandAs extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .entity()
-                .command()
+                .entity().required()
+                .command().required()
                 // TODO First entity as sender
                 .commandArguments(p -> p.get().move(1)).repeat();
     }

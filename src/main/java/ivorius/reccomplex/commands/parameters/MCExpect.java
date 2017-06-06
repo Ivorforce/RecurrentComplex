@@ -47,19 +47,19 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
 
     public T x()
     {
-        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), 0, pos))
+        return nextRaw((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), 0, pos))
                 .optionalU("x");
     }
 
     public T y()
     {
-        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), -1, pos))
+        return nextRaw((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), -1, pos))
                 .optionalU("y");
     }
 
     public T z()
     {
-        return next((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), -2, pos))
+        return nextRaw((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), -2, pos))
                 .optionalU("z");
     }
 
@@ -94,7 +94,7 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
 
     public T commandArguments(Function<Parameters, Parameter> parameter)
     {
-        return next((server1, sender, params, pos1) ->
+        return nextRaw((server1, sender, params, pos1) ->
         {
             Parameter parameterGet = parameter.apply(params);
             Optional<ICommand> other = parameterGet.first().tryGet().map(server1.getCommandManager().getCommands()::get);

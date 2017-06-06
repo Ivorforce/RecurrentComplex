@@ -33,35 +33,35 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
 
     public T structurePredicate()
     {
-        return structure().descriptionU("resource expression").optional();
+        return structure().descriptionU("resource expression");
     }
 
     public T structure()
     {
-        return next(StructureRegistry.INSTANCE.ids()).descriptionU("structure").optional();
+        return next(StructureRegistry.INSTANCE.ids()).descriptionU("structure");
     }
 
     public T schematic()
     {
         return next(SchematicLoader.currentSchematicFileNames()
-                .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList())).descriptionU("schematic").optional();
+                .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList())).descriptionU("schematic");
     }
 
     public T resourceDirectory()
     {
-        return any((Object[]) ResourceDirectory.values()).descriptionU("directory").optional();
+        return any((Object[]) ResourceDirectory.values()).descriptionU("directory");
     }
 
     public T metadata()
     {
-        return next(IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList())).descriptionU("metadata").optional();
+        return next(IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList())).descriptionU("metadata");
     }
 
     public T virtualCommand()
     {
         Expect<T> tExpect = next((server, sender, args, pos) -> server.getCommandManager().getCommands().entrySet().stream()
                 .filter(e -> e.getValue() instanceof CommandVirtual).map(Map.Entry::getKey).collect(Collectors.toList()));
-        return tExpect.descriptionU("virtual command").optional();
+        return tExpect.descriptionU("virtual command");
     }
 
     public T directionExpression()
@@ -71,6 +71,6 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
         ret.addAll(Arrays.stream(EnumFacing.Axis.values()).map(EnumFacing.Axis::getName).collect(Collectors.toList()));
         Collections.addAll(ret, "horizontal", "vertical");
 
-        return next(ret).descriptionU("direction expression").optional();
+        return next(ret).descriptionU("direction expression");
     }
 }

@@ -54,7 +54,7 @@ public class CommandExportStructure extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .randomString().description("structure id")
+                .randomString().descriptionU("structure id")
                 .named("from").structure();
     }
 

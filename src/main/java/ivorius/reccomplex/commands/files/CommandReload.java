@@ -38,7 +38,7 @@ public class CommandReload extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .any(LeveledRegistry.Level.CUSTOM, LeveledRegistry.Level.MODDED, LeveledRegistry.Level.SERVER).descriptionU("level").optional();
+                .any(LeveledRegistry.Level.CUSTOM, LeveledRegistry.Level.MODDED, LeveledRegistry.Level.SERVER).descriptionU("level");
     }
 
     @Override

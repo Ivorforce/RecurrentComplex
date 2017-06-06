@@ -40,7 +40,7 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
         return RCExpect.expectRC()
                 .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet())).descriptionU("key").required()
                 .next(params -> params.get().first().tryGet().map(TransformerProperty::propertyValueStream)).descriptionU("value").required()
-                .named("exp").block().descriptionU("positioned block expression").optional();
+                .named("exp").block().descriptionU("positioned block expression");
     }
 
     @Override

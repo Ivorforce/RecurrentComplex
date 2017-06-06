@@ -81,8 +81,8 @@ public class RCCommands
         event.registerServerCommand(sanity = new CommandSanity());
 
         event.registerServerCommand(new CommandWrite());
-        event.registerServerCommand(new CommandWrite());
         event.registerServerCommand(new CommandDelete());
+        event.registerServerCommand(new CommandReload());
 
         if (RCConfig.asCommandPermissionLevel >= 0)
             event.registerServerCommand(new CommandAs());
@@ -98,8 +98,6 @@ public class RCCommands
 
         event.registerServerCommand(new CommandMapStructure());
         event.registerServerCommand(new CommandMapAllStructure());
-
-        event.registerServerCommand(new CommandReload());
 
         event.registerServerCommand(select = new CommandSelection());
 

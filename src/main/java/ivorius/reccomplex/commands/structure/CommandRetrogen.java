@@ -98,7 +98,7 @@ public class CommandRetrogen extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .named("exp").structurePredicate().optionalU("resource expression: only generate these structures")
+                .named("exp").structurePredicate().descriptionU("resource expression: only generate these structures").optional()
                 .named("dimension", "d").dimension();
     }
 

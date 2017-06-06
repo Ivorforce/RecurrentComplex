@@ -47,70 +47,67 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
 
     public T x()
     {
-        return nextRaw((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), 0, pos))
-                .optionalU("x");
+        Expect<T> tExpect = nextRaw((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), 0, pos));
+        return tExpect.descriptionU("x").optional();
     }
 
     public T y()
     {
-        return nextRaw((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), -1, pos))
-                .optionalU("y");
+        Expect<T> tExpect = nextRaw((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), -1, pos));
+        return tExpect.descriptionU("y").optional();
     }
 
     public T z()
     {
-        return nextRaw((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), -2, pos))
-                .optionalU("z");
+        Expect<T> tExpect = nextRaw((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), -2, pos));
+        return tExpect.descriptionU("z").optional();
     }
 
     public T biome()
     {
-        return next(Biome.REGISTRY.getKeys())
-                .optionalU("biome");
+        return next(Biome.REGISTRY.getKeys()).descriptionU("biome").optional();
     }
 
     public T biomeType()
     {
-        return next(RCAccessorBiomeDictionary.getMap().keySet()).optionalU("biome type");
+        return next(RCAccessorBiomeDictionary.getMap().keySet()).descriptionU("biome type").optional();
     }
 
     public T dimension()
     {
-        return next(Arrays.stream(DimensionManager.getIDs()))
-                .optionalU("dimension");
+        return next(Arrays.stream(DimensionManager.getIDs())).descriptionU("dimension").optional();
     }
 
     public T block()
     {
-        return next(Block.REGISTRY.getKeys())
-                .optionalU("block");
+        return next(Block.REGISTRY.getKeys()).descriptionU("block").optional();
     }
 
     public T command()
     {
-        return next((server, sender, args, pos) -> server.getCommandManager().getCommands().keySet())
-                .optionalU("command");
+        Expect<T> tExpect = next((server, sender, args, pos) -> server.getCommandManager().getCommands().keySet());
+        return tExpect.descriptionU("command").optional();
     }
 
     public T commandArguments(Function<Parameters, Parameter> parameter)
     {
-        return nextRaw((server1, sender, params, pos1) ->
+        Expect<T> tExpect = nextRaw((server1, sender, params, pos1) ->
         {
             Parameter parameterGet = parameter.apply(params);
             Optional<ICommand> other = parameterGet.first().tryGet().map(server1.getCommandManager().getCommands()::get);
             return other.map(c -> c.getTabCompletions(server1, sender, parameterGet.move(1).varargs(), pos1)).orElse(Collections.emptyList());
-        })
-                .optionalU("args...");
+        });
+        return tExpect.descriptionU("args...").optional();
     }
 
     public T entity()
     {
-        return next((server, sender, parameters, pos) -> Arrays.stream(server.getOnlinePlayerNames()))
-                .optionalU("entity");
+        Expect<T> tExpect = next((server, sender, parameters, pos) -> Arrays.stream(server.getOnlinePlayerNames()));
+        return tExpect.descriptionU("entity").optional();
     }
 
     public T rotation()
     {
-        return any("0", "90", "180", "270").optionalU("rotation");
+        return any("0", "90", "180", "270").descriptionU("rotation").optional();
     }
 }

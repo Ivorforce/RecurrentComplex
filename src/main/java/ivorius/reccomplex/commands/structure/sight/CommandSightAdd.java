@@ -33,7 +33,7 @@ public class CommandSightAdd extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .randomString().requiredU("name").repeat();
+                .randomString().descriptionU("name").required().repeat();
     }
 
     public int getRequiredPermissionLevel()

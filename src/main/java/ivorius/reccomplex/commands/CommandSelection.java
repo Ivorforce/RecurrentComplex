@@ -93,7 +93,10 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("crop", () -> RCExpect.expectRC().block().optionalU("positioned block expression"))
+        add(new Command("crop", () ->
+        {
+            return RCExpect.expectRC().block().descriptionU("positioned block expression").optional();
+        })
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -113,7 +116,10 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("wand", () -> RCExpect.expectRC().block().optionalU("positioned block expression"))
+        add(new Command("wand", () ->
+        {
+            return RCExpect.expectRC().block().descriptionU("positioned block expression").optional();
+        })
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -147,11 +153,14 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("shrink", () -> RCExpect.expectRC()
-                .any("1", "2", "3").optionalU("all")
-                .named("x").any("1", "2", "3").optionalU("x")
-                .named("y").any("1", "2", "3").optionalU("y")
-                .named("z").any("1", "2", "3").optionalU("z")
+        add(new Command("shrink", () ->
+        {
+            return RCExpect.expectRC()
+                    .any("1", "2", "3").descriptionU("all").optional()
+                    .named("x").any("1", "2", "3").descriptionU(new String[]{"x"}).optional()
+                    .named("y").any("1", "2", "3").descriptionU(new String[]{"y"}).optional()
+                        .named("z").any("1", "2", "3").descriptionU(new String[]{"z"}).optional();
+        }
         )
         {
             @Override
@@ -164,11 +173,14 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("expand", () -> RCExpect.expectRC()
-                .any("1", "2", "3").optionalU("all")
-                .named("x").any("1", "2", "3").optionalU("x")
-                .named("y").any("1", "2", "3").optionalU("y")
-                .named("z").any("1", "2", "3").optionalU("z")
+        add(new Command("expand", () ->
+        {
+            return RCExpect.expectRC()
+                    .any("1", "2", "3").descriptionU("all").optional()
+                    .named("x").any("1", "2", "3").descriptionU(new String[]{"x"}).optional()
+                    .named("y").any("1", "2", "3").descriptionU("y").optional()
+                    .named("z").any("1", "2", "3").descriptionU("z").optional();
+        }
         )
         {
             @Override

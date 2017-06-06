@@ -11,7 +11,10 @@ import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.SimpleCommand;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
@@ -29,7 +32,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
 
@@ -54,9 +56,9 @@ public class CommandGenerateStructure extends SimpleCommand
                 .named("gen")
                 .next(params -> new RCParameters(params).rc().genericStructure().tryGet()
                         .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id))
-                ).optionalU("generation type id")
+                ).descriptionU("generation type id").optional()
                 .named("rotation", "r").rotation()
-                .named("seed").randomString().optionalU("seed")
+                .named("seed").randomString().descriptionU(new String[]{"seed"}).optional()
                 .flag("mirror", "m")
                 .flag("select", "s");
     }

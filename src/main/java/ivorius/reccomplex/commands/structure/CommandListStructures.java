@@ -82,7 +82,7 @@ public class CommandListStructures extends CommandExpecting
     @Override
     public Expect<?> expect()
     {
-        return RCExpect.expectRC().any(0).optionalU("page");
+        return RCExpect.expectRC().any(0).descriptionU("page").optional();
     }
 
     @Override

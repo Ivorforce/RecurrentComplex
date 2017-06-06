@@ -40,9 +40,9 @@ public class CommandSetProperty extends CommandExpecting implements CommandVirtu
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet())).requiredU("key")
-                .next(params -> params.get().first().tryGet().map(TransformerProperty::propertyValueStream)).requiredU("value")
-                .named("exp").block().optionalU("positioned block expression");
+                .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet())).descriptionU("key").required()
+                .next(params -> params.get().first().tryGet().map(TransformerProperty::propertyValueStream)).descriptionU("value").required()
+                .named("exp").block().descriptionU("positioned block expression").optional();
     }
 
     public int getRequiredPermissionLevel()

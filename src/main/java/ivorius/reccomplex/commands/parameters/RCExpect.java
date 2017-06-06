@@ -33,39 +33,35 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
 
     public T structurePredicate()
     {
-        return structure()
-                .optionalU("resource expression");
+        return structure().descriptionU("resource expression").optional();
     }
 
     public T structure()
     {
-        return next(StructureRegistry.INSTANCE.ids())
-                .optionalU("structure");
+        return next(StructureRegistry.INSTANCE.ids()).descriptionU("structure").optional();
     }
 
     public T schematic()
     {
         return next(SchematicLoader.currentSchematicFileNames()
-                .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList()))
-                .optionalU("schematic");
+                .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList())).descriptionU("schematic").optional();
     }
 
     public T resourceDirectory()
     {
-        return any((Object[]) ResourceDirectory.values()).optionalU("directory");
+        return any((Object[]) ResourceDirectory.values()).descriptionU("directory").optional();
     }
 
     public T metadata()
     {
-        return next(IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList()))
-                .optionalU("metadata");
+        return next(IntStream.range(0, 16).mapToObj(String::valueOf).collect(Collectors.toList())).descriptionU("metadata").optional();
     }
 
     public T virtualCommand()
     {
-        return next((server, sender, args, pos) -> server.getCommandManager().getCommands().entrySet().stream()
-                .filter(e -> e.getValue() instanceof CommandVirtual).map(Map.Entry::getKey).collect(Collectors.toList()))
-                .optionalU("virtual command");
+        Expect<T> tExpect = next((server, sender, args, pos) -> server.getCommandManager().getCommands().entrySet().stream()
+                .filter(e -> e.getValue() instanceof CommandVirtual).map(Map.Entry::getKey).collect(Collectors.toList()));
+        return tExpect.descriptionU("virtual command").optional();
     }
 
     public T directionExpression()
@@ -75,6 +71,6 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
         ret.addAll(Arrays.stream(EnumFacing.Axis.values()).map(EnumFacing.Axis::getName).collect(Collectors.toList()));
         Collections.addAll(ret, "horizontal", "vertical");
 
-        return next(ret).optionalU("direction expression");
+        return next(ret).descriptionU("direction expression").optional();
     }
 }

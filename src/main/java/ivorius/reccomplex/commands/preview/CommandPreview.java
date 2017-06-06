@@ -39,7 +39,7 @@ public class CommandPreview extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .any((Object[]) Operation.PreviewType.keys()).requiredU("type");
+                .any((Object[]) Operation.PreviewType.keys()).descriptionU("type").required();
     }
 
     @Override

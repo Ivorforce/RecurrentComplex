@@ -231,43 +231,48 @@ public class Expect<T extends Expect<T>>
     /**
      * Useful only for usage()
      */
-    public T description(String key)
-    {
-        return descriptionU(IvTranslations.get(key));
-    }
-
-    public T descriptionU(String description)
+    public T descriptionU(Collection<String> description)
     {
         params.get(currentName).description(description);
         return identity();
     }
 
-    public T optional(String key)
+    public T descriptionU(String... descriptions)
     {
-        return optional(IvTranslations.get(key));
+        return descriptionU(Arrays.asList(descriptions));
     }
 
-    public T optionalU(String description)
+    public T description(String... keys)
     {
-        return descriptionU(String.format("[%s]", description));
+        return descriptionU(Arrays.stream(keys)
+                .map(IvTranslations::get)
+                .collect(Collectors.toList()));
+    }
+
+    public T required(int number)
+    {
+        SuggestParameter param = params.get(currentName);
+        return descriptionU(param.descriptions.subList(param.descriptions.size() - number, param.descriptions.size()).stream()
+                .map(prev -> String.format("<%s>", prev.substring(1, prev.length() - 1)))
+                .collect(Collectors.toList()));
     }
 
     public T required()
     {
+        return required(1);
+    }
+
+    public T optional(int number)
+    {
         SuggestParameter param = params.get(currentName);
-        String prev = param.descriptions.get(param.descriptions.size() - 1);
-        param.description(String.format("<%s>", prev.substring(1, prev.length() - 1)));
-        return identity();
+        return descriptionU(param.descriptions.subList(param.descriptions.size() - number, param.descriptions.size()).stream()
+                .map(prev -> String.format("[%s]", prev.substring(1, prev.length() - 1)))
+                .collect(Collectors.toList()));
     }
 
-    public T required(String key)
+    public T optional()
     {
-        return requiredU(IvTranslations.get(key));
-    }
-
-    public T requiredU(String description)
-    {
-        return descriptionU(String.format("<%s>", description));
+        return optional(1);
     }
 
     public String usage()
@@ -332,10 +337,10 @@ public class Expect<T extends Expect<T>>
             return this;
         }
 
-        public SuggestParameter description(String description)
+        public SuggestParameter description(Collection<String> description)
         {
-            descriptions.remove(descriptions.size() - 1);
-            descriptions.add(description);
+            descriptions.subList(descriptions.size() - description.size(), description.size()).clear();
+            descriptions.addAll(description);
             return this;
         }
     }

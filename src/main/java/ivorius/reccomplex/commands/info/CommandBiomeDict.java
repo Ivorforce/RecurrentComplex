@@ -35,7 +35,7 @@ public class CommandBiomeDict extends CommandSplit
     {
         super(RCConfig.commandPrefix + "biome");
 
-        add(new SimpleCommand("search", () -> RCExpect.expectRC().skip(1).requiredU("terms"))
+        add(new SimpleCommand("search", () -> RCExpect.expectRC().skip().requiredU("terms"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException

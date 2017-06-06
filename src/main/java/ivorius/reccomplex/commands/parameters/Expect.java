@@ -145,7 +145,10 @@ public class Expect<T extends Expect<T>>
         SuggestParameter cur = getOrCreate(currentName);
         order.add(currentName);
         cur.next(completion);
+
         currentCount = 1;
+        optional(); // All params are expected to be optional by default
+
         return identity();
     }
 
@@ -253,10 +256,17 @@ public class Expect<T extends Expect<T>>
         );
     }
 
-    protected String stripDescription(String description)
+    protected String stripOptionality(String description)
     {
         return description.startsWith("[") || description.startsWith("<")
                 ? description.substring(1, description.length() - 1) : description;
+    }
+
+    protected String preserveOptionality(String description, String ref)
+    {
+        return ref.startsWith("[") ? String.format("[%s]", description)
+                : ref.startsWith("<") ? String.format("<%s>", description)
+                : description;
     }
 
     /**
@@ -266,7 +276,7 @@ public class Expect<T extends Expect<T>>
     {
         if (description.size() != currentCount)
             throw new IllegalArgumentException();
-        mapLastDescriptions((i, s) -> description.get(i));
+        mapLastDescriptions((i, s) -> preserveOptionality(description.get(i), s));
         return identity();
     }
 
@@ -284,13 +294,19 @@ public class Expect<T extends Expect<T>>
 
     public T required()
     {
-        mapLastDescriptions((i, s) -> String.format("<%s>", stripDescription(s)));
+        mapLastDescriptions((i, s) -> String.format("<%s>", stripOptionality(s)));
         return identity();
     }
 
     public T optional()
     {
-        mapLastDescriptions((i, s) -> String.format("[%s]", stripDescription(s)));
+        mapLastDescriptions((i, s) -> String.format("[%s]", stripOptionality(s)));
+        return identity();
+    }
+
+    public T naked()
+    {
+        mapLastDescriptions((i, s) -> stripOptionality(s));
         return identity();
     }
 

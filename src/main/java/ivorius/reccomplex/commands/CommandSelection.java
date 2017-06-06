@@ -94,7 +94,7 @@ public class CommandSelection extends CommandSplit
         });
 
         add(new Command("crop", () ->
-                RCExpect.expectRC().block().descriptionU("positioned block expression").optional())
+                RCExpect.expectRC().block().descriptionU("positioned block expression"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -115,7 +115,7 @@ public class CommandSelection extends CommandSplit
         });
 
         add(new Command("wand", () ->
-                RCExpect.expectRC().block().descriptionU("positioned block expression").optional())
+                RCExpect.expectRC().block().descriptionU("positioned block expression"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -151,10 +151,10 @@ public class CommandSelection extends CommandSplit
 
         add(new Command("shrink", () ->
                 RCExpect.expectRC()
-                        .any("1", "2", "3").descriptionU("all").optional()
-                        .named("x").any("1", "2", "3").descriptionU("x").optional()
-                        .named("y").any("1", "2", "3").descriptionU("y").optional()
-                        .named("z").any("1", "2", "3").descriptionU("z").optional()
+                        .any("1", "2", "3").descriptionU("all")
+                        .named("x").any("1", "2", "3").descriptionU("x")
+                        .named("y").any("1", "2", "3").descriptionU("y")
+                        .named("z").any("1", "2", "3").descriptionU("z")
         )
         {
             @Override
@@ -169,10 +169,10 @@ public class CommandSelection extends CommandSplit
 
         add(new Command("expand", () ->
                 RCExpect.expectRC()
-                        .any("1", "2", "3").descriptionU("all").optional()
-                        .named("x").any("1", "2", "3").descriptionU("x").optional()
-                        .named("y").any("1", "2", "3").descriptionU("y").optional()
-                        .named("z").any("1", "2", "3").descriptionU("z").optional()
+                        .any("1", "2", "3").descriptionU("all")
+                        .named("x").any("1", "2", "3").descriptionU("x")
+                        .named("y").any("1", "2", "3").descriptionU("y")
+                        .named("z").any("1", "2", "3").descriptionU("z")
         )
         {
             @Override

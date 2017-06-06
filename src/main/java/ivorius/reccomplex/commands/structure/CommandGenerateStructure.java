@@ -47,15 +47,15 @@ public class CommandGenerateStructure extends SimpleCommand
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .structure()
+                .structure().required()
                 .surfacePos("x", "z")
                 .named("dimension", "d").dimension()
                 .named("gen")
                 .next(params -> new RCParameters(params).get().genericStructure().tryGet()
                         .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id))
-                ).descriptionU("generation type id").optional()
+                ).descriptionU("generation type id")
                 .named("rotation", "r").rotation()
-                .named("seed").randomString().descriptionU("seed").optional()
+                .named("seed").randomString().descriptionU("seed")
                 .flag("mirror", "m")
                 .flag("select", "s");
     }

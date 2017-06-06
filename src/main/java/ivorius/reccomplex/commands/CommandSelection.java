@@ -59,7 +59,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(set = new Command("set", () -> RCExpect.expectRC().xyz().flag("first").flag("second"))
+        add(set = new Command("set", () -> RCExpect.expectRC().xyz().required().flag("first").flag("second"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException

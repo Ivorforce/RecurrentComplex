@@ -10,10 +10,7 @@ import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.CommandSelecting;
 import ivorius.reccomplex.commands.CommandVirtual;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -45,7 +42,7 @@ public class CommandMapStructure extends CommandExpecting
         return RCExpect.expectRC()
                 .structure()
                 .virtualCommand()
-                .commandArguments(p -> p.get().move(1)).repeat()
+                .commandArguments(p -> p.get(1)).repeat()
                 .named("directory", "d").resourceDirectory();
     }
 
@@ -55,9 +52,9 @@ public class CommandMapStructure extends CommandExpecting
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         String id = parameters.get().first().require();
-        GenericStructure structure = parameters.rc().genericStructure().require();
-        ResourceDirectory directory = parameters.rc("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
-        CommandVirtual virtual = parameters.rc().move(1).virtualCommand(server).require();
+        GenericStructure structure = parameters.get().genericStructure().require();
+        ResourceDirectory directory = parameters.get("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+        CommandVirtual virtual = parameters.get(1).virtualCommand(server).require();
 
         IvWorldData worldData = structure.constructWorldData();
         MockWorld world = new MockWorld.WorldData(worldData);
@@ -65,7 +62,7 @@ public class CommandMapStructure extends CommandExpecting
         try
         {
             virtual.execute(world, new CommandSelecting.SelectingSender(commandSender, BlockPos.ORIGIN, worldData.blockCollection.area().getHigherCorner()),
-                    parameters.get().move(2).varargs());
+                    parameters.get(2).varargs());
         }
         catch (MockWorld.VirtualWorldException ex)
         {

@@ -7,10 +7,7 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import net.minecraft.command.CommandException;
@@ -40,7 +37,7 @@ public class CommandDecorateOne extends CommandExpecting
         RCParameters parameters = RCParameters.of(args, expect()::declare);
         WorldServer entityWorld = (WorldServer) commandSender.getEntityWorld();
 
-        BlockSurfacePos pos = parameters.iv().surfacePos(commandSender.getPosition(), false).require();
+        BlockSurfacePos pos = parameters.get().surfacePos(commandSender.getPosition(), false).require();
 
         if (!WorldGenStructures.generateRandomStructureInChunk(entityWorld.rand, pos.chunkCoord(), entityWorld, entityWorld.getBiome(pos.blockPos(0))))
             throw ServerTranslations.commandException("commands.rcdecorateone.none");

@@ -7,10 +7,7 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileSuffixFilter;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -107,8 +104,8 @@ public class CommandRetrogen extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        Predicate<Structure> structurePredicate = parameters.rc("exp").structurePredicate().optional().orElse(null);
-        WorldServer world = parameters.mc("dimension").dimension(server, commandSender).require();
+        Predicate<Structure> structurePredicate = parameters.get("exp").structurePredicate().optional().orElse(null);
+        WorldServer world = parameters.get("dimension").dimension(server, commandSender).require();
 
         long count = retrogen(world, structurePredicate);
 

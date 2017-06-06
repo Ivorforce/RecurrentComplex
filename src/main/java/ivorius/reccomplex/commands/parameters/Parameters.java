@@ -252,6 +252,11 @@ public class Parameters
         return new Parameter(null, params.get(null));
     }
 
+    public Parameter get(int idx)
+    {
+        return get().move(idx);
+    }
+
     public Parameter get(@Nonnull String name)
     {
         requireBuilt();

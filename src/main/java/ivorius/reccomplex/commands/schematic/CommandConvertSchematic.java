@@ -5,10 +5,7 @@
 
 package ivorius.reccomplex.commands.schematic;
 
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.commands.structure.CommandExportStructure;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -51,7 +48,7 @@ public class CommandConvertSchematic extends CommandExpecting
         String schematicName = parameters.get().first().require();
         SchematicFile schematicFile = CommandImportSchematic.parseSchematic(schematicName);
 
-        GenericStructure structure = CommandExportStructure.getNewGenericStructure(commandSender, parameters.rc("from"));
+        GenericStructure structure = CommandExportStructure.getNewGenericStructure(commandSender, parameters.get("from"));
 
         structure.worldDataCompound = CommandExportSchematic.toWorldData(schematicFile).createTagCompound();
 

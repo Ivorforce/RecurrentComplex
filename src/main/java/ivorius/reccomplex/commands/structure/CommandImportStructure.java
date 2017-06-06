@@ -9,10 +9,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
@@ -60,8 +57,8 @@ public class CommandImportStructure extends CommandExpecting
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         String structureID = parameters.get().first().require();
-        Structure<?> structure = parameters.rc().structure().require();
-        WorldServer world = parameters.mc("dimension").dimension(server, sender).require();
+        Structure<?> structure = parameters.get().structure().require();
+        WorldServer world = parameters.get("dimension").dimension(server, sender).require();
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         BlockPos pos = parameters.pos("x", "y", "z", sender.getPosition(), false).require();
         boolean select = parameters.has("select");

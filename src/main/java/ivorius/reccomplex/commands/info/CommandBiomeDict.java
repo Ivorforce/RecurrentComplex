@@ -55,7 +55,7 @@ public class CommandBiomeDict extends CommandSplit
             {
                 RCParameters parameters = RCParameters.of(args, null);
 
-                Biome biome = parameters.mc().biome().require();
+                Biome biome = parameters.get().biome().require();
 
                 sender.sendMessage(ServerTranslations.format("commands.biomedict.get", RCTextStyle.biome(biome),
                         ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getTypes(biome)).stream()
@@ -71,7 +71,7 @@ public class CommandBiomeDict extends CommandSplit
             {
                 RCParameters parameters = RCParameters.of(args, null);
 
-                BiomeDictionary.Type type = parameters.mc().biomeDictionaryType().require();
+                BiomeDictionary.Type type = parameters.get().biomeDictionaryType().require();
 
                 sender.sendMessage(ServerTranslations.format("commands.biomedict.list", RCTextStyle.biomeType(type),
                         ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getBiomes(type))

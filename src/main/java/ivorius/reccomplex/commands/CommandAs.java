@@ -6,10 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
@@ -38,7 +35,7 @@ public class CommandAs extends CommandExpecting
                 .entity().required()
                 .command().required()
                 // TODO First entity as sender
-                .commandArguments(p -> p.get().move(1)).repeat();
+                .commandArguments(p -> p.get(1)).repeat();
     }
 
     @Override
@@ -46,7 +43,7 @@ public class CommandAs extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        Entity entity = parameters.mc().entity(server, commandSender).require();
+        Entity entity = parameters.get().entity(server, commandSender).require();
         String command = buildString(args, 1);
 
         server.commandManager.executeCommand(entity, command);

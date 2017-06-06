@@ -6,10 +6,7 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.command.CommandException;
@@ -44,7 +41,7 @@ public class CommandVisitFiles extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        ResourceDirectory directory = parameters.rc("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+        ResourceDirectory directory = parameters.get("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
         OpenGlHelper.openFile(directory.toFile());
     }

@@ -9,10 +9,7 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -62,7 +59,7 @@ public class CommandContaining extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        BlockExpression matcher = parameters.rc().expression(new BlockExpression(RecurrentComplex.specialRegistry)).require();
+        BlockExpression matcher = parameters.get().expression(new BlockExpression(RecurrentComplex.specialRegistry)).require();
 
         CommandSearchStructure.postResultMessage(commandSender,
                 RCTextStyle::structure, CommandSearchStructure.search(StructureRegistry.INSTANCE.ids(), name -> containedBlocks(StructureRegistry.INSTANCE.get(name), matcher))

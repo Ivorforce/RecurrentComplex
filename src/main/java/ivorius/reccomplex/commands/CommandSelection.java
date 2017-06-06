@@ -81,22 +81,20 @@ public class CommandSelection extends CommandSplit
                     if (owner.getSelectedPoint1() == null)
                         owner.setSelectedPoint1(sender.getPosition());
 
-                    owner.setSelectedPoint1(parameters.mc().pos(owner.getSelectedPoint1(), false).require());
+                    owner.setSelectedPoint1(parameters.get().pos(owner.getSelectedPoint1(), false).require());
                 }
                 if (second)
                 {
                     if (owner.getSelectedPoint2() == null)
                         owner.setSelectedPoint2(sender.getPosition());
 
-                    owner.setSelectedPoint2(parameters.mc().move(shiftSecond ? 3 : 0).pos(owner.getSelectedPoint2(), false).require());
+                    owner.setSelectedPoint2(parameters.get(shiftSecond ? 3 : 0).pos(owner.getSelectedPoint2(), false).require());
                 }
             }
         });
 
         add(new Command("crop", () ->
-        {
-            return RCExpect.expectRC().block().descriptionU("positioned block expression").optional();
-        })
+                RCExpect.expectRC().block().descriptionU("positioned block expression").optional())
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -106,7 +104,7 @@ public class CommandSelection extends CommandSplit
                 BlockArea area = owner.getSelection();
 
                 PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
-                IvOptional.ifAbsent(parameters.rc().expression(matcher).optional(), () -> matcher.setExpression("is:air"));
+                IvOptional.ifAbsent(parameters.get().expression(matcher).optional(), () -> matcher.setExpression("is:air"));
 
                 for (EnumFacing direction : EnumFacing.VALUES)
                     while (area != null && sideStream(area, direction).allMatch(p -> matcher.test(PositionedBlockExpression.Argument.at(world, p))))
@@ -117,9 +115,7 @@ public class CommandSelection extends CommandSplit
         });
 
         add(new Command("wand", () ->
-        {
-            return RCExpect.expectRC().block().descriptionU("positioned block expression").optional();
-        })
+                RCExpect.expectRC().block().descriptionU("positioned block expression").optional())
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
@@ -135,7 +131,7 @@ public class CommandSelection extends CommandSplit
                     changed = false;
 
                     PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
-                    IvOptional.ifAbsent(parameters.rc().expression(matcher).optional(), () -> matcher.setExpression("!is:air"));
+                    IvOptional.ifAbsent(parameters.get().expression(matcher).optional(), () -> matcher.setExpression("!is:air"));
 
                     for (EnumFacing direction : EnumFacing.VALUES)
                     {
@@ -154,19 +150,17 @@ public class CommandSelection extends CommandSplit
         });
 
         add(new Command("shrink", () ->
-        {
-            return RCExpect.expectRC()
-                    .any("1", "2", "3").descriptionU("all").optional()
-                    .named("x").any("1", "2", "3").descriptionU("x").optional()
-                    .named("y").any("1", "2", "3").descriptionU("y").optional()
-                        .named("z").any("1", "2", "3").descriptionU("z").optional();
-        }
+                RCExpect.expectRC()
+                        .any("1", "2", "3").descriptionU("all").optional()
+                        .named("x").any("1", "2", "3").descriptionU("x").optional()
+                        .named("y").any("1", "2", "3").descriptionU("y").optional()
+                        .named("z").any("1", "2", "3").descriptionU("z").optional()
         )
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
             {
-                BlockPos base = parameters.mc().pos(parameters.mc(), parameters.mc(), BlockPos.ORIGIN, false).require();
+                BlockPos base = parameters.get().pos(parameters.get(), parameters.get(), BlockPos.ORIGIN, false).require();
                 BlockPos shrink = parameters.pos("x", "y", "z", base, false).require();
 
                 owner.setSelection(BlockAreas.shrink(owner.getSelection(), shrink, shrink));
@@ -174,19 +168,17 @@ public class CommandSelection extends CommandSplit
         });
 
         add(new Command("expand", () ->
-        {
-            return RCExpect.expectRC()
-                    .any("1", "2", "3").descriptionU("all").optional()
-                    .named("x").any("1", "2", "3").descriptionU("x").optional()
-                    .named("y").any("1", "2", "3").descriptionU("y").optional()
-                    .named("z").any("1", "2", "3").descriptionU("z").optional();
-        }
+                RCExpect.expectRC()
+                        .any("1", "2", "3").descriptionU("all").optional()
+                        .named("x").any("1", "2", "3").descriptionU("x").optional()
+                        .named("y").any("1", "2", "3").descriptionU("y").optional()
+                        .named("z").any("1", "2", "3").descriptionU("z").optional()
         )
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
             {
-                BlockPos base = parameters.mc().pos(parameters.mc(), parameters.mc(), BlockPos.ORIGIN, false).require();
+                BlockPos base = parameters.get().pos(parameters.get(), parameters.get(), BlockPos.ORIGIN, false).require();
                 BlockPos shrink = parameters.pos("x", "y", "z", base, false).require();
 
                 owner.setSelection(BlockAreas.expand(owner.getSelection(), shrink, shrink));

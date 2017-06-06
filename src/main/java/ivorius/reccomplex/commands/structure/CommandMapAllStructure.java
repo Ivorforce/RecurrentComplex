@@ -61,11 +61,11 @@ public class CommandMapAllStructure extends CommandExpecting
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         ResourceExpression expression = new ResourceExpression(StructureRegistry.INSTANCE::has);
-        IvOptional.ifAbsent(parameters.rc("exp").expression(expression).optional(), () -> expression.setExpression(""));
+        IvOptional.ifAbsent(parameters.get("exp").expression(expression).optional(), () -> expression.setExpression(""));
 
-        ResourceDirectory directory = parameters.rc("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+        ResourceDirectory directory = parameters.get("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
-        CommandVirtual virtual = parameters.rc().virtualCommand(server).require();
+        CommandVirtual virtual = parameters.get().virtualCommand(server).require();
 
         int saved = 0, failed = 0, skipped = 0;
         for (String id : StructureRegistry.INSTANCE.ids())
@@ -89,7 +89,7 @@ public class CommandMapAllStructure extends CommandExpecting
             try
             {
                 virtual.execute(world, new CommandSelecting.SelectingSender(commandSender, BlockPos.ORIGIN, worldData.blockCollection.area().getHigherCorner()),
-                        parameters.get().move(1).varargs());
+                        parameters.get(1).varargs());
             }
             catch (MockWorld.VirtualWorldException ex)
             {

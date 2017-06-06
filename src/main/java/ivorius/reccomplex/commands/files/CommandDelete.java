@@ -9,10 +9,7 @@ import com.google.common.collect.Lists;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.files.saving.FileSaverAdapter;
@@ -67,12 +64,12 @@ public class CommandDelete extends CommandExpecting
         if (!RecurrentComplex.saver.has(adapterID))
             throw ServerTranslations.commandException("commands.rcsave.noregistry");
 
-        ResourceDirectory directory = parameters.rc("directory").resourceDirectory().require();
+        ResourceDirectory directory = parameters.get("directory").resourceDirectory().require();
         Optional<FileSaverAdapter<?>> adapterOptional = Optional.ofNullable(RecurrentComplex.saver.get(adapterID));
         Collection<String> ids = Lists.newArrayList(adapterOptional.map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()));
 
         ResourceExpression resourceExpression = ExpressionCache.of(new ResourceExpression(id -> adapterOptional.map(a -> a.getRegistry().has(id)).orElse(false)),
-                parameters.get().move(1).text().require());
+                parameters.get(1).text().require());
 
         for (String id : ids)
         {

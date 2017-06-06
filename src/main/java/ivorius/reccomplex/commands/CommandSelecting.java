@@ -7,10 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -41,7 +38,7 @@ public class CommandSelecting extends CommandExpecting
                 .xyz().required()
                 .xyz().required()
                 .command().required()
-                .commandArguments(p -> p.get().move(6)).repeat();
+                .commandArguments(p -> p.get(6)).repeat();
     }
 
     @Override
@@ -49,9 +46,9 @@ public class CommandSelecting extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        BlockPos p1 = parameters.mc().pos(commandSender.getPosition(), false).require();
-        BlockPos p2 = parameters.mc().move(3).pos(commandSender.getPosition(), false).require();
-        String command = parameters.get().move(6).text().optional().orElse("");
+        BlockPos p1 = parameters.get().pos(commandSender.getPosition(), false).require();
+        BlockPos p2 = parameters.get(3).pos(commandSender.getPosition(), false).require();
+        String command = parameters.get(6).text().optional().orElse("");
 
         server.commandManager.executeCommand(new SelectingSender(commandSender, p1, p2), command);
     }

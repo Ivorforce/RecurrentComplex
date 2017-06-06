@@ -7,10 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.DependencyExpression;
 import net.minecraft.command.CommandException;
@@ -47,7 +44,7 @@ public class CommandEval extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        DependencyExpression matcher = parameters.rc().expression(new DependencyExpression()).require();
+        DependencyExpression matcher = parameters.get().expression(new DependencyExpression()).require();
 
         boolean result = matcher.test(RecurrentComplex.saver);
         commandSender.sendMessage(ServerTranslations.get(result ? "commands.rceval.result.true" : "commands.rceval.result.false"));

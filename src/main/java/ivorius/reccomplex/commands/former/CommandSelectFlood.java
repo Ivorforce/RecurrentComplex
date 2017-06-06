@@ -13,10 +13,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import ivorius.reccomplex.utils.expression.PreloadedBooleanExpression;
 import net.minecraft.block.Block;
@@ -74,15 +71,15 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
             exp.addEvaluator("horizontal", f -> f.getHorizontalIndex() >= 0);
             exp.addEvaluator("vertical", f -> f.getHorizontalIndex() < 0);
         });
-        facingExpression.setExpression(parameters.get().move(2).text().optional().orElse(""));
+        facingExpression.setExpression(parameters.get(2).text().optional().orElse(""));
 
         List<EnumFacing> available = Arrays.stream(EnumFacing.values()).filter(facingExpression).collect(Collectors.toList());
 
         List<BlockPos> dirty = Lists.newArrayList(selectionOwner.getSelection());
         Set<BlockPos> visited = Sets.newHashSet(dirty);
 
-        Block dstBlock = parameters.mc().block(commandSender).require();
-        int[] dstMeta = parameters.rc().move(1).metadatas().optional().orElse(new int[1]);
+        Block dstBlock = parameters.get().block(commandSender).require();
+        int[] dstMeta = parameters.get(1).metadatas().optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
         while (!dirty.isEmpty())

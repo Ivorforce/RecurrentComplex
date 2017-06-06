@@ -28,24 +28,32 @@ public class IvParameters extends MCParameters
         return new IvParameters(Parameters.of(args, c));
     }
 
-    public IvParameter iv()
+    @Override
+    public IvParameter get()
     {
-        return new IvParameter(get());
+        return new IvParameter(super.get());
     }
 
-    public IvParameter iv(@Nonnull String name)
+    @Override
+    public IvParameter get(int idx)
     {
-        return new IvParameter(get(name));
+        return new IvParameter(super.get(idx));
+    }
+
+    @Override
+    public IvParameter get(@Nonnull String name)
+    {
+        return new IvParameter(super.get(name));
     }
 
     public Parameter.Result<BlockSurfacePos> surfacePos(String x, String z, BlockPos ref, boolean centerBlock)
     {
-        return this.iv(x).surfacePos(iv(z), ref, centerBlock);
+        return get(x).surfacePos(get(z), ref, centerBlock);
     }
 
     public Parameter.Result<AxisAlignedTransform2D> transform(String rotation, String mirror) throws CommandException
     {
-        return iv(rotation).transform(has(mirror));
+        return get(rotation).transform(has(mirror));
     }
 
 }

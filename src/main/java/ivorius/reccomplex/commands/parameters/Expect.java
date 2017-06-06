@@ -90,6 +90,15 @@ public class Expect<T extends Expect<T>>
         return (T) this;
     }
 
+    @Nonnull
+    protected SuggestParameter getOrCreate(@Nullable String name)
+    {
+        SuggestParameter param = params.get(name);
+        if (param == null)
+            params.put(currentName, param = new SuggestParameter(name));
+        return param;
+    }
+
     public T named(@Nonnull String name, String... aliases)
     {
         Pair<String, Boolean> p = name(name);
@@ -133,35 +142,31 @@ public class Expect<T extends Expect<T>>
         return next(Collections.emptyList());
     }
 
-    public T next(Completer completion)
+    public T nextRaw(Completer completion)
     {
         SuggestParameter cur = getOrCreate(this.currentName);
         cur.next(completion);
         return identity();
     }
 
-    @Nonnull
-    protected SuggestParameter getOrCreate(@Nullable String name)
+    public T next(Completer completion)
     {
-        SuggestParameter param = params.get(name);
-        if (param == null)
-            params.put(currentName, param = new SuggestParameter(name));
-        return param;
+        return nextRaw((server, sender, params, pos) -> matching(params.last(), completion.complete(server, sender, params, pos)));
     }
 
     public T any(Object... completion)
     {
-        return next(Arrays.asList(completion));
+        return nextRaw((server, sender, params, pos) -> matching(params.last(), completion));
     }
 
     public T next(Object completion)
     {
-        return next((server, sender, params, pos) -> matching(params.last(), completion));
+        return nextRaw((server, sender, params, pos) -> matching(params.last(), completion));
     }
 
     public T next(Function<Parameters, ?> completion)
     {
-        return next((server, sender, params, pos) -> completion.apply(params));
+        return nextRaw((server, sender, params, pos) -> matching(params.last(), completion.apply(params)));
     }
 
     public T randomString()

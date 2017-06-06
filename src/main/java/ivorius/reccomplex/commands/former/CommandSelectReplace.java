@@ -42,8 +42,8 @@ public class CommandSelectReplace extends CommandExpecting implements CommandVir
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .block().requiredU("destination block")
-                .block().requiredU("source expression").repeat()
+                .block().descriptionU("destination block").required()
+                .block().descriptionU(new String[]{"source expression"}).required().repeat()
                 .named("metadata", "m")
                 .metadata();
     }

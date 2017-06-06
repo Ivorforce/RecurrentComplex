@@ -36,6 +36,6 @@ public class IvExpect<T extends IvExpect<T>> extends MCExpect<T>
 
     public T dimensionType()
     {
-        return next(DimensionDictionary.allRegisteredTypes()).optionalU("dimension type");
+        return next(DimensionDictionary.allRegisteredTypes()).descriptionU("dimension type").optional();
     }
 }

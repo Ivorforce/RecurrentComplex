@@ -8,10 +8,7 @@ package ivorius.reccomplex.commands.info;
 import com.google.common.collect.Lists;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.reccomplex.commands.parameters.CommandSplit;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
-import ivorius.reccomplex.commands.parameters.SimpleCommand;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.commands.structure.CommandSearchStructure;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
@@ -35,7 +32,7 @@ public class CommandBiomeDict extends CommandSplit
     {
         super(RCConfig.commandPrefix + "biome");
 
-        add(new SimpleCommand("search", () -> RCExpect.expectRC().skip().requiredU("terms"))
+        add(new SimpleCommand("search", () -> RCExpect.expectRC().skip().descriptionU("terms").required())
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException

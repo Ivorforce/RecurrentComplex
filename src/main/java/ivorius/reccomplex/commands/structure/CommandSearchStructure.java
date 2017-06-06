@@ -122,7 +122,7 @@ public class CommandSearchStructure extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .skip().requiredU("terms").repeat();
+                .skip().descriptionU("terms").required().repeat();
     }
 
     @Override

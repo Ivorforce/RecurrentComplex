@@ -39,8 +39,7 @@ public class CommandEval extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .next(RCConfig.globalToggles.keySet().stream().map(s -> "global:" + s).collect(Collectors.toSet()))
-                .optionalU("dependency expression");
+                .next(RCConfig.globalToggles.keySet().stream().map(s -> "global:" + s).collect(Collectors.toSet())).descriptionU("dependency expression").optional();
     }
 
     @Override

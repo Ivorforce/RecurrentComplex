@@ -5,10 +5,7 @@
 
 package ivorius.reccomplex.commands.structure.sight;
 
-import ivorius.reccomplex.commands.parameters.CommandSplit;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
-import ivorius.reccomplex.commands.parameters.SimpleCommand;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandException;
@@ -29,7 +26,7 @@ public class CommandSightDelete extends CommandSplit
     {
         super("forget");
 
-        add(new SimpleCommand("id", () -> RCExpect.expectRC().skip().requiredU("id"))
+        add(new SimpleCommand("id", () -> RCExpect.expectRC().skip().descriptionU("id").required())
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException

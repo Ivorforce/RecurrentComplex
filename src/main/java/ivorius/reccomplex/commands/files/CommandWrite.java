@@ -50,8 +50,9 @@ public class CommandWrite extends CommandExpecting
         RCExpect<?> expect = RCExpect.expectRC();
         // Can't chain because of compiler bug :|
 
-        expect.next(RecurrentComplex.saver.keySet()).requiredU("file type");
-        expect.next(params -> params.get().first().tryGet().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids())).optionalU("resource expression").repeat();
+        expect.next(RecurrentComplex.saver.keySet()).descriptionU("file type").required();
+        Expect<?> expect1 = expect.next(params -> params.get().first().tryGet().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()));
+        ((RCExpect<?>) expect1.descriptionU("resource expression").optional()).repeat();
         expect.named("directory", "d").resourceDirectory();
 
         return expect;

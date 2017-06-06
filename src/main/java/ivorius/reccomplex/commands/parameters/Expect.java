@@ -137,11 +137,6 @@ public class Expect<T extends Expect<T>>
         return named(name, aliases);
     }
 
-    public T skip(int num)
-    {
-        return next(Collections.emptyList());
-    }
-
     public T nextRaw(Completer completion)
     {
         SuggestParameter cur = getOrCreate(this.currentName);
@@ -149,19 +144,24 @@ public class Expect<T extends Expect<T>>
         return identity();
     }
 
-    public T next(Completer completion)
+    public T skip()
     {
-        return nextRaw((server, sender, params, pos) -> matching(params.last(), completion.complete(server, sender, params, pos)));
+        return nextRaw((server, sender, parameters, pos) -> Stream.of());
     }
 
     public T any(Object... completion)
     {
-        return nextRaw((server, sender, params, pos) -> matching(params.last(), completion));
+        return nextRaw((server, sender, params, pos) -> matchingAny(params.last(), completion));
     }
 
     public T next(Object completion)
     {
         return nextRaw((server, sender, params, pos) -> matching(params.last(), completion));
+    }
+
+    public T next(Completer completion)
+    {
+        return nextRaw((server, sender, params, pos) -> matching(params.last(), completion.complete(server, sender, params, pos)));
     }
 
     public T next(Function<Parameters, ?> completion)

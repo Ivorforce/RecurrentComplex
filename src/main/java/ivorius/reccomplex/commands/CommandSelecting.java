@@ -38,9 +38,9 @@ public class CommandSelecting extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .xyz()
-                .xyz()
-                .command()
+                .xyz().required()
+                .xyz().required()
+                .command().required()
                 .commandArguments(p -> p.get().move(6)).repeat();
     }
 

@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 /**
  * Created by lukas on 31.05.17.
  */
-public class RCParameter extends Parameter
+public class RCParameter extends IvParameter
 {
     public RCParameter(Parameter other)
     {

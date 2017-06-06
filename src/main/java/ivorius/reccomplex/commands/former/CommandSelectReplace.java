@@ -12,10 +12,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -58,11 +55,11 @@ public class CommandSelectReplace extends CommandExpecting implements CommandVir
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        Block dstBlock = parameters.mc().block(commandSender).require();
-        int[] dstMeta = parameters.rc("metadata").metadatas().optional().orElse(new int[1]);
+        Block dstBlock = parameters.get().block(commandSender).require();
+        int[] dstMeta = parameters.get("metadata").metadatas().optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
-        PositionedBlockExpression matcher = parameters.rc().move(1).expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry)).require();
+        PositionedBlockExpression matcher = parameters.get(1).expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry)).require();
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);

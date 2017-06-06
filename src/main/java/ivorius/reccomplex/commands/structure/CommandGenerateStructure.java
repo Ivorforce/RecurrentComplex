@@ -11,10 +11,7 @@ import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
-import ivorius.reccomplex.commands.parameters.SimpleCommand;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
@@ -54,7 +51,7 @@ public class CommandGenerateStructure extends SimpleCommand
                 .surfacePos("x", "z")
                 .named("dimension", "d").dimension()
                 .named("gen")
-                .next(params -> new RCParameters(params).rc().genericStructure().tryGet()
+                .next(params -> new RCParameters(params).get().genericStructure().tryGet()
                         .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id))
                 ).descriptionU("generation type id").optional()
                 .named("rotation", "r").rotation()
@@ -70,10 +67,10 @@ public class CommandGenerateStructure extends SimpleCommand
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         String structureID = parameters.get().first().require();
-        Structure<?> structure = parameters.rc().structure().require();
-        WorldServer world = parameters.mc("dimension").dimension(server, sender).require();
+        Structure<?> structure = parameters.get().structure().require();
+        WorldServer world = parameters.get("dimension").dimension(server, sender).require();
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(null);
-        GenerationType generationType = parameters.rc("gen").generationType(structure).require();
+        GenerationType generationType = parameters.get("gen").generationType(structure).require();
         BlockSurfacePos pos = parameters.surfacePos("x", "z", sender.getPosition(), false).require();
         String seed = parameters.get("seed").first().optional().orElse(null);
         boolean select = parameters.has("select");

@@ -6,10 +6,7 @@
 package ivorius.reccomplex.commands.structure;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandException;
@@ -48,8 +45,8 @@ public class CommandEditStructure extends CommandExpecting
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         String id = parameters.get().first().require();
-        GenericStructure base = parameters.rc().genericStructure().require();
-        GenericStructure from = parameters.rc("from").genericStructure().optional().orElse(base);
+        GenericStructure base = parameters.get().genericStructure().require();
+        GenericStructure from = parameters.get("from").genericStructure().optional().orElse(base);
 
         if (base != from)
         {

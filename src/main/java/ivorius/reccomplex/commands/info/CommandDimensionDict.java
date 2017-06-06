@@ -10,10 +10,7 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.reccomplex.commands.parameters.CommandSplit;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
-import ivorius.reccomplex.commands.parameters.SimpleCommand;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
@@ -40,7 +37,7 @@ public class CommandDimensionDict extends CommandSplit
             {
                 RCParameters parameters = RCParameters.of(args, null);
 
-                WorldProvider provider = parameters.mc().dimension(server, sender).require().provider;
+                WorldProvider provider = parameters.get().dimension(server, sender).require().provider;
 
                 sender.sendMessage(ServerTranslations.format("commands.dimensiondict.get", RCTextStyle.dimension(provider.getDimension()),
                         ServerTranslations.join(Lists.newArrayList(DimensionDictionary.getDimensionTypes(provider)).stream()

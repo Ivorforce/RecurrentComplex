@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
 /**
  * Created by lukas on 31.05.17.
  */
-public class IvParameter extends Parameter
+public class IvParameter extends MCParameter
 {
     public IvParameter(Parameter other)
     {

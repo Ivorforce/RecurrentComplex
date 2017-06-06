@@ -622,3 +622,16 @@ reccomplex.blockpattern.ingredients=Ingredients
 reccomplex.blockpattern.ingredients.tooltip=Information about the blocks used<br>in the pattern.
 reccomplex.blockpattern.ingredient.identifier=Identifier
 reccomplex.blockpattern.ingredient.delete=Delete Blocks
+
+
+reccomplex.parameters.pos.x=x
+reccomplex.parameters.pos.y=y
+reccomplex.parameters.pos.z=z
+reccomplex.parameters.biome=dimension
+reccomplex.parameters.biome.type=dimension
+reccomplex.parameters.dimension=dimension
+reccomplex.parameters.block=dimension
+reccomplex.parameters.command=dimension
+reccomplex.parameters.command.arguments=dimension
+reccomplex.parameters.entity=dimension
+reccomplex.parameters.rotation=dimension

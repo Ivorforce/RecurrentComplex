@@ -13,10 +13,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
@@ -58,8 +55,8 @@ public class CommandSelectFill extends CommandExpecting implements CommandVirtua
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        Block dstBlock = parameters.mc().block(commandSender).require();
-        int[] dstMeta = parameters.rc().move(1).metadatas().optional().orElse(new int[1]);
+        Block dstBlock = parameters.get().block(commandSender).require();
+        int[] dstMeta = parameters.get(1).metadatas().optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);

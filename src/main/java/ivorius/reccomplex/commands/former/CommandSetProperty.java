@@ -12,10 +12,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.utils.optional.IvOptional;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
@@ -56,7 +53,7 @@ public class CommandSetProperty extends CommandExpecting implements CommandVirtu
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
-        IvOptional.ifAbsent(parameters.rc("exp").expression(matcher).optional(), () -> matcher.setExpression(""));
+        IvOptional.ifAbsent(parameters.get("exp").expression(matcher).optional(), () -> matcher.setExpression(""));
 
         String propertyName = parameters.get().first().require();
         String propertyValue = parameters.get().at(1).require();

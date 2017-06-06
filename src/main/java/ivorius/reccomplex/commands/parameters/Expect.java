@@ -21,6 +21,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -37,6 +38,8 @@ public class Expect<T extends Expect<T>>
     protected final Set<String> flags = new HashSet<>();
 
     protected String currentName;
+    protected final List<String> order = new ArrayList<>();
+    protected int currentCount;
 
     Expect()
     {
@@ -95,7 +98,7 @@ public class Expect<T extends Expect<T>>
     {
         SuggestParameter param = params.get(name);
         if (param == null)
-            params.put(currentName, param = new SuggestParameter(name));
+            params.put(name, param = new SuggestParameter(name));
         return param;
     }
 
@@ -139,8 +142,16 @@ public class Expect<T extends Expect<T>>
 
     public T nextRaw(Completer completion)
     {
-        SuggestParameter cur = getOrCreate(this.currentName);
+        SuggestParameter cur = getOrCreate(currentName);
+        order.add(currentName);
         cur.next(completion);
+        currentCount = 1;
+        return identity();
+    }
+
+    protected T atOnce(int num)
+    {
+        currentCount = num;
         return identity();
     }
 
@@ -228,12 +239,34 @@ public class Expect<T extends Expect<T>>
         );
     }
 
+    protected void mapLastDescriptions(BiFunction<Integer, String, String> fun)
+    {
+        List<String> relevant = order.subList(order.size() - currentCount, order.size());
+        int[] idx = new int[1];
+        List<String> last = relevant.stream().map(s ->
+        {
+            List<String> list = params.get(s).descriptions;
+            return list.remove(list.size() - 1);
+        }).map(s -> fun.apply(idx[0]++, s)).collect(Collectors.toList()); // Collect since we want to remove all first and then add back
+        relevant.stream().forEach(s ->
+                params.get(s).descriptions.add(last.remove(last.size() - 1))
+        );
+    }
+
+    protected String stripDescription(String description)
+    {
+        return description.startsWith("[") || description.startsWith("<")
+                ? description.substring(1, description.length() - 1) : description;
+    }
+
     /**
      * Useful only for usage()
      */
-    public T descriptionU(Collection<String> description)
+    public T descriptionU(List<String> description)
     {
-        params.get(currentName).description(description);
+        if (description.size() != currentCount)
+            throw new IllegalArgumentException();
+        mapLastDescriptions((i, s) -> description.get(i));
         return identity();
     }
 
@@ -249,30 +282,16 @@ public class Expect<T extends Expect<T>>
                 .collect(Collectors.toList()));
     }
 
-    public T required(int number)
-    {
-        SuggestParameter param = params.get(currentName);
-        return descriptionU(param.descriptions.subList(param.descriptions.size() - number, param.descriptions.size()).stream()
-                .map(prev -> String.format("<%s>", prev.substring(1, prev.length() - 1)))
-                .collect(Collectors.toList()));
-    }
-
     public T required()
     {
-        return required(1);
-    }
-
-    public T optional(int number)
-    {
-        SuggestParameter param = params.get(currentName);
-        return descriptionU(param.descriptions.subList(param.descriptions.size() - number, param.descriptions.size()).stream()
-                .map(prev -> String.format("[%s]", prev.substring(1, prev.length() - 1)))
-                .collect(Collectors.toList()));
+        mapLastDescriptions((i, s) -> String.format("<%s>", stripDescription(s)));
+        return identity();
     }
 
     public T optional()
     {
-        return optional(1);
+        mapLastDescriptions((i, s) -> String.format("[%s]", stripDescription(s)));
+        return identity();
     }
 
     public String usage()
@@ -334,13 +353,6 @@ public class Expect<T extends Expect<T>>
         {
             completions.add(completion);
             descriptions.add(String.format("[%d]", completions.size()));
-            return this;
-        }
-
-        public SuggestParameter description(Collection<String> description)
-        {
-            descriptions.subList(descriptions.size() - description.size(), description.size()).clear();
-            descriptions.addAll(description);
             return this;
         }
     }

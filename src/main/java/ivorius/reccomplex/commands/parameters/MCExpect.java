@@ -35,14 +35,15 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
 
     public T xyz()
     {
-        return x().y().z();
+        return x().y().z().atOnce(3);
     }
 
     public T pos(String x, String y, String z)
     {
         return named(x).x()
                 .named(y).y()
-                .named(z).z();
+                .named(z).z()
+                .atOnce(3);
     }
 
     public T x()

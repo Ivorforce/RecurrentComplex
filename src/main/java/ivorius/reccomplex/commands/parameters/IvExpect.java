@@ -31,7 +31,8 @@ public class IvExpect<T extends IvExpect<T>> extends MCExpect<T>
     public T surfacePos(String x, String z)
     {
         return named(x).x()
-                .named(z).z();
+                .named(z).z()
+                .atOnce(2);
     }
 
     public T dimensionType()

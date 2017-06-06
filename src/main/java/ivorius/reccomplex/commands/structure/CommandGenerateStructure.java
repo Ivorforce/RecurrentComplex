@@ -58,7 +58,7 @@ public class CommandGenerateStructure extends SimpleCommand
                         .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id))
                 ).descriptionU("generation type id").optional()
                 .named("rotation", "r").rotation()
-                .named("seed").randomString().descriptionU(new String[]{"seed"}).optional()
+                .named("seed").randomString().descriptionU("seed").optional()
                 .flag("mirror", "m")
                 .flag("select", "s");
     }

@@ -28,7 +28,6 @@ public abstract class SimpleCommand extends CommandExpecting
     public SimpleCommand(String name)
     {
         this.name = name;
-        this.usage = "";
     }
 
     public SimpleCommand(String name, Supplier<Expect<?>> expector)
@@ -72,7 +71,7 @@ public abstract class SimpleCommand extends CommandExpecting
     @Override
     public String getUsage(ICommandSender sender)
     {
-        return String.format("%s %s", name, usage);
+        return String.format("%s %s", name, usage != null ? usage : expect().usage());
     }
 
     @Override

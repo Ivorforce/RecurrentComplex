@@ -38,7 +38,7 @@ public class CommandVisual extends CommandExpecting
     {
         return RCExpect.expectRC()
                 .any("rulers").descriptionU("type").required()
-                .any("true", "false").descriptionU(new String[]{"true|false"}).required();
+                .any("true", "false").descriptionU("true|false").required();
     }
 
     @Override

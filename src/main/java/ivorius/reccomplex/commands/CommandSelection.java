@@ -157,9 +157,9 @@ public class CommandSelection extends CommandSplit
         {
             return RCExpect.expectRC()
                     .any("1", "2", "3").descriptionU("all").optional()
-                    .named("x").any("1", "2", "3").descriptionU(new String[]{"x"}).optional()
-                    .named("y").any("1", "2", "3").descriptionU(new String[]{"y"}).optional()
-                        .named("z").any("1", "2", "3").descriptionU(new String[]{"z"}).optional();
+                    .named("x").any("1", "2", "3").descriptionU("x").optional()
+                    .named("y").any("1", "2", "3").descriptionU("y").optional()
+                        .named("z").any("1", "2", "3").descriptionU("z").optional();
         }
         )
         {
@@ -177,7 +177,7 @@ public class CommandSelection extends CommandSplit
         {
             return RCExpect.expectRC()
                     .any("1", "2", "3").descriptionU("all").optional()
-                    .named("x").any("1", "2", "3").descriptionU(new String[]{"x"}).optional()
+                    .named("x").any("1", "2", "3").descriptionU("x").optional()
                     .named("y").any("1", "2", "3").descriptionU("y").optional()
                     .named("z").any("1", "2", "3").descriptionU("z").optional();
         }

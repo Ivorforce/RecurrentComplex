@@ -20,17 +20,18 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSetProperty extends CommandExpecting implements CommandVirtual
+public class CommandSetProperty extends SimpleCommand implements CommandVirtual
 {
-    @Override
-    public String getName()
+    public CommandSetProperty()
     {
-        return RCConfig.commandPrefix + "property";
+        super(RCConfig.commandPrefix + "property");
+        permitFor(2);
     }
 
     @Override
@@ -40,11 +41,6 @@ public class CommandSetProperty extends CommandExpecting implements CommandVirtu
                 .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet())).descriptionU("key").required()
                 .next(params -> params.get().first().tryGet().map(TransformerProperty::propertyValueStream)).descriptionU("value").required()
                 .named("exp").block().descriptionU("positioned block expression").optional();
-    }
-
-    public int getRequiredPermissionLevel()
-    {
-        return 2;
     }
 
     @Override

@@ -121,7 +121,7 @@ public class CommandNaturalFloor extends CommandExpecting implements CommandVirt
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         BlockArea area = RCCommands.getSelectionOwner(sender, null, true).getSelection();
-        double expandFloor = parameters.get("expansion").doubleAt(0).optional().orElse(1.);
+        double expandFloor = parameters.get("expansion").asDouble().optional().orElse(1.);
 
         placeNaturalFloor(world, area, expandFloor);
     }

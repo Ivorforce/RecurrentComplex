@@ -51,9 +51,9 @@ public class CommandNaturalAll extends CommandExpecting implements CommandVirtua
         RCCommands.assertSize(sender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
-        double expandFloor = parameters.get("floor-expansion").doubleAt(0).optional().orElse(1.);
-        int floorDistance = parameters.get("space-distance-to-floor").intAt(0).optional().orElse(0) + 1;
-        int maxClosedSides = parameters.get("space-max-closed-sides").intAt(1).optional().orElse(3);
+        double expandFloor = parameters.get("floor-expansion").asDouble().optional().orElse(1.);
+        int floorDistance = parameters.get("space-distance-to-floor").asInt().optional().orElse(0) + 1;
+        int maxClosedSides = parameters.get("space-max-closed-sides").asInt().optional().orElse(3);
 
         CommandNaturalFloor.placeNaturalFloor(world, area, expandFloor);
         CommandNaturalSpace.placeNaturalAir(world, area, 3, 3);

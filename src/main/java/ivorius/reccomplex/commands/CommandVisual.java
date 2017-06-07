@@ -45,7 +45,7 @@ public class CommandVisual extends CommandExpecting
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
-        boolean enabled = parameters.get().booleanAt(1).require();
+        boolean enabled = parameters.get(1).asBoolean().require();
 
         EntityPlayer player = getCommandSenderAsPlayer(commandSender);
         RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(player, null);

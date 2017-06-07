@@ -154,8 +154,8 @@ public class CommandNaturalSpace extends CommandExpecting implements CommandVirt
 
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        int floorDistance = parameters.get("distance-to-floor").intAt(0).optional().orElse(0) + 1;
-        int maxClosedSides = parameters.get("max-closed-sides").intAt(1).optional().orElse(3);
+        int floorDistance = parameters.get("distance-to-floor").asInt().optional().orElse(0) + 1;
+        int maxClosedSides = parameters.get("max-closed-sides").asInt().optional().orElse(3);
 
         placeNaturalAir(world, area, floorDistance, maxClosedSides);
     }

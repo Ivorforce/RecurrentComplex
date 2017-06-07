@@ -52,7 +52,7 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
         IvOptional.ifAbsent(parameters.get("exp").expression(matcher).optional(), () -> matcher.setExpression(""));
 
         String propertyName = parameters.get().first().require();
-        String propertyValue = parameters.get().at(1).require();
+        String propertyValue = parameters.get(1).first().require();
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
         RCCommands.assertSize(sender, selectionOwner);

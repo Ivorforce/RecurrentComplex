@@ -54,7 +54,8 @@ public class CommandMapStructure extends CommandExpecting
         String id = parameters.get().first().require();
         ResourceDirectory directory = parameters.get("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
         CommandVirtual virtual = parameters.get(1).virtualCommand(server).require();
+        String[] virtualArgs = parameters.get(2).varargs();
 
-        CommandMapAllStructure.map(id, directory, sender, virtual, parameters.get(2).varargs(), true);
+        CommandMapAllStructure.map(id, directory, sender, virtual, virtualArgs, true);
     }
 }

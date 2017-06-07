@@ -68,6 +68,7 @@ public class CommandMapAllStructure extends CommandExpecting
         ResourceDirectory directory = parameters.get("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
         CommandVirtual virtual = parameters.get().virtualCommand(server).require();
+        String[] virtualArgs = parameters.get(1).varargs();
 
         int saved = 0, failed = 0, skipped = 0;
         for (String id : StructureRegistry.INSTANCE.ids())
@@ -75,7 +76,7 @@ public class CommandMapAllStructure extends CommandExpecting
             if (!expression.test(new RawResourceLocation(StructureRegistry.INSTANCE.status(id).getDomain(), id)))
                 continue;
 
-            switch (map(id, directory, commandSender, virtual, parameters.get(1).varargs(), false))
+            switch (map(id, directory, commandSender, virtual, virtualArgs, false))
             {
                 case SKIPPED:
                     skipped++;

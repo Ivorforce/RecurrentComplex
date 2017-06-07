@@ -56,7 +56,9 @@ public class Parameter<T, P extends Parameter<T, P>>
 
     protected static String parameterName(Parameter parameter, int index)
     {
-        return String.format("%s (%d)", parameter.name != null ? " " + Parameters.LONG_FLAG_PREFIX + parameter.name : "", Math.max(parameter.moved, 0) + index);
+        if (parameter.name != null && index == 0)
+            return Parameters.LONG_FLAG_PREFIX + parameter.name;
+        return String.format("%s(%d)", parameter.name != null ? Parameters.LONG_FLAG_PREFIX + parameter.name + " " : "", Math.max(parameter.moved, 0) + index);
     }
 
     @Nonnull
@@ -72,13 +74,13 @@ public class Parameter<T, P extends Parameter<T, P>>
         return moved >= 0;
     }
 
-    protected String first(List<String> list) throws CommandException
+    protected <L> L get(List<L> list, int idx) throws CommandException
     {
         if (!isSet())
-            throw new ArgumentMissingException(this, 0);
+            throw new ArgumentMissingException(this, idx);
         if (list.isEmpty())
-            throw new ParameterNotFoundException(this, 0);
-        return list.get(0);
+            throw new ParameterNotFoundException(this, idx);
+        return list.get(idx);
     }
 
     public int count()
@@ -224,7 +226,7 @@ public class Parameter<T, P extends Parameter<T, P>>
     {
         return copy(new Parameter<>(this, p ->
         {
-            T t = function().apply(Collections.singletonList(first(p)));
+            T t = function().apply(Collections.singletonList(get(p, 0)));
             for (int i = 1; i < p.size(); i++) t = operator.apply(t, function().apply(Collections.singletonList(p.get(i))));
             return t;
         }));
@@ -271,7 +273,7 @@ public class Parameter<T, P extends Parameter<T, P>>
     {
         public ParameterNotFoundException(Parameter parameter, int index)
         {
-            super("Missing required parameter:" + parameterName(parameter, index));
+            super("Missing required parameter: " + parameterName(parameter, index));
         }
     }
 
@@ -279,7 +281,7 @@ public class Parameter<T, P extends Parameter<T, P>>
     {
         public ArgumentMissingException(Parameter parameter, int index)
         {
-            super("Parameter mssing an argument:" + parameterName(parameter, index));
+            super("Parameter mssing an argument: " + parameterName(parameter, index));
         }
     }
 }

@@ -35,7 +35,7 @@ public class ParameterString<P extends ParameterString<P>> extends Parameter<Str
     @Override
     protected Function<List<String>, String> initial()
     {
-        return this::first;
+        return list -> get(list, 0);
     }
 
     @Override

@@ -22,5 +22,5 @@ public interface CommandVirtual extends ICommand
         execute(new MockWorld.Real(sender.getEntityWorld()), sender, args);
     }
 
-    void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException;
+    void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException;
 }

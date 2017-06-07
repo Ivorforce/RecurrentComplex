@@ -51,16 +51,16 @@ public class CommandSelectFill extends CommandExpecting implements CommandVirtua
     }
 
     @Override
-    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        Block dstBlock = parameters.get().block(commandSender).require();
+        Block dstBlock = parameters.get().block(sender).require();
         int[] dstMeta = parameters.get(1).metadatas().optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
-        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-        RCCommands.assertSize(commandSender, selectionOwner);
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
+        RCCommands.assertSize(sender, selectionOwner);
 
         String shape = parameters.get("shape").first().optional().orElse("cube");
 
@@ -95,7 +95,7 @@ public class CommandSelectFill extends CommandExpecting implements CommandVirtua
                 break;
             }
             default:
-                throw new WrongUsageException(getUsage(commandSender));
+                throw new WrongUsageException(getUsage(sender));
         }
 
     }

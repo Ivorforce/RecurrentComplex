@@ -146,10 +146,10 @@ public class CommandNaturalSpace extends CommandExpecting implements CommandVirt
     }
 
     @Override
-    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException
     {
-        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-        RCCommands.assertSize(commandSender, selectionOwner);
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
+        RCCommands.assertSize(sender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
         RCParameters parameters = RCParameters.of(args, expect()::declare);

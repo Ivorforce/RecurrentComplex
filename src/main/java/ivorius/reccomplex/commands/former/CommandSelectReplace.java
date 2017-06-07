@@ -51,18 +51,18 @@ public class CommandSelectReplace extends CommandExpecting implements CommandVir
     }
 
     @Override
-    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        Block dstBlock = parameters.get().block(commandSender).require();
+        Block dstBlock = parameters.get().block(sender).require();
         int[] dstMeta = parameters.get("metadata").metadatas().optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
         PositionedBlockExpression matcher = parameters.get(1).expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry)).require();
 
-        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-        RCCommands.assertSize(commandSender, selectionOwner);
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
+        RCCommands.assertSize(sender, selectionOwner);
 
         for (BlockPos coord : selectionOwner.getSelection())
         {

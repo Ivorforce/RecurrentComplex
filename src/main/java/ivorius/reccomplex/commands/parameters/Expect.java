@@ -40,6 +40,7 @@ public class Expect<T extends Expect<T>>
     protected String currentName;
     protected final List<String> order = new ArrayList<>();
     protected int currentCount;
+    protected int until = -1;
 
     Expect()
     {
@@ -84,6 +85,7 @@ public class Expect<T extends Expect<T>>
             if (!Objects.equals(param.name, key))
                 parameters.alias(param.name, key);
         });
+        parameters.until(until);
         return parameters;
     }
 
@@ -202,26 +204,35 @@ public class Expect<T extends Expect<T>>
         return params.size();
     }
 
+    public T stopNamed()
+    {
+        until = params.get(null).completions.size();
+        return identity();
+    }
+
     public List<String> get(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos pos)
     {
         Parameters parameters = Parameters.of(args, this::declare);
 
-        String lastID = parameters.order.get(parameters.order.size() - 1);
-        Parameter entered = lastID != null ? parameters.get(lastID) : parameters.get();
-        SuggestParameter param = this.params.get(lastID);
+        String lastName = parameters.lastName();
+        Parameter entered = lastName != null ? parameters.get(lastName) : parameters.get();
+        SuggestParameter param = this.params.get(lastName);
 
         String currentArg = parameters.last();
         boolean longFlag = Parameters.hasLongPrefix(currentArg);
         boolean shortFlag = Parameters.hasShortPrefix(currentArg);
         if (param != null && (entered.count() <= param.completions.size() || param.repeat)
                 // It notices we are entering a parameter so it won't be added to the parameters args anyway
-                && !longFlag && !shortFlag)
+                && !(parameters.allowsNamed() && (longFlag || shortFlag)))
         {
             return toStrings(param.completions.get(Math.min(entered.count() - 1, param.completions.size() - 1)).complete(server, sender, parameters, pos)).stream()
                     // More than one word, let's wrap this in quotes
                     .map(s -> s.contains(" ") && !s.startsWith("\"") ? String.format("\"%s\"", s) : s)
                     .collect(Collectors.toCollection(ArrayList::new));
         }
+
+        if (!parameters.allowsNamed())
+            return Collections.emptyList();
 
         List<String> suggest = new ArrayList<>();
         suggest.addAll(remaining(currentArg, parameters, false));

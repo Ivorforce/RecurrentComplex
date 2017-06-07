@@ -94,7 +94,8 @@ public class CommandMapStructure extends CommandExpecting
         return RCExpect.expectRC()
                 .structure().descriptionU("resource expression|structure").required()
                 .virtualCommand()
-                .commandArguments(Parameters::get)
+                .stopNamed()
+                .commandArguments(p -> p.get(1)).repeat()
                 .named("directory", "d").resourceDirectory()
                 .flag("nosave", "n")
                 ;

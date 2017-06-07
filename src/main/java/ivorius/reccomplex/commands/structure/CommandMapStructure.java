@@ -47,29 +47,14 @@ public class CommandMapStructure extends CommandExpecting
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         String id = parameters.get().first().require();
-        GenericStructure structure = parameters.get().genericStructure().require();
         ResourceDirectory directory = parameters.get("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
         CommandVirtual virtual = parameters.get(1).virtualCommand(server).require();
 
-        IvWorldData worldData = structure.constructWorldData();
-        MockWorld world = new MockWorld.WorldData(worldData);
-
-        try
-        {
-            virtual.execute(world, new CommandSelecting.SelectingSender(commandSender, BlockPos.ORIGIN, worldData.blockCollection.area().getHigherCorner()),
-                    parameters.get(2).varargs());
-        }
-        catch (MockWorld.VirtualWorldException ex)
-        {
-            throw ServerTranslations.commandException("commands.rcmap.nonvirtual.arguments");
-        }
-
-        structure.worldDataCompound = worldData.createTagCompound();
-        PacketSaveStructureHandler.write(commandSender, structure, id, directory, true, true);
+        CommandMapAllStructure.map(id, directory, sender, virtual, parameters.get(2).varargs(), true);
     }
 }

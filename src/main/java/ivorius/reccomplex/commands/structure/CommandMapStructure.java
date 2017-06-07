@@ -106,8 +106,7 @@ public class CommandMapStructure extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        ResourceExpression expression = new ResourceExpression(StructureRegistry.INSTANCE::has);
-        IvOptional.ifAbsent(parameters.get(0).expression(expression).optional(), () -> expression.setExpression(""));
+        ResourceExpression expression = parameters.get(0).expression(new ResourceExpression(StructureRegistry.INSTANCE::has)).require();
 
         CommandVirtual virtual = parameters.get(1).virtualCommand(server).require();
         String[] virtualArgs = parameters.get(2).varargs().require();

@@ -224,7 +224,7 @@ public class Parameter<T, P extends Parameter<T, P>>
     {
         return copy(new Parameter<>(this, p ->
         {
-            T t = function().apply(Collections.singletonList(p.get(0)));
+            T t = function().apply(Collections.singletonList(first(p)));
             for (int i = 1; i < p.size(); i++) t = operator.apply(t, function().apply(Collections.singletonList(p.get(i))));
             return t;
         }));

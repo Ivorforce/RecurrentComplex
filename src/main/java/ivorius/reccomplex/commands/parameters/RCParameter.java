@@ -125,7 +125,7 @@ public class RCParameter<P extends RCParameter<P>> extends IvParameter<P>
 
     public Parameter<CommandVirtual, ?> virtualCommand(MinecraftServer server)
     {
-        return new MCParameter(this).command(server).map(c ->
+        return command(server).map(c ->
         {
             if (!(c instanceof CommandVirtual))
                 throw ServerTranslations.commandException("commands.rcmap.nonvirtual");

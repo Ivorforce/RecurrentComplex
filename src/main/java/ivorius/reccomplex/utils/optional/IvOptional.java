@@ -17,4 +17,9 @@ public class IvOptional
         if (!optional.isPresent())
             run.run();
     }
+
+    public static <T> Optional<T> replace(Optional<T> optional, Optional<T> replace)
+    {
+        return replace.isPresent() ? replace : optional;
+    }
 }

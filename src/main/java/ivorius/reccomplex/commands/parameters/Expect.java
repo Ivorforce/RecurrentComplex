@@ -323,21 +323,14 @@ public class Expect<T extends Expect<T>>
 
     public String usage()
     {
-        return String.format("%s%s%s%s%s", TextFormatting.RESET, TextFormatting.YELLOW,
-                params.get(null).descriptions.stream()
-                        .map(s -> s + " ")
-                        .reduce("", (l, r) -> l + r),
-                TextFormatting.RESET,
+        return TextFormatting.RESET + Stream.concat(
+                params.get(null).usage(),
                 params.entrySet().stream()
                         .filter(e -> e.getKey() != null)
                         .filter(e -> e.getKey().equals(e.getValue().name))
-                        .flatMap(e -> flags.contains(e.getKey()) ? Stream.of(keyRepresentation(e.getKey())) : e.getValue().descriptions.stream()
-                                .map(desc -> String.format("%s %s%s%s", keyRepresentation(e.getKey()),
-                                        TextFormatting.YELLOW, desc, TextFormatting.RESET
-                                ))
-                        )
-                        .reduce("", (l, r) -> String.format("%s %s", l, r))
-        );
+                        .flatMap(e -> flags.contains(e.getKey()) ? Stream.of(keyRepresentation(e.getKey())) : e.getValue().usage()
+                                .map(desc -> String.format("%s %s", keyRepresentation(e.getKey()), desc)))
+                ).reduce("", ParameterString.join());
     }
 
     protected String keyRepresentation(String key)
@@ -381,6 +374,15 @@ public class Expect<T extends Expect<T>>
             completions.add(completion);
             descriptions.add(String.format("[%d]", completions.size()));
             return this;
+        }
+
+        public Stream<String> usage()
+        {
+            return IntStream.range(0, descriptions.size())
+                    .mapToObj(i -> String.format("%s%s%s%s",
+                            TextFormatting.YELLOW, descriptions.get(i), TextFormatting.RESET,
+                            repeat && i == descriptions.size() - 1 ? "..." : ""
+                    ));
         }
     }
 }

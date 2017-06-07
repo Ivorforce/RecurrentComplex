@@ -34,6 +34,7 @@ public class Parameters
 
     protected Set<String> declaredFlags;
     protected Map<String, String> alias;
+    protected int until = -1;
 
     public Parameters()
     {
@@ -127,12 +128,12 @@ public class Parameters
         String curName = null;
         for (String arg : raw)
         {
-            if (hasLongPrefix(arg))
+            if (allowsNamed() && hasLongPrefix(arg))
             {
                 flags.add(curName = root(arg.substring(LONG_FLAG_PREFIX.length())));
                 if (declaredFlags.contains(curName)) curName = null;
             }
-            else if (hasShortPrefix(arg))
+            else if (allowsNamed() && hasShortPrefix(arg))
             {
                 List<String> curFlags = arg.substring(SHORT_FLAG_PREFIX.length()).chars().mapToObj(c -> String.valueOf((char) c)).collect(Collectors.toList());
 
@@ -153,6 +154,8 @@ public class Parameters
             }
             else
             {
+                if (until > 0 && curName == null) until --;
+
                 order.add(curName);
                 params.put(curName, arg);
                 curName = null;
@@ -208,6 +211,16 @@ public class Parameters
         return flags(Arrays.asList(flags));
     }
 
+    /**
+     * Required for things like /execute.
+     * Everything past this ordered argument will not be treated as a named parameter.
+     */
+    public Parameters until(int until)
+    {
+        this.until = until;
+        return this;
+    }
+
     public String root(String name)
     {
         String other;
@@ -222,6 +235,11 @@ public class Parameters
         return Collections.unmodifiableList(raw);
     }
 
+    public String lastName()
+    {
+        return order.get(order.size() - 1);
+    }
+
     public String last()
     {
         requireBuilt();
@@ -231,6 +249,11 @@ public class Parameters
     public String[] lastAsArray()
     {
         return new String[]{last()};
+    }
+
+    public boolean allowsNamed()
+    {
+        return until != 0;
     }
 
     public Map<String, Parameter> entries()

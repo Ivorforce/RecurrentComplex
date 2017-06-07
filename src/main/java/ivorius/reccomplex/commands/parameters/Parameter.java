@@ -11,6 +11,7 @@ import net.minecraft.command.CommandException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -55,14 +56,15 @@ public class Parameter
         return String.format("%s (%d)", parameter.name != null ? " " + Parameters.LONG_FLAG_PREFIX + parameter.name : "", Math.max(parameter.moved, 0) + index);
     }
 
-    public boolean isSet()
-    {
-        return moved >= 0;
-    }
+    // Get
 
-    public Parameter move(int idx)
+    public Result<String> at(int index)
     {
-        return new Parameter(isSet() ? moved + idx : moved, name, params.subList(Math.min(idx, params.size()), params.size()));
+        return new Result<>(() ->
+        {
+            require(index + 1);
+            return params.get(index);
+        });
     }
 
     public Result<String> first()
@@ -70,7 +72,35 @@ public class Parameter
         return at(0);
     }
 
-    public Result<String> stringAt(int idx) {
+    // Size
+
+    public boolean isSet()
+    {
+        return moved >= 0;
+    }
+
+    protected void require(int size) throws CommandException
+    {
+        if (!isSet())
+            throw new ArgumentMissingException(this, size);
+        if (!has(size))
+            throw new ParameterNotFoundException(this, size);
+    }
+
+    public int count()
+    {
+        return params.size();
+    }
+
+    public boolean has(int size)
+    {
+        return size <= count();
+    }
+
+    // Interpretation
+
+    public Result<String> stringAt(int idx)
+    {
         return at(idx);
     }
 
@@ -94,31 +124,16 @@ public class Parameter
         return at(idx).map(CommandBase::parseLong);
     }
 
-    protected void require(int size) throws CommandException
+    // Rest as arguments
+
+    public Parameter rest()
     {
-        if (!isSet())
-            throw new ArgumentMissingException(this, size);
-        if (!has(size))
-            throw new ParameterNotFoundException(this, size);
+        return new Parameter(moved, name, params.size() == 0 ? Collections.emptyList() : Collections.singletonList(Strings.join(params, " ")));
     }
 
-    public int count()
+    public Parameter move(int idx)
     {
-        return params.size();
-    }
-
-    public boolean has(int size)
-    {
-        return size <= count();
-    }
-
-    public Result<String> at(int index)
-    {
-        return new Result<>(() ->
-        {
-            require(index + 1);
-            return params.get(index);
-        });
+        return new Parameter(isSet() ? moved + idx : moved, name, params.subList(Math.min(idx, params.size()), params.size()));
     }
 
     public String[] varargs()
@@ -129,11 +144,6 @@ public class Parameter
     public List<String> varargsList()
     {
         return params;
-    }
-
-    public Result<String> text()
-    {
-        return at(0).map(s -> Strings.join(params, " "));
     }
 
     public Stream<Parameter> stream()

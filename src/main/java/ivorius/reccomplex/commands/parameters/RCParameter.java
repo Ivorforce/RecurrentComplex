@@ -16,7 +16,6 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
-import net.minecraft.command.CommandException;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.function.Predicate;
@@ -31,26 +30,6 @@ public class RCParameter extends IvParameter
         super(other);
     }
 
-    public static int[] parseMetadatas(String arg) throws CommandException
-    {
-        try
-        {
-            String[] strings = arg.split(",");
-            int[] ints = new int[strings.length];
-
-            for (int i = 0; i < strings.length; i++)
-            {
-                ints[i] = Integer.valueOf(strings[i]);
-            }
-
-            return ints;
-        }
-        catch (Exception ex)
-        {
-            throw ServerTranslations.wrongUsageException("commands.selectModify.invalidMetadata", arg);
-        }
-    }
-
     public Result<Predicate<Structure>> structurePredicate()
     {
         return expression(new ResourceExpression(s1 -> !s1.isEmpty())).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
@@ -60,6 +39,12 @@ public class RCParameter extends IvParameter
     public RCParameter move(int idx)
     {
         return new RCParameter(super.move(idx));
+    }
+
+    @Override
+    public RCParameter rest()
+    {
+        return new RCParameter(super.rest());
     }
 
     public Result<Structure<?>> structure()
@@ -110,12 +95,30 @@ public class RCParameter extends IvParameter
 
     public Result<int[]> metadatas()
     {
-        return first().map(RCParameter::parseMetadatas);
+        return first().map(arg ->
+        {
+            try
+            {
+                String[] strings = arg.split(",");
+                int[] ints = new int[strings.length];
+
+                for (int i = 0; i < strings.length; i++)
+                {
+                    ints[i] = Integer.valueOf(strings[i]);
+                }
+
+                return ints;
+            }
+            catch (Exception ex)
+            {
+                throw ServerTranslations.wrongUsageException("commands.selectModify.invalidMetadata", arg);
+            }
+        });
     }
 
     public <T extends ExpressionCache<I>, I> Result<T> expression(T t)
     {
-        return text().map(s ->
+        return first().map(s ->
         {
             T cache = ExpressionCache.of(t, s);
             RCCommands.ensureValid(cache, name);

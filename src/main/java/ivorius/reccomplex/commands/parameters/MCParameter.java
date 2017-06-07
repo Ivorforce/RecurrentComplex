@@ -44,6 +44,12 @@ public class MCParameter extends Parameter
         return new MCParameter(super.move(idx));
     }
 
+    @Override
+    public MCParameter rest()
+    {
+        return new MCParameter(super.rest());
+    }
+
     public Result<BlockPos> pos(Parameter yp, Parameter zp, BlockPos ref, boolean centerBlock)
     {
         return first().missable().orElse("~").flatMap(x ->

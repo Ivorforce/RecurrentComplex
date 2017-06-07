@@ -36,6 +36,12 @@ public class IvParameter extends MCParameter
         return new IvParameter(super.move(idx));
     }
 
+    @Override
+    public IvParameter rest()
+    {
+        return new IvParameter(super.rest());
+    }
+
     @Nonnull
     public Parameter.Result<BlockSurfacePos> surfacePos(Parameter zp, BlockPos ref, boolean centerBlock)
     {

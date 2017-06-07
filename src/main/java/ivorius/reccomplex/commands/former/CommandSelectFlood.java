@@ -71,7 +71,7 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
             exp.addEvaluator("horizontal", f -> f.getHorizontalIndex() >= 0);
             exp.addEvaluator("vertical", f -> f.getHorizontalIndex() < 0);
         });
-        facingExpression.setExpression(parameters.get(2).text().optional().orElse(""));
+        facingExpression.setExpression(parameters.get(2).rest().first().optional().orElse(""));
 
         List<EnumFacing> available = Arrays.stream(EnumFacing.values()).filter(facingExpression).collect(Collectors.toList());
 

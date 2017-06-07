@@ -49,10 +49,10 @@ tile.spawn_script.name=Script Block
 itemGroup.structureTools=Structure Tools
 itemGroup.inventoryGenerators=Inventory Generators
 
-commands.rc.noEntityInfo=The entity does not contain structure info! This is a bug!
+commands.rc.noEntityInfo=The sender doesn't handle structure info!
 commands.rc.nodimension=No such dimension
 commands.rc.nobiome=No such biome
-commands.rc.noSelection=The object doesn't handle selections!
+commands.rc.noSelection=The sender doesn't handle selections!
 commands.rc.large.warn=The selection is very big! This might take a while.
 commands.rc.large.error=The selection is too big! (And if it weren't, this command would probably take a few days to run!)
 

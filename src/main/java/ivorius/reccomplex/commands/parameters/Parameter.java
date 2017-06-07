@@ -70,6 +70,10 @@ public class Parameter
         return at(0);
     }
 
+    public Result<String> stringAt(int idx) {
+        return at(idx);
+    }
+
     public Result<Integer> intAt(int idx)
     {
         return at(idx).map(CommandBase::parseInt);

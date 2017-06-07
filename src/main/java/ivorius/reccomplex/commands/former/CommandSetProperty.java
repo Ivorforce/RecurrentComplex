@@ -47,8 +47,8 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
-        IvOptional.ifAbsent(parameters.get("exp").expression(matcher).optional(), () -> matcher.setExpression(""));
+        PositionedBlockExpression matcher = parameters.get("exp").orElse("")
+                .expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry)).require();
 
         String propertyName = parameters.get(0).require();
         String propertyValue = parameters.get(1).require();

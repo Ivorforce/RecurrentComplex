@@ -6,13 +6,16 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.capability.CapabilitySelection;
 import ivorius.reccomplex.commands.parameters.*;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -53,42 +56,31 @@ public class CommandSelecting extends CommandExpecting
         server.commandManager.executeCommand(new SelectingSender(commandSender, p1, p2), command);
     }
 
-    public static class SelectingSender extends DelegatingSender implements SelectionOwner
+    public static class SelectingSender extends DelegatingSender
     {
-        private BlockPos point1;
-        private BlockPos point2;
+        public CapabilitySelection capabilitySelection;
 
         public SelectingSender(ICommandSender sender, BlockPos point1, BlockPos point2)
         {
             super(sender);
-            this.point1 = point1;
-            this.point2 = point2;
+            capabilitySelection = new CapabilitySelection(point1, point2);
+        }
+
+        @Override
+        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+        {
+            if (capability == CapabilitySelection.CAPABILITY)
+                return true;
+            return super.hasCapability(capability, facing);
         }
 
         @Nullable
         @Override
-        public BlockPos getSelectedPoint1()
+        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
         {
-            return point1;
-        }
-
-        @Override
-        public void setSelectedPoint1(@Nullable BlockPos pos)
-        {
-            point1 = pos;
-        }
-
-        @Nullable
-        @Override
-        public BlockPos getSelectedPoint2()
-        {
-            return point2;
-        }
-
-        @Override
-        public void setSelectedPoint2(@Nullable BlockPos pos)
-        {
-            point2 = pos;
+            if (capability == CapabilitySelection.CAPABILITY)
+                return (T) capabilitySelection;
+            return super.getCapability(capability, facing);
         }
     }
 

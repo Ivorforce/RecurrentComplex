@@ -42,6 +42,16 @@ public class CapabilitySelection implements NBTCompoundObject, PartialUpdateHand
         return provider.getCapability(CAPABILITY, null);
     }
 
+    public CapabilitySelection()
+    {
+    }
+
+    public CapabilitySelection(BlockPos selectedPoint1, BlockPos selectedPoint2)
+    {
+        this.selectedPoint1 = selectedPoint1;
+        this.selectedPoint2 = selectedPoint2;
+    }
+
     @Nullable
     @Override
     public BlockPos getSelectedPoint1()

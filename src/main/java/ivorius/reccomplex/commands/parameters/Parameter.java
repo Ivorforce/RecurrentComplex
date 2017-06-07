@@ -58,18 +58,13 @@ public class Parameter
 
     // Get
 
-    public Result<String> at(int index)
+    public Result<String> first()
     {
         return new Result<>(() ->
         {
-            require(index + 1);
-            return params.get(index);
+            require(1);
+            return params.get(0);
         });
-    }
-
-    public Result<String> first()
-    {
-        return at(0);
     }
 
     // Size
@@ -99,29 +94,29 @@ public class Parameter
 
     // Interpretation
 
-    public Result<String> stringAt(int idx)
+    public Result<String> string()
     {
-        return at(idx);
+        return first();
     }
 
-    public Result<Integer> intAt(int idx)
+    public Result<Integer> asInt()
     {
-        return at(idx).map(CommandBase::parseInt);
+        return first().map(CommandBase::parseInt);
     }
 
-    public Result<Boolean> booleanAt(int idx)
+    public Result<Boolean> asBoolean()
     {
-        return at(idx).map(CommandBase::parseBoolean);
+        return first().map(CommandBase::parseBoolean);
     }
 
-    public Result<Double> doubleAt(int idx)
+    public Result<Double> asDouble()
     {
-        return at(idx).map(CommandBase::parseDouble);
+        return first().map(CommandBase::parseDouble);
     }
 
-    public Result<Long> longAt(int idx)
+    public Result<Long> asLong()
     {
-        return at(idx).map(CommandBase::parseLong);
+        return first().map(CommandBase::parseLong);
     }
 
     // Rest as arguments

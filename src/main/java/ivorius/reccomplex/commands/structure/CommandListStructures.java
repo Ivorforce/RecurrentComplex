@@ -89,7 +89,7 @@ public class CommandListStructures extends CommandExpecting
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
-        int page = parameters.get().intAt(0).optional().orElse(0);
+        int page = parameters.get().asInt().optional().orElse(0);
 
         List<String> structureNames = new ArrayList<>();
         structureNames.addAll(StructureRegistry.INSTANCE.ids());

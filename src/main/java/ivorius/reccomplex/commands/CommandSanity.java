@@ -196,7 +196,7 @@ public class CommandSanity extends CommandExpecting
         }
 
         if (sane && !parameters.has("silent"))
-            commandSender.sendMessage(new TextComponentString("No specific problems found!"));
+            commandSender.sendMessage(new TextComponentString("No problems identified!"));
     }
 
     protected <T extends GenerationType> boolean addGenerationLog(ICommandSender commandSender, Class<T> tClass, BiPredicate<Structure<?>, T> predicate, String msg)

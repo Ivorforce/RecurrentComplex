@@ -8,15 +8,19 @@ package ivorius.reccomplex.commands.structure;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.CommandSelecting;
 import ivorius.reccomplex.commands.CommandVirtual;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.RCTextStyle;
+import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
+import ivorius.reccomplex.utils.RawResourceLocation;
 import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.utils.expression.ResourceExpression;
+import ivorius.reccomplex.utils.optional.IvOptional;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -26,6 +30,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 03.08.14.
@@ -82,23 +88,52 @@ public class CommandMapStructure extends CommandExpecting
     public Expect<?> expect()
     {
         return RCExpect.expectRC()
-                .structure()
+                .structure().descriptionU("resource expression|structure").required()
                 .virtualCommand()
-                .commandArguments(p -> p.get(1)).repeat()
+                .commandArguments(Parameters::get)
                 .named("directory", "d").resourceDirectory();
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        String id = parameters.get().first().require();
-        ResourceDirectory directory = parameters.get("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+        ResourceExpression expression = new ResourceExpression(StructureRegistry.INSTANCE::has);
+        IvOptional.ifAbsent(parameters.get().expression(expression).optional(), () -> expression.setExpression(""));
+
         CommandVirtual virtual = parameters.get(1).virtualCommand(server).require();
         String[] virtualArgs = parameters.get(2).varargs();
 
-        map(id, directory, sender, virtual, virtualArgs, true);
+        ResourceDirectory directory = parameters.get("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+
+        List<String> relevant = StructureRegistry.INSTANCE.ids().stream()
+                .filter(id -> expression.test(new RawResourceLocation(StructureRegistry.INSTANCE.status(id).getDomain(), id)))
+                .collect(Collectors.toList());
+
+        boolean inform = relevant.size() == 1;
+
+        int saved = 0, failed = 0, skipped = 0;
+        for (String id : relevant)
+        {
+            switch (map(id, directory, commandSender, virtual, virtualArgs, inform))
+            {
+                case SKIPPED:
+                    skipped++;
+                    break;
+                case SUCCESS:
+                    saved++;
+                    break;
+                default:
+                    failed++;
+                    break;
+            }
+        }
+
+        commandSender.sendMessage(ServerTranslations.format("commands.rcmapall.result", saved, RCTextStyle.path(directory), failed, skipped));
+
+        RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
+        RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);
     }
 
     public enum MapResult

@@ -104,7 +104,7 @@ public class CommandSelection extends CommandSplit
                 BlockArea area = owner.getSelection();
 
                 PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
-                IvOptional.ifAbsent(parameters.get().expression(matcher).optional(), () -> matcher.setExpression("is:air"));
+                IvOptional.ifAbsent(parameters.get().rest().expression(matcher).optional(), () -> matcher.setExpression("is:air"));
 
                 for (EnumFacing direction : EnumFacing.VALUES)
                     while (area != null && sideStream(area, direction).allMatch(p -> matcher.test(PositionedBlockExpression.Argument.at(world, p))))
@@ -131,7 +131,7 @@ public class CommandSelection extends CommandSplit
                     changed = false;
 
                     PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
-                    IvOptional.ifAbsent(parameters.get().expression(matcher).optional(), () -> matcher.setExpression("!is:air"));
+                    IvOptional.ifAbsent(parameters.get().rest().expression(matcher).optional(), () -> matcher.setExpression("!is:air"));
 
                     for (EnumFacing direction : EnumFacing.VALUES)
                     {

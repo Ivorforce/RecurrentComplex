@@ -30,6 +30,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +40,7 @@ import java.util.stream.Collectors;
 public class CommandMapStructure extends CommandExpecting
 {
     @Nonnull
-    public static MapResult map(String structureID, ResourceDirectory directory, ICommandSender commandSender, CommandVirtual command, String[] args, boolean inform) throws CommandException
+    public static MapResult map(String structureID, @Nullable ResourceDirectory directory, ICommandSender commandSender, CommandVirtual command, String[] args, boolean inform) throws CommandException
     {
         Structure<?> info = StructureRegistry.INSTANCE.get(structureID);
 
@@ -68,6 +69,9 @@ public class CommandMapStructure extends CommandExpecting
 
         structure.worldDataCompound = worldData.createTagCompound();
 
+        if (directory == null)
+            return MapResult.SUCCESS;
+
         return PacketSaveStructureHandler.write(commandSender, structure, structureID, directory, true, inform)
                 ? MapResult.SUCCESS
                 : MapResult.FAILED;
@@ -91,7 +95,9 @@ public class CommandMapStructure extends CommandExpecting
                 .structure().descriptionU("resource expression|structure").required()
                 .virtualCommand()
                 .commandArguments(Parameters::get)
-                .named("directory", "d").resourceDirectory();
+                .named("directory", "d").resourceDirectory()
+                .flag("nosave", "n")
+                ;
     }
 
     @Override
@@ -105,7 +111,8 @@ public class CommandMapStructure extends CommandExpecting
         CommandVirtual virtual = parameters.get(1).virtualCommand(server).require();
         String[] virtualArgs = parameters.get(2).varargs();
 
-        ResourceDirectory directory = parameters.get("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+        ResourceDirectory directory = parameters.has("nosave") ? null :
+                parameters.get("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
 
         List<String> relevant = StructureRegistry.INSTANCE.ids().stream()
                 .filter(id -> expression.test(new RawResourceLocation(StructureRegistry.INSTANCE.status(id).getDomain(), id)))

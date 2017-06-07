@@ -29,6 +29,8 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by lukas on 03.08.14.
  */
@@ -73,40 +75,63 @@ public class CommandMapAllStructure extends CommandExpecting
             if (!expression.test(new RawResourceLocation(StructureRegistry.INSTANCE.status(id).getDomain(), id)))
                 continue;
 
-            Structure<?> info = StructureRegistry.INSTANCE.get(id);
-
-            if (!(info instanceof GenericStructure))
+            switch (map(id, directory, commandSender, virtual, parameters.get(1).varargs(), false))
             {
-                skipped++;
-                continue;
+                case SKIPPED:
+                    skipped++;
+                    break;
+                case SUCCESS:
+                    saved++;
+                    break;
+                default:
+                    failed++;
+                    break;
             }
-
-            GenericStructure structure = (GenericStructure) info;
-
-            IvWorldData worldData = structure.constructWorldData();
-            MockWorld world = new MockWorld.WorldData(worldData);
-
-            try
-            {
-                virtual.execute(world, new CommandSelecting.SelectingSender(commandSender, BlockPos.ORIGIN, worldData.blockCollection.area().getHigherCorner()),
-                        parameters.get(1).varargs());
-            }
-            catch (MockWorld.VirtualWorldException ex)
-            {
-                throw ServerTranslations.commandException("commands.rcmap.nonvirtual.arguments");
-            }
-
-            structure.worldDataCompound = worldData.createTagCompound();
-
-            if (PacketSaveStructureHandler.write(commandSender, structure, id, directory, true, false))
-                saved++;
-            else
-                failed++;
         }
 
         commandSender.sendMessage(ServerTranslations.format("commands.rcmapall.result", saved, RCTextStyle.path(directory), failed, skipped));
 
         RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
         RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);
+    }
+
+    @Nonnull
+    public static MapResult map(String structureID, ResourceDirectory directory, ICommandSender commandSender, CommandVirtual command, String[] args, boolean inform) throws CommandException
+    {
+        Structure<?> info = StructureRegistry.INSTANCE.get(structureID);
+
+        if (!(info instanceof GenericStructure))
+        {
+            if (inform)
+                throw ServerTranslations.commandException("commands.structure.notGeneric", structureID);
+
+            return MapResult.SKIPPED;
+        }
+
+        GenericStructure structure = (GenericStructure) info;
+
+        IvWorldData worldData = structure.constructWorldData();
+        MockWorld world = new MockWorld.WorldData(worldData);
+
+        try
+        {
+            command.execute(world, new CommandSelecting.SelectingSender(commandSender, BlockPos.ORIGIN, worldData.blockCollection.area().getHigherCorner()),
+                    args);
+        }
+        catch (MockWorld.VirtualWorldException ex)
+        {
+            throw ServerTranslations.commandException("commands.rcmap.nonvirtual.arguments");
+        }
+
+        structure.worldDataCompound = worldData.createTagCompound();
+
+        return PacketSaveStructureHandler.write(commandSender, structure, structureID, directory, true, inform)
+                ? MapResult.SUCCESS
+                : MapResult.FAILED;
+    }
+
+    public enum MapResult
+    {
+        SUCCESS, FAILED, SKIPPED
     }
 }

@@ -46,7 +46,7 @@ public class CommandSightAdd extends CommandExpecting
         WorldStructureGenerationData generationData = WorldStructureGenerationData.get(commandSender.getEntityWorld());
         SelectionOwner owner = RCCommands.getSelectionOwner(commandSender, null, true);
 
-        String name = parameters.get().rest().first().require();
+        String name = parameters.get(0).rest(ParameterString.join()).require();
 
         generationData.addEntry(WorldStructureGenerationData.CustomEntry.from(name, BlockAreas.toBoundingBox(owner.getSelection())));
         commandSender.sendMessage(ServerTranslations.format("commands.rcremember.success", name));

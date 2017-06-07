@@ -51,7 +51,7 @@ public class CommandContaining extends SimpleCommand
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        BlockExpression matcher = parameters.get().expression(new BlockExpression(RecurrentComplex.specialRegistry)).require();
+        BlockExpression matcher = parameters.get(0).expression(new BlockExpression(RecurrentComplex.specialRegistry)).require();
 
         CommandSearchStructure.postResultMessage(commandSender,
                 RCTextStyle::structure, CommandSearchStructure.search(StructureRegistry.INSTANCE.ids(), name -> containedBlocks(StructureRegistry.INSTANCE.get(name), matcher))

@@ -5,23 +5,20 @@
 
 package ivorius.reccomplex.commands.parameters;
 
-import joptsimple.internal.Strings;
-import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.BinaryOperator;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
  * Created by lukas on 30.05.17.
  */
-public class Parameter
+public class Parameter<T, P extends Parameter<T, P>>
 {
     /**
      * -1 for 'no argument provided'
@@ -30,25 +27,31 @@ public class Parameter
     protected final String name;
     protected final List<String> params;
 
-    public Parameter(Parameter other)
+    @Nonnull
+    protected final Function<List<String>, T> fun;
+
+    public Parameter(Parameter<T, ?> other)
     {
         moved = other.moved;
         name = other.name;
         params = other.params;
+        fun = other.fun;
     }
 
-    public Parameter(String name, List<String> params)
+    public Parameter(Parameter<?, ?> other, @Nonnull Function<List<String>, T> fun)
     {
-        this.moved = 0;
-        this.name = name;
-        this.params = params;
+        moved = other.moved;
+        name = other.name;
+        params = other.params;
+        this.fun = fun;
     }
 
-    protected Parameter(int moved, String name, List<String> params)
+    protected Parameter(int moved, String name, List<String> params, @Nullable Function<List<String>, T> fun)
     {
         this.moved = moved;
         this.name = name;
         this.params = params;
+        this.fun = fun != null ? fun : initial();
     }
 
     protected static String parameterName(Parameter parameter, int index)
@@ -56,15 +59,10 @@ public class Parameter
         return String.format("%s (%d)", parameter.name != null ? " " + Parameters.LONG_FLAG_PREFIX + parameter.name : "", Math.max(parameter.moved, 0) + index);
     }
 
-    // Get
-
-    public Result<String> first()
+    @Nonnull
+    protected Function<List<String>, T> initial()
     {
-        return new Result<>(() ->
-        {
-            require(1);
-            return params.get(0);
-        });
+        throw new IllegalStateException();
     }
 
     // Size
@@ -74,12 +72,13 @@ public class Parameter
         return moved >= 0;
     }
 
-    protected void require(int size) throws CommandException
+    protected String first(List<String> list) throws CommandException
     {
         if (!isSet())
-            throw new ArgumentMissingException(this, size);
-        if (!has(size))
-            throw new ParameterNotFoundException(this, size);
+            throw new ArgumentMissingException(this, 0);
+        if (list.isEmpty())
+            throw new ParameterNotFoundException(this, 0);
+        return list.get(0);
     }
 
     public int count()
@@ -92,58 +91,170 @@ public class Parameter
         return size <= count();
     }
 
-    // Interpretation
+    // Subclass
 
-    public Result<String> string()
+    public P copy(Parameter<T, ?> p)
     {
-        return first();
+        //noinspection unchecked
+        return (P) new Parameter(p);
     }
 
-    public Result<Integer> asInt()
+    // Result
+
+    @Nonnull
+    public Function<List<String>, T> function()
     {
-        return first().map(CommandBase::parseInt);
+        return fun;
     }
 
-    public Result<Boolean> asBoolean()
+    public Parameter<T, P> filter(Predicate<T> fun)
     {
-        return first().map(CommandBase::parseBoolean);
+        return filter(fun, null);
     }
 
-    public Result<Double> asDouble()
+    public Parameter<T, P> filter(Predicate<T> fun, @Nullable Function<T, CommandException> esc)
     {
-        return first().map(CommandBase::parseDouble);
+        return new Parameter<T, P>(this, s ->
+        {
+            T t = function().apply(s);
+            if (!fun.test(t) && esc != null) throw esc.apply(t);
+            return t;
+        });
     }
 
-    public Result<Long> asLong()
+    public <O> Parameter<O, ?> map(Function<T, O> fun)
     {
-        return first().map(CommandBase::parseLong);
+        return map(fun, null);
+    }
+
+    public <O> Parameter<O, ?> map(Function<T, O> fun, @Nullable Function<T, CommandException> exc)
+    {
+        return new Parameter<>(this, s ->
+        {
+            T t = function().apply(s);
+            if (t == null) return null;
+
+            O o = fun.apply(t);
+            if (o == null && exc != null) throw exc.apply(t);
+
+            return o;
+        });
+    }
+
+    public <O> Parameter<O, ?> flatMap(Function<T, Parameter<O, ?>> fun)
+    {
+        return new Parameter<>(this, s ->
+        {
+            T t = function().apply(s);
+
+            if (t == null) return null;
+
+            Parameter<O, ?> po = fun.apply(t);
+            return po.function().apply(po.params);
+        });
+    }
+
+    public P orElse(T t)
+    {
+        return orElseGet(() -> t);
+    }
+
+    public P orElseGet(Supplier<T> supplier)
+    {
+        return copy(new Parameter<T, P>(this, s ->
+        {
+            try
+            {
+                return function().apply(s);
+            }
+            catch (ParameterNotFoundException e)
+            {
+                return supplier.get();
+            }
+        }));
+    }
+
+    @Nonnull
+    public T require() throws CommandException
+    {
+        T t = function().apply(params);
+        if (t == null) throw new CommandException("Parameter missing!");
+        return t;
+    }
+
+    public Optional<T> optional() throws CommandException
+    {
+        T t = null;
+
+        try
+        {
+            t = function().apply(params);
+        }
+        catch (ParameterNotFoundException ignored)
+        {
+        }
+
+        return Optional.ofNullable(t);
+    }
+
+    public T get()
+    {
+        //noinspection OptionalGetWithoutIsPresent
+        return tryGet().get();
+    }
+
+    public Optional<T> tryGet()
+    {
+        T t = null;
+
+        try
+        {
+            t = function().apply(params);
+        }
+        catch (CommandException ignored)
+        {
+        }
+
+        return Optional.ofNullable(t);
     }
 
     // Rest as arguments
 
-    public Parameter rest()
+    public P rest(BinaryOperator<T> operator)
     {
-        return new Parameter(moved, name, params.size() == 0 ? Collections.emptyList() : Collections.singletonList(Strings.join(params, " ")));
+        return copy(new Parameter<>(this, p ->
+        {
+            T t = function().apply(Collections.singletonList(p.get(0)));
+            for (int i = 1; i < p.size(); i++) t = operator.apply(t, function().apply(Collections.singletonList(p.get(i))));
+            return t;
+        }));
     }
 
-    public Parameter move(int idx)
+    public P move(int idx)
     {
-        return new Parameter(isSet() ? moved + idx : moved, name, params.subList(Math.min(idx, params.size()), params.size()));
+        //noinspection unchecked
+        return idx == 0 ? (P) this
+                : copy(new Parameter<>(isSet() ? moved + idx : moved, name, params.subList(Math.min(idx, params.size()), params.size()), fun));
     }
 
-    public String[] varargs()
+    public Parameter<T[], ?> varargs(IntFunction<T[]> init)
     {
-        return params.stream().toArray(String[]::new);
+        return stream().map(s -> s.toArray(init));
     }
 
-    public List<String> varargsList()
+    public Parameter<List<T>, ?> varargsList()
     {
-        return params;
+        return new Parameter<>(this, p ->
+        {
+            List<T> list = new ArrayList<>(p.size());
+            for (String param : p) list.add(function().apply(Collections.singletonList(param)));
+            return list;
+        });
     }
 
-    public Stream<Parameter> stream()
+    public Parameter<Stream<T>, ?> stream()
     {
-        return IntStream.range(0, params.size()).mapToObj(this::move);
+        return varargsList().map(Collection::stream);
     }
 
     public interface Supplier<T>
@@ -154,166 +265,6 @@ public class Parameter
     public interface Function<T, O>
     {
         O apply(T t) throws CommandException;
-    }
-
-    public static class Result<T>
-    {
-        private Supplier<T> t;
-
-        public Result(Supplier<T> t)
-        {
-            this.t = t;
-        }
-
-        public static <T> Result<T> empty()
-        {
-            return new Result<T>(() -> null);
-        }
-
-        public Result<T> filter(Predicate<T> fun)
-        {
-            return filter(fun, null);
-        }
-
-        public Result<T> filter(Predicate<T> fun, @Nullable Function<T, CommandException> esc)
-        {
-            return new Result<T>(() ->
-            {
-                T t = this.t.get();
-                if (!fun.test(t) && esc != null) throw esc.apply(t);
-                return t;
-            });
-        }
-
-        public <O> Result<O> map(Function<T, O> fun)
-        {
-            return map(fun, null);
-        }
-
-        public <O> Result<O> map(Function<T, O> fun, @Nullable Function<T, CommandException> exc)
-        {
-            return new Result<>(() ->
-            {
-                T t = this.t.get();
-
-                if (t == null) return null;
-
-                O o = fun.apply(t);
-                if (o == null && exc != null) throw exc.apply(t);
-
-                return o;
-            });
-        }
-
-        public <O> Result<O> flatMap(Function<T, Result<O>> fun)
-        {
-            return new Result<>(() ->
-            {
-                T t = this.t.get();
-
-                if (t == null) return null;
-
-                return fun.apply(t).t.get();
-            });
-        }
-
-        public Result<T> orElse(T t)
-        {
-            return new Result<T>(() ->
-            {
-                T p = this.t.get();
-                return p != null ? p : t;
-            });
-        }
-
-        public Result<T> orElseGet(Supplier<T> supplier)
-        {
-            return new Result<T>(() ->
-            {
-                T t = this.t.get();
-                return t != null ? t : supplier.get();
-            });
-        }
-
-        public Result<T> failable()
-        {
-            return new Result<T>(() ->
-            {
-                try
-                {
-                    return t.get();
-                }
-                catch (CommandException e)
-                {
-                    return null;
-                }
-            });
-        }
-
-        public Result<T> missable()
-        {
-            return new Result<T>(() ->
-            {
-                try
-                {
-                    return t.get();
-                }
-                catch (ParameterNotFoundException e)
-                {
-                    return null;
-                }
-            });
-        }
-
-        @Nonnull
-        public T require() throws CommandException
-        {
-            T t = this.t.get();
-            if (t == null) throw new CommandException("Parameter missing!");
-            return t;
-        }
-
-        public Optional<T> optional() throws CommandException
-        {
-            T t = null;
-
-            try
-            {
-                t = this.t.get();
-            }
-            catch (ParameterNotFoundException ignored)
-            {
-            }
-
-            return Optional.ofNullable(t);
-        }
-
-        public T get()
-        {
-            //noinspection OptionalGetWithoutIsPresent
-            return tryGet().get();
-        }
-
-        public Optional<T> tryGet()
-        {
-            T t = null;
-
-            try
-            {
-                t = this.t.get();
-            }
-            catch (CommandException ignored)
-            {
-            }
-
-            return Optional.ofNullable(t);
-        }
-
-        @Override
-        public String toString()
-        {
-            return tryGet().map(Object::toString).orElse("null");
-        }
     }
 
     public static class ParameterNotFoundException extends CommandException

@@ -49,9 +49,9 @@ public class CommandSelecting extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        BlockPos p1 = parameters.get().pos(commandSender.getPosition(), false).require();
+        BlockPos p1 = parameters.get(0).pos(commandSender.getPosition(), false).require();
         BlockPos p2 = parameters.get(3).pos(commandSender.getPosition(), false).require();
-        String command = parameters.get(6).rest().first().optional().orElse("");
+        String command = parameters.get(6).rest(ParameterString.join()).optional().orElse("");
 
         server.commandManager.executeCommand(new SelectingSender(commandSender, p1, p2), command);
     }

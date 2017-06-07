@@ -53,7 +53,7 @@ public class CommandSelectSetBiome extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        Biome biome = parameters.get().biome().require();
+        Biome biome = parameters.get(0).biome().require();
         byte biomeID = (byte) (Biome.REGISTRY.getIDForObject(biome) & 255);
 
         World world = commandSender.getEntityWorld();

@@ -57,7 +57,7 @@ public class CommandDecorate extends CommandExpecting
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         BlockSurfaceArea area = new BlockSurfaceArea(
-                parameters.get().surfacePos(commandSender.getPosition(), false).require(),
+                parameters.get(0).surfacePos(commandSender.getPosition(), false).require(),
                 parameters.get(2).surfacePos(commandSender.getPosition(), false).require()
         );
         BlockSurfaceArea chunkArea = new BlockSurfaceArea(getChunkPos(area.getPoint1()), getChunkPos(area.getPoint2()));

@@ -34,7 +34,7 @@ public class CommandSightDelete extends CommandSplit
                 RCParameters parameters = RCParameters.of(args, null);
                 WorldStructureGenerationData generationData = WorldStructureGenerationData.get(sender.getEntityWorld());
 
-                WorldStructureGenerationData.Entry entry = generationData.removeEntry(UUID.fromString(parameters.get().first().require()));
+                WorldStructureGenerationData.Entry entry = generationData.removeEntry(UUID.fromString(parameters.get(0).require()));
 
                 if (entry == null)
                     throw ServerTranslations.commandException("commands.rcsightinfo.unknown");
@@ -51,7 +51,7 @@ public class CommandSightDelete extends CommandSplit
                 RCParameters parameters = RCParameters.of(args, null);
                 WorldStructureGenerationData generationData = WorldStructureGenerationData.get(sender.getEntityWorld());
 
-                BlockPos pos = parameters.get().pos(sender.getPosition(), false).require();
+                BlockPos pos = parameters.get(0).pos(sender.getPosition(), false).require();
 
                 List<WorldStructureGenerationData.Entry> entries = generationData.entriesAt(pos).collect(Collectors.toList());
 

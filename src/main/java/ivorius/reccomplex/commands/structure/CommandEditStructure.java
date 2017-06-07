@@ -44,8 +44,8 @@ public class CommandEditStructure extends CommandExpecting
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        String id = parameters.get().first().require();
-        GenericStructure base = parameters.get().genericStructure().require();
+        String id = parameters.get(0).require();
+        GenericStructure base = parameters.get(0).genericStructure().require();
         GenericStructure from = parameters.get("from").genericStructure().optional().orElse(base);
 
         if (base != from)

@@ -51,7 +51,7 @@ public class CommandGenerateStructure extends SimpleCommand
                 .surfacePos("x", "z")
                 .named("dimension", "d").dimension()
                 .named("gen")
-                .next(params -> new RCParameters(params).get().genericStructure().tryGet()
+                .next(params -> new RCParameters(params).get(0).genericStructure().tryGet()
                         .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id))
                 ).descriptionU("generation type id")
                 .named("rotation", "r").rotation()
@@ -66,13 +66,13 @@ public class CommandGenerateStructure extends SimpleCommand
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        String structureID = parameters.get().first().require();
-        Structure<?> structure = parameters.get().structure().require();
+        String structureID = parameters.get(0).require();
+        Structure<?> structure = parameters.get(0).structure().require();
         WorldServer world = parameters.get("dimension").dimension(server, sender).require();
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(null);
         GenerationType generationType = parameters.get("gen").generationType(structure).require();
         BlockSurfacePos pos = parameters.surfacePos("x", "z", sender.getPosition(), false).require();
-        String seed = parameters.get("seed").first().optional().orElse(null);
+        String seed = parameters.get("seed").optional().orElse(null);
         boolean select = parameters.has("select");
 
         Placer placer = generationType.placer();

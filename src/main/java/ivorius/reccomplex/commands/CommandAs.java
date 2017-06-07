@@ -43,7 +43,7 @@ public class CommandAs extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        Entity entity = parameters.get().entity(server, commandSender).require();
+        Entity entity = parameters.get(0).entity(server, commandSender).require();
         String command = buildString(args, 1);
 
         server.commandManager.executeCommand(entity, command);

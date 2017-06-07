@@ -8,10 +8,7 @@ package ivorius.reccomplex.commands.files;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
@@ -46,7 +43,7 @@ public class CommandReload extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        LeveledRegistry.Level level = parameters.get().first().map(LeveledRegistry.Level::valueOf).optional().orElse(LeveledRegistry.Level.CUSTOM);
+        LeveledRegistry.Level level = parameters.get(0).map(LeveledRegistry.Level::valueOf).optional().orElse(LeveledRegistry.Level.CUSTOM);
 
         try
         {

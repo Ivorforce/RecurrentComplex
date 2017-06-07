@@ -6,10 +6,7 @@
 package ivorius.reccomplex.commands.schematic;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.OperationGenerateSchematic;
@@ -73,7 +70,7 @@ public class CommandImportSchematic extends CommandExpecting
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.rcimportschematic.usage");
 
-        SchematicFile schematicFile = parseSchematic(parameters.get().first().require());
+        SchematicFile schematicFile = parseSchematic(parameters.get(0).require());
         BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 

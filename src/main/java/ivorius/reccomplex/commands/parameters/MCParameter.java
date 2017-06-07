@@ -22,10 +22,12 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 
+import java.util.function.BinaryOperator;
+
 /**
  * Created by lukas on 31.05.17.
  */
-public class MCParameter extends Parameter
+public class MCParameter<P extends MCParameter<P>> extends ParameterString<P>
 {
     public MCParameter(Parameter other)
     {
@@ -39,67 +41,62 @@ public class MCParameter extends Parameter
     }
 
     @Override
-    public MCParameter move(int idx)
+    public P copy(Parameter<String, ?> p)
     {
-        return new MCParameter(super.move(idx));
+        //noinspection unchecked
+        return (P) new MCParameter(p);
     }
 
-    @Override
-    public MCParameter rest()
+    public Parameter<BlockPos, ?> pos(Parameter<String, ?> yp, Parameter<String, ?> zp, BlockPos ref, boolean centerBlock)
     {
-        return new MCParameter(super.rest());
-    }
-
-    public Result<BlockPos> pos(Parameter yp, Parameter zp, BlockPos ref, boolean centerBlock)
-    {
-        return first().missable().orElse("~").flatMap(x ->
-                yp.first().missable().orElse("~").flatMap(y ->
-                        zp.first().missable().orElse("~").map(z ->
+        return orElse("~").flatMap(x ->
+                yp.orElse("~").flatMap(y ->
+                        zp.orElse("~").map(z ->
                                 parseBlockPos(ref, new String[]{x, y, z}, 0, centerBlock)
                         )));
     }
 
-    public Result<BlockPos> pos(BlockPos ref, boolean centerBlock)
+    public Parameter<BlockPos, ?> pos(BlockPos ref, boolean centerBlock)
     {
-        return pos(move(1), move(2), ref, centerBlock);
+        return pos(this.move(1), this.move(2), ref, centerBlock);
     }
 
-    public Result<Biome> biome()
+    public Parameter<Biome, ?> biome()
     {
-        return first().map(ResourceLocation::new)
+        return map(ResourceLocation::new)
                 .map(Biome.REGISTRY::getObject, t -> ServerTranslations.commandException("commands.rc.nobiome"));
     }
 
-    public Result<BiomeDictionary.Type> biomeDictionaryType()
+    public Parameter<BiomeDictionary.Type, ?> biomeDictionaryType()
     {
-        return first().map(RCAccessorBiomeDictionary::getTypeWeak, s -> ServerTranslations.commandException("commands.biomedict.notype", s));
+        return map(RCAccessorBiomeDictionary::getTypeWeak, s -> ServerTranslations.commandException("commands.biomedict.notype", s));
     }
 
-    public Result<WorldServer> dimension(MinecraftServer server, ICommandSender commandSender)
+    public Parameter<WorldServer, ?> dimension(MinecraftServer server, ICommandSender commandSender)
     {
-        return first().filter(d -> !d.equals("~"), null).missable()
+        return filter(d -> !d.equals("~"), null)
                 .map(CommandBase::parseInt).map(server::worldServerForDimension, t -> ServerTranslations.commandException("commands.rc.nodimension"))
                 .orElse((WorldServer) commandSender.getEntityWorld());
     }
 
-    public Result<Block> block(ICommandSender commandSender)
+    public Parameter<Block, ?> block(ICommandSender commandSender)
     {
-        return first().map(s -> CommandBase.getBlockByText(commandSender, s));
+        return map(s -> CommandBase.getBlockByText(commandSender, s));
     }
 
-    public Result<ICommand> command(MinecraftServer server)
+    public Parameter<ICommand, ?> command(MinecraftServer server)
     {
-        return first().map(server.getCommandManager().getCommands()::get);
+        return map(server.getCommandManager().getCommands()::get);
     }
 
-    public Result<Entity> entity(MinecraftServer server, ICommandSender sender)
+    public Parameter<Entity, ?> entity(MinecraftServer server, ICommandSender sender)
     {
-        return first().map(s -> CommandBase.getEntity(server, sender, s));
+        return map(s -> CommandBase.getEntity(server, sender, s));
     }
 
-    public Result<Rotation> rotation()
+    public Parameter<Rotation, ?> rotation()
     {
-        return first().missable().map(CommandBase::parseInt)
+        return map(CommandBase::parseInt)
                 .map(i -> i > 40 ? i / 90 : i)
                 .map(MinecraftTransforms::to);
     }

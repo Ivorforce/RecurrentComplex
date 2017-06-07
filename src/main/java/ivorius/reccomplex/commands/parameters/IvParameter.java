@@ -13,11 +13,12 @@ import net.minecraft.command.NumberInvalidException;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
+import java.util.function.BinaryOperator;
 
 /**
  * Created by lukas on 31.05.17.
  */
-public class IvParameter extends MCParameter
+public class IvParameter<P extends IvParameter<P>> extends MCParameter<P>
 {
     public IvParameter(Parameter other)
     {
@@ -31,37 +32,32 @@ public class IvParameter extends MCParameter
     }
 
     @Override
-    public IvParameter move(int idx)
+    public P copy(Parameter<String, ?> p)
     {
-        return new IvParameter(super.move(idx));
-    }
-
-    @Override
-    public IvParameter rest()
-    {
-        return new IvParameter(super.rest());
+        //noinspection unchecked
+        return (P) new IvParameter<>(p);
     }
 
     @Nonnull
-    public Parameter.Result<BlockSurfacePos> surfacePos(Parameter zp, BlockPos ref, boolean centerBlock)
+    public Parameter<BlockSurfacePos, ?> surfacePos(Parameter<String, ?> zp, BlockPos ref, boolean centerBlock)
     {
-        return first().missable().orElse("~").flatMap(x ->
-                zp.first().missable().orElse("~").map(z ->
+        return orElse("~").flatMap(x ->
+                zp.orElse("~").map(z ->
                         parseSurfacePos(ref, x, z, centerBlock)
                 ));
     }
 
-    public Parameter.Result<BlockSurfacePos> surfacePos(BlockPos ref, boolean centerBlock)
+    public Parameter<BlockSurfacePos, ?> surfacePos(BlockPos ref, boolean centerBlock)
     {
         return surfacePos(move(1), ref, centerBlock);
     }
 
-    public Result<AxisAlignedTransform2D> transform(boolean mirror) throws CommandException
+    public Parameter<AxisAlignedTransform2D, ?> transform(boolean mirror) throws CommandException
     {
         if (has(1) || mirror)
-            return first().missable().map(CommandBase::parseInt)
+            return map(CommandBase::parseInt)
                     .map(i -> i > 40 ? i / 90 : i)
                     .orElse(0).map(r -> AxisAlignedTransform2D.from(r, mirror));
-        return Result.empty();
+        return new Parameter<>(this, s -> null);
     }
 }

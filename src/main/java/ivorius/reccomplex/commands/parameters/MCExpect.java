@@ -90,13 +90,13 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
         return tExpect.descriptionU("command");
     }
 
-    public T commandArguments(Function<Parameters, Parameter> parameter)
+    public T commandArguments(Function<Parameters, ParameterString> start)
     {
         Expect<T> tExpect = nextRaw((server1, sender, params, pos1) ->
         {
-            Parameter parameterGet = parameter.apply(params);
-            Optional<ICommand> other = parameterGet.first().tryGet().map(server1.getCommandManager().getCommands()::get);
-            return other.map(c -> c.getTabCompletions(server1, sender, parameterGet.move(1).varargs(), pos1)).orElse(Collections.emptyList());
+            ParameterString<?> commandParameter = start.apply(params);
+            Optional<ICommand> other = commandParameter.tryGet().map(server1.getCommandManager().getCommands()::get);
+            return other.map(c -> c.getTabCompletions(server1, sender, commandParameter.move(1).varargs().get(), pos1)).orElse(Collections.emptyList());
         });
         return tExpect.descriptionU("args...");
     }

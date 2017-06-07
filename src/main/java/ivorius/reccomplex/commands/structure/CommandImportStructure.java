@@ -56,8 +56,8 @@ public class CommandImportStructure extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        String structureID = parameters.get().first().require();
-        Structure<?> structure = parameters.get().structure().require();
+        String structureID = parameters.get(0).require();
+        Structure<?> structure = parameters.get(0).structure().require();
         WorldServer world = parameters.get("dimension").dimension(server, sender).require();
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         BlockPos pos = parameters.pos("x", "y", "z", sender.getPosition(), false).require();

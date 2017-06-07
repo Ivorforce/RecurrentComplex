@@ -7,10 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.RCEntityInfo;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -50,7 +47,7 @@ public class CommandVisual extends CommandExpecting
         EntityPlayer player = getCommandSenderAsPlayer(commandSender);
         RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(player, null);
 
-        String type = parameters.get().first().require();
+        String type = parameters.get(0).require();
 
         switch (type)
         {

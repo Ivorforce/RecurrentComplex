@@ -26,24 +26,18 @@ public class MCParameters extends Parameters
     }
 
     @Override
-    public MCParameter get()
-    {
-        return new MCParameter(super.get());
-    }
-
-    @Override
-    public MCParameter get(int idx)
+    public MCParameter<?> get(int idx)
     {
         return new MCParameter(super.get(idx));
     }
 
     @Override
-    public MCParameter get(@Nonnull String name)
+    public MCParameter<?> get(@Nonnull String name)
     {
         return new MCParameter(super.get(name));
     }
 
-    public Parameter.Result<BlockPos> pos(String x, String y, String z, BlockPos ref, boolean centerBlock)
+    public Parameter<BlockPos, ?> pos(String x, String y, String z, BlockPos ref, boolean centerBlock)
     {
         return get(x).pos(this.get(y), this.get(z), ref, centerBlock);
     }

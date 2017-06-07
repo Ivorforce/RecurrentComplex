@@ -24,19 +24,13 @@ public class RCParameters extends IvParameters
     }
 
     @Override
-    public RCParameter get()
-    {
-        return new RCParameter(super.get());
-    }
-
-    @Override
-    public RCParameter get(int idx)
+    public RCParameter<?> get(int idx)
     {
         return new RCParameter(super.get(idx));
     }
 
     @Override
-    public RCParameter get(@Nonnull String name)
+    public RCParameter<?> get(@Nonnull String name)
     {
         return new RCParameter(super.get(name));
     }

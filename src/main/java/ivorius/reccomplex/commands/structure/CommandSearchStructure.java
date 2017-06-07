@@ -10,10 +10,7 @@ import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -132,10 +129,12 @@ public class CommandSearchStructure extends CommandExpecting
 
         if (args.length >= 1)
         {
+            List<String> terms = parameters.get(0).varargsList().require();
+
             postResultMessage(commandSender,
                     RCTextStyle::structure,
                     search(StructureRegistry.INSTANCE.ids(),
-                            name -> searchRank(parameters.get().varargsList(), keywords(name, StructureRegistry.INSTANCE.get(name)))
+                            name -> searchRank(terms, keywords(name, StructureRegistry.INSTANCE.get(name)))
                     )
             );
         }

@@ -49,7 +49,7 @@ public class CommandSightCheck extends CommandExpecting
         RCParameters parameters = RCParameters.of(args, expect()::declare);
         World world = commandSender.getEntityWorld();
 
-        BlockPos pos = parameters.get().pos(commandSender.getPosition(), false).require();
+        BlockPos pos = parameters.get(0).pos(commandSender.getPosition(), false).require();
 
         List<WorldStructureGenerationData.Entry> entries = WorldStructureGenerationData.get(world).entriesAt(pos).collect(Collectors.toCollection(ArrayList::new));
         if (entries.size() > 0)

@@ -37,7 +37,7 @@ public class CommandDecorateOne extends CommandExpecting
         RCParameters parameters = RCParameters.of(args, expect()::declare);
         WorldServer entityWorld = (WorldServer) commandSender.getEntityWorld();
 
-        BlockSurfacePos pos = parameters.get().surfacePos(commandSender.getPosition(), false).require();
+        BlockSurfacePos pos = parameters.get(0).surfacePos(commandSender.getPosition(), false).require();
 
         if (!WorldGenStructures.generateRandomStructureInChunk(entityWorld.rand, pos.chunkCoord(), entityWorld, entityWorld.getBiome(pos.blockPos(0))))
             throw ServerTranslations.commandException("commands.rcdecorateone.none");

@@ -11,10 +11,7 @@ import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
@@ -74,7 +71,7 @@ public class CommandExportSchematic extends CommandExpecting
         BlockArea area = selectionOwner.getSelection();
         RCCommands.assertSize(commandSender, selectionOwner);
 
-        String structureName = parameters.get().first().optional()
+        String structureName = parameters.get(0).optional()
                 .orElse("NewStructure_" + commandSender.getEntityWorld().rand.nextInt(1000));
 
         BlockPos lowerCoord = area.getLowerCorner();

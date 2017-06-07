@@ -44,17 +44,17 @@ public class CommandSelectCopy extends CommandExpecting implements CommandVirtua
     }
 
     @Override
-    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException
     {
-        RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(commandSender, null);
+        RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(sender, null);
 
-        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-        RCCommands.assertSize(commandSender, selectionOwner);
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
+        RCCommands.assertSize(sender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
         IvWorldData worldData = IvWorldData.capture(world, area, true);
 
         RCEntityInfo.setWorldDataClipboard(worldData.createTagCompound());
-        commandSender.sendMessage(ServerTranslations.format("commands.selectCopy.success", RCTextStyle.area(area)));
+        sender.sendMessage(ServerTranslations.format("commands.selectCopy.success", RCTextStyle.area(area)));
     }
 }

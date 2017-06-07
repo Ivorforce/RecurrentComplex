@@ -57,12 +57,12 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
     }
 
     @Override
-    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-        RCCommands.assertSize(commandSender, selectionOwner);
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
+        RCCommands.assertSize(sender, selectionOwner);
 
         PreloadedBooleanExpression<EnumFacing> facingExpression = PreloadedBooleanExpression.with(exp ->
         {
@@ -78,7 +78,7 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
         List<BlockPos> dirty = Lists.newArrayList(selectionOwner.getSelection());
         Set<BlockPos> visited = Sets.newHashSet(dirty);
 
-        Block dstBlock = parameters.get().block(commandSender).require();
+        Block dstBlock = parameters.get().block(sender).require();
         int[] dstMeta = parameters.get(1).metadatas().optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 

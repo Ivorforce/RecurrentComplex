@@ -44,7 +44,7 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
     }
 
     @Override
-    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
@@ -54,8 +54,8 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
         String propertyName = parameters.get().first().require();
         String propertyValue = parameters.get().at(1).require();
 
-        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-        RCCommands.assertSize(commandSender, selectionOwner);
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
+        RCCommands.assertSize(sender, selectionOwner);
         for (BlockPos pos : BlockAreas.mutablePositions(selectionOwner.getSelection()))
         {
             PositionedBlockExpression.Argument at = PositionedBlockExpression.Argument.at(world, pos);

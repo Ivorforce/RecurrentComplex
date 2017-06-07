@@ -43,12 +43,12 @@ public class CommandNaturalAll extends CommandExpecting implements CommandVirtua
     }
 
     @Override
-    public void execute(MockWorld world, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
-        RCCommands.assertSize(commandSender, selectionOwner);
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
+        RCCommands.assertSize(sender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
         double expandFloor = parameters.get("floor-expansion").doubleAt(0).optional().orElse(1.);

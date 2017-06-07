@@ -37,7 +37,7 @@ public class CommandDimensionDict extends CommandSplit
             {
                 RCParameters parameters = RCParameters.of(args, null);
 
-                WorldProvider provider = parameters.get().dimension(server, sender).require().provider;
+                WorldProvider provider = parameters.get(0).dimension(server, sender).require().provider;
 
                 sender.sendMessage(ServerTranslations.format("commands.dimensiondict.get", RCTextStyle.dimension(provider.getDimension()),
                         ServerTranslations.join(Lists.newArrayList(DimensionDictionary.getDimensionTypes(provider)).stream()
@@ -53,7 +53,7 @@ public class CommandDimensionDict extends CommandSplit
             {
                 RCParameters parameters = RCParameters.of(args, null);
 
-                String type = parameters.get().first().require();
+                String type = parameters.get(0).require();
 
                 sender.sendMessage(ServerTranslations.format("commands.dimensiondict.list", RCTextStyle.dimensionType(type),
                         ServerTranslations.join(Arrays.stream(allDimensionsOfType(type).toArray())

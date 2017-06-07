@@ -36,7 +36,7 @@ public class CommandSightInfo extends SimpleCommand
         RCParameters parameters = RCParameters.of(args, null);
         WorldStructureGenerationData generationData = WorldStructureGenerationData.get(sender.getEntityWorld());
 
-        WorldStructureGenerationData.Entry entry = generationData.getEntry(UUID.fromString(parameters.get().first().require()));
+        WorldStructureGenerationData.Entry entry = generationData.getEntry(UUID.fromString(parameters.get(0).require()));
 
         if (entry == null)
             throw ServerTranslations.commandException("commands.rcsightinfo.unknown");

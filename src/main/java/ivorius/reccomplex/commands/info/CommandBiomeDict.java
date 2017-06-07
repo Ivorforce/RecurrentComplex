@@ -40,7 +40,7 @@ public class CommandBiomeDict extends CommandSplit
             {
                 RCParameters parameters = RCParameters.of(args, null);
 
-                List<String> terms = parameters.get().varargsList();
+                List<String> terms = parameters.get(0).varargsList().require();
 
                 CommandSearchStructure.postResultMessage(sender,
                         RCTextStyle::biome,
@@ -56,7 +56,7 @@ public class CommandBiomeDict extends CommandSplit
             {
                 RCParameters parameters = RCParameters.of(args, null);
 
-                Biome biome = parameters.get().biome().require();
+                Biome biome = parameters.get(0).biome().require();
 
                 sender.sendMessage(ServerTranslations.format("commands.biomedict.get", RCTextStyle.biome(biome),
                         ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getTypes(biome)).stream()
@@ -72,7 +72,7 @@ public class CommandBiomeDict extends CommandSplit
             {
                 RCParameters parameters = RCParameters.of(args, null);
 
-                BiomeDictionary.Type type = parameters.get().biomeDictionaryType().require();
+                BiomeDictionary.Type type = parameters.get(0).biomeDictionaryType().require();
 
                 sender.sendMessage(ServerTranslations.format("commands.biomedict.list", RCTextStyle.biomeType(type),
                         ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getBiomes(type))

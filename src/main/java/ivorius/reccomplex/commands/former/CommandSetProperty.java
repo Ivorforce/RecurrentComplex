@@ -20,7 +20,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -39,7 +38,7 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
     {
         return RCExpect.expectRC()
                 .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet())).descriptionU("key").required()
-                .next(params -> params.get().first().tryGet().map(TransformerProperty::propertyValueStream)).descriptionU("value").required()
+                .next(params -> params.get(0).tryGet().map(TransformerProperty::propertyValueStream)).descriptionU("value").required()
                 .named("exp").block().descriptionU("positioned block expression");
     }
 
@@ -51,8 +50,8 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
         PositionedBlockExpression matcher = new PositionedBlockExpression(RecurrentComplex.specialRegistry);
         IvOptional.ifAbsent(parameters.get("exp").expression(matcher).optional(), () -> matcher.setExpression(""));
 
-        String propertyName = parameters.get().first().require();
-        String propertyValue = parameters.get(1).first().require();
+        String propertyName = parameters.get(0).require();
+        String propertyValue = parameters.get(1).require();
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
         RCCommands.assertSize(sender, selectionOwner);

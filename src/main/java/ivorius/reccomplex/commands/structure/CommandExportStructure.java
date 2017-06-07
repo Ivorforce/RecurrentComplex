@@ -22,7 +22,7 @@ import net.minecraft.server.MinecraftServer;
  */
 public class CommandExportStructure extends CommandExpecting
 {
-    public static GenericStructure getNewGenericStructure(ICommandSender commandSender, RCParameter parameter) throws CommandException
+    public static GenericStructure getNewGenericStructure(ICommandSender commandSender, RCParameter<?> parameter) throws CommandException
     {
         GenericStructure genericStructureInfo;
 
@@ -64,7 +64,7 @@ public class CommandExportStructure extends CommandExpecting
         RCParameters parameters = RCParameters.of(args, expect()::declare);
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
-        String structureID = parameters.get().first().optional().orElse(null);
+        String structureID = parameters.get(0).optional().orElse(null);
         GenericStructure from = getNewGenericStructure(commandSender, parameters.get("from"));
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);

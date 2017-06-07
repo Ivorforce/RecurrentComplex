@@ -215,7 +215,7 @@ public class Expect<T extends Expect<T>>
         Parameters parameters = Parameters.of(args, this::declare);
 
         String lastName = parameters.lastName();
-        Parameter entered = lastName != null ? parameters.get(lastName) : parameters.get();
+        Parameter entered = lastName != null ? parameters.get(lastName) : parameters.get(0);
         SuggestParameter param = this.params.get(lastName);
 
         String currentArg = parameters.last();

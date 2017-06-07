@@ -33,7 +33,7 @@ public class CommandSplit extends CommandBase
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
                 Parameters parameters = Parameters.of(args, null);
-                throw new WrongUsageException(parameters.get().first().map(commands::get).optional()
+                throw new WrongUsageException(parameters.get(0).map(commands::get).optional()
                         .orElse(CommandSplit.this).getUsage(sender)
                 );
             }

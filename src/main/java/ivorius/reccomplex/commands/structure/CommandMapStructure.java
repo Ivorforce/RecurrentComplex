@@ -107,10 +107,10 @@ public class CommandMapStructure extends CommandExpecting
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
         ResourceExpression expression = new ResourceExpression(StructureRegistry.INSTANCE::has);
-        IvOptional.ifAbsent(parameters.get().expression(expression).optional(), () -> expression.setExpression(""));
+        IvOptional.ifAbsent(parameters.get(0).expression(expression).optional(), () -> expression.setExpression(""));
 
         CommandVirtual virtual = parameters.get(1).virtualCommand(server).require();
-        String[] virtualArgs = parameters.get(2).varargs();
+        String[] virtualArgs = parameters.get(2).varargs().require();
 
         ResourceDirectory directory = parameters.has("nosave") ? null :
                 parameters.get("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);

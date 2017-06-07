@@ -55,14 +55,14 @@ public class CommandSelectFill extends CommandExpecting implements CommandVirtua
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        Block dstBlock = parameters.get().block(sender).require();
+        Block dstBlock = parameters.get(0).block(sender).require();
         int[] dstMeta = parameters.get(1).metadatas().optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
         RCCommands.assertSize(sender, selectionOwner);
 
-        String shape = parameters.get("shape").first().optional().orElse("cube");
+        String shape = parameters.get("shape").optional().orElse("cube");
 
         BlockArea area = selectionOwner.getSelection();
         BlockPos p1 = area.getPoint1();

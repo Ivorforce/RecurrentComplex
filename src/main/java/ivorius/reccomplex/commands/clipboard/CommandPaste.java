@@ -77,7 +77,7 @@ public class CommandPaste extends CommandExpecting
         WorldServer world = (WorldServer) sender.getEntityWorld();
         BlockPos pos = parameters.pos("x", "y", "z", sender.getPosition(), false).require();
         AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
-        String seed = parameters.get("seed").first().optional().orElse(null);
+        String seed = parameters.get("seed").optional().orElse(null);
         boolean generate = parameters.has("generate");
         boolean select = parameters.has("select");
 

@@ -8,10 +8,7 @@ package ivorius.reccomplex.commands.structure;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.command.CommandException;
@@ -89,7 +86,7 @@ public class CommandListStructures extends CommandExpecting
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
-        int page = parameters.get().asInt().optional().orElse(0);
+        int page = parameters.get(0).asInt().optional().orElse(0);
 
         List<String> structureNames = new ArrayList<>();
         structureNames.addAll(StructureRegistry.INSTANCE.ids());

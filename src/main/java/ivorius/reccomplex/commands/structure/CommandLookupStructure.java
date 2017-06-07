@@ -50,8 +50,8 @@ public class CommandLookupStructure extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        String id = parameters.get().first().require();
-        GenericStructure structure = parameters.get().genericStructure().require();
+        String id = parameters.get(0).require();
+        GenericStructure structure = parameters.get(0).genericStructure().require();
 
         Metadata metadata = structure.metadata;
 

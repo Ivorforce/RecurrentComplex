@@ -45,7 +45,7 @@ public class CommandConvertSchematic extends CommandExpecting
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.rcconvertschematic.usage");
 
-        String schematicName = parameters.get().first().require();
+        String schematicName = parameters.get(0).require();
         SchematicFile schematicFile = CommandImportSchematic.parseSchematic(schematicName);
 
         GenericStructure structure = CommandExportStructure.getNewGenericStructure(commandSender, parameters.get("from"));

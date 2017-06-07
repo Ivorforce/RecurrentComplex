@@ -71,14 +71,14 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
             exp.addEvaluator("horizontal", f -> f.getHorizontalIndex() >= 0);
             exp.addEvaluator("vertical", f -> f.getHorizontalIndex() < 0);
         });
-        facingExpression.setExpression(parameters.get(2).rest().first().optional().orElse(""));
+        facingExpression.setExpression(parameters.get(2).rest(ParameterString.join()).optional().orElse(""));
 
         List<EnumFacing> available = Arrays.stream(EnumFacing.values()).filter(facingExpression).collect(Collectors.toList());
 
         List<BlockPos> dirty = Lists.newArrayList(selectionOwner.getSelection());
         Set<BlockPos> visited = Sets.newHashSet(dirty);
 
-        Block dstBlock = parameters.get().block(sender).require();
+        Block dstBlock = parameters.get(0).block(sender).require();
         int[] dstMeta = parameters.get(1).metadatas().optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 

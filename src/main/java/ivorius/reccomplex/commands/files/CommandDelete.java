@@ -47,7 +47,7 @@ public class CommandDelete extends CommandExpecting
         RCExpect<?> expect = RCExpect.expectRC();
 
         expect.next(RecurrentComplex.saver.keySet()).descriptionU("file type").required();
-        Expect<?> expect1 = expect.next(params -> params.get().first().tryGet().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()));
+        Expect<?> expect1 = expect.next(params -> params.get(0).tryGet().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()));
         ((RCExpect<?>) expect1.descriptionU("resource expression")).repeat();
         expect.named("directory", "d").resourceDirectory().required();
 
@@ -59,7 +59,7 @@ public class CommandDelete extends CommandExpecting
     {
         RCParameters parameters = RCParameters.of(args, expect()::declare);
 
-        String adapterID = parameters.get().first().require();
+        String adapterID = parameters.get(0).require();
 
         if (!RecurrentComplex.saver.has(adapterID))
             throw ServerTranslations.commandException("commands.rcsave.noregistry");
@@ -69,7 +69,7 @@ public class CommandDelete extends CommandExpecting
         Collection<String> ids = Lists.newArrayList(adapterOptional.map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()));
 
         ResourceExpression resourceExpression = ExpressionCache.of(new ResourceExpression(id -> adapterOptional.map(a -> a.getRegistry().has(id)).orElse(false)),
-                parameters.get(1).rest().first().require());
+                parameters.get(1).rest(ParameterString.join()).require());
 
         for (String id : ids)
         {

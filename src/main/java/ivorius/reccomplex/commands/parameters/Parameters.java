@@ -154,7 +154,7 @@ public class Parameters
             }
             else
             {
-                if (until > 0 && curName == null) until --;
+                if (until > 0 && curName == null) until--;
 
                 order.add(curName);
                 params.put(curName, arg);
@@ -260,7 +260,7 @@ public class Parameters
     {
         requireBuilt();
         return flags.stream().collect(Collectors.toMap(k -> k,
-                k -> new Parameter(k, params.get(k))));
+                k -> new ParameterString<>(0, k, params.get(k))));
     }
 
     public boolean has(@Nonnull String flag)
@@ -269,21 +269,16 @@ public class Parameters
         return flags.contains(root(flag));
     }
 
-    public Parameter get()
+    public ParameterString<?> get(int idx)
     {
         requireBuilt();
-        return new Parameter(null, params.get(null));
+        return new ParameterString<>(0, null, params.get(null)).move(idx);
     }
 
-    public Parameter get(int idx)
-    {
-        return get().move(idx);
-    }
-
-    public Parameter get(@Nonnull String name)
+    public ParameterString<?> get(@Nonnull String name)
     {
         requireBuilt();
         name = root(name);
-        return new Parameter(has(name) && !params.containsKey(name) ? -1 : 0, name, params.get(name));
+        return new ParameterString<>(has(name) && !params.containsKey(name) ? -1 : 0, name, params.get(name));
     }
 }

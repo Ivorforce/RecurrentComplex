@@ -18,44 +18,41 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.Generat
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
 import net.minecraft.server.MinecraftServer;
 
+import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
 /**
  * Created by lukas on 31.05.17.
  */
-public class RCParameter extends IvParameter
+public class RCParameter<P extends RCParameter<P>> extends IvParameter<P>
 {
     public RCParameter(Parameter other)
     {
         super(other);
     }
 
-    public Result<Predicate<Structure>> structurePredicate()
+    public Parameter<Predicate<Structure>, ?> structurePredicate()
     {
         return expression(new ResourceExpression(s1 -> !s1.isEmpty())).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
     }
 
     @Override
-    public RCParameter move(int idx)
+    public P copy(Parameter<String, ?> p)
     {
-        return new RCParameter(super.move(idx));
+        //noinspection unchecked
+        return (P) new RCParameter<>(p);
     }
 
-    @Override
-    public RCParameter rest()
+    public Parameter<Structure<?>, ?> structure()
     {
-        return new RCParameter(super.rest());
+        //noinspection unchecked
+        return ((Parameter<String, ?>) this).map(StructureRegistry.INSTANCE::get,
+                t -> ServerTranslations.commandException("commands.strucGen.noStructure", get()));
     }
 
-    public Result<Structure<?>> structure()
+    public Parameter<GenericStructure, ?> genericStructure()
     {
-        return first().map(StructureRegistry.INSTANCE::get,
-                t -> ServerTranslations.commandException("commands.strucGen.noStructure", first()));
-    }
-
-    public Result<GenericStructure> genericStructure()
-    {
-        return first().map(id ->
+        return map(id ->
         {
             Structure structure = StructureRegistry.INSTANCE.get(id);
 
@@ -71,16 +68,16 @@ public class RCParameter extends IvParameter
         });
     }
 
-    public Result<GenerationType> generationType(Structure<?> structure)
+    public Parameter<GenerationType, ?> generationType(Structure<?> structure)
     {
-        return first().missable().map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
+        return map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
                 .orElseGet(() -> structure.<GenerationType>generationTypes(NaturalGeneration.class).stream().findFirst()
                         .orElse(structure.generationTypes(GenerationType.class).stream().findFirst().orElse(null)));
     }
 
-    public Result<ResourceDirectory> resourceDirectory()
+    public Parameter<ResourceDirectory, ?> resourceDirectory()
     {
-        return first().map(t ->
+        return map(t ->
         {
             try
             {
@@ -93,9 +90,9 @@ public class RCParameter extends IvParameter
         });
     }
 
-    public Result<int[]> metadatas()
+    public Parameter<int[], ?> metadatas()
     {
-        return first().map(arg ->
+        return map(arg ->
         {
             try
             {
@@ -116,9 +113,9 @@ public class RCParameter extends IvParameter
         });
     }
 
-    public <T extends ExpressionCache<I>, I> Result<T> expression(T t)
+    public <T extends ExpressionCache<I>, I> Parameter<T, ?> expression(T t)
     {
-        return first().map(s ->
+        return map(s ->
         {
             T cache = ExpressionCache.of(t, s);
             RCCommands.ensureValid(cache, name);
@@ -126,7 +123,7 @@ public class RCParameter extends IvParameter
         });
     }
 
-    public Result<CommandVirtual> virtualCommand(MinecraftServer server)
+    public Parameter<CommandVirtual, ?> virtualCommand(MinecraftServer server)
     {
         return new MCParameter(this).command(server).map(c ->
         {

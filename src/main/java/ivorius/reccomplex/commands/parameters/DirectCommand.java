@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.reccomplex.commands.parameters.expect.Expect;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -25,13 +26,13 @@ public class DirectCommand extends SimpleCommand
         this.consumer = consumer;
     }
 
-    public DirectCommand(String name, String usage, Supplier<Expect<?>> expector, Consumer<ICommandSender> consumer)
+    public DirectCommand(String name, String usage, Supplier<Expect> expector, Consumer<ICommandSender> consumer)
     {
         super(name, usage, expector);
         this.consumer = consumer;
     }
 
-    public DirectCommand(String name, Supplier<Expect<?>> expector, Consumer<ICommandSender> consumer)
+    public DirectCommand(String name, Supplier<Expect> expector, Consumer<ICommandSender> consumer)
     {
         super(name, expector);
         this.consumer = consumer;

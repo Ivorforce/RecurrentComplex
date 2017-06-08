@@ -6,7 +6,8 @@
 package ivorius.reccomplex.commands.schematic;
 
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.commands.structure.CommandExportStructure;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -29,11 +30,10 @@ public class CommandConvertSchematic extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .schematic()
-                .named("from").structure();
+        return Parameters.expect().then(RCE::schematic)
+                .named("from").then(RCE::structure);
     }
 
     @Override

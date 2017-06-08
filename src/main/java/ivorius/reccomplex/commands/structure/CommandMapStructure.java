@@ -14,7 +14,9 @@ import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
+import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
@@ -33,6 +35,7 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -90,14 +93,12 @@ public class CommandMapStructure extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .structure().descriptionU("resource expression|structure").required()
-                .virtualCommand()
-                .stopNamed()
-                .commandArguments(p -> p.get(1)).repeat()
-                .named("directory", "d").resourceDirectory()
+        return Parameters.expect().then(RCE::structure).descriptionU("resource expression|structure").required()
+                .then(RCE::virtualCommand)
+                .stopNamed().then(MCE.commandArguments(p -> p.get(1))).repeat()
+                .named("directory", "d").then(RCE::resourceDirectory)
                 .flag("nosave", "n")
                 ;
     }

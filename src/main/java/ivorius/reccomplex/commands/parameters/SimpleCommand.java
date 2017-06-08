@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.reccomplex.commands.parameters.expect.Expect;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +22,7 @@ public abstract class SimpleCommand extends CommandExpecting
     public String name;
 
     public String usage;
-    public Supplier<Expect<?>> expector;
+    public Supplier<Expect> expector;
 
     public int permissionLevel = 4;
 
@@ -30,14 +31,14 @@ public abstract class SimpleCommand extends CommandExpecting
         this.name = name;
     }
 
-    public SimpleCommand(String name, Supplier<Expect<?>> expector)
+    public SimpleCommand(String name, Supplier<Expect> expector)
     {
         this.name = name;
         this.usage = expector.get().usage();
         this.expector = expector;
     }
 
-    public SimpleCommand(String name, String usage, Supplier<Expect<?>> expector)
+    public SimpleCommand(String name, String usage, Supplier<Expect> expector)
     {
         this.name = name;
         this.usage = usage;
@@ -63,7 +64,7 @@ public abstract class SimpleCommand extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
         return expector.get();
     }

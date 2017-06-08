@@ -8,7 +8,8 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.CapabilitySelection;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -36,13 +37,13 @@ public class CommandSelecting extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .xyz().required()
-                .xyz().required()
-                .command().required()
-                .commandArguments(p -> p.get(6)).repeat();
+        return Parameters.expect()
+                .then(MCE::xyz).required()
+                .then(MCE::xyz).required()
+                .then(MCE::command).required()
+                .then(MCE.commandArguments(p -> p.get(6))).repeat();
     }
 
     @Override

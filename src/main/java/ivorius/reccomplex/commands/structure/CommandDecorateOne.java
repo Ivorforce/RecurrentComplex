@@ -8,8 +8,9 @@ package ivorius.reccomplex.commands.structure;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.rcparameters.IvP;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import net.minecraft.command.CommandException;
@@ -46,9 +47,8 @@ public class CommandDecorateOne extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .xz();
+        return Parameters.expect().then(MCE::xz);
     }
 }

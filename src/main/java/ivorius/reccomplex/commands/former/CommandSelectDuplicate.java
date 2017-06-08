@@ -12,8 +12,9 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.rcparameters.IvP;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -36,11 +37,10 @@ public class CommandSelectDuplicate extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .pos("x", "y", "z")
-                .named("rotation", "r").rotation()
+        return Parameters.expect().then(MCE.pos("x", "y", "z"))
+                .named("rotation", "r").then(MCE::rotation)
                 .flag("mirror", "m");
     }
 

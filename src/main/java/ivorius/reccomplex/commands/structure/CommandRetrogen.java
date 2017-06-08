@@ -8,7 +8,9 @@ package ivorius.reccomplex.commands.structure;
 import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
+import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileSuffixFilter;
@@ -94,11 +96,11 @@ public class CommandRetrogen extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .named("exp").structurePredicate().descriptionU("resource expression: only generate these structures")
-                .named("dimension", "d").dimension();
+        return Parameters.expect()
+                .named("exp").then(RCE::structurePredicate).descriptionU("resource expression: only generate these structures")
+                .named("dimension", "d").then(MCE::dimension);
     }
 
     @Override

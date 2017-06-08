@@ -94,14 +94,6 @@ public class Parameter<T>
         return size <= count();
     }
 
-    // Subclass
-
-    public Parameter copy(Parameter<T> p)
-    {
-        //noinspection unchecked
-        return (Parameter) new Parameter(p);
-    }
-
     // Result
 
     @Nonnull
@@ -170,7 +162,7 @@ public class Parameter<T>
 
     public Parameter<T> orElseGet(Supplier<T> supplier)
     {
-        return copy(new Parameter<T>(this, s ->
+        return new Parameter<T>(this, s ->
         {
             try
             {
@@ -180,7 +172,7 @@ public class Parameter<T>
             {
                 return supplier.get();
             }
-        }));
+        });
     }
 
     @Nonnull
@@ -231,20 +223,20 @@ public class Parameter<T>
 
     public Parameter<T> rest(BinaryOperator<T> operator)
     {
-        return copy(new Parameter<>(this, p ->
+        return new Parameter<>(this, p ->
         {
             T t = function().apply(Collections.singletonList(get(p, 0)));
             for (int i = 1; i < p.size(); i++)
                 t = operator.apply(t, function().apply(Collections.singletonList(p.get(i))));
             return t;
-        }));
+        });
     }
 
     public Parameter<T> move(int idx)
     {
         //noinspection unchecked
         return idx == 0 ? (Parameter) this
-                : copy(new Parameter<>(isSet() ? moved + idx : moved, name, params.subList(Math.min(idx, params.size()), params.size()), fun));
+                : new Parameter<>(isSet() ? moved + idx : moved, name, params.subList(Math.min(idx, params.size()), params.size()), fun);
     }
 
     public Parameter<T[]> varargs(IntFunction<T[]> init)

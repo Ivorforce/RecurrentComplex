@@ -9,9 +9,12 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
+import ivorius.reccomplex.commands.parameters.NaP;
+import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
 import ivorius.reccomplex.commands.rcparameters.RCP;
+import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.files.saving.FileSaverAdapter;
@@ -44,17 +47,12 @@ public class CommandWrite extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        RCExpect<?> expect = RCExpect.expectRC();
-        // Can't chain because of compiler bug :|
-
-        expect.next(RecurrentComplex.saver.keySet()).descriptionU("file type").required();
-        Expect<?> expect1 = expect.next(params -> params.get(0).tryGet().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids()));
-        ((RCExpect<?>) expect1.descriptionU("resource expression")).repeat();
-        expect.named("directory", "d").resourceDirectory();
-
-        return expect;
+        return Parameters.expect()
+                .next(RecurrentComplex.saver.keySet()).descriptionU("file type").required()
+                .next(params -> params.get(0).tryGet().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids())).descriptionU("resource expression").repeat()
+                .named("directory", "d").then(RCE::resourceDirectory);
     }
 
     @Override

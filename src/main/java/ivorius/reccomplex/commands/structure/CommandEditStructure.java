@@ -7,7 +7,8 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -33,11 +34,10 @@ public class CommandEditStructure extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .structure()
-                .named("from").structure();
+        return Parameters.expect().then(RCE::structure)
+                .named("from").then(RCE::structure);
     }
 
     @Override

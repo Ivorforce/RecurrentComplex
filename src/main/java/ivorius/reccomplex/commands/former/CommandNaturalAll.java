@@ -11,7 +11,7 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 
@@ -27,9 +27,9 @@ public class CommandNaturalAll extends CommandExpecting implements CommandVirtua
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
+        return Parameters.expect()
                 .named("floor-expansion", "e").any("0", "1", "2")
                 .named("space-distance-to-floor", "f").any("3", "2", "1")
                 .named("space-max-closed-sides", "s").any("3", "4", "5");

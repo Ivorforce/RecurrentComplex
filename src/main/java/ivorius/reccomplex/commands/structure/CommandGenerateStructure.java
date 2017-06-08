@@ -12,8 +12,11 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
+import ivorius.reccomplex.commands.rcparameters.expect.IvE;
 import ivorius.reccomplex.commands.rcparameters.IvP;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
@@ -47,15 +50,12 @@ public class CommandGenerateStructure extends SimpleCommand
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .structure().required()
-                .surfacePos("x", "z")
-                .named("dimension", "d").dimension()
-                .named("gen")
-                .generationType(p -> p.get(0)).descriptionU("generation type id")
-                .named("rotation", "r").rotation()
+        return Parameters.expect().then(RCE::structure).required().then(IvE.surfacePos("x", "z"))
+                .named("dimension", "d").then(MCE::dimension)
+                .named("gen").then(RCE.generationType(p -> p.get(0))).descriptionU("generation type id")
+                .named("rotation", "r").then(MCE::rotation)
                 .named("seed").randomString().descriptionU("seed")
                 .flag("mirror", "m")
                 .flag("select", "s");

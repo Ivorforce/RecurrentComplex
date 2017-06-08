@@ -7,9 +7,9 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.mcopts.commands.CommandExpecting;
-import ivorius.reccomplex.mcopts.commands.parameters.*;
-import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.CommandExpecting;
+import ivorius.mcopts.commands.parameters.*;
+import ivorius.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.commands.structure.CommandSearchStructure;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.ResourceDirectory;

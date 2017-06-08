@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.commands.parameters.expect;
 
-import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
-import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
+import ivorius.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 
 import java.util.function.Consumer;

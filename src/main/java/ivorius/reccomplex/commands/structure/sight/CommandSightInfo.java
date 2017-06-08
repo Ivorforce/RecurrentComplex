@@ -7,8 +7,8 @@ package ivorius.reccomplex.commands.structure.sight;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.reccomplex.mcopts.commands.SimpleCommand;
-import ivorius.reccomplex.mcopts.commands.parameters.*;
+import ivorius.mcopts.commands.SimpleCommand;
+import ivorius.mcopts.commands.parameters.*;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandException;

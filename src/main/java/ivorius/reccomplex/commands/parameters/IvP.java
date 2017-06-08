@@ -7,8 +7,8 @@ package ivorius.reccomplex.commands.parameters;
 
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.mcopts.commands.parameters.Parameter;
-import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
+import ivorius.mcopts.commands.parameters.Parameter;
+import ivorius.mcopts.commands.parameters.Parameters;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.NumberInvalidException;

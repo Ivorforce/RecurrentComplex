@@ -6,10 +6,10 @@
 package ivorius.reccomplex.commands.structure.sight;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.mcopts.commands.CommandSplit;
-import ivorius.reccomplex.mcopts.commands.SimpleCommand;
-import ivorius.reccomplex.mcopts.commands.parameters.*;
-import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
+import ivorius.mcopts.commands.CommandSplit;
+import ivorius.mcopts.commands.SimpleCommand;
+import ivorius.mcopts.commands.parameters.*;
+import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

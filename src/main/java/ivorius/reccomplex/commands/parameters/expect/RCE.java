@@ -6,9 +6,9 @@
 package ivorius.reccomplex.commands.parameters.expect;
 
 import ivorius.reccomplex.commands.CommandVirtual;
-import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
-import ivorius.reccomplex.mcopts.commands.parameters.Parameter;
-import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
+import ivorius.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.parameters.Parameter;
+import ivorius.mcopts.commands.parameters.Parameters;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.random.Person;

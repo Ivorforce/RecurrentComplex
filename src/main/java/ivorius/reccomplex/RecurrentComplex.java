@@ -17,7 +17,7 @@ import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.files.saving.FileSaver;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
-import ivorius.reccomplex.mcopts.translation.ServerTranslations;
+import ivorius.mcopts.translation.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.registry.MCRegistrySpecial;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
 import ivorius.reccomplex.utils.*;

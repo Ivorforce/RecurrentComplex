@@ -6,9 +6,9 @@
 package ivorius.reccomplex.commands.schematic;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.mcopts.commands.CommandExpecting;
-import ivorius.reccomplex.mcopts.commands.parameters.*;
-import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.CommandExpecting;
+import ivorius.mcopts.commands.parameters.*;
+import ivorius.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.network.PacketEditStructureHandler;

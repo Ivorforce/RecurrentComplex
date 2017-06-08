@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands.structure.sight;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.mcopts.commands.CommandSplit;
+import ivorius.mcopts.commands.CommandSplit;
 import net.minecraft.command.ICommand;
 
 /**

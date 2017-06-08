@@ -7,11 +7,11 @@ package ivorius.reccomplex.commands.structure.sight;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.reccomplex.mcopts.commands.CommandExpecting;
-import ivorius.reccomplex.mcopts.commands.parameters.*;
-import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
-import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
-import ivorius.reccomplex.mcopts.translation.ServerTranslations;
+import ivorius.mcopts.commands.CommandExpecting;
+import ivorius.mcopts.commands.parameters.*;
+import ivorius.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.parameters.expect.MCE;
+import ivorius.mcopts.translation.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

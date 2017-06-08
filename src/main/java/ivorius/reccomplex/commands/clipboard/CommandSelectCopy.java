@@ -15,9 +15,9 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.reccomplex.mcopts.commands.CommandExpecting;
-import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
-import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
+import ivorius.mcopts.commands.CommandExpecting;
+import ivorius.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.parameters.Parameters;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 

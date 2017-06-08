@@ -11,7 +11,10 @@ import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.SimpleCommand;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
@@ -51,9 +54,7 @@ public class CommandGenerateStructure extends SimpleCommand
                 .surfacePos("x", "z")
                 .named("dimension", "d").dimension()
                 .named("gen")
-                .next(params -> new RCParameters(params).get(0).genericStructure().tryGet()
-                        .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id))
-                ).descriptionU("generation type id")
+                .generationType(p -> p.get(0)).descriptionU("generation type id")
                 .named("rotation", "r").rotation()
                 .named("seed").randomString().descriptionU("seed")
                 .flag("mirror", "m")

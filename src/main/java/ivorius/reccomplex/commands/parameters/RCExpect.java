@@ -8,10 +8,12 @@ package ivorius.reccomplex.commands.parameters;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
 import net.minecraft.util.EnumFacing;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -39,6 +41,12 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
     public T structure()
     {
         return next(StructureRegistry.INSTANCE.ids()).descriptionU("structure");
+    }
+
+    public T generationType(Function<Parameters, Parameter<String, ?>> fun)
+    {
+        return next(params -> new RCParameter<>(fun.apply(params)).structure().tryGet()
+                .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id)));
     }
 
     public T schematic()

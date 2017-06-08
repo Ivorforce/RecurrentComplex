@@ -6,7 +6,6 @@
 package ivorius.reccomplex.commands.parameters;
 
 import com.google.common.collect.Lists;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import joptsimple.internal.Strings;
 import net.minecraft.command.*;
 import net.minecraft.server.MinecraftServer;
@@ -28,7 +27,7 @@ public class CommandSplit extends CommandBase
 
     public CommandSplit()
     {
-        add(new SimpleCommand("help", () -> RCExpect.expectRC().next(commands.keySet()).descriptionU("command").required())
+        add(new SimpleCommand("help", () -> Parameters.expect().next(commands.keySet()).descriptionU("command").required())
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException

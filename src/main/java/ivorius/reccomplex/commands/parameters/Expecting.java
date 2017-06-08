@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.reccomplex.commands.parameters.expect.Expect;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public interface Expecting extends ICommand
 {
-    Expect<?> expect();
+    Expect expect();
 
     @Nonnull
     default String getUsage(ICommandSender var1)

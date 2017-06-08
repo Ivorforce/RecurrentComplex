@@ -14,7 +14,9 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
+import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import ivorius.reccomplex.utils.expression.PreloadedBooleanExpression;
@@ -45,12 +47,10 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .block()
-                .metadata()
-                .directionExpression();
+        return Parameters.expect().then(MCE::block).then(RCE::metadata)
+                .then(RCE::directionExpression);
     }
 
     public int getRequiredPermissionLevel()

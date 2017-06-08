@@ -7,7 +7,8 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -32,10 +33,10 @@ public class CommandVisitFiles extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .named("directory", "d").resourceDirectory();
+        return Parameters.expect()
+                .named("directory", "d").then(RCE::resourceDirectory);
     }
 
     @Override

@@ -6,9 +6,13 @@
 package ivorius.reccomplex.commands.schematic;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
+import ivorius.reccomplex.commands.parameters.MCP;
+import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.rcparameters.IvP;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.OperationGenerateSchematic;
@@ -54,24 +58,19 @@ public class CommandImportSchematic extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .schematic()
-                .pos("x", "y", "z")
-                .named("rotation", "r").rotation()
+        return Parameters.expect().then(RCE::schematic)
+                .then(MCE.pos("x", "y", "z"))
+                .named("rotation", "r").then(MCE::rotation)
                 .flag("mirror", "m");
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        Function<Parameters,Parameters> c = p -> p
-                .flag("mirror", "m");
-        Parameters blueprint = Parameters.of(args, c);
-        Parameters blueprint1 = blueprint;
-        Parameters blueprint2 = blueprint1;
-        Parameters parameters = new Parameters(blueprint2);
+        Function<Parameters, Parameters> c = expect()::declare;
+        Parameters parameters = Parameters.of(args, c);
 
         if (args.length < 1)
             throw ServerTranslations.wrongUsageException("commands.rcimportschematic.usage");

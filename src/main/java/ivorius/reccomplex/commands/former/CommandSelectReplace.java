@@ -13,7 +13,9 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
+import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import net.minecraft.block.Block;
@@ -38,13 +40,11 @@ public class CommandSelectReplace extends CommandExpecting implements CommandVir
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .block().descriptionU("destination block").required()
-                .block().descriptionU("source expression").required().repeat()
-                .named("metadata", "m")
-                .metadata();
+        return Parameters.expect().then(MCE::block).descriptionU("destination block").required()
+                .then(MCE::block).descriptionU("source expression").required().repeat()
+                .named("metadata", "m").then(RCE::metadata);
     }
 
     public int getRequiredPermissionLevel()

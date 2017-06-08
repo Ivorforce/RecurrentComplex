@@ -14,7 +14,9 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
+import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.commands.rcparameters.RCP;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -39,11 +41,9 @@ public class CommandSelectFill extends CommandExpecting implements CommandVirtua
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .block()
-                .metadata()
+        return Parameters.expect().then(MCE::block).then(RCE::metadata)
                 .named("shape", "s").any("cube", "sphere");
     }
 

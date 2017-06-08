@@ -7,7 +7,6 @@ package ivorius.reccomplex.commands.structure.sight;
 
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
@@ -26,16 +25,14 @@ public class CommandSightInfo extends SimpleCommand
 {
     public CommandSightInfo()
     {
-        super("info", () -> RCExpect.expectRC().skip().descriptionU("id").required());
+        super("info", () -> Parameters.expect().skip().descriptionU("id").required());
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        Parameters blueprint = Parameters.of(args, null);
-        Parameters blueprint1 = blueprint;
-        Parameters blueprint2 = blueprint1;
-        Parameters parameters = new Parameters(blueprint2);
+        Parameters parameters = Parameters.of(args, null);
+
         WorldStructureGenerationData generationData = WorldStructureGenerationData.get(sender.getEntityWorld());
 
         WorldStructureGenerationData.Entry entry = generationData.getEntry(UUID.fromString(parameters.get(0).require()));

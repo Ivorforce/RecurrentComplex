@@ -8,15 +8,13 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
 import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.DependencyExpression;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-
-import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 03.08.14.
@@ -35,10 +33,10 @@ public class CommandEval extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .next(RCConfig.globalToggles.keySet().stream().map(s -> "global:" + s).collect(Collectors.toSet())).descriptionU("dependency expression");
+        return Parameters.expect()
+                .next(RCConfig.globalToggles.keySet().stream().map(s -> "global:" + s)).descriptionU("dependency expression");
     }
 
     @Override

@@ -9,7 +9,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.command.CommandException;
@@ -77,9 +77,9 @@ public class CommandListStructures extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC().any(0).descriptionU("page");
+        return Parameters.expect().any(0).descriptionU("page");
     }
 
     @Override

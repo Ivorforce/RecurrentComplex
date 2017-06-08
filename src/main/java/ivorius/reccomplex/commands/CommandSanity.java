@@ -8,7 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
 import ivorius.reccomplex.commands.structure.CommandSearchStructure;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
@@ -62,9 +62,9 @@ public class CommandSanity extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
+        return Parameters.expect()
                 .flag("silent")
                 .flag("short");
     }

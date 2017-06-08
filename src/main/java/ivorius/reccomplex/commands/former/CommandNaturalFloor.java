@@ -13,7 +13,7 @@ import ivorius.reccomplex.block.RCBlocks;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -102,9 +102,9 @@ public class CommandNaturalFloor extends CommandExpecting implements CommandVirt
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
+        return Parameters.expect()
                 .named("expansion", "e").any("0", "1", "2");
     }
 

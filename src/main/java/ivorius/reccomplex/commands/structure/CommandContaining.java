@@ -10,7 +10,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
@@ -26,8 +26,7 @@ public class CommandContaining extends SimpleCommand
 {
     public CommandContaining()
     {
-        super(RCConfig.commandPrefix + "containing", () -> RCExpect.expectRC()
-                .block().descriptionU("block expression").required()
+        super(RCConfig.commandPrefix + "containing", () -> Parameters.expect().then(MCE::block).descriptionU("block expression").required()
         );
         permitFor(2);
     }

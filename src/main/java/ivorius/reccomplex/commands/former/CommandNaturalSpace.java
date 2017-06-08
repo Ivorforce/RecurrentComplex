@@ -15,7 +15,7 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
@@ -131,9 +131,9 @@ public class CommandNaturalSpace extends CommandExpecting implements CommandVirt
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
+        return Parameters.expect()
                 .named("distance-to-floor", "d").any("3", "2", "1")
                 .named("max-closed-sides", "s").any("3", "4", "5");
     }

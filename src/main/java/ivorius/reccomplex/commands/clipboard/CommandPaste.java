@@ -11,8 +11,9 @@ import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.rcparameters.IvP;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -49,11 +50,10 @@ public class CommandPaste extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
-                .pos("x", "y", "z")
-                .named("rotation", "r").rotation()
+        return Parameters.expect().then(MCE.pos("x", "y", "z"))
+                .named("rotation", "r").then(MCE::rotation)
                 .named("seed").randomString()
                 .flag("mirror", "m")
                 .flag("generate", "g")

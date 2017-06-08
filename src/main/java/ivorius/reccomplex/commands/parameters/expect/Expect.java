@@ -3,12 +3,15 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.parameters;
+package ivorius.reccomplex.commands.parameters.expect;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.commands.parameters.NaP;
+import ivorius.reccomplex.commands.parameters.Parameter;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.random.Person;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
@@ -22,6 +25,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -30,7 +34,7 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 30.05.17.
  */
-public class Expect<T extends Expect<T>>
+public class Expect
 {
     protected final Map<String, SuggestParameter> params = new HashMap<>();
     protected final Multimap<String, String> aliases = HashMultimap.create();
@@ -42,18 +46,12 @@ public class Expect<T extends Expect<T>>
     protected int currentCount;
     protected int until = -1;
 
-    protected Expect()
+    public Expect()
     {
         getOrCreate(null);
     }
 
-    public static <T extends Expect<T>> T expect()
-    {
-        //noinspection unchecked
-        return (T) new Expect();
-    }
-
-    public static List<String> toStrings(Object arg)
+    public static Collection<String> toStrings(Object arg)
     {
         while (arg instanceof Optional)
             //noinspection unchecked
@@ -63,7 +61,7 @@ public class Expect<T extends Expect<T>>
         if (arg instanceof Collection<?>)
             arg = ((Collection) arg).stream();
         if (arg instanceof Stream<?>)
-            return ((Stream<?>) arg).map(Object::toString).collect(Collectors.toList());
+            return ((Stream<?>) arg).map(Object::toString).collect(Collectors.toSet());
         return Collections.singletonList(arg.toString());
     }
 
@@ -89,10 +87,10 @@ public class Expect<T extends Expect<T>>
         return parameters;
     }
 
-    protected T identity()
+    protected Expect identity()
     {
         //noinspection unchecked
-        return (T) this;
+        return (Expect) this;
     }
 
     @Nonnull
@@ -104,7 +102,7 @@ public class Expect<T extends Expect<T>>
         return param;
     }
 
-    public T named(@Nonnull String name, String... aliases)
+    public Expect named(@Nonnull String name, String... aliases)
     {
         Pair<String, Boolean> p = name(name);
 
@@ -135,14 +133,14 @@ public class Expect<T extends Expect<T>>
         return Pair.of(name, isShort);
     }
 
-    public T flag(@Nonnull String name, String... aliases)
+    public Expect flag(@Nonnull String name, String... aliases)
     {
         flags.add(name);
         Collections.addAll(flags, aliases);
         return named(name, aliases);
     }
 
-    public T nextRaw(Completer completion)
+    public Expect nextRaw(Completer completion)
     {
         SuggestParameter cur = getOrCreate(currentName);
         order.add(currentName);
@@ -154,44 +152,50 @@ public class Expect<T extends Expect<T>>
         return identity();
     }
 
-    protected T atOnce(int num)
+    public Expect atOnce(int num)
     {
         currentCount = num;
         return identity();
     }
 
-    public T skip()
+    public Expect skip()
     {
         return nextRaw((server, sender, parameters, pos) -> Stream.of());
     }
 
-    public T any(Object... completion)
+    public Expect any(Object... completion)
     {
         return nextRaw((server, sender, params, pos) -> matchingAny(params.last(), completion));
     }
 
-    public T next(Object completion)
+    public Expect next(Object completion)
     {
         return nextRaw((server, sender, params, pos) -> matching(params.last(), completion));
     }
 
-    public T next(Completer completion)
+    public Expect next(Completer completion)
     {
         return nextRaw((server, sender, params, pos) -> matching(params.last(), completion.complete(server, sender, params, pos)));
     }
 
-    public T next(Function<Parameters, ?> completion)
+    public Expect next(Function<Parameters, ?> completion)
     {
         return nextRaw((server, sender, params, pos) -> matching(params.last(), completion.apply(params)));
     }
 
-    public T randomString()
+    public Expect then(Consumer<Expect> fun)
+    {
+        fun.accept(this);
+        return identity();
+    }
+
+    public Expect randomString()
     {
         Random rand = new Random();
         return any(Person.chaoticName(rand, rand.nextBoolean()));
     }
 
-    public T repeat()
+    public Expect repeat()
     {
         SuggestParameter cur = params.get(this.currentName);
         if (cur == null) throw new IllegalStateException();
@@ -204,7 +208,7 @@ public class Expect<T extends Expect<T>>
         return params.size();
     }
 
-    public T stopNamed()
+    public Expect stopNamed()
     {
         until = params.get(null).completions.size();
         return identity();
@@ -283,7 +287,7 @@ public class Expect<T extends Expect<T>>
     /**
      * Useful only for usage()
      */
-    public T descriptionU(List<String> description)
+    public Expect descriptionU(List<String> description)
     {
         if (description.size() != currentCount)
             throw new IllegalArgumentException();
@@ -291,31 +295,31 @@ public class Expect<T extends Expect<T>>
         return identity();
     }
 
-    public T descriptionU(String... descriptions)
+    public Expect descriptionU(String... descriptions)
     {
         return descriptionU(Arrays.asList(descriptions));
     }
 
-    public T description(String... keys)
+    public Expect description(String... keys)
     {
         return descriptionU(Arrays.stream(keys)
                 .map(IvTranslations::get)
                 .collect(Collectors.toList()));
     }
 
-    public T required()
+    public Expect required()
     {
         mapLastDescriptions((i, s) -> String.format("<%s>", stripOptionality(s)));
         return identity();
     }
 
-    public T optional()
+    public Expect optional()
     {
         mapLastDescriptions((i, s) -> String.format("[%s]", stripOptionality(s)));
         return identity();
     }
 
-    public T naked()
+    public Expect naked()
     {
         mapLastDescriptions((i, s) -> stripOptionality(s));
         return identity();
@@ -330,7 +334,7 @@ public class Expect<T extends Expect<T>>
                         .filter(e -> e.getKey().equals(e.getValue().name))
                         .flatMap(e -> flags.contains(e.getKey()) ? Stream.of(keyRepresentation(e.getKey())) : e.getValue().usage()
                                 .map(desc -> String.format("%s %s", keyRepresentation(e.getKey()), desc)))
-                ).reduce("", NaP.join());
+        ).reduce("", NaP.join());
     }
 
     protected String keyRepresentation(String key)

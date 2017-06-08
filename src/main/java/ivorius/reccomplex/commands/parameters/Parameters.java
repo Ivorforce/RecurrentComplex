@@ -9,6 +9,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.primitives.Doubles;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
 import joptsimple.internal.Strings;
 
 import javax.annotation.Nonnull;
@@ -44,17 +45,6 @@ public class Parameters
 
         declaredFlags = new HashSet<>();
         alias = new HashMap<>();
-    }
-
-    public Parameters(Parameters blueprint)
-    {
-        this.raw = blueprint.raw;
-        this.flags = blueprint.flags;
-        this.params = blueprint.params;
-        this.order = blueprint.order;
-
-        this.declaredFlags = blueprint.declaredFlags;
-        this.alias = blueprint.alias;
     }
 
     public static Parameters of(String[] args, Function<Parameters, Parameters> c)
@@ -117,6 +107,12 @@ public class Parameters
         if (trimmed.startsWith("\""))
             trimmed = trimmed.substring(1, trimmed.length() - (trimmed.length() > 1 && trimmed.endsWith("\"") ? 1 : 0));
         return trimmed;
+    }
+
+    public static <T extends Expect> T expect()
+    {
+        //noinspection unchecked
+        return (T) new Expect();
     }
 
     public Parameters build(String[] args)

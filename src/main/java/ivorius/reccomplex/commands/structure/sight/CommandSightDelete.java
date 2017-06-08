@@ -6,7 +6,7 @@
 package ivorius.reccomplex.commands.structure.sight;
 
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandException;
@@ -27,15 +27,12 @@ public class CommandSightDelete extends CommandSplit
     {
         super("forget");
 
-        add(new SimpleCommand("id", () -> RCExpect.expectRC().skip().descriptionU("id").required())
+        add(new SimpleCommand("id", () -> Parameters.expect().skip().descriptionU("id").required())
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                Parameters blueprint = Parameters.of(args, null);
-                Parameters blueprint1 = blueprint;
-                Parameters blueprint2 = blueprint1;
-                Parameters parameters = new Parameters(blueprint2);
+                Parameters parameters = Parameters.of(args, null);
                 WorldStructureGenerationData generationData = WorldStructureGenerationData.get(sender.getEntityWorld());
 
                 WorldStructureGenerationData.Entry entry = generationData.removeEntry(UUID.fromString(parameters.get(0).require()));
@@ -47,15 +44,12 @@ public class CommandSightDelete extends CommandSplit
             }
         });
 
-        add(new SimpleCommand("all", () -> RCExpect.expectRC().xyz())
+        add(new SimpleCommand("all", () -> Parameters.expect().then(MCE::xyz))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                Parameters blueprint = Parameters.of(args, null);
-                Parameters blueprint1 = blueprint;
-                Parameters blueprint2 = blueprint1;
-                Parameters parameters = new Parameters(blueprint2);
+                Parameters parameters = Parameters.of(args, null);
                 WorldStructureGenerationData generationData = WorldStructureGenerationData.get(sender.getEntityWorld());
 
                 BlockPos pos = parameters.get(0).to(MCP.pos_(sender.getPosition(), false)).require();

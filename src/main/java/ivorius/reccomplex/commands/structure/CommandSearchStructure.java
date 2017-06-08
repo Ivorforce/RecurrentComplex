@@ -11,7 +11,7 @@ import com.google.common.primitives.Doubles;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -117,9 +117,9 @@ public class CommandSearchStructure extends CommandExpecting
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
+        return Parameters.expect()
                 .skip().descriptionU("terms").required().repeat();
     }
 

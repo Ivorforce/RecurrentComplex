@@ -13,7 +13,8 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
@@ -60,7 +61,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(set = new Command("set", () -> RCExpect.expectRC().xyz().required().flag("first").flag("second"))
+        add(set = new Command("set", () -> Parameters.expect().then(MCE::xyz).required().flag("first").flag("second"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
@@ -95,8 +96,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("crop", () ->
-                RCExpect.expectRC().block().descriptionU("positioned block expression"))
+        add(new Command("crop", () -> Parameters.expect().then(MCE::block).descriptionU("positioned block expression"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
@@ -115,8 +115,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("wand", () ->
-                RCExpect.expectRC().block().descriptionU("positioned block expression"))
+        add(new Command("wand", () -> Parameters.expect().then(MCE::block).descriptionU("positioned block expression"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
@@ -149,12 +148,11 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("shrink", () ->
-                RCExpect.expectRC()
-                        .any("1", "2", "3").descriptionU("all")
-                        .named("x").any("1", "2", "3").descriptionU("x")
-                        .named("y").any("1", "2", "3").descriptionU("y")
-                        .named("z").any("1", "2", "3").descriptionU("z")
+        add(new Command("shrink", () -> Parameters.expect()
+                .any("1", "2", "3").descriptionU("all")
+                .named("x").any("1", "2", "3").descriptionU("x")
+                .named("y").any("1", "2", "3").descriptionU("y")
+                .named("z").any("1", "2", "3").descriptionU("z")
         )
         {
             @Override
@@ -167,12 +165,11 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("expand", () ->
-                RCExpect.expectRC()
-                        .any("1", "2", "3").descriptionU("all")
-                        .named("x").any("1", "2", "3").descriptionU("x")
-                        .named("y").any("1", "2", "3").descriptionU("y")
-                        .named("z").any("1", "2", "3").descriptionU("z")
+        add(new Command("expand", () -> Parameters.expect()
+                .any("1", "2", "3").descriptionU("all")
+                .named("x").any("1", "2", "3").descriptionU("x")
+                .named("y").any("1", "2", "3").descriptionU("y")
+                .named("z").any("1", "2", "3").descriptionU("z")
         )
         {
             @Override
@@ -207,12 +204,12 @@ public class CommandSelection extends CommandSplit
             super(name);
         }
 
-        public Command(String name, Supplier<Expect<?>> expector)
+        public Command(String name, Supplier<Expect> expector)
         {
             super(name, expector);
         }
 
-        public Command(String name, String usage, Supplier<Expect<?>> expector)
+        public Command(String name, String usage, Supplier<Expect> expector)
         {
             super(name, usage, expector);
         }
@@ -221,10 +218,8 @@ public class CommandSelection extends CommandSplit
         public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
         {
             SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
-            Parameters blueprint = Parameters.of(args, null);
-            Parameters blueprint1 = blueprint;
-            Parameters blueprint2 = blueprint1;
-            Parameters parameters = new Parameters(blueprint2);
+            Parameters parameters = Parameters.of(args, null);
+
             execute(server, sender, parameters, owner);
         }
 

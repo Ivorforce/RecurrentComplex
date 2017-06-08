@@ -13,7 +13,8 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
@@ -35,12 +36,12 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
     }
 
     @Override
-    public Expect<?> expect()
+    public Expect expect()
     {
-        return RCExpect.expectRC()
+        return Parameters.expect()
                 .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet())).descriptionU("key").required()
                 .next(params -> params.get(0).tryGet().map(TransformerProperty::propertyValueStream)).descriptionU("value").required()
-                .named("exp").block().descriptionU("positioned block expression");
+                .named("exp").then(MCE::block).descriptionU("positioned block expression");
     }
 
     @Override

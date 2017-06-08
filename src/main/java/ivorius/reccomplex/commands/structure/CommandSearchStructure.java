@@ -9,11 +9,12 @@ import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
-import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.mcopts.translation.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -94,7 +95,7 @@ public class CommandSearchStructure extends CommandExpecting
         }
         else
         {
-            commandSender.sendMessage(ServerTranslations.get("commands.rcsearch.empty"));
+            commandSender.sendMessage(RecurrentComplex.translations.get("commands.rcsearch.empty"));
         }
     }
 
@@ -141,6 +142,6 @@ public class CommandSearchStructure extends CommandExpecting
             );
         }
         else
-            throw ServerTranslations.commandException("commands.rcsearch.usage");
+            throw RecurrentComplex.translations.commandException("commands.rcsearch.usage");
     }
 }

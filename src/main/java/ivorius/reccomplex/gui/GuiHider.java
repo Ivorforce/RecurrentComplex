@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.gui;
 
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.ITextComponent;
@@ -46,9 +46,9 @@ public class GuiHider
         ITextComponent reopen = new TextComponentString("/" + RCCommands.reopen.getName());
         reopen.getStyle().setColor(TextFormatting.GREEN);
         reopen.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.reopen.getName()));
-        reopen.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcreopen.run")));
+        reopen.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("commands.rcreopen.run")));
 
-        mc.player.sendMessage(ServerTranslations.format("commands.rc.didhide", reopen));
+        mc.player.sendMessage(RecurrentComplex.translations.format("commands.rc.didhide", reopen));
 
         return true;
     }
@@ -84,11 +84,11 @@ public class GuiHider
 
         if (!canReopen())
         {
-            mc.player.sendMessage(ServerTranslations.get("commands.rcreopen.nogui"));
+            mc.player.sendMessage(RecurrentComplex.translations.get("commands.rcreopen.nogui"));
             return;
         }
 
         if (!reopenGUI())
-            mc.player.sendMessage(ServerTranslations.get("commands.rcreopen.fail"));
+            mc.player.sendMessage(RecurrentComplex.translations.get("commands.rcreopen.fail"));
     }
 }

@@ -6,12 +6,13 @@
 package ivorius.reccomplex.commands.structure.sight;
 
 import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -31,8 +32,7 @@ public class CommandSightAdd extends CommandExpecting
     @Override
     public Expect expect()
     {
-        return Parameters.expect()
-                .randomString().descriptionU("name").required().repeat();
+        return Parameters.expect().then(RCE::randomString).descriptionU("name").required().repeat();
     }
 
     public int getRequiredPermissionLevel()
@@ -51,6 +51,6 @@ public class CommandSightAdd extends CommandExpecting
         String name = parameters.get(0).rest(NaP.join()).require();
 
         generationData.addEntry(WorldStructureGenerationData.CustomEntry.from(name, BlockAreas.toBoundingBox(owner.getSelection())));
-        commandSender.sendMessage(ServerTranslations.format("commands.rcremember.success", name));
+        commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcremember.success", name));
     }
 }

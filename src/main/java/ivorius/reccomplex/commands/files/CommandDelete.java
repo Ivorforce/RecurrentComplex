@@ -19,7 +19,6 @@ import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.files.saving.FileSaverAdapter;
 import ivorius.reccomplex.utils.RawResourceLocation;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.ResourceExpression;
 import net.minecraft.command.CommandException;
@@ -63,7 +62,7 @@ public class CommandDelete extends CommandExpecting
         String adapterID = parameters.get(0).require();
 
         if (!RecurrentComplex.saver.has(adapterID))
-            throw ServerTranslations.commandException("commands.rcsave.noregistry");
+            throw RecurrentComplex.translations.commandException("commands.rcsave.noregistry");
 
         ResourceDirectory directory = parameters.get("directory").to(RCP::resourceDirectory).require();
         Optional<FileSaverAdapter<?>> adapterOptional = Optional.ofNullable(RecurrentComplex.saver.get(adapterID));

@@ -6,11 +6,11 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
-import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,12 +58,12 @@ public class CommandVisual extends CommandExpecting
                 RCEntityInfo.sendOptionsToClients(player);
                 break;
             default:
-                throw ServerTranslations.wrongUsageException("commands.rcvisual.usage");
+                throw RecurrentComplex.translations.wrongUsageException("commands.rcvisual.usage");
         }
 
         if (enabled)
-            commandSender.sendMessage(ServerTranslations.format("commands.rcvisual.enabled", type));
+            commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcvisual.enabled", type));
         else
-            commandSender.sendMessage(ServerTranslations.format("commands.rcvisual.disabled", type));
+            commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcvisual.disabled", type));
     }
 }

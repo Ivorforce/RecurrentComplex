@@ -17,6 +17,7 @@ import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.files.saving.FileSaver;
 import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
+import ivorius.reccomplex.mcopts.translation.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.registry.MCRegistrySpecial;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
 import ivorius.reccomplex.utils.*;
@@ -80,6 +81,14 @@ public class RecurrentComplex
 
     public static RCCommunicationHandler communicationHandler;
 
+    public static ServerTranslations translations = new ServerTranslations() {
+        @Override
+        public boolean translateServerSide()
+        {
+            return isLite();
+        }
+    };
+
     public static boolean isLite()
     {
         return RCConfig.isLightweightMode();
@@ -89,7 +98,7 @@ public class RecurrentComplex
     {
         boolean b = canHandleSaving(player);
         if (!b)
-            ServerTranslations.get("reccomplex.save.permission");
+            translations.get("reccomplex.save.permission");
         return !b;
     }
 

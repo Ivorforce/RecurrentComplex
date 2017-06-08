@@ -5,9 +5,8 @@
 
 package ivorius.reccomplex.mcopts.commands.parameters;
 
-import ivorius.ivtoolkit.math.MinecraftTransforms;
-import ivorius.reccomplex.utils.ServerTranslations;
-import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
+import ivorius.reccomplex.mcopts.MCOpts;
+import ivorius.reccomplex.mcopts.accessor.AccessorBiomeDictionary;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
@@ -57,18 +56,18 @@ public class MCP
     public static Parameter<Biome> biome(Parameter<String> p)
     {
         return p.map(ResourceLocation::new)
-                .map(Biome.REGISTRY::getObject, t -> ServerTranslations.commandException("commands.rc.nobiome"));
+                .map(Biome.REGISTRY::getObject, t -> MCOpts.translations.commandException("commands.rc.nobiome"));
     }
 
     public static Parameter<BiomeDictionary.Type> biomeDictionaryType(Parameter<String> p)
     {
-        return p.map(RCAccessorBiomeDictionary::getTypeWeak, s -> ServerTranslations.commandException("commands.biomedict.notype", s));
+        return p.map(AccessorBiomeDictionary::getTypeWeak, s -> MCOpts.translations.commandException("commands.biomedict.notype", s));
     }
 
     public static Function<Parameter<String>, Parameter<WorldServer>> dimension(MinecraftServer server, ICommandSender sender)
     {
         return p -> p.filter(d -> !d.equals("~"), null)
-                .map(CommandBase::parseInt).map(server::worldServerForDimension, t -> ServerTranslations.commandException("commands.rc.nodimension"))
+                .map(CommandBase::parseInt).map(server::worldServerForDimension, t -> MCOpts.translations.commandException("commands.rc.nodimension"))
                 .orElse((WorldServer) sender.getEntityWorld());
     }
 
@@ -91,6 +90,22 @@ public class MCP
     {
         return p.map(CommandBase::parseInt)
                 .map(i -> i > 40 ? i / 90 : i)
-                .map(MinecraftTransforms::to);
+                .map(MCP::rotationFromInt);
+    }
+
+    public static Rotation rotationFromInt(int rotation)
+    {
+        switch (rotation)
+        {
+            case 0:
+                return Rotation.NONE;
+            case 1:
+                return Rotation.CLOCKWISE_90;
+            case 2:
+                return Rotation.CLOCKWISE_180;
+            case 3:
+            default:
+                return Rotation.COUNTERCLOCKWISE_90;
+        }
     }
 }

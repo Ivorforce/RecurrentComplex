@@ -19,7 +19,6 @@ import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.files.saving.FileSaverAdapter;
 import ivorius.reccomplex.utils.RawResourceLocation;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.ResourceExpression;
 import net.minecraft.command.CommandException;
@@ -63,7 +62,7 @@ public class CommandWrite extends CommandExpecting
         String adapterID = parameters.get(0).require();
 
         if (!RecurrentComplex.saver.has(adapterID))
-            throw ServerTranslations.commandException("commands.rcsaveall.noregistry");
+            throw RecurrentComplex.translations.commandException("commands.rcsaveall.noregistry");
 
         ResourceDirectory directory = parameters.get("directory").to(RCP::resourceDirectory).optional().orElse(ResourceDirectory.ACTIVE);
         Optional<FileSaverAdapter<?>> adapterOptional = Optional.ofNullable(RecurrentComplex.saver.get(adapterID));
@@ -86,7 +85,7 @@ public class CommandWrite extends CommandExpecting
                 failed++;
         }
 
-        commandSender.sendMessage(ServerTranslations.format("commands.rcsaveall.result", saved, RCTextStyle.path(directory), failed));
+        commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcsaveall.result", saved, RCTextStyle.path(directory), failed));
 
         RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
         RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);

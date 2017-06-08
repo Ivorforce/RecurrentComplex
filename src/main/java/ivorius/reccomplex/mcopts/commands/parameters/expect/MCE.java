@@ -5,10 +5,10 @@
 
 package ivorius.reccomplex.mcopts.commands.parameters.expect;
 
+import ivorius.reccomplex.mcopts.accessor.AccessorBiomeDictionary;
 import ivorius.reccomplex.mcopts.commands.parameters.NaP;
 import ivorius.reccomplex.mcopts.commands.parameters.Parameter;
 import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
-import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommand;
@@ -69,7 +69,7 @@ public class MCE
 
     public static void biomeType(Expect e)
     {
-        e.next(RCAccessorBiomeDictionary.getMap().keySet()).descriptionU("biome type");
+        e.next(AccessorBiomeDictionary.getMap().keySet()).descriptionU("biome type");
     }
 
     public static void dimension(Expect e)

@@ -6,12 +6,12 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.Repository;
 import ivorius.reccomplex.commands.info.CommandDimensionDict;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.RCStrings;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import joptsimple.internal.Strings;
 import net.minecraft.util.ResourceLocation;
@@ -44,9 +44,9 @@ public class RCTextStyle
     @Nonnull
     public static ITextComponent submit(String id)
     {
-        ITextComponent submit = ServerTranslations.get("reccomplex.save.submit");
+        ITextComponent submit = RecurrentComplex.translations.get("reccomplex.save.submit");
         submit.getStyle().setColor(TextFormatting.AQUA);
-        submit.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("reccomplex.save.submit.hover")));
+        submit.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("reccomplex.save.submit.hover")));
         submit.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Repository.submitURL(id)));
         return submit;
     }
@@ -54,9 +54,9 @@ public class RCTextStyle
     @Nonnull
     public static ITextComponent visitFile(String id)
     {
-        ITextComponent submit = ServerTranslations.get("reccomplex.save.submit");
+        ITextComponent submit = RecurrentComplex.translations.get("reccomplex.save.submit");
         submit.getStyle().setColor(TextFormatting.AQUA);
-        submit.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("reccomplex.save.submit.hover")));
+        submit.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("reccomplex.save.submit.hover")));
         submit.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Repository.submitURL(id)));
         return submit;
     }
@@ -66,7 +66,7 @@ public class RCTextStyle
         boolean has = names != null && !names.trim().isEmpty();
 
         if (!has)
-            return ServerTranslations.format("commands.rclookup.reply.noauthor");
+            return RecurrentComplex.translations.format("commands.rclookup.reply.noauthor");
 
         TextComponentString component = new TextComponentString(RCStrings.abbreviateFormatted(names, 30));
 
@@ -82,7 +82,7 @@ public class RCTextStyle
         comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s %s", RCCommands.lookup.getName(), id)));
         comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.get("commands.rcsearch.lookup")));
+                RecurrentComplex.translations.get("commands.rcsearch.lookup")));
         comp.getStyle().setColor(TextFormatting.AQUA);
         return comp;
     }
@@ -100,7 +100,7 @@ public class RCTextStyle
         style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s types %s", RCCommands.biomeDict.getName(), biome.getRegistryName())));
         style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.biomedict.list.number", BiomeDictionary.getTypes(biome).size())));
+                RecurrentComplex.translations.format("commands.biomedict.list.number", BiomeDictionary.getTypes(biome).size())));
         style.setColor(TextFormatting.AQUA);
         return component;
     }
@@ -113,7 +113,7 @@ public class RCTextStyle
         style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s list %s", RCCommands.biomeDict.getName(), type)));
         style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.biomedict.get.number", BiomeDictionary.getBiomes(type).size())));
+                RecurrentComplex.translations.format("commands.biomedict.get.number", BiomeDictionary.getBiomes(type).size())));
         style.setColor(TextFormatting.AQUA);
         return component;
     }
@@ -125,7 +125,7 @@ public class RCTextStyle
         component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s types %s", RCCommands.dimensionDict.getName(), dimensionID)));
         component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.dimensiondict.list.number", DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)).size())));
+                RecurrentComplex.translations.format("commands.dimensiondict.list.number", DimensionDictionary.getDimensionTypes(DimensionManager.getProvider(dimensionID)).size())));
         return component;
     }
 
@@ -136,21 +136,21 @@ public class RCTextStyle
         component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s list %s", RCCommands.dimensionDict.getName(), type)));
         component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.dimensiondict.get.number", CommandDimensionDict.allDimensionsOfType(type).size())));
+                RecurrentComplex.translations.format("commands.dimensiondict.get.number", CommandDimensionDict.allDimensionsOfType(type).size())));
         return component;
     }
 
     public static ITextComponent area(BlockPos left, BlockPos right)
     {
         return left == null || right == null
-                ? ServerTranslations.format("commands.rcarea.get", pos(left), pos(right))
+                ? RecurrentComplex.translations.format("commands.rcarea.get", pos(left), pos(right))
                 : area(new BlockArea(left, right));
     }
 
     public static ITextComponent area(BlockArea area)
     {
-        ITextComponent component = ServerTranslations.format("commands.rcarea.get", pos(area.getPoint1()), pos(area.getPoint2()));
-        component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcarea.select")));
+        ITextComponent component = RecurrentComplex.translations.format("commands.rcarea.get", pos(area.getPoint1()), pos(area.getPoint2()));
+        component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("commands.rcarea.select")));
         component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s %d %d %d %d %d %d --first --second",
                 RCCommands.select.getName(), RCCommands.select.set.getName(),
                 area.getPoint1().getX(), area.getPoint1().getY(), area.getPoint1().getZ(),
@@ -172,7 +172,7 @@ public class RCTextStyle
         forget.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s %s id %s", RCCommands.sight.getName(), RCCommands.sight.delete.getName(), uuidString)));
         forget.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                ServerTranslations.format("commands.rcforget.forget", uuidString)));
+                RecurrentComplex.translations.format("commands.rcforget.forget", uuidString)));
         forget.getStyle().setColor(TextFormatting.RED);
 
         ITextComponent name;
@@ -181,7 +181,7 @@ public class RCTextStyle
         else
         {
             name = new TextComponentString(entry.description());
-            name.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcsightinfo.lookup")));
+            name.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("commands.rcsightinfo.lookup")));
             name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s %s", RCCommands.sight.getName(), RCCommands.sight.info.getName(), entry.getUuid())));
         }
 
@@ -193,7 +193,7 @@ public class RCTextStyle
     public static ITextComponent copy(String text)
     {
         ITextComponent comp = new TextComponentString(text);
-        comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rccopy.suggest")));
+        comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("commands.rccopy.suggest")));
         comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, text));
         return comp;
     }
@@ -201,14 +201,14 @@ public class RCTextStyle
     public static ITextComponent pos(BlockPos pos)
     {
         return pos != null
-                ? ServerTranslations.format("commands.rcpos.get", pos.getX(), pos.getY(), pos.getZ())
-                : ServerTranslations.format("commands.selectSet.point.none");
+                ? RecurrentComplex.translations.format("commands.rcpos.get", pos.getX(), pos.getY(), pos.getZ())
+                : RecurrentComplex.translations.format("commands.selectSet.point.none");
     }
 
     public static ITextComponent size(int[] size)
     {
         return size != null
-                ? ServerTranslations.format("commands.rcsize.get", size[0], size[1], size[2])
-                : ServerTranslations.format("commands.selectSet.point.none");
+                ? RecurrentComplex.translations.format("commands.rcsize.get", size[0], size[1], size[2])
+                : RecurrentComplex.translations.format("commands.selectSet.point.none");
     }
 }

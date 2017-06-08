@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands.schematic;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.MCP;
 import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
@@ -14,7 +15,6 @@ import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.parameters.IvP;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.OperationGenerateSchematic;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
@@ -42,11 +42,11 @@ public class CommandImportSchematic extends CommandExpecting
         }
         catch (SchematicFile.UnsupportedSchematicFormatException e)
         {
-            throw ServerTranslations.commandException("commands.rcimportschematic.format", schematicName, e.format);
+            throw RecurrentComplex.translations.commandException("commands.rcimportschematic.format", schematicName, e.format);
         }
 
         if (schematicFile == null)
-            throw ServerTranslations.commandException("commands.rcimportschematic.missing", schematicName, SchematicLoader.getLookupFolderName());
+            throw RecurrentComplex.translations.commandException("commands.rcimportschematic.missing", schematicName, SchematicLoader.getLookupFolderName());
 
         return schematicFile;
     }
@@ -73,7 +73,7 @@ public class CommandImportSchematic extends CommandExpecting
         Parameters parameters = Parameters.of(args, c);
 
         if (args.length < 1)
-            throw ServerTranslations.wrongUsageException("commands.rcimportschematic.usage");
+            throw RecurrentComplex.translations.wrongUsageException("commands.rcimportschematic.usage");
 
         SchematicFile schematicFile = parseSchematic(parameters.get(0).require());
         BlockPos pos = parameters.get(MCP.pos("x", "y", "z", commandSender.getPosition(), false)).require();

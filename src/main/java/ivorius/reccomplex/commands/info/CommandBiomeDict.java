@@ -7,13 +7,14 @@ package ivorius.reccomplex.commands.info;
 
 import com.google.common.collect.Lists;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.mcopts.commands.CommandSplit;
 import ivorius.reccomplex.mcopts.commands.SimpleCommand;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.structure.CommandSearchStructure;
-import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.mcopts.translation.ServerTranslations;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -60,7 +61,7 @@ public class CommandBiomeDict extends CommandSplit
 
                 Biome biome = parameters.get(0).to(MCP::biome).require();
 
-                sender.sendMessage(ServerTranslations.format("commands.biomedict.get", RCTextStyle.biome(biome),
+                sender.sendMessage(RecurrentComplex.translations.format("commands.biomedict.get", RCTextStyle.biome(biome),
                         ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getTypes(biome)).stream()
                                 .map(RCTextStyle::biomeType).toArray())
                 ));
@@ -76,7 +77,7 @@ public class CommandBiomeDict extends CommandSplit
 
                 BiomeDictionary.Type type = parameters.get(0).to(MCP::biomeDictionaryType).require();
 
-                sender.sendMessage(ServerTranslations.format("commands.biomedict.list", RCTextStyle.biomeType(type),
+                sender.sendMessage(RecurrentComplex.translations.format("commands.biomedict.list", RCTextStyle.biomeType(type),
                         ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getBiomes(type))
                                 .stream().map(RCTextStyle::biome).toArray())
                 ));

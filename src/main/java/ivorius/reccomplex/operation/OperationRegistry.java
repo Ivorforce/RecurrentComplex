@@ -9,7 +9,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.lang.IvClasses;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
@@ -17,7 +16,6 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.utils.RCPacketBuffer;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -91,14 +89,14 @@ public class OperationRegistry
                     ITextComponent confirmComponent = new TextComponentString("/" + RCCommands.confirm.getName());
                     confirmComponent.getStyle().setColor(TextFormatting.GREEN);
                     confirmComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.confirm.getName()));
-                    confirmComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rcconfirm.run")));
+                    confirmComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("commands.rcconfirm.run")));
 
                     ITextComponent cancelComponent = new TextComponentString("/" + RCCommands.cancel.getName());
                     cancelComponent.getStyle().setColor(TextFormatting.RED);
                     cancelComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.cancel.getName()));
-                    cancelComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, ServerTranslations.get("commands.rccancel.run")));
+                    cancelComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("commands.rccancel.run")));
 
-                    commandSender.sendMessage(ServerTranslations.format("commands.rc.queuedOp", confirmComponent, cancelComponent));
+                    commandSender.sendMessage(RecurrentComplex.translations.format("commands.rc.queuedOp", confirmComponent, cancelComponent));
                 }
             }
         }

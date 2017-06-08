@@ -33,7 +33,6 @@ import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileLoader;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.algebra.FunctionExpressionCaches;
 import net.minecraft.command.CommandException;
@@ -171,7 +170,7 @@ public class RCCommands
         RCEntityInfo info = RCEntityInfo.get(object, facing);
 
         if (info == null)
-            throw ServerTranslations.commandException("commands.rc.noEntityInfo");
+            throw RecurrentComplex.translations.commandException("commands.rc.noEntityInfo");
 
         return info;
     }
@@ -182,10 +181,10 @@ public class RCCommands
         SelectionOwner owner = SelectionOwner.getOwner(object, facing);
 
         if (owner == null)
-            throw ServerTranslations.commandException("commands.rc.noSelection");
+            throw RecurrentComplex.translations.commandException("commands.rc.noSelection");
 
         if (ensureValid && !owner.hasValidSelection())
-            throw ServerTranslations.commandException("commands.selectModify.noSelection");
+            throw RecurrentComplex.translations.commandException("commands.selectModify.noSelection");
 
         return owner;
     }
@@ -196,9 +195,9 @@ public class RCCommands
         long size = (long) sides[0] * (long) sides[1] * (long) sides[2];
 
         if (size >= (long) Integer.MAX_VALUE)
-            throw ServerTranslations.commandException("commands.rc.large.error");
+            throw RecurrentComplex.translations.commandException("commands.rc.large.error");
         else if (size >= 100 * 100 * 100)
-            sender.sendMessage(ServerTranslations.get("commands.rc.large.warn"));
+            sender.sendMessage(RecurrentComplex.translations.get("commands.rc.large.warn"));
     }
 
     public static void informDeleteResult(Pair<Set<Path>, Set<Path>> result, ICommandSender sender, String filetype, String id, ResourceDirectory directory)
@@ -206,9 +205,9 @@ public class RCCommands
         ITextComponent pathComponent = RCTextStyle.path(directory, id);
 
         if (result.getRight().size() > 0)
-            sender.sendMessage(ServerTranslations.format("reccomplex.delete.failure", filetype, pathComponent));
+            sender.sendMessage(RecurrentComplex.translations.format("reccomplex.delete.failure", filetype, pathComponent));
         else if (result.getLeft().size() > 0)
-            sender.sendMessage(ServerTranslations.format("reccomplex.delete.success", filetype, pathComponent));
+            sender.sendMessage(RecurrentComplex.translations.format("reccomplex.delete.success", filetype, pathComponent));
     }
 
     public static boolean informSaveResult(boolean result, ICommandSender sender, ResourceDirectory directory, String filetype, String id)
@@ -217,13 +216,13 @@ public class RCCommands
 
         if (result)
         {
-            sender.sendMessage(ServerTranslations.format("reccomplex.save.full",
-                    ServerTranslations.format("reccomplex.save.success", filetype, pathComponent),
+            sender.sendMessage(RecurrentComplex.translations.format("reccomplex.save.full",
+                    RecurrentComplex.translations.format("reccomplex.save.success", filetype, pathComponent),
                     RCTextStyle.submit(id))
             );
         }
         else
-            sender.sendMessage(ServerTranslations.format("reccomplex.save.failure", filetype, pathComponent));
+            sender.sendMessage(RecurrentComplex.translations.format("reccomplex.save.failure", filetype, pathComponent));
 
         return result;
     }

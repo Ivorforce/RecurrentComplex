@@ -12,7 +12,6 @@ import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
-import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -51,11 +50,11 @@ public class CommandReload extends CommandExpecting
         {
             RCCommands.tryReload(RecurrentComplex.loader, level);
 
-            commandSender.sendMessage(ServerTranslations.format("commands.strucReload.success", level));
+            commandSender.sendMessage(RecurrentComplex.translations.format("commands.strucReload.success", level));
         }
         catch (IllegalArgumentException e)
         {
-            throw ServerTranslations.wrongUsageException("commands.strucReload.usage");
+            throw RecurrentComplex.translations.wrongUsageException("commands.strucReload.usage");
         }
     }
 }

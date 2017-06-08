@@ -23,7 +23,6 @@ import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.RawResourceLocation;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.ResourceExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -51,7 +50,7 @@ public class CommandMapStructure extends CommandExpecting
         if (!(info instanceof GenericStructure))
         {
             if (inform)
-                throw ServerTranslations.commandException("commands.structure.notGeneric", structureID);
+                throw RecurrentComplex.translations.commandException("commands.structure.notGeneric", structureID);
 
             return MapResult.SKIPPED;
         }
@@ -68,7 +67,7 @@ public class CommandMapStructure extends CommandExpecting
         }
         catch (MockWorld.VirtualWorldException ex)
         {
-            throw ServerTranslations.commandException("commands.rcmap.nonvirtual.arguments");
+            throw RecurrentComplex.translations.commandException("commands.rcmap.nonvirtual.arguments");
         }
 
         structure.worldDataCompound = worldData.createTagCompound();
@@ -140,7 +139,7 @@ public class CommandMapStructure extends CommandExpecting
         }
 
         if (!inform)
-            commandSender.sendMessage(ServerTranslations.format("commands.rcmapall.result", saved, RCTextStyle.path(directory), failed, skipped));
+            commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcmapall.result", saved, RCTextStyle.path(directory), failed, skipped));
 
         RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
         RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);

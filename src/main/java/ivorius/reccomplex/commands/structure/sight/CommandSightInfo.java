@@ -5,11 +5,11 @@
 
 package ivorius.reccomplex.commands.structure.sight;
 
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.mcopts.commands.SimpleCommand;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.utils.RCBlockAreas;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -39,7 +39,7 @@ public class CommandSightInfo extends SimpleCommand
         WorldStructureGenerationData.Entry entry = generationData.getEntry(UUID.fromString(parameters.get(0).require()));
 
         if (entry == null)
-            throw ServerTranslations.commandException("commands.rcsightinfo.unknown");
+            throw RecurrentComplex.translations.commandException("commands.rcsightinfo.unknown");
         else
         {
             ITextComponent area = RCTextStyle.area(RCBlockAreas.from(entry.getBoundingBox()));

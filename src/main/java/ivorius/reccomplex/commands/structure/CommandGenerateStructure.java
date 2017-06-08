@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.mcopts.commands.SimpleCommand;
@@ -22,7 +23,6 @@ import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
@@ -58,7 +58,7 @@ public class CommandGenerateStructure extends SimpleCommand
                 .named("dimension", "d").then(MCE::dimension)
                 .named("gen").then(RCE.generationType(p -> p.get(0))).descriptionU("generation type id")
                 .named("rotation", "r").then(MCE::rotation)
-                .named("seed").randomString().descriptionU("seed")
+                .named("seed").then(RCE::randomString).descriptionU("seed")
                 .flag("mirror", "m")
                 .flag("select", "s");
     }
@@ -87,7 +87,7 @@ public class CommandGenerateStructure extends SimpleCommand
 
         Optional<StructureBoundingBox> boundingBox = generator.boundingBox();
         if (!boundingBox.isPresent())
-            throw ServerTranslations.commandException("commands.strucGen.noPlace");
+            throw RecurrentComplex.translations.commandException("commands.strucGen.noPlace");
 
         if (structure instanceof GenericStructure && world == sender.getEntityWorld())
         {
@@ -102,7 +102,7 @@ public class CommandGenerateStructure extends SimpleCommand
         else
         {
             if (generator.generate() == null)
-                throw ServerTranslations.commandException("commands.strucGen.noPlace");
+                throw RecurrentComplex.translations.commandException("commands.strucGen.noPlace");
         }
 
         if (select)

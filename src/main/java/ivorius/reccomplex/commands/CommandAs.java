@@ -14,8 +14,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.function.Function;
-
 /**
  * Created by lukas on 03.08.14.
  */
@@ -46,7 +44,7 @@ public class CommandAs extends CommandExpecting
     {
         Parameters parameters = Parameters.of(args, expect()::declare);
 
-        Entity entity = parameters.get(0).to(MCP.entity_(server, commandSender)).require();
+        Entity entity = parameters.get(0).to(MCP.entity(server, commandSender)).require();
         String command = buildString(args, 1);
 
         server.commandManager.executeCommand(entity, command);

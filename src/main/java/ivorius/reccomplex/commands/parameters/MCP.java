@@ -44,7 +44,7 @@ public class MCP
                         )));
     }
 
-    public static Function<Parameter<String>, Parameter<BlockPos>> pos_(BlockPos ref, boolean centerBlock)
+    public static Function<Parameter<String>, Parameter<BlockPos>> pos(BlockPos ref, boolean centerBlock)
     {
         return p -> pos(p.move(1), p.move(2), ref, centerBlock).apply(p);
     }
@@ -77,12 +77,12 @@ public class MCP
         return p -> p.map(s -> CommandBase.getBlockByText(commandSender, s));
     }
 
-    public static Function<Parameter<String>, Parameter<ICommand>> command_(MinecraftServer server)
+    public static Function<Parameter<String>, Parameter<ICommand>> command(MinecraftServer server)
     {
         return p -> p.map(server.getCommandManager().getCommands()::get);
     }
 
-    public static Function<Parameter<String>, Parameter<Entity>> entity_(MinecraftServer server, ICommandSender sender)
+    public static Function<Parameter<String>, Parameter<Entity>> entity(MinecraftServer server, ICommandSender sender)
     {
         return p -> p.map(s -> CommandBase.getEntity(server, sender, s));
     }

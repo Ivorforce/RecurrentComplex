@@ -52,7 +52,7 @@ public class RCP
         });
     }
 
-    public static Function<Parameter<String>, Parameter<GenerationType>> generationType_(Structure<?> structure)
+    public static Function<Parameter<String>, Parameter<GenerationType>> generationType(Structure<?> structure)
     {
         return p -> p.map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
                 .orElseGet(() -> structure.<GenerationType>generationTypes(NaturalGeneration.class).stream().findFirst()
@@ -61,7 +61,7 @@ public class RCP
 
     public static Parameter<Predicate<Structure>> structurePredicate(Parameter<String> p)
     {
-        return p.to(expression_(new ResourceExpression(s1 -> !s1.isEmpty()))).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
+        return p.to(expression(new ResourceExpression(s1 -> !s1.isEmpty()))).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
     }
 
     public static Parameter<ResourceDirectory> resourceDirectory(Parameter<String> p)
@@ -102,7 +102,7 @@ public class RCP
         });
     }
 
-    public static <T extends ExpressionCache<I>, I> Function<Parameter<String>, Parameter<T>> expression_(T t)
+    public static <T extends ExpressionCache<I>, I> Function<Parameter<String>, Parameter<T>> expression(T t)
     {
         return p -> p.map(s ->
         {
@@ -112,9 +112,9 @@ public class RCP
         });
     }
 
-    public static Function<Parameter<String>, Parameter<CommandVirtual>> virtualCommand_(MinecraftServer server)
+    public static Function<Parameter<String>, Parameter<CommandVirtual>> virtualCommand(MinecraftServer server)
     {
-        return p -> p.to(MCP.command_(server)).map(c ->
+        return p -> p.to(MCP.command(server)).map(c ->
         {
             if (!(c instanceof CommandVirtual))
                 throw ServerTranslations.commandException("commands.rcmap.nonvirtual");

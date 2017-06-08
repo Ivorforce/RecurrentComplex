@@ -35,7 +35,6 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -108,9 +107,9 @@ public class CommandMapStructure extends CommandExpecting
     {
         Parameters parameters = Parameters.of(args, expect()::declare);
 
-        ResourceExpression expression = parameters.get(0).to(RCP.expression_(new ResourceExpression(StructureRegistry.INSTANCE::has))).require();
+        ResourceExpression expression = parameters.get(0).to(RCP.expression(new ResourceExpression(StructureRegistry.INSTANCE::has))).require();
 
-        CommandVirtual virtual = parameters.get(1).to(RCP.virtualCommand_(server)).require();
+        CommandVirtual virtual = parameters.get(1).to(RCP.virtualCommand(server)).require();
         String[] virtualArgs = parameters.get(2).to(NaP::varargs).require();
 
         ResourceDirectory directory = parameters.has("nosave") ? null :

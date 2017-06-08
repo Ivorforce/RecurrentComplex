@@ -9,10 +9,11 @@ import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.parameters.CommandExpecting;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.commands.parameters.expect.Expect;
-import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.commands.rcparameters.RCP;
+import ivorius.reccomplex.commands.rcparameters.expect.RCE;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandException;
@@ -25,23 +26,6 @@ import net.minecraft.server.MinecraftServer;
  */
 public class CommandExportStructure extends CommandExpecting
 {
-    public static GenericStructure getNewGenericStructure(ICommandSender commandSender, Parameter<String> parameter) throws CommandException
-    {
-        GenericStructure genericStructureInfo;
-
-        if (parameter.has(1))
-        {
-            genericStructureInfo = parameter.to(RCP::genericStructure).require();
-        }
-        else
-        {
-            genericStructureInfo = GenericStructure.createDefaultStructure();
-            genericStructureInfo.metadata.authors = commandSender.getName();
-        }
-
-        return genericStructureInfo;
-    }
-
     @Override
     public String getName()
     {
@@ -68,7 +52,7 @@ public class CommandExportStructure extends CommandExpecting
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
         String structureID = parameters.get(0).optional().orElse(null);
-        GenericStructure from = getNewGenericStructure(commandSender, parameters.get("from"));
+        GenericStructure from = parameters.get("from").to(RCP.structureFromBlueprint(commandSender)).require();
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);

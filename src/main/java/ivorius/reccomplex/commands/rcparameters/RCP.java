@@ -3,10 +3,12 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.parameters;
+package ivorius.reccomplex.commands.rcparameters;
 
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.parameters.MCP;
+import ivorius.reccomplex.commands.parameters.Parameter;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
@@ -18,40 +20,23 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.Generat
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
 import net.minecraft.server.MinecraftServer;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
  * Created by lukas on 31.05.17.
  */
-public class RCParameter<P extends RCParameter<P>> extends IvParameter<P>
+public class RCP
 {
-    public RCParameter(Parameter other)
+    public static Parameter<Structure<?>> structure(Parameter<String> p)
     {
-        super(other);
+        return p.map(StructureRegistry.INSTANCE::get,
+                t -> ServerTranslations.commandException("commands.strucGen.noStructure", p.get()));
     }
 
-    @Override
-    public P copy(Parameter<String, ?> p)
+    public static Parameter<GenericStructure> genericStructure(Parameter<String> p)
     {
-        //noinspection unchecked
-        return (P) new RCParameter<>(p);
-    }
-
-    public Parameter<Predicate<Structure>, ?> structurePredicate()
-    {
-        return expression(new ResourceExpression(s1 -> !s1.isEmpty())).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
-    }
-
-    public Parameter<Structure<?>, ?> structure()
-    {
-        //noinspection unchecked
-        return ((Parameter<String, ?>) this).map(StructureRegistry.INSTANCE::get,
-                t -> ServerTranslations.commandException("commands.strucGen.noStructure", get()));
-    }
-
-    public Parameter<GenericStructure, ?> genericStructure()
-    {
-        return map(id ->
+        return p.map(id ->
         {
             Structure structure = StructureRegistry.INSTANCE.get(id);
 
@@ -67,16 +52,21 @@ public class RCParameter<P extends RCParameter<P>> extends IvParameter<P>
         });
     }
 
-    public Parameter<GenerationType, ?> generationType(Structure<?> structure)
+    public static Function<Parameter<String>, Parameter<GenerationType>> generationType_(Structure<?> structure)
     {
-        return map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
+        return p -> p.map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
                 .orElseGet(() -> structure.<GenerationType>generationTypes(NaturalGeneration.class).stream().findFirst()
                         .orElse(structure.generationTypes(GenerationType.class).stream().findFirst().orElse(null)));
     }
 
-    public Parameter<ResourceDirectory, ?> resourceDirectory()
+    public static Parameter<Predicate<Structure>> structurePredicate(Parameter<String> p)
     {
-        return map(t ->
+        return p.to(expression_(new ResourceExpression(s1 -> !s1.isEmpty()))).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
+    }
+
+    public static Parameter<ResourceDirectory> resourceDirectory(Parameter<String> p)
+    {
+        return p.map(t ->
         {
             try
             {
@@ -89,9 +79,9 @@ public class RCParameter<P extends RCParameter<P>> extends IvParameter<P>
         });
     }
 
-    public Parameter<int[], ?> metadatas()
+    public static Parameter<int[]> metadatas(Parameter<String> p)
     {
-        return map(arg ->
+        return p.map(arg ->
         {
             try
             {
@@ -112,19 +102,19 @@ public class RCParameter<P extends RCParameter<P>> extends IvParameter<P>
         });
     }
 
-    public <T extends ExpressionCache<I>, I> Parameter<T, ?> expression(T t)
+    public static <T extends ExpressionCache<I>, I> Function<Parameter<String>, Parameter<T>> expression_(T t)
     {
-        return map(s ->
+        return p -> p.map(s ->
         {
             T cache = ExpressionCache.of(t, s);
-            RCCommands.ensureValid(cache, name);
+            RCCommands.ensureValid(cache, p.name(0));
             return cache;
         });
     }
 
-    public Parameter<CommandVirtual, ?> virtualCommand(MinecraftServer server)
+    public static Function<Parameter<String>, Parameter<CommandVirtual>> virtualCommand_(MinecraftServer server)
     {
-        return command(server).map(c ->
+        return p -> p.to(MCP.command_(server)).map(c ->
         {
             if (!(c instanceof CommandVirtual))
                 throw ServerTranslations.commandException("commands.rcmap.nonvirtual");

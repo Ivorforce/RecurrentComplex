@@ -14,13 +14,14 @@ import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.RawResourceLocation;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.ResourceExpression;
-import ivorius.reccomplex.utils.optional.IvOptional;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -104,15 +105,15 @@ public class CommandMapStructure extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
-        ResourceExpression expression = parameters.get(0).expression(new ResourceExpression(StructureRegistry.INSTANCE::has)).require();
+        ResourceExpression expression = parameters.get(0).to(RCP.expression_(new ResourceExpression(StructureRegistry.INSTANCE::has))).require();
 
-        CommandVirtual virtual = parameters.get(1).virtualCommand(server).require();
-        String[] virtualArgs = parameters.get(2).varargs().require();
+        CommandVirtual virtual = parameters.get(1).to(RCP.virtualCommand_(server)).require();
+        String[] virtualArgs = parameters.get(2).to(NaP::varargs).require();
 
         ResourceDirectory directory = parameters.has("nosave") ? null :
-                parameters.get("directory").resourceDirectory().optional().orElse(ResourceDirectory.ACTIVE);
+                parameters.get("directory").to(RCP::resourceDirectory).optional().orElse(ResourceDirectory.ACTIVE);
 
         List<String> relevant = StructureRegistry.INSTANCE.ids().stream()
                 .filter(id -> expression.test(new RawResourceLocation(StructureRegistry.INSTANCE.status(id).getDomain(), id)))

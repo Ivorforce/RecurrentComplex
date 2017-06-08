@@ -13,8 +13,9 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
-import ivorius.reccomplex.utils.optional.IvOptional;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -45,10 +46,9 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
     @Override
     public void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
-        PositionedBlockExpression matcher = parameters.get("exp").orElse("")
-                .expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry)).require();
+        PositionedBlockExpression matcher = parameters.get("exp").orElse("").to(RCP.expression_(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
 
         String propertyName = parameters.get(0).require();
         String propertyValue = parameters.get(1).require();

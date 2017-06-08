@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -51,9 +52,9 @@ public class CommandSelectSetBiome extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
-        Biome biome = parameters.get(0).biome().require();
+        Biome biome = parameters.get(0).to(MCP::biome).require();
         byte biomeID = (byte) (Biome.REGISTRY.getIDForObject(biome) & 255);
 
         World world = commandSender.getEntityWorld();

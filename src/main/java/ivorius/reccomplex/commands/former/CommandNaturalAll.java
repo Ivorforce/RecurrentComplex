@@ -10,10 +10,8 @@ import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 
@@ -45,15 +43,15 @@ public class CommandNaturalAll extends CommandExpecting implements CommandVirtua
     @Override
     public void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
         RCCommands.assertSize(sender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
-        double expandFloor = parameters.get("floor-expansion").asDouble().optional().orElse(1.);
-        int floorDistance = parameters.get("space-distance-to-floor").asInt().optional().orElse(0) + 1;
-        int maxClosedSides = parameters.get("space-max-closed-sides").asInt().optional().orElse(3);
+        double expandFloor = parameters.get("floor-expansion").to(NaP::asDouble).optional().orElse(1.);
+        int floorDistance = parameters.get("space-distance-to-floor").to(NaP::asInt).optional().orElse(0) + 1;
+        int maxClosedSides = parameters.get("space-max-closed-sides").to(NaP::asInt).optional().orElse(3);
 
         CommandNaturalFloor.placeNaturalFloor(world, area, expandFloor);
         CommandNaturalSpace.placeNaturalAir(world, area, 3, 3);

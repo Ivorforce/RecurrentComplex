@@ -7,6 +7,8 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandException;
@@ -42,11 +44,11 @@ public class CommandEditStructure extends CommandExpecting
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         String id = parameters.get(0).require();
-        GenericStructure base = parameters.get(0).genericStructure().require();
-        GenericStructure from = parameters.get("from").genericStructure().optional().orElse(base);
+        GenericStructure base = parameters.get(0).to(RCP::genericStructure).require();
+        GenericStructure from = parameters.get("from").to(RCP::genericStructure).optional().orElse(base);
 
         if (base != from)
         {

@@ -11,6 +11,7 @@ import gnu.trove.list.array.TIntArrayList;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
@@ -35,9 +36,12 @@ public class CommandDimensionDict extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                RCParameters parameters = RCParameters.of(args, null);
+                Parameters blueprint = Parameters.of(args, null);
+                Parameters blueprint1 = blueprint;
+                Parameters blueprint2 = blueprint1;
+                Parameters parameters = new Parameters(blueprint2);
 
-                WorldProvider provider = parameters.get(0).dimension(server, sender).require().provider;
+                WorldProvider provider = parameters.get(0).to(MCP.dimension(server, sender)).require().provider;
 
                 sender.sendMessage(ServerTranslations.format("commands.dimensiondict.get", RCTextStyle.dimension(provider.getDimension()),
                         ServerTranslations.join(Lists.newArrayList(DimensionDictionary.getDimensionTypes(provider)).stream()
@@ -51,7 +55,10 @@ public class CommandDimensionDict extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                RCParameters parameters = RCParameters.of(args, null);
+                Parameters blueprint = Parameters.of(args, null);
+                Parameters blueprint1 = blueprint;
+                Parameters blueprint2 = blueprint1;
+                Parameters parameters = new Parameters(blueprint2);
 
                 String type = parameters.get(0).require();
 

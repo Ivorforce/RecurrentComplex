@@ -22,7 +22,7 @@ import java.util.function.Function;
  */
 public class MCExpect<T extends MCExpect<T>> extends Expect<T>
 {
-    MCExpect()
+    protected MCExpect()
     {
 
     }
@@ -90,13 +90,13 @@ public class MCExpect<T extends MCExpect<T>> extends Expect<T>
         return tExpect.descriptionU("command");
     }
 
-    public T commandArguments(Function<Parameters, ParameterString> start)
+    public T commandArguments(Function<Parameters, Parameter<String>> start)
     {
         Expect<T> tExpect = nextRaw((server1, sender, params, pos1) ->
         {
-            ParameterString<?> commandParameter = start.apply(params);
+            Parameter<String> commandParameter = start.apply(params);
             Optional<ICommand> other = commandParameter.tryGet().map(server1.getCommandManager().getCommands()::get);
-            return other.map(c -> c.getTabCompletions(server1, sender, commandParameter.move(1).varargs().get(), pos1)).orElse(Collections.emptyList());
+            return other.map(c -> c.getTabCompletions(server1, sender, commandParameter.move(1).to(NaP::varargs).get(), pos1)).orElse(Collections.emptyList());
         });
         return tExpect.descriptionU("args...");
     }

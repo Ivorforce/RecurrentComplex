@@ -12,10 +12,8 @@ import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.block.RCBlocks;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -118,10 +116,10 @@ public class CommandNaturalFloor extends CommandExpecting implements CommandVirt
     @Override
     public void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         BlockArea area = RCCommands.getSelectionOwner(sender, null, true).getSelection();
-        double expandFloor = parameters.get("expansion").asDouble().optional().orElse(1.);
+        double expandFloor = parameters.get("expansion").to(NaP::asDouble).optional().orElse(1.);
 
         placeNaturalFloor(world, area, expandFloor);
     }

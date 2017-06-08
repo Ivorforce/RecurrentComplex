@@ -3,9 +3,12 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.parameters;
+package ivorius.reccomplex.commands.rcparameters;
 
 import ivorius.reccomplex.commands.CommandVirtual;
+import ivorius.reccomplex.commands.parameters.Expect;
+import ivorius.reccomplex.commands.parameters.Parameter;
+import ivorius.reccomplex.commands.parameters.Parameters;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
@@ -43,9 +46,9 @@ public class RCExpect<T extends RCExpect<T>> extends IvExpect<T>
         return next(StructureRegistry.INSTANCE.ids()).descriptionU("structure");
     }
 
-    public T generationType(Function<Parameters, Parameter<String, ?>> fun)
+    public T generationType(Function<Parameters, Parameter<String>> fun)
     {
-        return next(params -> new RCParameter<>(fun.apply(params)).structure().tryGet()
+        return next(params -> fun.apply(params).to(RCP::structure).tryGet()
                 .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id)));
     }
 

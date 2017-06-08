@@ -18,7 +18,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.Generat
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 
 /**
@@ -31,16 +30,16 @@ public class RCParameter<P extends RCParameter<P>> extends IvParameter<P>
         super(other);
     }
 
-    public Parameter<Predicate<Structure>, ?> structurePredicate()
-    {
-        return expression(new ResourceExpression(s1 -> !s1.isEmpty())).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
-    }
-
     @Override
     public P copy(Parameter<String, ?> p)
     {
         //noinspection unchecked
         return (P) new RCParameter<>(p);
+    }
+
+    public Parameter<Predicate<Structure>, ?> structurePredicate()
+    {
+        return expression(new ResourceExpression(s1 -> !s1.isEmpty())).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
     }
 
     public Parameter<Structure<?>, ?> structure()

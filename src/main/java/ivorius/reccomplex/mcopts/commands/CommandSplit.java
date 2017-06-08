@@ -30,14 +30,15 @@ public class CommandSplit extends CommandBase
 
     public CommandSplit()
     {
-        add(new SimpleCommand("help", () -> Parameters.expect().next(commands.keySet()).descriptionU("command").required())
+        add(new SimpleCommand("help", () -> Parameters.expect().next(commands.keySet()).description("commands.parameters.command").required())
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
                 Parameters parameters = Parameters.of(args, null);
-                throw new WrongUsageException(parameters.get(0).map(commands::get).optional()
-                        .orElse(CommandSplit.this).getUsage(sender)
+                throw new WrongUsageException(parameters.get(0)
+                        .map(commands::get, s -> new CommandNotFoundException())
+                        .optional().orElse(CommandSplit.this).getUsage(sender)
                 );
             }
         });
@@ -116,7 +117,7 @@ public class CommandSplit extends CommandBase
         if (args.length < 1)
             throw new WrongUsageException(getUsage(sender));
 
-        ICommand iCommand = get(args[0]).orElseThrow(() -> new CommandException("Unknown command: " + args[0]));
+        ICommand iCommand = get(args[0]).orElseThrow(CommandNotFoundException::new);
 
         if (!iCommand.checkPermission(server, sender))
             throw new CommandException("commands.generic.permission");

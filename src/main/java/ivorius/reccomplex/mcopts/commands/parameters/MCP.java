@@ -8,10 +8,7 @@ package ivorius.reccomplex.mcopts.commands.parameters;
 import ivorius.reccomplex.mcopts.MCOpts;
 import ivorius.reccomplex.mcopts.accessor.AccessorBiomeDictionary;
 import net.minecraft.block.Block;
-import net.minecraft.command.CommandBase;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.command.NumberInvalidException;
+import net.minecraft.command.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -78,7 +75,7 @@ public class MCP
 
     public static Function<Parameter<String>, Parameter<ICommand>> command(MinecraftServer server)
     {
-        return p -> p.map(server.getCommandManager().getCommands()::get);
+        return p -> p.map(server.getCommandManager().getCommands()::get, s -> new CommandNotFoundException());
     }
 
     public static Function<Parameter<String>, Parameter<Entity>> entity(MinecraftServer server, ICommandSender sender)
@@ -95,7 +92,7 @@ public class MCP
 
     public static Rotation rotationFromInt(int rotation)
     {
-        switch (rotation)
+        switch (((rotation % 4) + 4) % 4)
         {
             case 0:
                 return Rotation.NONE;
@@ -104,8 +101,9 @@ public class MCP
             case 2:
                 return Rotation.CLOCKWISE_180;
             case 3:
-            default:
                 return Rotation.COUNTERCLOCKWISE_90;
+            default:
+                throw new IllegalStateException();
         }
     }
 }

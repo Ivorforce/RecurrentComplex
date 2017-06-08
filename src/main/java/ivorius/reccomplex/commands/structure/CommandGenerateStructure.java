@@ -57,7 +57,7 @@ public class CommandGenerateStructure extends SimpleCommand
                 .then(RCE::structure).required()
                 .then(IvE.surfacePos("x", "z"))
                 .named("dimension", "d").then(MCE::dimension)
-                .named("gen").then(RCE.generationType(p -> p.get(0))).descriptionU("generation type id")
+                .named("gen").then(RCE.generationType(p -> p.get(0)))
                 .named("rotation", "r").then(MCE::rotation)
                 .named("seed").then(RCE::randomString).descriptionU("seed")
                 .flag("mirror", "m")

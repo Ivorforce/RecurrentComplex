@@ -41,7 +41,8 @@ public class RCE
     public static Consumer<Expect> generationType(Function<Parameters, Parameter<String>> fun)
     {
         return e -> e.next(params -> fun.apply(params).to(RCP::structure).tryGet()
-                .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id)));
+                .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id)))
+                .descriptionU("generation type id");
     }
 
     public static void schematic(Expect e)

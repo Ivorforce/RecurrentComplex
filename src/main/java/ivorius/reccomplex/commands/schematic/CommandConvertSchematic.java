@@ -7,8 +7,8 @@ package ivorius.reccomplex.commands.schematic;
 
 import ivorius.reccomplex.commands.parameters.*;
 import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.commands.rcparameters.expect.RCE;
-import ivorius.reccomplex.commands.structure.CommandExportStructure;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -49,11 +49,11 @@ public class CommandConvertSchematic extends CommandExpecting
         String schematicName = parameters.get(0).require();
         SchematicFile schematicFile = CommandImportSchematic.parseSchematic(schematicName);
 
-        GenericStructure structure = CommandExportStructure.getNewGenericStructure(commandSender, parameters.get("from"));
+        GenericStructure from = parameters.get("from").to(RCP.structureFromBlueprint(commandSender)).require();
 
-        structure.worldDataCompound = CommandExportSchematic.toWorldData(schematicFile).createTagCompound();
+        from.worldDataCompound = CommandExportSchematic.toWorldData(schematicFile).createTagCompound();
 
-        PacketEditStructureHandler.openEditStructure(structure, schematicName, player);
+        PacketEditStructureHandler.openEditStructure(from, schematicName, player);
     }
 
     @Override

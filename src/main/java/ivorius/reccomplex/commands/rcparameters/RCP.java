@@ -18,6 +18,7 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.function.Function;
@@ -50,6 +51,17 @@ public class RCP
 
             return genericStructureInfo;
         });
+    }
+
+    public static Function<Parameter<String>, Parameter<GenericStructure>> structureFromBlueprint(ICommandSender sender)
+    {
+        return p -> p.to(RCP::genericStructure).map(GenericStructure::copyAsGenericStructure)
+                .orElseGet(() ->
+                {
+                    GenericStructure structure = GenericStructure.createDefaultStructure();
+                    structure.metadata.authors = sender.getName();
+                    return structure;
+                });
     }
 
     public static Function<Parameter<String>, Parameter<GenerationType>> generationType(Structure<?> structure)

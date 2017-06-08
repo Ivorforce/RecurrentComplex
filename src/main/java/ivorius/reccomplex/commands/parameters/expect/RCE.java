@@ -3,13 +3,13 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.rcparameters.expect;
+package ivorius.reccomplex.commands.parameters.expect;
 
 import ivorius.reccomplex.commands.CommandVirtual;
-import ivorius.reccomplex.commands.parameters.expect.Expect;
-import ivorius.reccomplex.commands.parameters.Parameter;
-import ivorius.reccomplex.commands.parameters.Parameters;
-import ivorius.reccomplex.commands.rcparameters.RCP;
+import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
+import ivorius.reccomplex.mcopts.commands.parameters.Parameter;
+import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
+import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;

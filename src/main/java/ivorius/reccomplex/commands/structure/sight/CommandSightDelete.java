@@ -5,8 +5,10 @@
 
 package ivorius.reccomplex.commands.structure.sight;
 
-import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.parameters.expect.MCE;
+import ivorius.reccomplex.mcopts.commands.CommandSplit;
+import ivorius.reccomplex.mcopts.commands.SimpleCommand;
+import ivorius.reccomplex.mcopts.commands.parameters.*;
+import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandException;

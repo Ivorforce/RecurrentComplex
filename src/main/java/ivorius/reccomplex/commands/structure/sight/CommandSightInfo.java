@@ -6,7 +6,8 @@
 package ivorius.reccomplex.commands.structure.sight;
 
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.mcopts.commands.SimpleCommand;
+import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;

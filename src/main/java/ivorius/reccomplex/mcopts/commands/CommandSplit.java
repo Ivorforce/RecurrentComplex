@@ -3,9 +3,10 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.parameters;
+package ivorius.reccomplex.mcopts.commands;
 
 import com.google.common.collect.Lists;
+import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
 import joptsimple.internal.Strings;
 import net.minecraft.command.*;
 import net.minecraft.server.MinecraftServer;

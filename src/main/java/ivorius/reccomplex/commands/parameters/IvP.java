@@ -3,12 +3,12 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.rcparameters;
+package ivorius.reccomplex.commands.parameters;
 
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.commands.parameters.Parameter;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.mcopts.commands.parameters.Parameter;
+import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.NumberInvalidException;

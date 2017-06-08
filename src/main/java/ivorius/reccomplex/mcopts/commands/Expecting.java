@@ -3,9 +3,9 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.parameters;
+package ivorius.reccomplex.mcopts.commands;
 
-import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;

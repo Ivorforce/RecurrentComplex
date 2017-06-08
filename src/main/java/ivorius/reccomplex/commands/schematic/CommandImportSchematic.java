@@ -6,13 +6,13 @@
 package ivorius.reccomplex.commands.schematic;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.MCP;
-import ivorius.reccomplex.commands.parameters.Parameters;
-import ivorius.reccomplex.commands.parameters.expect.Expect;
-import ivorius.reccomplex.commands.parameters.expect.MCE;
-import ivorius.reccomplex.commands.rcparameters.IvP;
-import ivorius.reccomplex.commands.rcparameters.expect.RCE;
+import ivorius.reccomplex.mcopts.commands.CommandExpecting;
+import ivorius.reccomplex.mcopts.commands.parameters.MCP;
+import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
+import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
+import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
+import ivorius.reccomplex.commands.parameters.IvP;
+import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.OperationGenerateSchematic;

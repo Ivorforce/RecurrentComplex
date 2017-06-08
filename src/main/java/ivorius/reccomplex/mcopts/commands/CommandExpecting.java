@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.parameters;
+package ivorius.reccomplex.mcopts.commands;
 
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;

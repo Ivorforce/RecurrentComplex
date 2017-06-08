@@ -3,10 +3,10 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.rcparameters.expect;
+package ivorius.reccomplex.commands.parameters.expect;
 
-import ivorius.reccomplex.commands.parameters.expect.Expect;
-import ivorius.reccomplex.commands.parameters.expect.MCE;
+import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
+import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 
 import java.util.function.Consumer;

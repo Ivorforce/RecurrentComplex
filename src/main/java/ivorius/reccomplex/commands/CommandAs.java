@@ -6,9 +6,10 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.parameters.expect.Expect;
-import ivorius.reccomplex.commands.parameters.expect.MCE;
+import ivorius.reccomplex.mcopts.commands.CommandExpecting;
+import ivorius.reccomplex.mcopts.commands.parameters.*;
+import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
+import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;

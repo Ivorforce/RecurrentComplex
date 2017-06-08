@@ -18,7 +18,6 @@ import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.parameters.RCP;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -57,9 +56,9 @@ public class CommandSelection extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
-                sender.sendMessage(ServerTranslations.format("commands.selectSet.get", RCTextStyle.area(owner.getSelection())));
+                sender.sendMessage(RecurrentComplex.translations.format("commands.selectSet.get", RCTextStyle.area(owner.getSelection())));
                 if (owner.hasValidSelection())
-                    sender.sendMessage(ServerTranslations.format("commands.selectSet.size", RCTextStyle.size(owner.getSelection().areaSize()), IvVecMathHelper.product(owner.getSelection().areaSize())));
+                    sender.sendMessage(RecurrentComplex.translations.format("commands.selectSet.size", RCTextStyle.size(owner.getSelection().areaSize()), IvVecMathHelper.product(owner.getSelection().areaSize())));
             }
         });
 

@@ -9,6 +9,7 @@ import com.google.common.collect.Lists;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.mcopts.commands.CommandSplit;
 import ivorius.reccomplex.mcopts.commands.SimpleCommand;
@@ -16,7 +17,7 @@ import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.parameters.expect.IvE;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
-import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.mcopts.translation.ServerTranslations;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -43,7 +44,7 @@ public class CommandDimensionDict extends CommandSplit
 
                 WorldProvider provider = parameters.get(0).to(MCP.dimension(server, sender)).require().provider;
 
-                sender.sendMessage(ServerTranslations.format("commands.dimensiondict.get", RCTextStyle.dimension(provider.getDimension()),
+                sender.sendMessage(RecurrentComplex.translations.format("commands.dimensiondict.get", RCTextStyle.dimension(provider.getDimension()),
                         ServerTranslations.join(Lists.newArrayList(DimensionDictionary.getDimensionTypes(provider)).stream()
                                 .map(RCTextStyle::dimensionType).toArray())
                 ));
@@ -59,7 +60,7 @@ public class CommandDimensionDict extends CommandSplit
 
                 String type = parameters.get(0).require();
 
-                sender.sendMessage(ServerTranslations.format("commands.dimensiondict.list", RCTextStyle.dimensionType(type),
+                sender.sendMessage(RecurrentComplex.translations.format("commands.dimensiondict.list", RCTextStyle.dimensionType(type),
                         ServerTranslations.join(Arrays.stream(allDimensionsOfType(type).toArray())
                                 .mapToObj(RCTextStyle::dimension).toArray())
                 ));

@@ -5,12 +5,13 @@
 
 package ivorius.reccomplex.commands.structure.sight;
 
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
-import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.mcopts.translation.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -56,10 +57,10 @@ public class CommandSightCheck extends CommandExpecting
 
         List<WorldStructureGenerationData.Entry> entries = WorldStructureGenerationData.get(world).entriesAt(pos).collect(Collectors.toCollection(ArrayList::new));
         if (entries.size() > 0)
-            commandSender.sendMessage(ServerTranslations.format(new ArrayList<ITextComponent>().size() > 1 ? "commands.whatisthis.many" : "commands.whatisthis.one",
+            commandSender.sendMessage(RecurrentComplex.translations.format(new ArrayList<ITextComponent>().size() > 1 ? "commands.whatisthis.many" : "commands.whatisthis.one",
                     ServerTranslations.join(entries.stream().map(RCTextStyle::sight).collect(Collectors.toList()))));
         else
-            commandSender.addChatMessage(ServerTranslations.format("commands.whatisthis.none"));
+            commandSender.sendMessage(RecurrentComplex.translations.format("commands.whatisthis.none"));
     }
 
     @Override

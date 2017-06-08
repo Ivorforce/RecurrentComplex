@@ -7,9 +7,11 @@ package ivorius.reccomplex.commands.clipboard;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
+import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
@@ -17,7 +19,6 @@ import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.parameters.IvP;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -55,7 +56,7 @@ public class CommandPaste extends CommandExpecting
     {
         return Parameters.expect().then(MCE.pos("x", "y", "z"))
                 .named("rotation", "r").then(MCE::rotation)
-                .named("seed").randomString()
+                .named("seed").then(RCE::randomString)
                 .flag("mirror", "m")
                 .flag("generate", "g")
                 .flag("select", "s");
@@ -72,7 +73,7 @@ public class CommandPaste extends CommandExpecting
         NBTTagCompound worldData = entityInfo.getWorldDataClipboard();
 
         if (worldData == null)
-            throw ServerTranslations.commandException("commands.strucPaste.noClipboard");
+            throw RecurrentComplex.translations.commandException("commands.strucPaste.noClipboard");
 
         WorldServer world = (WorldServer) sender.getEntityWorld();
         BlockPos pos = parameters.get(MCP.pos("x", "y", "z", sender.getPosition(), false)).require();

@@ -5,11 +5,11 @@
 
 package ivorius.reccomplex.commands.structure.sight;
 
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.mcopts.commands.CommandSplit;
 import ivorius.reccomplex.mcopts.commands.SimpleCommand;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.MCE;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -40,9 +40,9 @@ public class CommandSightDelete extends CommandSplit
                 WorldStructureGenerationData.Entry entry = generationData.removeEntry(UUID.fromString(parameters.get(0).require()));
 
                 if (entry == null)
-                    throw ServerTranslations.commandException("commands.rcsightinfo.unknown");
+                    throw RecurrentComplex.translations.commandException("commands.rcsightinfo.unknown");
                 else
-                    sender.sendMessage(ServerTranslations.format("commands.rcforget.success", entry.description()));
+                    sender.sendMessage(RecurrentComplex.translations.format("commands.rcforget.success", entry.description()));
             }
         });
 
@@ -61,9 +61,9 @@ public class CommandSightDelete extends CommandSplit
                 entries.forEach(e -> generationData.removeEntry(e.getUuid()));
 
                 if (entries.size() == 1)
-                    sender.sendMessage(ServerTranslations.format("commands.rcforget.success", entries.get(0).description()));
+                    sender.sendMessage(RecurrentComplex.translations.format("commands.rcforget.success", entries.get(0).description()));
                 else
-                    sender.sendMessage(ServerTranslations.format("commands.rcforgetall.success", entries.size()));
+                    sender.sendMessage(RecurrentComplex.translations.format("commands.rcforgetall.success", entries.size()));
             }
         });
 

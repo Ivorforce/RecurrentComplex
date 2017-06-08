@@ -16,7 +16,6 @@ import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.events.ItemGenerationEvent;
 import ivorius.reccomplex.item.ItemInputHandler;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import ivorius.reccomplex.world.gen.feature.WorldRandomData;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -252,7 +251,7 @@ public class RCForgeEventHandler
                 help.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Open Wiki")));
                 help.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Wiki.HOME));
 
-                ITextComponent statusMessage = ServerTranslations.format("reccomplex.server.status", count, list, add, remove, help);
+                ITextComponent statusMessage = RecurrentComplex.translations.format("reccomplex.server.status", count, list, add, remove, help);
 
                 event.player.addChatMessage(statusMessage);
             }

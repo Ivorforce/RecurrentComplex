@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
@@ -15,7 +16,6 @@ import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileSuffixFilter;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import net.minecraft.command.CommandException;
@@ -114,6 +114,6 @@ public class CommandRetrogen extends CommandExpecting
 
         long count = retrogen(world, structurePredicate);
 
-        commandSender.addChatMessage(ServerTranslations.format("commands.rcretro.count", String.valueOf(count)));
+        commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcretro.count", String.valueOf(count)));
     }
 }

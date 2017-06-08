@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands.structure;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
@@ -13,7 +14,6 @@ import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.utils.RCStrings;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
@@ -59,7 +59,7 @@ public class CommandLookupStructure extends CommandExpecting
         Metadata metadata = structure.metadata;
 
         boolean hasWeblink = !metadata.weblink.trim().isEmpty();
-        ITextComponent weblink = hasWeblink ? new TextComponentString(RCStrings.abbreviateFormatted(metadata.weblink, 30)) : ServerTranslations.format("commands.rclookup.reply.nolink");
+        ITextComponent weblink = hasWeblink ? new TextComponentString(RCStrings.abbreviateFormatted(metadata.weblink, 30)) : RecurrentComplex.translations.format("commands.rclookup.reply.nolink");
         if (hasWeblink)
         {
             weblink.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, metadata.weblink));
@@ -69,11 +69,11 @@ public class CommandLookupStructure extends CommandExpecting
         ITextComponent level = new TextComponentString(StructureRegistry.INSTANCE.status(id).getLevel().toString());
         level.getStyle().setColor(TextFormatting.YELLOW);
 
-        commandSender.sendMessage(ServerTranslations.format(
+        commandSender.sendMessage(RecurrentComplex.translations.format(
                 StructureRegistry.INSTANCE.hasActive(id) ? "commands.rclookup.reply.generates" : "commands.rclookup.reply.silent",
                 id, RCTextStyle.users(metadata.authors), level, weblink));
 
         if (!metadata.comment.trim().isEmpty())
-            commandSender.sendMessage(ServerTranslations.format("commands.rclookup.reply.comment", metadata.comment));
+            commandSender.sendMessage(RecurrentComplex.translations.format("commands.rclookup.reply.comment", metadata.comment));
     }
 }

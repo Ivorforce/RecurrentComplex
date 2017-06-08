@@ -6,12 +6,13 @@
 package ivorius.reccomplex.commands.structure;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
-import ivorius.reccomplex.utils.ServerTranslations;
+import ivorius.reccomplex.mcopts.translation.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -44,19 +45,19 @@ public class CommandListStructures extends CommandExpecting
 
             components.add(new TextComponentString("[<--]"));
             if (page > 0)
-                linkToPage(components.get(0), page - 1, ServerTranslations.format("commands.rclist.previous"));
+                linkToPage(components.get(0), page - 1, RecurrentComplex.translations.format("commands.rclist.previous"));
 
             for (int i = 0; i < endIndex - startIndex; i++)
                 components.add(RCTextStyle.structure(structureNames.get(startIndex + i)));
 
             components.add(new TextComponentString("[-->]"));
             if (page < (structureNames.size() - 1) / RESULTS_PER_PAGE)
-                linkToPage(components.get(components.size() - 1), page + 1, ServerTranslations.format("commands.rclist.next"));
+                linkToPage(components.get(components.size() - 1), page + 1, RecurrentComplex.translations.format("commands.rclist.next"));
 
             commandSender.addChatMessage(ServerTranslations.join(components));
         }
         else
-            commandSender.addChatMessage(ServerTranslations.get("commands.rclist.none"));
+            commandSender.sendMessage(RecurrentComplex.translations.get("commands.rclist.none"));
     }
 
     public static void linkToPage(ITextComponent component, int page, ITextComponent hoverTitle)

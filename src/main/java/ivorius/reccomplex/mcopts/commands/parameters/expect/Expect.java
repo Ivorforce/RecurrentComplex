@@ -8,11 +8,10 @@ package ivorius.reccomplex.mcopts.commands.parameters.expect;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.mcopts.commands.parameters.NaP;
 import ivorius.reccomplex.mcopts.commands.parameters.Parameter;
 import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
-import ivorius.reccomplex.random.Person;
+import ivorius.reccomplex.mcopts.translation.Translations;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
@@ -189,12 +188,6 @@ public class Expect
         return identity();
     }
 
-    public Expect randomString()
-    {
-        Random rand = new Random();
-        return any(Person.chaoticName(rand, rand.nextBoolean()));
-    }
-
     public Expect repeat()
     {
         SuggestParameter cur = params.get(this.currentName);
@@ -303,7 +296,7 @@ public class Expect
     public Expect description(String... keys)
     {
         return descriptionU(Arrays.stream(keys)
-                .map(IvTranslations::get)
+                .map(Translations::get)
                 .collect(Collectors.toList()));
     }
 

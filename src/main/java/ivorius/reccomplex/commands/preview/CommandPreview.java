@@ -6,13 +6,13 @@
 package ivorius.reccomplex.commands.preview;
 
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.operation.Operation;
-import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,12 +50,12 @@ public class CommandPreview extends CommandExpecting
         RCEntityInfo RCEntityInfo = RCCommands.getStructureEntityInfo(player, null);
 
         Operation.PreviewType previewType = parameters.get(0)
-                .map(Operation.PreviewType::find, s -> ServerTranslations.commandException("commands.rcpreview.invalid"))
+                .map(Operation.PreviewType::find, s -> RecurrentComplex.translations.commandException("commands.rcpreview.invalid"))
                 .require();
 
         RCEntityInfo.setPreviewType(previewType);
         RCEntityInfo.sendPreviewTypeToClients(player);
 
-        commandSender.sendMessage(ServerTranslations.format("commands.rcpreview.success", previewType.key));
+        commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcpreview.success", previewType.key));
     }
 }

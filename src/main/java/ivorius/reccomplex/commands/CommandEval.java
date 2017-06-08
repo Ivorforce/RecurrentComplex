@@ -11,7 +11,6 @@ import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.commands.parameters.RCP;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.DependencyExpression;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -48,6 +47,6 @@ public class CommandEval extends CommandExpecting
         DependencyExpression matcher = parameters.get(0).rest(NaP.join()).to(RCP.expression(new DependencyExpression())).require();
 
         boolean result = matcher.test(RecurrentComplex.saver);
-        commandSender.addChatMessage(ServerTranslations.get(result ? "commands.rceval.result.true" : "commands.rceval.result.false"));
+        commandSender.sendMessage(RecurrentComplex.translations.get(result ? "commands.rceval.result.true" : "commands.rceval.result.false"));
     }
 }

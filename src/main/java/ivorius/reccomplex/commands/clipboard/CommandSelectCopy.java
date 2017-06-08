@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
@@ -17,7 +18,6 @@ import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
-import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 
@@ -55,6 +55,6 @@ public class CommandSelectCopy extends CommandExpecting implements CommandVirtua
         IvWorldData worldData = IvWorldData.capture(world, area, true);
 
         RCEntityInfo.setWorldDataClipboard(worldData.createTagCompound());
-        sender.sendMessage(ServerTranslations.format("commands.selectCopy.success", RCTextStyle.area(area)));
+        sender.sendMessage(RecurrentComplex.translations.format("commands.selectCopy.success", RCTextStyle.area(area)));
     }
 }

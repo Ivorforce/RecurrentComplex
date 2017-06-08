@@ -8,7 +8,7 @@ package ivorius.reccomplex.mcopts.commands.parameters;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.primitives.Doubles;
-import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.mcopts.MCOpts;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
 import joptsimple.internal.Strings;
 
@@ -89,7 +89,7 @@ public class Parameters
         catch (IOException e)
         {
             // Should never happen
-            RecurrentComplex.logger.error("Error reading string", e);
+            MCOpts.logger.error("Error reading string", e);
         }
 
         reader.close();

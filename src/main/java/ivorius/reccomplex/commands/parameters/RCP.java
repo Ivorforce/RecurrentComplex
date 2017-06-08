@@ -5,12 +5,12 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.mcopts.commands.parameters.MCP;
 import ivorius.reccomplex.mcopts.commands.parameters.Parameter;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.ResourceExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
@@ -32,7 +32,7 @@ public class RCP
     public static Parameter<Structure<?>> structure(Parameter<String> p)
     {
         return p.map(StructureRegistry.INSTANCE::get,
-                t -> ServerTranslations.commandException("commands.strucGen.noStructure", p.get()));
+                t -> RecurrentComplex.translations.commandException("commands.strucGen.noStructure", p.get()));
     }
 
     public static Parameter<GenericStructure> genericStructure(Parameter<String> p)
@@ -42,12 +42,12 @@ public class RCP
             Structure structure = StructureRegistry.INSTANCE.get(id);
 
             if (structure == null)
-                throw ServerTranslations.commandException("commands.structure.notRegistered", id);
+                throw RecurrentComplex.translations.commandException("commands.structure.notRegistered", id);
 
             GenericStructure genericStructureInfo = structure.copyAsGenericStructure();
 
             if (genericStructureInfo == null)
-                throw ServerTranslations.commandException("commands.structure.notGeneric", id);
+                throw RecurrentComplex.translations.commandException("commands.structure.notGeneric", id);
 
             return genericStructureInfo;
         });
@@ -66,7 +66,7 @@ public class RCP
 
     public static Function<Parameter<String>, Parameter<GenerationType>> generationType(Structure<?> structure)
     {
-        return p -> p.map(structure::generationType, t -> ServerTranslations.commandException("No Generation by this ID"))
+        return p -> p.map(structure::generationType, t -> RecurrentComplex.translations.commandException("No Generation by this ID"))
                 .orElseGet(() -> structure.<GenerationType>generationTypes(NaturalGeneration.class).stream().findFirst()
                         .orElse(structure.generationTypes(GenerationType.class).stream().findFirst().orElse(null)));
     }
@@ -86,7 +86,7 @@ public class RCP
             }
             catch (IllegalArgumentException e)
             {
-                throw ServerTranslations.commandException("commands.rcsave.nodirectory");
+                throw RecurrentComplex.translations.commandException("commands.rcsave.nodirectory");
             }
         });
     }
@@ -109,7 +109,7 @@ public class RCP
             }
             catch (Exception ex)
             {
-                throw ServerTranslations.wrongUsageException("commands.selectModify.invalidMetadata", arg);
+                throw RecurrentComplex.translations.wrongUsageException("commands.selectModify.invalidMetadata", arg);
             }
         });
     }
@@ -129,7 +129,7 @@ public class RCP
         return p -> p.to(MCP.command(server)).map(c ->
         {
             if (!(c instanceof CommandVirtual))
-                throw ServerTranslations.commandException("commands.rcmap.nonvirtual");
+                throw RecurrentComplex.translations.commandException("commands.rcmap.nonvirtual");
             return (CommandVirtual) c;
         });
     }

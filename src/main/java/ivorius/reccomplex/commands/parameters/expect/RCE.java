@@ -11,6 +11,7 @@ import ivorius.reccomplex.mcopts.commands.parameters.Parameter;
 import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
+import ivorius.reccomplex.random.Person;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
@@ -74,5 +75,11 @@ public class RCE
         Collections.addAll(ret, "horizontal", "vertical");
 
         ex.next(ret).descriptionU("direction expression");
+    }
+
+    public static void randomString(Expect e)
+    {
+        Random rand = new Random();
+        e.any(Person.chaoticName(rand, rand.nextBoolean()));
     }
 }

@@ -5,13 +5,13 @@
 
 package ivorius.reccomplex.commands.schematic;
 
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import net.minecraft.command.CommandException;
@@ -45,7 +45,7 @@ public class CommandConvertSchematic extends CommandExpecting
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
         if (args.length < 1)
-            throw ServerTranslations.wrongUsageException("commands.rcconvertschematic.usage");
+            throw RecurrentComplex.translations.wrongUsageException("commands.rcconvertschematic.usage");
 
         String schematicName = parameters.get(0).require();
         SchematicFile schematicFile = CommandImportSchematic.parseSchematic(schematicName);

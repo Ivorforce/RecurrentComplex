@@ -9,13 +9,13 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.mcopts.commands.CommandExpecting;
 import ivorius.reccomplex.mcopts.commands.parameters.*;
 import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
-import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
 import net.minecraft.command.CommandException;
@@ -83,7 +83,7 @@ public class CommandExportSchematic extends CommandExpecting
         SchematicFile schematicFile = toSchematic(data);
         SchematicLoader.writeSchematicByName(schematicFile, structureName);
 
-        commandSender.addChatMessage(ServerTranslations.format("commands.strucExportSchematic.success", structureName));
+        commandSender.sendMessage(RecurrentComplex.translations.format("commands.strucExportSchematic.success", structureName));
     }
 
     @Override

@@ -11,6 +11,7 @@ import net.minecraft.command.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -68,6 +69,19 @@ public class CommandSplit extends CommandBase
     {
         this.requiredPermission = permission;
         return this;
+    }
+
+    @Nullable
+    public Pair<ICommand, String[]> leaf(MinecraftServer server, ICommandSender sender, String[] args)
+    {
+        return Optional.ofNullable(args.length > 0 ? args[0] : null)
+                .flatMap(this::get)
+                .filter(c -> c.checkPermission(server, sender))
+                .map(c -> c instanceof CommandSplit
+                        ? ((CommandSplit) c).leaf(server, sender, splitParameters(args))
+                        : Pair.of(c, splitParameters(args)
+                ))
+                .orElse(null);
     }
 
     @Override

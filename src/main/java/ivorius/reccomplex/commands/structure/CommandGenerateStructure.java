@@ -52,7 +52,8 @@ public class CommandGenerateStructure extends SimpleCommand
     @Override
     public Expect expect()
     {
-        return Parameters.expect().then(RCE::structure).required().then(IvE.surfacePos("x", "z"))
+        return Parameters.expect().then(RCE::structure).required()
+                .then(IvE.surfacePos("x", "z"))
                 .named("dimension", "d").then(MCE::dimension)
                 .named("gen").then(RCE.generationType(p -> p.get(0))).descriptionU("generation type id")
                 .named("rotation", "r").then(MCE::rotation)

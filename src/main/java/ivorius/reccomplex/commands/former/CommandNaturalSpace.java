@@ -14,10 +14,8 @@ import ivorius.reccomplex.block.RCBlocks;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
@@ -152,10 +150,10 @@ public class CommandNaturalSpace extends CommandExpecting implements CommandVirt
         RCCommands.assertSize(sender, selectionOwner);
         BlockArea area = selectionOwner.getSelection();
 
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
-        int floorDistance = parameters.get("distance-to-floor").asInt().optional().orElse(0) + 1;
-        int maxClosedSides = parameters.get("max-closed-sides").asInt().optional().orElse(3);
+        int floorDistance = parameters.get("distance-to-floor").to(NaP::asInt).optional().orElse(0) + 1;
+        int maxClosedSides = parameters.get("max-closed-sides").to(NaP::asInt).optional().orElse(3);
 
         placeNaturalAir(world, area, floorDistance, maxClosedSides);
     }

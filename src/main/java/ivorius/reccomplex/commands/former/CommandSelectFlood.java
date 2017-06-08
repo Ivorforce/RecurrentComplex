@@ -14,6 +14,8 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import ivorius.reccomplex.utils.expression.PreloadedBooleanExpression;
 import net.minecraft.block.Block;
@@ -59,7 +61,7 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
     @Override
     public void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
         RCCommands.assertSize(sender, selectionOwner);
@@ -71,15 +73,15 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
             exp.addEvaluator("horizontal", f -> f.getHorizontalIndex() >= 0);
             exp.addEvaluator("vertical", f -> f.getHorizontalIndex() < 0);
         });
-        facingExpression.setExpression(parameters.get(2).rest(ParameterString.join()).optional().orElse(""));
+        facingExpression.setExpression(parameters.get(2).rest(NaP.join()).optional().orElse(""));
 
         List<EnumFacing> available = Arrays.stream(EnumFacing.values()).filter(facingExpression).collect(Collectors.toList());
 
         List<BlockPos> dirty = Lists.newArrayList(selectionOwner.getSelection());
         Set<BlockPos> visited = Sets.newHashSet(dirty);
 
-        Block dstBlock = parameters.get(0).block(sender).require();
-        int[] dstMeta = parameters.get(1).metadatas().optional().orElse(new int[1]);
+        Block dstBlock = parameters.get(0).to(MCP.block(sender)).require();
+        int[] dstMeta = parameters.get(1).to(RCP::metadatas).optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
         while (!dirty.isEmpty())

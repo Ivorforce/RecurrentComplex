@@ -8,6 +8,8 @@ package ivorius.reccomplex.commands.structure;
 import ivorius.ivtoolkit.util.IvStreams;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.files.RCFiles;
 import ivorius.reccomplex.files.loading.FileSuffixFilter;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -102,10 +104,10 @@ public class CommandRetrogen extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
-        Predicate<Structure> structurePredicate = parameters.get("exp").structurePredicate().optional().orElse(null);
-        WorldServer world = parameters.get("dimension").dimension(server, commandSender).require();
+        Predicate<Structure> structurePredicate = parameters.get("exp").to(RCP::structurePredicate).optional().orElse(null);
+        WorldServer world = parameters.get("dimension").to(MCP.dimension(server, commandSender)).require();
 
         long count = retrogen(world, structurePredicate);
 

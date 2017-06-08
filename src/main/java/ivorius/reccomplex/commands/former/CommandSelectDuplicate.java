@@ -11,10 +11,9 @@ import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.IvP;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -53,13 +52,13 @@ public class CommandSelectDuplicate extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         BlockArea area = selectionOwner.getSelection();
 
-        BlockPos pos = parameters.pos("x", "y", "z", commandSender.getPosition(), false).require();
-        AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+        BlockPos pos = parameters.get(MCP.pos("x", "y", "z", commandSender.getPosition(), false)).require();
+        AxisAlignedTransform2D transform = parameters.get(IvP.transform("rotation", "mirror")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
 
         IvWorldData worldData = IvWorldData.capture(commandSender.getEntityWorld(), area, true);
         NBTTagCompound worldDataCompound = worldData.createTagCompound();

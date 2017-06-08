@@ -3,8 +3,9 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.parameters;
+package ivorius.reccomplex.commands.rcparameters;
 
+import ivorius.reccomplex.commands.parameters.MCExpect;
 import ivorius.reccomplex.dimensions.DimensionDictionary;
 
 /**
@@ -12,7 +13,7 @@ import ivorius.reccomplex.dimensions.DimensionDictionary;
  */
 public class IvExpect<T extends IvExpect<T>> extends MCExpect<T>
 {
-    IvExpect()
+    protected IvExpect()
     {
 
     }

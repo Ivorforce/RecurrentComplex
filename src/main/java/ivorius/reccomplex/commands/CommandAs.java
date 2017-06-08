@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
@@ -41,9 +42,9 @@ public class CommandAs extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
-        Entity entity = parameters.get(0).entity(server, commandSender).require();
+        Entity entity = parameters.get(0).to(MCP.entity_(server, commandSender)).require();
         String command = buildString(args, 1);
 
         server.commandManager.executeCommand(entity, command);

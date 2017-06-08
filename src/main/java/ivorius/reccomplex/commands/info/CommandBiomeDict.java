@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import ivorius.reccomplex.commands.structure.CommandSearchStructure;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
@@ -38,7 +39,10 @@ public class CommandBiomeDict extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                RCParameters parameters = RCParameters.of(args, null);
+                Parameters blueprint = Parameters.of(args, null);
+                Parameters blueprint1 = blueprint;
+                Parameters blueprint2 = blueprint1;
+                Parameters parameters = new Parameters(blueprint2);
 
                 List<String> terms = parameters.get(0).varargsList().require();
 
@@ -54,9 +58,12 @@ public class CommandBiomeDict extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                RCParameters parameters = RCParameters.of(args, null);
+                Parameters blueprint = Parameters.of(args, null);
+                Parameters blueprint1 = blueprint;
+                Parameters blueprint2 = blueprint1;
+                Parameters parameters = new Parameters(blueprint2);
 
-                Biome biome = parameters.get(0).biome().require();
+                Biome biome = parameters.get(0).to(MCP::biome).require();
 
                 sender.sendMessage(ServerTranslations.format("commands.biomedict.get", RCTextStyle.biome(biome),
                         ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getTypes(biome)).stream()
@@ -70,9 +77,12 @@ public class CommandBiomeDict extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                RCParameters parameters = RCParameters.of(args, null);
+                Parameters blueprint = Parameters.of(args, null);
+                Parameters blueprint1 = blueprint;
+                Parameters blueprint2 = blueprint1;
+                Parameters parameters = new Parameters(blueprint2);
 
-                BiomeDictionary.Type type = parameters.get(0).biomeDictionaryType().require();
+                BiomeDictionary.Type type = parameters.get(0).to(MCP::biomeDictionaryType).require();
 
                 sender.sendMessage(ServerTranslations.format("commands.biomedict.list", RCTextStyle.biomeType(type),
                         ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getBiomes(type))

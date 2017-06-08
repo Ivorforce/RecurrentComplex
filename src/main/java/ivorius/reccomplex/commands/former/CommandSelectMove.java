@@ -11,10 +11,9 @@ import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.IvP;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
@@ -59,13 +58,13 @@ public class CommandSelectMove extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
 
-        BlockPos pos = parameters.pos("x", "y", "z", selectionOwner.getSelectedPoint1(), false).require();
-        AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+        BlockPos pos = parameters.get(MCP.pos("x", "y", "z", selectionOwner.getSelectedPoint1(), false)).require();
+        AxisAlignedTransform2D transform = parameters.get(IvP.transform("rotation", "mirror")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         boolean noselect = parameters.has("noselect");
 
         BlockArea area = selectionOwner.getSelection();

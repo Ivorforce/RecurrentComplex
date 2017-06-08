@@ -13,9 +13,10 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
-import ivorius.reccomplex.utils.optional.IvOptional;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
@@ -42,7 +43,7 @@ public class CommandSelection extends CommandSplit
         add(new Command("clear")
         {
             @Override
-            public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
+            public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
                 owner.setSelection(null);
             }
@@ -51,7 +52,7 @@ public class CommandSelection extends CommandSplit
         add(new Command("get")
         {
             @Override
-            public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
+            public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
                 sender.sendMessage(ServerTranslations.format("commands.selectSet.get", RCTextStyle.area(owner.getSelection())));
                 if (owner.hasValidSelection())
@@ -62,7 +63,7 @@ public class CommandSelection extends CommandSplit
         add(set = new Command("set", () -> RCExpect.expectRC().xyz().required().flag("first").flag("second"))
         {
             @Override
-            public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
+            public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
                 boolean first = !parameters.has("second");
                 boolean second = !parameters.has("first");
@@ -81,14 +82,15 @@ public class CommandSelection extends CommandSplit
                     if (owner.getSelectedPoint1() == null)
                         owner.setSelectedPoint1(sender.getPosition());
 
-                    owner.setSelectedPoint1(parameters.get(0).pos(owner.getSelectedPoint1(), false).require());
+                    owner.setSelectedPoint1(parameters.get(0).to(MCP.pos_(owner.getSelectedPoint1(), false)).require());
                 }
                 if (second)
                 {
                     if (owner.getSelectedPoint2() == null)
                         owner.setSelectedPoint2(sender.getPosition());
 
-                    owner.setSelectedPoint2(parameters.get(shiftSecond ? 3 : 0).pos(owner.getSelectedPoint2(), false).require());
+                    owner.setSelectedPoint2((parameters.get(shiftSecond ? 3 : 0)
+                            .to(MCP.pos_(owner.getSelectedPoint2(), false)).require()));
                 }
             }
         });
@@ -97,14 +99,13 @@ public class CommandSelection extends CommandSplit
                 RCExpect.expectRC().block().descriptionU("positioned block expression"))
         {
             @Override
-            public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
+            public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
                 MockWorld world = MockWorld.of(sender.getEntityWorld());
 
                 BlockArea area = owner.getSelection();
 
-                PositionedBlockExpression matcher = parameters.get(0).rest(ParameterString.join()).orElse("")
-                        .expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry)).require();
+                PositionedBlockExpression matcher = parameters.get(0).rest(NaP.join()).orElse("").to(RCP.expression_(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
 
                 for (EnumFacing direction : EnumFacing.VALUES)
                     while (area != null && sideStream(area, direction).allMatch(p -> matcher.test(PositionedBlockExpression.Argument.at(world, p))))
@@ -118,7 +119,7 @@ public class CommandSelection extends CommandSplit
                 RCExpect.expectRC().block().descriptionU("positioned block expression"))
         {
             @Override
-            public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
+            public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
                 MockWorld world = MockWorld.of(sender.getEntityWorld());
                 BlockArea area = owner.getSelection();
@@ -130,8 +131,7 @@ public class CommandSelection extends CommandSplit
                 {
                     changed = false;
 
-                    PositionedBlockExpression matcher = parameters.get(0).rest(ParameterString.join()).orElse("!is:air")
-                            .expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry)).require();
+                    PositionedBlockExpression matcher = parameters.get(0).rest(NaP.join()).orElse("!is:air").to(RCP.expression_(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
 
                     for (EnumFacing direction : EnumFacing.VALUES)
                     {
@@ -158,10 +158,10 @@ public class CommandSelection extends CommandSplit
         )
         {
             @Override
-            public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
+            public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
-                BlockPos base = parameters.get(0).pos(parameters.get(0), parameters.get(0), BlockPos.ORIGIN, false).require();
-                BlockPos shrink = parameters.pos("x", "y", "z", base, false).require();
+                BlockPos base = parameters.get(0).to(MCP.pos(parameters.get(0), parameters.get(0), BlockPos.ORIGIN, false)).require();
+                BlockPos shrink = parameters.get(MCP.pos("x", "y", "z", base, false)).require();
 
                 owner.setSelection(BlockAreas.shrink(owner.getSelection(), shrink, shrink));
             }
@@ -176,10 +176,10 @@ public class CommandSelection extends CommandSplit
         )
         {
             @Override
-            public void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException
+            public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
-                BlockPos base = parameters.get(0).pos(parameters.get(0), parameters.get(0), BlockPos.ORIGIN, false).require();
-                BlockPos shrink = parameters.pos("x", "y", "z", base, false).require();
+                BlockPos base = parameters.get(0).to(MCP.pos(parameters.get(0), parameters.get(0), BlockPos.ORIGIN, false)).require();
+                BlockPos shrink = parameters.get(MCP.pos("x", "y", "z", base, false)).require();
 
                 owner.setSelection(BlockAreas.expand(owner.getSelection(), shrink, shrink));
             }
@@ -221,10 +221,13 @@ public class CommandSelection extends CommandSplit
         public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
         {
             SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
-            RCParameters parameters = RCParameters.of(args, null);
+            Parameters blueprint = Parameters.of(args, null);
+            Parameters blueprint1 = blueprint;
+            Parameters blueprint2 = blueprint1;
+            Parameters parameters = new Parameters(blueprint2);
             execute(server, sender, parameters, owner);
         }
 
-        public abstract void execute(MinecraftServer server, ICommandSender sender, RCParameters parameters, SelectionOwner owner) throws CommandException;
+        public abstract void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException;
     }
 }

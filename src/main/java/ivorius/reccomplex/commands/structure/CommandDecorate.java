@@ -9,6 +9,9 @@ import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.IvP;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import net.minecraft.command.CommandException;
@@ -54,14 +57,14 @@ public class CommandDecorate extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         BlockSurfaceArea area = new BlockSurfaceArea(
-                parameters.get(0).surfacePos(commandSender.getPosition(), false).require(),
-                parameters.get(2).surfacePos(commandSender.getPosition(), false).require()
+                parameters.get(0).to(IvP.surfacePos(commandSender.getPosition(), false)).require(),
+                parameters.get(2).to(IvP.surfacePos(commandSender.getPosition(), false)).require()
         );
         BlockSurfaceArea chunkArea = new BlockSurfaceArea(getChunkPos(area.getPoint1()), getChunkPos(area.getPoint2()));
-        Predicate<Structure> structurePredicate = parameters.get("exp").structurePredicate().optional().orElse(structureInfo -> true);
+        Predicate<Structure> structurePredicate = parameters.get("exp").to(RCP::structurePredicate).optional().orElse(structureInfo -> true);
 
         WorldServer world = (WorldServer) commandSender.getEntityWorld();
         chunkArea.forEach(coord -> WorldGenStructures.decorate(world, world.rand, new ChunkPos(coord.x, coord.z), structurePredicate));

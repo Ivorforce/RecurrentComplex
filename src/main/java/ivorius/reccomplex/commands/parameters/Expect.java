@@ -42,7 +42,7 @@ public class Expect<T extends Expect<T>>
     protected int currentCount;
     protected int until = -1;
 
-    Expect()
+    protected Expect()
     {
         getOrCreate(null);
     }
@@ -330,7 +330,7 @@ public class Expect<T extends Expect<T>>
                         .filter(e -> e.getKey().equals(e.getValue().name))
                         .flatMap(e -> flags.contains(e.getKey()) ? Stream.of(keyRepresentation(e.getKey())) : e.getValue().usage()
                                 .map(desc -> String.format("%s %s", keyRepresentation(e.getKey()), desc)))
-                ).reduce("", ParameterString.join());
+                ).reduce("", NaP.join());
     }
 
     protected String keyRepresentation(String key)

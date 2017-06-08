@@ -22,81 +22,74 @@ import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 
-import java.util.function.BinaryOperator;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 31.05.17.
  */
-public class MCParameter<P extends MCParameter<P>> extends ParameterString<P>
+public class MCP
 {
-    public MCParameter(Parameter other)
-    {
-        super(other);
-    }
-
     // Since CommandBase's version requires a sender
     public static BlockPos parseBlockPos(BlockPos blockpos, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
     {
         return new BlockPos(CommandBase.parseDouble((double) blockpos.getX(), args[startIndex], -30000000, 30000000, centerBlock), CommandBase.parseDouble((double) blockpos.getY(), args[startIndex + 1], 0, 256, false), CommandBase.parseDouble((double) blockpos.getZ(), args[startIndex + 2], -30000000, 30000000, centerBlock));
     }
 
-    @Override
-    public P copy(Parameter<String, ?> p)
+    public static Function<Parameter<String>, Parameter<BlockPos>> pos(Parameter<String> yp, Parameter<String> zp, BlockPos ref, boolean centerBlock)
     {
-        //noinspection unchecked
-        return (P) new MCParameter(p);
-    }
-
-    public Parameter<BlockPos, ?> pos(Parameter<String, ?> yp, Parameter<String, ?> zp, BlockPos ref, boolean centerBlock)
-    {
-        return orElse("~").flatMap(x ->
+        return xp -> xp.orElse("~").flatMap(x ->
                 yp.orElse("~").flatMap(y ->
                         zp.orElse("~").map(z ->
                                 parseBlockPos(ref, new String[]{x, y, z}, 0, centerBlock)
                         )));
     }
 
-    public Parameter<BlockPos, ?> pos(BlockPos ref, boolean centerBlock)
+    public static Function<Parameter<String>, Parameter<BlockPos>> pos_(BlockPos ref, boolean centerBlock)
     {
-        return pos(this.move(1), this.move(2), ref, centerBlock);
+        return p -> pos(p.move(1), p.move(2), ref, centerBlock).apply(p);
     }
 
-    public Parameter<Biome, ?> biome()
+    public static Function<Parameters, Parameter<BlockPos>> pos(String x, String y, String z, BlockPos ref, boolean centerBlock)
     {
-        return map(ResourceLocation::new)
+        return p -> p.get(x).to(pos(p.get(y), p.get(z), ref, centerBlock));
+    }
+
+    public static Parameter<Biome> biome(Parameter<String> p)
+    {
+        return p.map(ResourceLocation::new)
                 .map(Biome.REGISTRY::getObject, t -> ServerTranslations.commandException("commands.rc.nobiome"));
     }
 
-    public Parameter<BiomeDictionary.Type, ?> biomeDictionaryType()
+    public static Parameter<BiomeDictionary.Type> biomeDictionaryType(Parameter<String> p)
     {
-        return map(RCAccessorBiomeDictionary::getTypeWeak, s -> ServerTranslations.commandException("commands.biomedict.notype", s));
+        return p.map(RCAccessorBiomeDictionary::getTypeWeak, s -> ServerTranslations.commandException("commands.biomedict.notype", s));
     }
 
-    public Parameter<WorldServer, ?> dimension(MinecraftServer server, ICommandSender commandSender)
+    public static Function<Parameter<String>, Parameter<WorldServer>> dimension(MinecraftServer server, ICommandSender sender)
     {
-        return filter(d -> !d.equals("~"), null)
+        return p -> p.filter(d -> !d.equals("~"), null)
                 .map(CommandBase::parseInt).map(server::worldServerForDimension, t -> ServerTranslations.commandException("commands.rc.nodimension"))
-                .orElse((WorldServer) commandSender.getEntityWorld());
+                .orElse((WorldServer) sender.getEntityWorld());
     }
 
-    public Parameter<Block, ?> block(ICommandSender commandSender)
+    public static Function<Parameter<String>, Parameter<Block>> block(ICommandSender commandSender)
     {
-        return map(s -> CommandBase.getBlockByText(commandSender, s));
+        return p -> p.map(s -> CommandBase.getBlockByText(commandSender, s));
     }
 
-    public Parameter<ICommand, ?> command(MinecraftServer server)
+    public static Function<Parameter<String>, Parameter<ICommand>> command_(MinecraftServer server)
     {
-        return map(server.getCommandManager().getCommands()::get);
+        return p -> p.map(server.getCommandManager().getCommands()::get);
     }
 
-    public Parameter<Entity, ?> entity(MinecraftServer server, ICommandSender sender)
+    public static Function<Parameter<String>, Parameter<Entity>> entity_(MinecraftServer server, ICommandSender sender)
     {
-        return map(s -> CommandBase.getEntity(server, sender, s));
+        return p -> p.map(s -> CommandBase.getEntity(server, sender, s));
     }
 
-    public Parameter<Rotation, ?> rotation()
+    public static Parameter<Rotation> rotation(Parameter<String> p)
     {
-        return map(CommandBase::parseInt)
+        return p.map(CommandBase::parseInt)
                 .map(i -> i > 40 ? i / 90 : i)
                 .map(MinecraftTransforms::to);
     }

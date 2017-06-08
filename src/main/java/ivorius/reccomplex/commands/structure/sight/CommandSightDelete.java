@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands.structure.sight;
 
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandException;
@@ -31,7 +32,10 @@ public class CommandSightDelete extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                RCParameters parameters = RCParameters.of(args, null);
+                Parameters blueprint = Parameters.of(args, null);
+                Parameters blueprint1 = blueprint;
+                Parameters blueprint2 = blueprint1;
+                Parameters parameters = new Parameters(blueprint2);
                 WorldStructureGenerationData generationData = WorldStructureGenerationData.get(sender.getEntityWorld());
 
                 WorldStructureGenerationData.Entry entry = generationData.removeEntry(UUID.fromString(parameters.get(0).require()));
@@ -48,10 +52,13 @@ public class CommandSightDelete extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                RCParameters parameters = RCParameters.of(args, null);
+                Parameters blueprint = Parameters.of(args, null);
+                Parameters blueprint1 = blueprint;
+                Parameters blueprint2 = blueprint1;
+                Parameters parameters = new Parameters(blueprint2);
                 WorldStructureGenerationData generationData = WorldStructureGenerationData.get(sender.getEntityWorld());
 
-                BlockPos pos = parameters.get(0).pos(sender.getPosition(), false).require();
+                BlockPos pos = parameters.get(0).to(MCP.pos_(sender.getPosition(), false)).require();
 
                 List<WorldStructureGenerationData.Entry> entries = generationData.entriesAt(pos).collect(Collectors.toList());
 

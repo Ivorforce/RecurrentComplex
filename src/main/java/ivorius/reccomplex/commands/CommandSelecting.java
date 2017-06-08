@@ -8,6 +8,7 @@ package ivorius.reccomplex.commands;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.CapabilitySelection;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -47,11 +48,11 @@ public class CommandSelecting extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
-        BlockPos p1 = parameters.get(0).pos(commandSender.getPosition(), false).require();
-        BlockPos p2 = parameters.get(3).pos(commandSender.getPosition(), false).require();
-        String command = parameters.get(6).rest(ParameterString.join()).optional().orElse("");
+        BlockPos p1 = parameters.get(0).to(MCP.pos_(commandSender.getPosition(), false)).require();
+        BlockPos p2 = parameters.get(3).to(MCP.pos_(commandSender.getPosition(), false)).require();
+        String command = parameters.get(6).rest(NaP.join()).optional().orElse("");
 
         server.commandManager.executeCommand(new SelectingSender(commandSender, p1, p2), command);
     }

@@ -10,6 +10,9 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.IvP;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
@@ -54,13 +57,13 @@ public class CommandImportStructure extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         String structureID = parameters.get(0).require();
-        Structure<?> structure = parameters.get(0).structure().require();
-        WorldServer world = parameters.get("dimension").dimension(server, sender).require();
-        AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
-        BlockPos pos = parameters.pos("x", "y", "z", sender.getPosition(), false).require();
+        Structure<?> structure = parameters.get(0).to(RCP::structure).require();
+        WorldServer world = parameters.get("dimension").to(MCP.dimension(server, sender)).require();
+        AxisAlignedTransform2D transform = parameters.get(IvP.transform("rotation", "mirror")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+        BlockPos pos = parameters.get(MCP.pos("x", "y", "z", sender.getPosition(), false)).require();
         boolean select = parameters.has("select");
 
         StructureGenerator<?> generator = new StructureGenerator<>(structure).world(world)

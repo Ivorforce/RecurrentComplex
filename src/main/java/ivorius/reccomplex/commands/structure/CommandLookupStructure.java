@@ -8,6 +8,8 @@ package ivorius.reccomplex.commands.structure;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -48,10 +50,10 @@ public class CommandLookupStructure extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         String id = parameters.get(0).require();
-        GenericStructure structure = parameters.get(0).genericStructure().require();
+        GenericStructure structure = parameters.get(0).to(RCP::genericStructure).require();
 
         Metadata metadata = structure.metadata;
 

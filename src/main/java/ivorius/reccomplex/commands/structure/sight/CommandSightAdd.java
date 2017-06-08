@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import net.minecraft.command.CommandException;
@@ -41,12 +42,12 @@ public class CommandSightAdd extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         WorldStructureGenerationData generationData = WorldStructureGenerationData.get(commandSender.getEntityWorld());
         SelectionOwner owner = RCCommands.getSelectionOwner(commandSender, null, true);
 
-        String name = parameters.get(0).rest(ParameterString.join()).require();
+        String name = parameters.get(0).rest(NaP.join()).require();
 
         generationData.addEntry(WorldStructureGenerationData.CustomEntry.from(name, BlockAreas.toBoundingBox(owner.getSelection())));
         commandSender.addChatMessage(ServerTranslations.format("commands.rcremember.success", name));

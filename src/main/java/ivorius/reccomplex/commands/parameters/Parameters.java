@@ -256,11 +256,16 @@ public class Parameters
         return until != 0;
     }
 
+    public <T> Parameter<T> get(Function<Parameters, Parameter<T>> fun)
+    {
+        return fun.apply(this);
+    }
+
     public Map<String, Parameter> entries()
     {
         requireBuilt();
         return flags.stream().collect(Collectors.toMap(k -> k,
-                k -> new ParameterString<>(0, k, params.get(k))));
+                k -> new Parameter<String>(0, k, params.get(k), null)));
     }
 
     public boolean has(@Nonnull String flag)
@@ -269,16 +274,16 @@ public class Parameters
         return flags.contains(root(flag));
     }
 
-    public ParameterString<?> get(int idx)
+    public Parameter<String> get(int idx)
     {
         requireBuilt();
-        return new ParameterString<>(0, null, params.get(null)).move(idx);
+        return new Parameter<String>(0, null, params.get(null), null).move(idx);
     }
 
-    public ParameterString<?> get(@Nonnull String name)
+    public Parameter<String> get(@Nonnull String name)
     {
         requireBuilt();
         name = root(name);
-        return new ParameterString<>(has(name) && !params.containsKey(name) ? -1 : 0, name, params.get(name));
+        return new Parameter<>(has(name) && !params.containsKey(name) ? -1 : 0, name, params.get(name), null);
     }
 }

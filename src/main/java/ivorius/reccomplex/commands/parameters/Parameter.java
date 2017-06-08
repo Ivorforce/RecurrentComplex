@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 30.05.17.
  */
-public class Parameter<T, P extends Parameter<T, P>>
+public class Parameter<T>
 {
     /**
      * -1 for 'no argument provided'
@@ -30,7 +30,7 @@ public class Parameter<T, P extends Parameter<T, P>>
     @Nonnull
     protected final Function<List<String>, T> fun;
 
-    public Parameter(Parameter<T, ?> other)
+    public Parameter(Parameter<T> other)
     {
         moved = other.moved;
         name = other.name;
@@ -38,7 +38,7 @@ public class Parameter<T, P extends Parameter<T, P>>
         fun = other.fun;
     }
 
-    public Parameter(Parameter<?, ?> other, @Nonnull Function<List<String>, T> fun)
+    public Parameter(Parameter<?> other, @Nonnull Function<List<String>, T> fun)
     {
         moved = other.moved;
         name = other.name;
@@ -51,20 +51,21 @@ public class Parameter<T, P extends Parameter<T, P>>
         this.moved = moved;
         this.name = name;
         this.params = params;
-        this.fun = fun != null ? fun : initial();
+        //noinspection unchecked
+        this.fun = fun != null ? fun : (Function<List<String>, T>) initial();
     }
 
-    protected static String parameterName(Parameter parameter, int index)
+    public String name(int index)
     {
-        if (parameter.name != null && index == 0)
-            return Parameters.LONG_FLAG_PREFIX + parameter.name;
-        return String.format("%s(%d)", parameter.name != null ? Parameters.LONG_FLAG_PREFIX + parameter.name + " " : "", Math.max(parameter.moved, 0) + index);
+        if (name != null && index == 0)
+            return Parameters.LONG_FLAG_PREFIX + name;
+        return String.format("%s(%d)", name != null ? Parameters.LONG_FLAG_PREFIX + name + " " : "", Math.max(moved, 0) + index);
     }
 
     @Nonnull
-    protected Function<List<String>, T> initial()
+    protected Function<List<String>, String> initial()
     {
-        throw new IllegalStateException();
+        return list -> get(list, 0);
     }
 
     // Size
@@ -95,10 +96,10 @@ public class Parameter<T, P extends Parameter<T, P>>
 
     // Subclass
 
-    public P copy(Parameter<T, ?> p)
+    public Parameter copy(Parameter<T> p)
     {
         //noinspection unchecked
-        return (P) new Parameter(p);
+        return (Parameter) new Parameter(p);
     }
 
     // Result
@@ -109,14 +110,14 @@ public class Parameter<T, P extends Parameter<T, P>>
         return fun;
     }
 
-    public Parameter<T, P> filter(Predicate<T> fun)
+    public Parameter<T> filter(Predicate<T> fun)
     {
         return filter(fun, null);
     }
 
-    public Parameter<T, P> filter(Predicate<T> fun, @Nullable Function<T, CommandException> esc)
+    public Parameter<T> filter(Predicate<T> fun, @Nullable Function<T, CommandException> esc)
     {
-        return new Parameter<T, P>(this, s ->
+        return new Parameter<T>(this, s ->
         {
             T t = function().apply(s);
             if (!fun.test(t) && esc != null) throw esc.apply(t);
@@ -124,12 +125,18 @@ public class Parameter<T, P extends Parameter<T, P>>
         });
     }
 
-    public <O> Parameter<O, ?> map(Function<T, O> fun)
+    public <O> Parameter<O> to(java.util.function.Function<Parameter<String>, Parameter<O>> fun)
+    {
+        //noinspection unchecked
+        return fun.apply((Parameter<String>) this);
+    }
+
+    public <O> Parameter<O> map(Function<T, O> fun)
     {
         return map(fun, null);
     }
 
-    public <O> Parameter<O, ?> map(Function<T, O> fun, @Nullable Function<T, CommandException> exc)
+    public <O> Parameter<O> map(Function<T, O> fun, @Nullable Function<T, CommandException> exc)
     {
         return new Parameter<>(this, s ->
         {
@@ -143,7 +150,7 @@ public class Parameter<T, P extends Parameter<T, P>>
         });
     }
 
-    public <O> Parameter<O, ?> flatMap(Function<T, Parameter<O, ?>> fun)
+    public <O> Parameter<O> flatMap(Function<T, Parameter<O>> fun)
     {
         return new Parameter<>(this, s ->
         {
@@ -151,19 +158,19 @@ public class Parameter<T, P extends Parameter<T, P>>
 
             if (t == null) return null;
 
-            Parameter<O, ?> po = fun.apply(t);
+            Parameter<O> po = fun.apply(t);
             return po.function().apply(po.params);
         });
     }
 
-    public P orElse(T t)
+    public Parameter<T> orElse(T t)
     {
         return orElseGet(() -> t);
     }
 
-    public P orElseGet(Supplier<T> supplier)
+    public Parameter<T> orElseGet(Supplier<T> supplier)
     {
-        return copy(new Parameter<T, P>(this, s ->
+        return copy(new Parameter<T>(this, s ->
         {
             try
             {
@@ -222,29 +229,30 @@ public class Parameter<T, P extends Parameter<T, P>>
 
     // Rest as arguments
 
-    public P rest(BinaryOperator<T> operator)
+    public Parameter<T> rest(BinaryOperator<T> operator)
     {
         return copy(new Parameter<>(this, p ->
         {
             T t = function().apply(Collections.singletonList(get(p, 0)));
-            for (int i = 1; i < p.size(); i++) t = operator.apply(t, function().apply(Collections.singletonList(p.get(i))));
+            for (int i = 1; i < p.size(); i++)
+                t = operator.apply(t, function().apply(Collections.singletonList(p.get(i))));
             return t;
         }));
     }
 
-    public P move(int idx)
+    public Parameter<T> move(int idx)
     {
         //noinspection unchecked
-        return idx == 0 ? (P) this
+        return idx == 0 ? (Parameter) this
                 : copy(new Parameter<>(isSet() ? moved + idx : moved, name, params.subList(Math.min(idx, params.size()), params.size()), fun));
     }
 
-    public Parameter<T[], ?> varargs(IntFunction<T[]> init)
+    public Parameter<T[]> varargs(IntFunction<T[]> init)
     {
         return stream().map(s -> s.toArray(init));
     }
 
-    public Parameter<List<T>, ?> varargsList()
+    public Parameter<List<T>> varargsList()
     {
         return new Parameter<>(this, p ->
         {
@@ -254,7 +262,7 @@ public class Parameter<T, P extends Parameter<T, P>>
         });
     }
 
-    public Parameter<Stream<T>, ?> stream()
+    public Parameter<Stream<T>> stream()
     {
         return varargsList().map(Collection::stream);
     }
@@ -273,7 +281,7 @@ public class Parameter<T, P extends Parameter<T, P>>
     {
         public ParameterNotFoundException(Parameter parameter, int index)
         {
-            super("Missing required parameter: " + parameterName(parameter, index));
+            super("Missing required parameter: " + parameter.name(index));
         }
     }
 
@@ -281,7 +289,7 @@ public class Parameter<T, P extends Parameter<T, P>>
     {
         public ArgumentMissingException(Parameter parameter, int index)
         {
-            super("Parameter mssing an argument: " + parameterName(parameter, index));
+            super("Parameter mssing an argument: " + parameter.name(index));
         }
     }
 }

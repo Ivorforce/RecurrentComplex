@@ -10,6 +10,8 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandException;
@@ -22,13 +24,13 @@ import net.minecraft.server.MinecraftServer;
  */
 public class CommandExportStructure extends CommandExpecting
 {
-    public static GenericStructure getNewGenericStructure(ICommandSender commandSender, RCParameter<?> parameter) throws CommandException
+    public static GenericStructure getNewGenericStructure(ICommandSender commandSender, Parameter<String> parameter) throws CommandException
     {
         GenericStructure genericStructureInfo;
 
         if (parameter.has(1))
         {
-            genericStructureInfo = parameter.genericStructure().require();
+            genericStructureInfo = parameter.to(RCP::genericStructure).require();
         }
         else
         {
@@ -61,7 +63,7 @@ public class CommandExportStructure extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
         String structureID = parameters.get(0).optional().orElse(null);

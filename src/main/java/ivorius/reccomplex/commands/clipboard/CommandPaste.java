@@ -10,10 +10,9 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.CommandExpecting;
-import ivorius.reccomplex.commands.parameters.Expect;
-import ivorius.reccomplex.commands.parameters.RCExpect;
-import ivorius.reccomplex.commands.parameters.RCParameters;
+import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.IvP;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.ServerTranslations;
@@ -64,7 +63,7 @@ public class CommandPaste extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(sender);
         RCEntityInfo entityInfo = RCCommands.getStructureEntityInfo(entityPlayerMP, null);
@@ -75,8 +74,8 @@ public class CommandPaste extends CommandExpecting
             throw ServerTranslations.commandException("commands.strucPaste.noClipboard");
 
         WorldServer world = (WorldServer) sender.getEntityWorld();
-        BlockPos pos = parameters.pos("x", "y", "z", sender.getPosition(), false).require();
-        AxisAlignedTransform2D transform = parameters.transform("rotation", "mirror").optional().orElse(AxisAlignedTransform2D.ORIGINAL);
+        BlockPos pos = parameters.get(MCP.pos("x", "y", "z", sender.getPosition(), false)).require();
+        AxisAlignedTransform2D transform = parameters.get(IvP.transform("rotation", "mirror")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         String seed = parameters.get("seed").optional().orElse(null);
         boolean generate = parameters.has("generate");
         boolean select = parameters.has("select");

@@ -10,6 +10,8 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.*;
+import ivorius.reccomplex.commands.rcparameters.RCExpect;
+import ivorius.reccomplex.commands.rcparameters.RCP;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.files.saving.FileSaverAdapter;
@@ -57,19 +59,19 @@ public class CommandDelete extends CommandExpecting
     @Override
     public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
     {
-        RCParameters parameters = RCParameters.of(args, expect()::declare);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         String adapterID = parameters.get(0).require();
 
         if (!RecurrentComplex.saver.has(adapterID))
             throw ServerTranslations.commandException("commands.rcsave.noregistry");
 
-        ResourceDirectory directory = parameters.get("directory").resourceDirectory().require();
+        ResourceDirectory directory = parameters.get("directory").to(RCP::resourceDirectory).require();
         Optional<FileSaverAdapter<?>> adapterOptional = Optional.ofNullable(RecurrentComplex.saver.get(adapterID));
         Collection<String> ids = Lists.newArrayList(adapterOptional.map(a -> a.getRegistry().ids()).orElse(Collections.emptySet()));
 
         ResourceExpression resourceExpression = ExpressionCache.of(new ResourceExpression(id -> adapterOptional.map(a -> a.getRegistry().has(id)).orElse(false)),
-                parameters.get(1).rest(ParameterString.join()).require());
+                parameters.get(1).rest(NaP.join()).require());
 
         for (String id : ids)
         {

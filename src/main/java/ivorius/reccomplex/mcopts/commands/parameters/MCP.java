@@ -56,18 +56,18 @@ public class MCP
     public static Parameter<Biome> biome(Parameter<String> p)
     {
         return p.map(ResourceLocation::new)
-                .map(Biome.REGISTRY::getObject, t -> MCOpts.translations.commandException("commands.rc.nobiome"));
+                .map(Biome.REGISTRY::getObject, t -> MCOpts.translations.commandException("commands.parameters.biome.invalid"));
     }
 
     public static Parameter<BiomeDictionary.Type> biomeDictionaryType(Parameter<String> p)
     {
-        return p.map(AccessorBiomeDictionary::getTypeWeak, s -> MCOpts.translations.commandException("commands.biomedict.notype", s));
+        return p.map(AccessorBiomeDictionary::getTypeWeak, s -> MCOpts.translations.commandException("commands.parameters.biometype.invalid", s));
     }
 
     public static Function<Parameter<String>, Parameter<WorldServer>> dimension(MinecraftServer server, ICommandSender sender)
     {
         return p -> p.filter(d -> !d.equals("~"), null)
-                .map(CommandBase::parseInt).map(server::worldServerForDimension, t -> MCOpts.translations.commandException("commands.rc.nodimension"))
+                .map(CommandBase::parseInt).map(server::worldServerForDimension, t -> MCOpts.translations.commandException("commands.parameters.dimension.invalid"))
                 .orElse((WorldServer) sender.getEntityWorld());
     }
 

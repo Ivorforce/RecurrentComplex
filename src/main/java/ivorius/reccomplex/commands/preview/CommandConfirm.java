@@ -8,7 +8,7 @@ package ivorius.reccomplex.commands.preview;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.SimpleCommand;
+import ivorius.reccomplex.mcopts.commands.SimpleCommand;
 import ivorius.reccomplex.utils.ServerTranslations;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

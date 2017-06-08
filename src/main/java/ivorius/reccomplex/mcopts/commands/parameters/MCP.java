@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.parameters;
+package ivorius.reccomplex.mcopts.commands.parameters;
 
 import ivorius.ivtoolkit.math.MinecraftTransforms;
 import ivorius.reccomplex.utils.ServerTranslations;

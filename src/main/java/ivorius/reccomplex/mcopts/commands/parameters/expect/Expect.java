@@ -3,15 +3,15 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.parameters.expect;
+package ivorius.reccomplex.mcopts.commands.parameters.expect;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.commands.parameters.NaP;
-import ivorius.reccomplex.commands.parameters.Parameter;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.mcopts.commands.parameters.NaP;
+import ivorius.reccomplex.mcopts.commands.parameters.Parameter;
+import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
 import ivorius.reccomplex.random.Person;
 import joptsimple.internal.Strings;
 import net.minecraft.command.CommandBase;

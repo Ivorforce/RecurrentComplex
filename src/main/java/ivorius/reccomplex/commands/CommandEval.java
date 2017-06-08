@@ -7,9 +7,10 @@ package ivorius.reccomplex.commands;
 
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.commands.parameters.*;
-import ivorius.reccomplex.commands.parameters.expect.Expect;
-import ivorius.reccomplex.commands.rcparameters.RCP;
+import ivorius.reccomplex.mcopts.commands.CommandExpecting;
+import ivorius.reccomplex.mcopts.commands.parameters.*;
+import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.expression.DependencyExpression;
 import net.minecraft.command.CommandException;

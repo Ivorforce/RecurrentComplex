@@ -3,11 +3,11 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.parameters.expect;
+package ivorius.reccomplex.mcopts.commands.parameters.expect;
 
-import ivorius.reccomplex.commands.parameters.NaP;
-import ivorius.reccomplex.commands.parameters.Parameter;
-import ivorius.reccomplex.commands.parameters.Parameters;
+import ivorius.reccomplex.mcopts.commands.parameters.NaP;
+import ivorius.reccomplex.mcopts.commands.parameters.Parameter;
+import ivorius.reccomplex.mcopts.commands.parameters.Parameters;
 import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import net.minecraft.block.Block;
 import net.minecraft.command.CommandBase;

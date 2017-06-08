@@ -3,12 +3,12 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.rcparameters;
+package ivorius.reccomplex.commands.parameters;
 
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.MCP;
-import ivorius.reccomplex.commands.parameters.Parameter;
+import ivorius.reccomplex.mcopts.commands.parameters.MCP;
+import ivorius.reccomplex.mcopts.commands.parameters.Parameter;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.ServerTranslations;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;

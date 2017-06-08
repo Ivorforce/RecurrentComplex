@@ -3,13 +3,13 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.commands.parameters;
+package ivorius.reccomplex.mcopts.commands.parameters;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.common.primitives.Doubles;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.commands.parameters.expect.Expect;
+import ivorius.reccomplex.mcopts.commands.parameters.expect.Expect;
 import joptsimple.internal.Strings;
 
 import javax.annotation.Nonnull;

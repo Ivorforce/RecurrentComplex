@@ -12,6 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -85,6 +86,18 @@ public class CommandSplit extends CommandBase
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
+        validatedCommand(server, sender, args).execute(server, sender, splitParameters(args));
+    }
+
+    @Nonnull
+    public String[] splitParameters(String[] args)
+    {
+        return Arrays.copyOfRange(args, 1, args.length);
+    }
+
+    @Nonnull
+    public ICommand validatedCommand(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+    {
         if (args.length < 1)
             throw new WrongUsageException(getUsage(sender));
 
@@ -93,7 +106,7 @@ public class CommandSplit extends CommandBase
         if (!iCommand.checkPermission(server, sender))
             throw new CommandException("commands.generic.permission");
 
-        iCommand.execute(server, sender, Arrays.copyOfRange(args, 1, args.length));
+        return iCommand;
     }
 
     @Override
@@ -105,7 +118,8 @@ public class CommandSplit extends CommandBase
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList())
             );
-        return get(args[0]).map(c -> c.getTabCompletions(server, sender, Arrays.copyOfRange(args, 1, args.length), targetPos))
+        return get(args[0]).filter(e -> e.checkPermission(server, sender))
+                .map(c -> c.getTabCompletions(server, sender, splitParameters(args), targetPos))
                 .orElse(Collections.emptyList());
     }
 

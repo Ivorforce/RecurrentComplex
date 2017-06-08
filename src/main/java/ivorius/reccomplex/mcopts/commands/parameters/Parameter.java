@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.mcopts.commands.parameters;
 
+import ivorius.reccomplex.mcopts.MCOpts;
 import net.minecraft.command.CommandException;
 
 import javax.annotation.Nonnull;
@@ -78,9 +79,9 @@ public class Parameter<T>
     protected <L> L get(List<L> list, int idx) throws CommandException
     {
         if (!isSet())
-            throw new ArgumentMissingException(this, idx);
+            throw ArgumentMissingException.create(this, idx);
         if (list.isEmpty())
-            throw new ParameterNotFoundException(this, idx);
+            throw ParameterNotFoundException.create(this, idx);
         return list.get(idx);
     }
 
@@ -179,7 +180,7 @@ public class Parameter<T>
     public T require() throws CommandException
     {
         T t = function().apply(params);
-        if (t == null) throw new CommandException("Parameter missing!");
+        if (t == null) throw MCOpts.translations.commandException("commands.parameters.invalid.generic", name(0));
         return t;
     }
 
@@ -271,17 +272,27 @@ public class Parameter<T>
 
     public static class ParameterNotFoundException extends CommandException
     {
-        public ParameterNotFoundException(Parameter parameter, int index)
+        private ParameterNotFoundException(String message, Object... objects)
         {
-            super("Missing required parameter: " + parameter.name(index));
+            super(message, objects);
+        }
+
+        public static ParameterNotFoundException create(Parameter parameter, int index)
+        {
+            return MCOpts.translations.object(ParameterNotFoundException::new, "commands.parameters.missing", parameter.name(index));
         }
     }
 
     public static class ArgumentMissingException extends CommandException
     {
-        public ArgumentMissingException(Parameter parameter, int index)
+        private ArgumentMissingException(String message, Object... objects)
         {
-            super("Parameter mssing an argument: " + parameter.name(index));
+            super(message, objects);
+        }
+
+        public static ArgumentMissingException create(Parameter parameter, int index)
+        {
+            return MCOpts.translations.object(ArgumentMissingException::new, "commands.parameters.missing.argument", parameter.name(index));
         }
     }
 }

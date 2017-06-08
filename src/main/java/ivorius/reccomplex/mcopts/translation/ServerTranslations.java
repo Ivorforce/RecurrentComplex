@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * Created by lukas on 01.04.15.
@@ -39,20 +40,22 @@ public abstract class ServerTranslations
         return join(components.toArray());
     }
 
-    public CommandException commandException(String key, Object... params)
+    public <T> T object(BiFunction<String, Object[], T> fun, String key, Object... params)
     {
         if (translateServerSide())
-            return new CommandException(Translations.format(key, convertParams(params)));
+            return fun.apply(Translations.format(key, convertParams(params)), new Object[0]);
         else
-            return new CommandException(key, params);
+            return fun.apply(key, params);
+    }
+
+    public CommandException commandException(String key, Object... params)
+    {
+        return object(CommandException::new, key, params);
     }
 
     public CommandException wrongUsageException(String key, Object... params)
     {
-        if (translateServerSide())
-            return new WrongUsageException(Translations.format(key, convertParams(params)));
-        else
-            return new WrongUsageException(key, params);
+        return object(WrongUsageException::new, key, params);
     }
 
     public ITextComponent format(String key, Object... params)

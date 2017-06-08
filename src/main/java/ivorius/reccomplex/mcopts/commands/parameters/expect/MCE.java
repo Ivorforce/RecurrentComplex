@@ -47,44 +47,44 @@ public class MCE
     public static void x(Expect e)
     {
         e.nextRaw((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), 0, pos))
-                .descriptionU("x");
+                .description("commands.parameters.x");
     }
 
     public static void y(Expect e)
     {
         e.nextRaw((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), -1, pos))
-                .descriptionU("y");
+                .description("commands.parameters.y");
     }
 
     public static void z(Expect e)
     {
         e.nextRaw((ser, sen, args, pos) -> CommandBase.getTabCompletionCoordinate(args.lastAsArray(), -2, pos))
-                .descriptionU("z");
+                .description("commands.parameters.z");
     }
 
     public static void biome(Expect e)
     {
-        e.next(Biome.REGISTRY.getKeys()).descriptionU("biome");
+        e.next(Biome.REGISTRY.getKeys()).description("commands.parameters.biome");
     }
 
     public static void biomeType(Expect e)
     {
-        e.next(AccessorBiomeDictionary.getMap().keySet()).descriptionU("biome type");
+        e.next(AccessorBiomeDictionary.getMap().keySet()).description("commands.parameters.biometype");
     }
 
     public static void dimension(Expect e)
     {
-        e.next(Arrays.stream(DimensionManager.getIDs())).descriptionU("dimension");
+        e.next(Arrays.stream(DimensionManager.getIDs())).description("commands.parameters.dimension");
     }
 
     public static void block(Expect e)
     {
-        e.next(Block.REGISTRY.getKeys()).descriptionU("block");
+        e.next(Block.REGISTRY.getKeys()).description("commands.parameters.block");
     }
 
     public static void command(Expect e)
     {
-        e.next((server, sender, args, pos) -> server.getCommandManager().getCommands().keySet()).descriptionU("command");
+        e.next((server, sender, args, pos) -> server.getCommandManager().getCommands().keySet()).description("commands.parameters.command");
     }
 
     public static Consumer<Expect> commandArguments(Function<Parameters, Parameter<String>> start)
@@ -99,11 +99,11 @@ public class MCE
 
     public static void entity(Expect e)
     {
-        e.next((server, sender, parameters, pos) -> Arrays.stream(server.getOnlinePlayerNames())).descriptionU("entity");
+        e.next((server, sender, parameters, pos) -> Arrays.stream(server.getOnlinePlayerNames())).description("commands.parameters.entity");
     }
 
     public static void rotation(Expect e)
     {
-        e.any("0", "90", "180", "270").descriptionU("rotation");
+        e.any("0", "90", "180", "270").description("commands.parameters.rotation");
     }
 }

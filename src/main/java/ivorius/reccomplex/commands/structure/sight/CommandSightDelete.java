@@ -52,7 +52,7 @@ public class CommandSightDelete extends CommandSplit
                 Parameters parameters = Parameters.of(args, null);
                 WorldStructureGenerationData generationData = WorldStructureGenerationData.get(sender.getEntityWorld());
 
-                BlockPos pos = parameters.get(0).to(MCP.pos_(sender.getPosition(), false)).require();
+                BlockPos pos = parameters.get(0).to(MCP.pos(sender.getPosition(), false)).require();
 
                 List<WorldStructureGenerationData.Entry> entries = generationData.entriesAt(pos).collect(Collectors.toList());
 

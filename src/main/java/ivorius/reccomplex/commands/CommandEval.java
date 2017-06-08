@@ -44,7 +44,7 @@ public class CommandEval extends CommandExpecting
     {
         Parameters parameters = Parameters.of(args, expect()::declare);
 
-        DependencyExpression matcher = parameters.get(0).rest(NaP.join()).to(RCP.expression_(new DependencyExpression())).require();
+        DependencyExpression matcher = parameters.get(0).rest(NaP.join()).to(RCP.expression(new DependencyExpression())).require();
 
         boolean result = matcher.test(RecurrentComplex.saver);
         commandSender.addChatMessage(ServerTranslations.get(result ? "commands.rceval.result.true" : "commands.rceval.result.false"));

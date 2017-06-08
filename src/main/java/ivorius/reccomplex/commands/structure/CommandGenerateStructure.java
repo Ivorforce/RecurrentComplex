@@ -71,7 +71,7 @@ public class CommandGenerateStructure extends SimpleCommand
         Structure<?> structure = parameters.get(0).to(RCP::structure).require();
         WorldServer world = parameters.get("dimension").to(MCP.dimension(server, sender)).require();
         AxisAlignedTransform2D transform = parameters.get(IvP.transform("rotation", "mirror")).optional().orElse(null);
-        GenerationType generationType = parameters.get("gen").to(RCP.generationType_(structure)).require();
+        GenerationType generationType = parameters.get("gen").to(RCP.generationType(structure)).require();
         BlockSurfacePos pos = parameters.get(IvP.surfacePos("x", "z", sender.getPosition(), false)).require();
         String seed = parameters.get("seed").optional().orElse(null);
         boolean select = parameters.has("select");

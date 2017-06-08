@@ -61,7 +61,7 @@ public class CommandSelectReplace extends CommandExpecting implements CommandVir
         int[] dstMeta = parameters.get("metadata").to(RCP::metadatas).optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
-        PositionedBlockExpression matcher = parameters.get(1).rest(NaP.join()).to(RCP.expression_(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
+        PositionedBlockExpression matcher = parameters.get(1).rest(NaP.join()).to(RCP.expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
         RCCommands.assertSize(sender, selectionOwner);

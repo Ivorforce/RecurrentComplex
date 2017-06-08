@@ -51,8 +51,8 @@ public class CommandSelecting extends CommandExpecting
     {
         Parameters parameters = Parameters.of(args, expect()::declare);
 
-        BlockPos p1 = parameters.get(0).to(MCP.pos_(commandSender.getPosition(), false)).require();
-        BlockPos p2 = parameters.get(3).to(MCP.pos_(commandSender.getPosition(), false)).require();
+        BlockPos p1 = parameters.get(0).to(MCP.pos(commandSender.getPosition(), false)).require();
+        BlockPos p2 = parameters.get(3).to(MCP.pos(commandSender.getPosition(), false)).require();
         String command = parameters.get(6).rest(NaP.join()).optional().orElse("");
 
         server.commandManager.executeCommand(new SelectingSender(commandSender, p1, p2), command);

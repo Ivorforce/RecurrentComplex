@@ -83,7 +83,7 @@ public class CommandSelection extends CommandSplit
                     if (owner.getSelectedPoint1() == null)
                         owner.setSelectedPoint1(sender.getPosition());
 
-                    owner.setSelectedPoint1(parameters.get(0).to(MCP.pos_(owner.getSelectedPoint1(), false)).require());
+                    owner.setSelectedPoint1(parameters.get(0).to(MCP.pos(owner.getSelectedPoint1(), false)).require());
                 }
                 if (second)
                 {
@@ -91,7 +91,7 @@ public class CommandSelection extends CommandSplit
                         owner.setSelectedPoint2(sender.getPosition());
 
                     owner.setSelectedPoint2((parameters.get(shiftSecond ? 3 : 0)
-                            .to(MCP.pos_(owner.getSelectedPoint2(), false)).require()));
+                            .to(MCP.pos(owner.getSelectedPoint2(), false)).require()));
                 }
             }
         });
@@ -105,7 +105,7 @@ public class CommandSelection extends CommandSplit
 
                 BlockArea area = owner.getSelection();
 
-                PositionedBlockExpression matcher = parameters.get(0).rest(NaP.join()).orElse("").to(RCP.expression_(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
+                PositionedBlockExpression matcher = parameters.get(0).rest(NaP.join()).orElse("").to(RCP.expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
 
                 for (EnumFacing direction : EnumFacing.VALUES)
                     while (area != null && sideStream(area, direction).allMatch(p -> matcher.test(PositionedBlockExpression.Argument.at(world, p))))
@@ -130,7 +130,7 @@ public class CommandSelection extends CommandSplit
                 {
                     changed = false;
 
-                    PositionedBlockExpression matcher = parameters.get(0).rest(NaP.join()).orElse("!is:air").to(RCP.expression_(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
+                    PositionedBlockExpression matcher = parameters.get(0).rest(NaP.join()).orElse("!is:air").to(RCP.expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
 
                     for (EnumFacing direction : EnumFacing.VALUES)
                     {

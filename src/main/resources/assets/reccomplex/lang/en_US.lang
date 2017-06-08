@@ -50,8 +50,6 @@ itemGroup.structureTools=Structure Tools
 itemGroup.inventoryGenerators=Inventory Generators
 
 commands.rc.noEntityInfo=The sender doesn't handle structure info!
-commands.rc.nodimension=No such dimension
-commands.rc.nobiome=No such biome
 commands.rc.noSelection=The sender doesn't handle selections!
 commands.rc.large.warn=The selection is very big! This might take a while.
 commands.rc.large.error=The selection is too big! (And if it weren't, this command would probably take a few days to run!)
@@ -98,8 +96,6 @@ commands.biomedict.get=Biome Types for %s: %s
 commands.biomedict.get.number=Lookup (%s biomes)
 commands.biomedict.list=Biomes of Type %s: %s
 commands.biomedict.list.number=Lookup (%s types)
-commands.biomedict.nobiome=No Biome with the ID '%s'
-commands.biomedict.notype=No Biome Type with the ID '%s'
 
 commands.dimensiondict.get=Dimension Types for %d: %s
 commands.dimensiondict.get.number=Lookup (%s dimensions)

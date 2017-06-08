@@ -87,8 +87,6 @@ commands.biomedict.get=Biometypen für %s: %s
 commands.biomedict.get.number=%s biome
 commands.biomedict.list=Biome des Typs %s: %s
 commands.biomedict.list.number=%s Biomtypen
-commands.biomedict.nobiome=Kein Biom mit der ID '%s'
-commands.biomedict.notype=Kein Biomtyp mit der ID '%s'
 
 commands.dimensiondict.get=Dimensionstypen for %d: %s
 commands.dimensiondict.get.number=%s Dimensionen

@@ -1,0 +1,3 @@
+commands.parameters.dimension.invalid=No such dimension
+commands.parameters.biome.invalid=No such biome
+commands.parameters.biometype.invalid=No such biome type

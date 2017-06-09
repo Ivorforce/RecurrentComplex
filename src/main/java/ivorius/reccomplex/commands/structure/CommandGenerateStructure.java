@@ -8,18 +8,19 @@ package ivorius.reccomplex.commands.structure;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
+import ivorius.mcopts.commands.SimpleCommand;
+import ivorius.mcopts.commands.parameters.MCP;
+import ivorius.mcopts.commands.parameters.Parameters;
+import ivorius.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.mcopts.commands.SimpleCommand;
-import ivorius.mcopts.commands.parameters.*;
-import ivorius.mcopts.commands.parameters.expect.Expect;
-import ivorius.mcopts.commands.parameters.expect.MCE;
-import ivorius.reccomplex.commands.parameters.expect.IvE;
 import ivorius.reccomplex.commands.parameters.IvP;
-import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.commands.parameters.RCP;
+import ivorius.reccomplex.commands.parameters.expect.IvE;
+import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
@@ -38,6 +39,9 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
+
+import static ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext.GenerateMaturity.FIRST;
+import static ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext.GenerateMaturity.SUGGEST;
 
 /**
  * Created by lukas on 25.05.14.
@@ -61,7 +65,9 @@ public class CommandGenerateStructure extends SimpleCommand
                 .named("rotation", "r").then(MCE::rotation)
                 .named("seed").then(RCE::randomString).descriptionU("seed")
                 .flag("mirror", "m")
-                .flag("select", "s");
+                .flag("select", "s")
+                .flag("suggest", "t")
+                ;
     }
 
     @Override
@@ -78,12 +84,14 @@ public class CommandGenerateStructure extends SimpleCommand
         BlockSurfacePos pos = parameters.get(IvP.surfacePos("x", "z", sender.getPosition(), false)).require();
         String seed = parameters.get("seed").optional().orElse(null);
         boolean select = parameters.has("select");
+        boolean suggest = parameters.has("suggest");
 
         Placer placer = generationType.placer();
 
         StructureGenerator<?> generator = new StructureGenerator<>(structure).world(world).generationInfo(generationType)
                 .seed(RCStrings.seed(seed))
                 .structureID(structureID).randomPosition(pos, placer).fromCenter(true)
+                .maturity(suggest ? SUGGEST : FIRST)
                 .transform(transform);
 
         Optional<StructureBoundingBox> boundingBox = generator.boundingBox();

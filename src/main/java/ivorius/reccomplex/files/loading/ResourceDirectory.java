@@ -120,12 +120,12 @@ public enum ResourceDirectory
 
     public static void tryLoadResources(FileLoader loader, Path path, LeveledRegistry.Level level, Collection<String> suffices, String domain, boolean create)
     {
-        tryLoadAll(loader, path.resolve(ACTIVE_DIR_NAME), new FileLoadContext(domain, true, level), create, suffices);
         tryLoadAll(loader, path.resolve(INACTIVE_DIR_NAME), new FileLoadContext(domain, false, level), create, suffices);
+        tryLoadAll(loader, path.resolve(ACTIVE_DIR_NAME), new FileLoadContext(domain, true, level), create, suffices);
 
         // Legacy
-        tryLoadAll(loader, path.resolve("genericStructures"), new FileLoadContext(domain, true, level), false, suffices);
         tryLoadAll(loader, path.resolve("silentStructures"), new FileLoadContext(domain, false, level), false, suffices);
+        tryLoadAll(loader, path.resolve("genericStructures"), new FileLoadContext(domain, true, level), false, suffices);
         tryLoadAll(loader, path.resolve("inventoryGenerators"), new FileLoadContext(domain, true, level), false, suffices);
     }
 

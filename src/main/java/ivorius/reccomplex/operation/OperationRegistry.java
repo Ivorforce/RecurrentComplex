@@ -73,6 +73,9 @@ public class OperationRegistry
 
     public static void queueOperation(Operation operation, ICommandSender commandSender) throws PlayerNotFoundException
     {
+        if (operation.checkDead(commandSender))
+            return;
+
         boolean instant = true;
 
         if (commandSender instanceof EntityPlayer)

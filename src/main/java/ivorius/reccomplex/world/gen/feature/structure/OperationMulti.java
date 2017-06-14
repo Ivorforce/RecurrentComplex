@@ -8,6 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure;
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.operation.Operation;
 import ivorius.reccomplex.operation.OperationRegistry;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -48,6 +49,12 @@ public class OperationMulti implements Operation
     public void update(World world, int ticks)
     {
         operations.forEach(o -> o.update(world, ticks));
+    }
+
+    @Override
+    public boolean checkDead(ICommandSender target)
+    {
+        return operations.stream().anyMatch(o -> o.checkDead(target));
     }
 
     @Override

@@ -98,9 +98,10 @@ public class CommandGenerateStructure extends SimpleCommand
         {
             GenericStructure genericStructureInfo = (GenericStructure) structure;
 
+            //noinspection unchecked
             if (!OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationType.id(), generator.transform(), generator.lowerCoord().orElse(null), false)
                     .withSeed(seed)
-                    .withStructureID(structureID).prepare(world), sender))
+                    .withStructureID(structureID).prepare((Optional<GenericStructure.InstanceData>) generator.instanceData()), sender))
                 return;
         }
         else

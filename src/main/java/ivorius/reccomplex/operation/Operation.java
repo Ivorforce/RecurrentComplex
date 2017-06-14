@@ -25,17 +25,15 @@ public interface Operation extends NBTCompoundObject
 
     enum PreviewType
     {
-        NONE(0, "none"),
-        BOUNDING_BOX(1, "bounds"),
-        SHAPE(0, "shape"),
+        NONE("none"),
+        BOUNDING_BOX("bounds"),
+        SHAPE("shape"),
         ;
 
-        public final int id;
         public final String key;
 
-        PreviewType(int id, String key)
+        PreviewType(String key)
         {
-            this.id = id;
             this.key = key;
         }
 

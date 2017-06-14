@@ -100,7 +100,7 @@ public class CommandRetrogen extends CommandExpecting
     public Expect expect()
     {
         return Parameters.expect()
-                .named("exp").then(RCE::structurePredicate).descriptionU("resource expression: only generate these structures")
+                .named("exp").words(RCE::structurePredicate).descriptionU("resource expression: only generate these structures")
                 .named("dimension", "d").then(MCE::dimension);
     }
 

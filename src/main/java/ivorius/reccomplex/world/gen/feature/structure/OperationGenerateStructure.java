@@ -30,6 +30,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -90,7 +91,12 @@ public class OperationGenerateStructure implements Operation
 
     public OperationGenerateStructure prepare(WorldServer world)
     {
-        instanceData.setInstanceData(generator(world).instanceData().get());
+        return prepare(generator(world).instanceData());
+    }
+
+    public OperationGenerateStructure prepare(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<GenericStructure.InstanceData> instanceData)
+    {
+        this.instanceData.setInstanceData(instanceData.orElse(null));
         return this;
     }
 

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.operation;
 
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
@@ -18,7 +19,14 @@ public interface Operation extends NBTCompoundObject
 {
     void perform(WorldServer world);
 
-    default void update(World world, int ticks) {}
+    default void update(World world, int ticks)
+    {
+    }
+
+    default boolean checkDead(ICommandSender target)
+    {
+        return false;
+    }
 
     @SideOnly(Side.CLIENT)
     void renderPreview(PreviewType previewType, World world, int ticks, float partialTicks);
@@ -27,8 +35,7 @@ public interface Operation extends NBTCompoundObject
     {
         NONE("none"),
         BOUNDING_BOX("bounds"),
-        SHAPE("shape"),
-        ;
+        SHAPE("shape"),;
 
         public final String key;
 

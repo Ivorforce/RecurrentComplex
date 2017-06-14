@@ -58,6 +58,7 @@ commands.structure.notGeneric=Structure '%s' is not generic!
 commands.structure.notRegistered=No structure found by name '%s'!
 
 commands.strucGen.noPlace=The structure can't find anywhere suitable to spawn!
+commands.strucGen.canceled=The structure generation was canceled!
 commands.strucGen.noStructure=No structure registered by the name of '%s'
 
 commands.strucImport.noStructure=No structure registered by the name of '%s'

@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.BlockQuadCache;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.client.rendering.OperationRenderer;
 import ivorius.reccomplex.operation.Operation;
 import ivorius.reccomplex.utils.RCAxisAlignedTransform;
@@ -19,6 +20,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnCont
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -116,6 +118,24 @@ public class OperationGenerateStructure implements Operation
             generator.structureID(structureID);
 
         return generator;
+    }
+
+    @Override
+    public boolean checkDead(ICommandSender target)
+    {
+        if (!instanceData.exists())
+        {
+            target.sendMessage(RecurrentComplex.translations.get("commands.strucGen.canceled"));
+            return true;
+        }
+
+        if (lowerCoord == null)
+        {
+            target.sendMessage(RecurrentComplex.translations.get("commands.strucGen.noPlace"));
+            return true;
+        }
+
+        return false;
     }
 
     @Override

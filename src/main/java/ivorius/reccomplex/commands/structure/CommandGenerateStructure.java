@@ -94,19 +94,14 @@ public class CommandGenerateStructure extends SimpleCommand
                 .maturity(suggest ? SUGGEST : FIRST)
                 .transform(transform);
 
-        Optional<StructureBoundingBox> boundingBox = generator.boundingBox();
-        if (!boundingBox.isPresent())
-            throw RecurrentComplex.translations.commandException("commands.strucGen.noPlace");
-
         if (structure instanceof GenericStructure && world == sender.getEntityWorld())
         {
             GenericStructure genericStructureInfo = (GenericStructure) structure;
 
-            BlockPos lowerCoord = StructureBoundingBoxes.min(boundingBox.get());
-
-            OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationType.id(), generator.transform(), lowerCoord, false)
+            if (!OperationRegistry.queueOperation(new OperationGenerateStructure(genericStructureInfo, generationType.id(), generator.transform(), generator.lowerCoord().orElse(null), false)
                     .withSeed(seed)
-                    .withStructureID(structureID).prepare(world), sender);
+                    .withStructureID(structureID).prepare(world), sender))
+                return;
         }
         else
         {
@@ -117,7 +112,7 @@ public class CommandGenerateStructure extends SimpleCommand
         if (select)
         {
             SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
-            owner.setSelection(RCBlockAreas.from(boundingBox.get()));
+            owner.setSelection(RCBlockAreas.from(generator.boundingBox().get()));
         }
     }
 }

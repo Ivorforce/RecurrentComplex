@@ -71,10 +71,10 @@ public class OperationRegistry
         return compound;
     }
 
-    public static void queueOperation(Operation operation, ICommandSender commandSender) throws PlayerNotFoundException
+    public static boolean queueOperation(Operation operation, ICommandSender commandSender) throws PlayerNotFoundException
     {
         if (operation.checkDead(commandSender))
-            return;
+            return false;
 
         boolean instant = true;
 
@@ -106,6 +106,8 @@ public class OperationRegistry
 
         if (instant)
             operation.perform((WorldServer) commandSender.getEntityWorld());
+
+        return true;
     }
 
     @Nullable

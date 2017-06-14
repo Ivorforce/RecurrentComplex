@@ -56,7 +56,7 @@ public class CommandPaste extends CommandExpecting
     {
         return Parameters.expect().then(MCE.pos("x", "y", "z"))
                 .named("rotation", "r").then(MCE::rotation)
-                .named("seed").then(RCE::randomString)
+                .named("seed").words(RCE::randomString)
                 .flag("mirror", "m")
                 .flag("generate", "g")
                 .flag("select", "s");

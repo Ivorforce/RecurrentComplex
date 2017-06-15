@@ -41,9 +41,9 @@ public class CommandSelectReplace extends CommandExpecting implements CommandVir
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(MCE::block).descriptionU("destination block").required()
+        expect.then(MCE::block).descriptionU("destination block").required()
                 .then(MCE::block).descriptionU("source expression").required().repeat()
                 .named("metadata", "m").then(RCE::metadata);
     }

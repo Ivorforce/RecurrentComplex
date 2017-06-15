@@ -48,9 +48,9 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(MCE::block).then(RCE::metadata)
+        expect.then(MCE::block).then(RCE::metadata)
                 .then(RCE::directionExpression);
     }
 

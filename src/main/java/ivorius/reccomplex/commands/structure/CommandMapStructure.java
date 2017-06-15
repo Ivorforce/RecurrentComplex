@@ -92,9 +92,9 @@ public class CommandMapStructure extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(RCE::structure).descriptionU("resource expression|structure").required()
+        expect.then(RCE::structure).descriptionU("resource expression|structure").required()
                 .then(RCE::virtualCommand)
                 .stopNamed().then(MCE.commandArguments(p -> p.get(1))).repeat()
                 .named("directory", "d").then(RCE::resourceDirectory)

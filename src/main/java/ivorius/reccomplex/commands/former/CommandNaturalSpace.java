@@ -132,9 +132,9 @@ public class CommandNaturalSpace extends CommandExpecting implements CommandVirt
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .named("distance-to-floor", "d").any("3", "2", "1")
                 .named("max-closed-sides", "s").any("3", "4", "5");
     }

@@ -119,9 +119,9 @@ public class CommandSearchStructure extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .skip().descriptionU("terms").required().repeat();
     }
 

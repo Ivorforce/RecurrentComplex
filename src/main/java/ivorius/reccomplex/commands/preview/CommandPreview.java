@@ -35,9 +35,9 @@ public class CommandPreview extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .any((Object[]) Operation.PreviewType.keys()).descriptionU("type").required();
     }
 

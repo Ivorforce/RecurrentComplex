@@ -38,9 +38,9 @@ public class CommandExportStructure extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(RCE::randomString).descriptionU("structure id")
+        expect.then(RCE::randomString).descriptionU("structure id")
                 .named("from").then(RCE::structure);
     }
 

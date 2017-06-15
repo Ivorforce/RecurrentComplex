@@ -46,9 +46,9 @@ public class CommandImportStructure extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(RCE::structure).then(MCE.pos("x", "y", "z"))
+        expect.then(RCE::structure).then(MCE.pos("x", "y", "z"))
                 .named("dimension", "d").then(MCE::dimension)
                 .named("rotation", "r").then(MCE::rotation)
                 .flag("mirror", "m")

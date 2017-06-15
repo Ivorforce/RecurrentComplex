@@ -97,9 +97,9 @@ public class CommandRetrogen extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .named("exp").words(RCE::structurePredicate).descriptionU("resource expression: only generate these structures")
                 .named("dimension", "d").then(MCE::dimension);
     }

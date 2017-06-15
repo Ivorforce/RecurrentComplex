@@ -103,9 +103,9 @@ public class CommandNaturalFloor extends CommandExpecting implements CommandVirt
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .named("expansion", "e").any("0", "1", "2");
     }
 

@@ -52,9 +52,9 @@ public class CommandPaste extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(MCE.pos("x", "y", "z"))
+        expect.then(MCE.pos("x", "y", "z"))
                 .named("rotation", "r").then(MCE::rotation)
                 .named("seed").words(RCE::randomString)
                 .flag("mirror", "m")

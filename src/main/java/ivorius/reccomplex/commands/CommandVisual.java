@@ -33,9 +33,9 @@ public class CommandVisual extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .any("rulers").descriptionU("type").required()
                 .any("true", "false").descriptionU("true|false").required();
     }

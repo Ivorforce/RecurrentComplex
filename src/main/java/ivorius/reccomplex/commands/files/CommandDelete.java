@@ -46,9 +46,9 @@ public class CommandDelete extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .next(RecurrentComplex.saver.keySet()).descriptionU("file type").required()
                 .next(params -> params.get(0).tryGet().map(RecurrentComplex.saver::get).map(a -> a.getRegistry().ids())).descriptionU("resource expression").repeat()
                 .named("directory", "d").then(RCE::resourceDirectory).required();

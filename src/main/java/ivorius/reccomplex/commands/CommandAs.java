@@ -32,9 +32,9 @@ public class CommandAs extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .then(MCE::entity).required()
                 .then(MCE::command).required()
                 .then(MCE.commandArguments(p -> p.get(1))).repeat();

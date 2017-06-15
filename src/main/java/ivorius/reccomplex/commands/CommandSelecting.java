@@ -39,9 +39,9 @@ public class CommandSelecting extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .then(MCE::xyz).required()
                 .then(MCE::xyz).required()
                 .then(MCE::command).required()

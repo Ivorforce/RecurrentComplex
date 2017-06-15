@@ -64,8 +64,8 @@ public class CommandSightCheck extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(MCE::xyz);
+        expect.then(MCE::xyz);
     }
 }

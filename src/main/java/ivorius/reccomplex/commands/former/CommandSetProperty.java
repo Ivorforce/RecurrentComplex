@@ -37,9 +37,9 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet())).descriptionU("key").required()
                 .next(params -> params.get(0).tryGet().map(TransformerProperty::propertyValueStream)).descriptionU("value").required()
                 .named("exp").words(MCE::block).descriptionU("positioned block expression");

@@ -59,9 +59,9 @@ public class CommandExportSchematic extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(RCE::schematic);
+        expect.then(RCE::schematic);
     }
 
     @Override

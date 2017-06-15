@@ -28,9 +28,9 @@ public class CommandNaturalAll extends CommandExpecting implements CommandVirtua
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .named("floor-expansion", "e").any("0", "1", "2")
                 .named("space-distance-to-floor", "f").any("3", "2", "1")
                 .named("space-max-closed-sides", "s").any("3", "4", "5");

@@ -55,9 +55,9 @@ public class CommandGenerateStructure extends SimpleCommand
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .then(RCE::structure).required()
                 .then(IvE.surfacePos("x", "z"))
                 .named("dimension", "d").then(MCE::dimension)

@@ -48,8 +48,8 @@ public class CommandDecorateOne extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(MCE::xz);
+        expect.then(MCE::xz);
     }
 }

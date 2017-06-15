@@ -34,9 +34,9 @@ public class CommandVisitFiles extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .named("directory", "d").then(RCE::resourceDirectory);
     }
 

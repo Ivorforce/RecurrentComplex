@@ -63,9 +63,9 @@ public class CommandSanity extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .flag("silent")
                 .flag("short");
     }

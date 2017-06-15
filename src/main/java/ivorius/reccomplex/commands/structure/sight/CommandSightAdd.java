@@ -30,9 +30,9 @@ public class CommandSightAdd extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(RCE::randomString).descriptionU("name").required().repeat();
+        expect.then(RCE::randomString).descriptionU("name").required().repeat();
     }
 
     public int getRequiredPermissionLevel()

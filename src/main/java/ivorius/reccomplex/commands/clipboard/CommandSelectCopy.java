@@ -33,9 +33,9 @@ public class CommandSelectCopy extends CommandExpecting implements CommandVirtua
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect();
+
     }
 
     public int getRequiredPermissionLevel()

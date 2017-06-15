@@ -80,9 +80,9 @@ public class CommandListStructures extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().any(0).descriptionU("page");
+        expect.any(0).descriptionU("page");
     }
 
     @Override

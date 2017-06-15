@@ -5,11 +5,12 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.mcopts.commands.CommandExpecting;
+import ivorius.mcopts.commands.parameters.NaP;
+import ivorius.mcopts.commands.parameters.Parameters;
+import ivorius.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.mcopts.commands.CommandExpecting;
-import ivorius.mcopts.commands.parameters.*;
-import ivorius.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.utils.expression.DependencyExpression;
 import net.minecraft.command.CommandException;
@@ -33,9 +34,9 @@ public class CommandEval extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .next(RCConfig.globalToggles.keySet().stream().map(s -> "global:" + s)).descriptionU("dependency expression");
     }
 

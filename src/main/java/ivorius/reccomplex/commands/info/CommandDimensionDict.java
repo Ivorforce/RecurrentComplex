@@ -35,7 +35,7 @@ public class CommandDimensionDict extends CommandSplit
     {
         super(RCConfig.commandPrefix + "dimension");
 
-        add(new SimpleCommand("types", () -> Parameters.expect().then(MCE::dimension).required())
+        add(new SimpleCommand("types", expect -> expect.then(MCE::dimension).required())
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
@@ -51,7 +51,7 @@ public class CommandDimensionDict extends CommandSplit
             }
         });
 
-        add(new SimpleCommand("list", () -> Parameters.expect().then(IvE::dimensionType).required())
+        add(new SimpleCommand("list", expect -> expect.then(IvE::dimensionType).required())
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException

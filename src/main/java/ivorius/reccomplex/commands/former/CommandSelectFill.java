@@ -42,9 +42,9 @@ public class CommandSelectFill extends CommandExpecting implements CommandVirtua
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(MCE::block).then(RCE::metadata)
+        expect.then(MCE::block).then(RCE::metadata)
                 .named("shape", "s").any("cube", "sphere");
     }
 

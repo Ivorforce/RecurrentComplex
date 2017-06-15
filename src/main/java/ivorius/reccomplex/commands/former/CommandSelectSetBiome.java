@@ -40,9 +40,9 @@ public class CommandSelectSetBiome extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(MCE::biome);
+        expect.then(MCE::biome);
     }
 
     public int getRequiredPermissionLevel()

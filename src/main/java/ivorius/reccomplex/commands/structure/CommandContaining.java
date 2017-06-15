@@ -27,7 +27,7 @@ public class CommandContaining extends SimpleCommand
 {
     public CommandContaining()
     {
-        super(RCConfig.commandPrefix + "containing", () -> Parameters.expect().then(MCE::block).descriptionU("block expression").required()
+        super(RCConfig.commandPrefix + "containing", expect -> expect.then(MCE::block).descriptionU("block expression").required()
         );
         permitFor(2);
     }

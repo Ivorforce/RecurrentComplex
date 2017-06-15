@@ -43,9 +43,9 @@ public class CommandSelectMove extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(MCE.pos("x", "y", "z"))
+        expect.then(MCE.pos("x", "y", "z"))
                 .named("rotation", "r").then(MCE::rotation)
                 .flag("mirror", "m")
                 .flag("noselect", "s");

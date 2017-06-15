@@ -9,14 +9,16 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.world.MockWorld;
+import ivorius.mcopts.commands.CommandSplit;
+import ivorius.mcopts.commands.SimpleCommand;
+import ivorius.mcopts.commands.parameters.MCP;
+import ivorius.mcopts.commands.parameters.NaP;
+import ivorius.mcopts.commands.parameters.Parameters;
+import ivorius.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
-import ivorius.mcopts.commands.CommandSplit;
-import ivorius.mcopts.commands.SimpleCommand;
-import ivorius.mcopts.commands.parameters.*;
-import ivorius.mcopts.commands.parameters.expect.Expect;
-import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import net.minecraft.command.CommandException;
@@ -27,7 +29,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -62,7 +64,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(set = new Command("set", () -> Parameters.expect().then(MCE::xyz).required().flag("first").flag("second"))
+        add(set = new Command("set", expect -> expect.then(MCE::xyz).required().flag("first").flag("second"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
@@ -97,7 +99,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("crop", () -> Parameters.expect().then(MCE::block).descriptionU("positioned block expression"))
+        add(new Command("crop", expect -> expect.then(MCE::block).descriptionU("positioned block expression"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
@@ -116,7 +118,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("wand", () -> Parameters.expect().then(MCE::block).descriptionU("positioned block expression"))
+        add(new Command("wand", expect -> expect.then(MCE::block).descriptionU("positioned block expression"))
         {
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
@@ -149,7 +151,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("shrink", () -> Parameters.expect()
+        add(new Command("shrink", expect -> expect
                 .any("1", "2", "3").descriptionU("all")
                 .named("x").any("1", "2", "3").descriptionU("x")
                 .named("y").any("1", "2", "3").descriptionU("y")
@@ -166,7 +168,7 @@ public class CommandSelection extends CommandSplit
             }
         });
 
-        add(new Command("expand", () -> Parameters.expect()
+        add(new Command("expand", expect -> expect
                 .any("1", "2", "3").descriptionU("all")
                 .named("x").any("1", "2", "3").descriptionU("x")
                 .named("y").any("1", "2", "3").descriptionU("y")
@@ -205,12 +207,12 @@ public class CommandSelection extends CommandSplit
             super(name);
         }
 
-        public Command(String name, Supplier<Expect> expector)
+        public Command(String name, Consumer<Expect> expector)
         {
             super(name, expector);
         }
 
-        public Command(String name, String usage, Supplier<Expect> expector)
+        public Command(String name, String usage, Consumer<Expect> expector)
         {
             super(name, usage, expector);
         }

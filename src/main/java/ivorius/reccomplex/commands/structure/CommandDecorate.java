@@ -49,9 +49,9 @@ public class CommandDecorate extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect()
+        expect
                 .then(MCE::xyz).required()
                 .then(MCE::xyz).required()
                 .named("exp").words(RCE::structurePredicate);

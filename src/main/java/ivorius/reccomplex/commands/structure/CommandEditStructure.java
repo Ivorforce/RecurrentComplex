@@ -35,9 +35,9 @@ public class CommandEditStructure extends CommandExpecting
     }
 
     @Override
-    public Expect expect()
+    public void expect(Expect expect)
     {
-        return Parameters.expect().then(RCE::structure)
+        expect.then(RCE::structure)
                 .named("from").then(RCE::structure);
     }
 

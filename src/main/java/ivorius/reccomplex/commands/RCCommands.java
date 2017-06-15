@@ -79,6 +79,8 @@ public class RCCommands
     {
         event.registerServerCommand(sanity = new CommandSanity());
 
+        event.registerServerCommand(new CommandAnd());
+
         event.registerServerCommand(new CommandWrite());
         event.registerServerCommand(new CommandDelete());
         event.registerServerCommand(new CommandReload());

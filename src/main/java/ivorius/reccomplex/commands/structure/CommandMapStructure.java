@@ -7,9 +7,10 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.world.MockWorld;
+import ivorius.mcopts.commands.DelegatingSender;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.commands.CommandSelecting;
+import ivorius.reccomplex.capability.CapabilitySelection;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.RCTextStyle;
@@ -30,7 +31,9 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.capabilities.Capability;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,7 +65,7 @@ public class CommandMapStructure extends CommandExpecting
 
         try
         {
-            command.execute(world, new CommandSelecting.SelectingSender(commandSender, BlockPos.ORIGIN, worldData.blockCollection.area().getHigherCorner()),
+            command.execute(world, new SelectingSender(commandSender, BlockPos.ORIGIN, worldData.blockCollection.area().getHigherCorner()),
                     args);
         }
         catch (MockWorld.VirtualWorldException ex)
@@ -148,5 +151,33 @@ public class CommandMapStructure extends CommandExpecting
     public enum MapResult
     {
         SUCCESS, FAILED, SKIPPED
+    }
+
+    public static class SelectingSender extends DelegatingSender
+    {
+        public CapabilitySelection capabilitySelection;
+
+        public SelectingSender(ICommandSender sender, BlockPos point1, BlockPos point2)
+        {
+            super(sender);
+            capabilitySelection = new CapabilitySelection(point1, point2);
+        }
+
+        @Override
+        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+        {
+            if (capability == CapabilitySelection.CAPABILITY)
+                return true;
+            return super.hasCapability(capability, facing);
+        }
+
+        @Nullable
+        @Override
+        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+        {
+            if (capability == CapabilitySelection.CAPABILITY)
+                return (T) capabilitySelection;
+            return super.getCapability(capability, facing);
+        }
     }
 }

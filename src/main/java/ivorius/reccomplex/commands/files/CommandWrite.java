@@ -69,7 +69,7 @@ public class CommandWrite extends CommandExpecting
         Set<String> ids = adapterOptional.map(a -> a.getRegistry().ids()).orElse(Collections.emptySet());
 
         ResourceExpression resourceExpression = ExpressionCache.of(new ResourceExpression(id -> adapterOptional.map(a -> a.getRegistry().has(id)).orElse(false)),
-                parameters.get(1).rest(NaP.join()).require());
+                parameters.get(1).rest(NaP::join).require());
 
         int saved = 0, failed = 0;
         for (String id : ids)

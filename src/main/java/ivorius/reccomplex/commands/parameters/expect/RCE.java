@@ -47,8 +47,7 @@ public class RCE
 
     public static void schematic(Expect e)
     {
-        e.next(SchematicLoader.currentSchematicFileNames()
-                .stream().map(name -> name.contains(" ") ? String.format("\"%s\"", name) : name).collect(Collectors.toList())).descriptionU("schematic");
+        e.next(SchematicLoader.currentSchematicFileNames()).descriptionU("schematic");
     }
 
     public static void resourceDirectory(Expect e)

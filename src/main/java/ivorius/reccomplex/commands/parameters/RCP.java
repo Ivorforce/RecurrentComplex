@@ -35,7 +35,7 @@ public class RCP
                 t -> RecurrentComplex.translations.commandException("commands.strucGen.noStructure", p.get()));
     }
 
-    public static Parameter<GenericStructure> genericStructure(Parameter<String> p)
+    public static Parameter<GenericStructure> genericStructure(Parameter<String> p, boolean copy)
     {
         return p.map(id ->
         {
@@ -44,18 +44,19 @@ public class RCP
             if (structure == null)
                 throw RecurrentComplex.translations.commandException("commands.structure.notRegistered", id);
 
-            GenericStructure genericStructureInfo = structure.copyAsGenericStructure();
+            if (copy)
+                structure = structure.copyAsGenericStructure();
 
-            if (genericStructureInfo == null)
+            if (!(structure instanceof GenericStructure))
                 throw RecurrentComplex.translations.commandException("commands.structure.notGeneric", id);
 
-            return genericStructureInfo;
+            return (GenericStructure) structure;
         });
     }
 
     public static Function<Parameter<String>, Parameter<GenericStructure>> structureFromBlueprint(ICommandSender sender)
     {
-        return p -> p.to(RCP::genericStructure).map(GenericStructure::copyAsGenericStructure)
+        return p -> genericStructure(p, true).map(GenericStructure::copyAsGenericStructure)
                 .orElseGet(() ->
                 {
                     GenericStructure structure = GenericStructure.createDefaultStructure();

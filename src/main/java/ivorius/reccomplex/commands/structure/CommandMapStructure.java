@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.world.MockWorld;
 import ivorius.mcopts.commands.CommandExpecting;
 import ivorius.mcopts.commands.DelegatingSender;
 import ivorius.mcopts.commands.parameters.NaP;
+import ivorius.mcopts.commands.parameters.Parameter;
 import ivorius.mcopts.commands.parameters.Parameters;
 import ivorius.mcopts.commands.parameters.expect.Expect;
 import ivorius.mcopts.commands.parameters.expect.MCE;
@@ -49,17 +50,16 @@ public class CommandMapStructure extends CommandExpecting
     @Nonnull
     public static MapResult map(String structureID, @Nullable ResourceDirectory directory, ICommandSender commandSender, CommandVirtual command, String[] args, boolean inform) throws CommandException
     {
-        Structure<?> info = StructureRegistry.INSTANCE.get(structureID);
+        GenericStructure structure = Parameter.makeUp(null, 0, structureID)
+                .to(RCP::structure).require().copyAsGenericStructure();
 
-        if (!(info instanceof GenericStructure))
+        if (structure == null)
         {
             if (inform)
                 throw RecurrentComplex.translations.commandException("commands.structure.notGeneric", structureID);
 
             return MapResult.SKIPPED;
         }
-
-        GenericStructure structure = (GenericStructure) info;
 
         IvWorldData worldData = structure.constructWorldData();
         MockWorld world = new MockWorld.WorldData(worldData);

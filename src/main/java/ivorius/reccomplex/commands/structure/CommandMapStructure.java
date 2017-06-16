@@ -7,19 +7,20 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.ivtoolkit.world.MockWorld;
+import ivorius.mcopts.commands.CommandExpecting;
 import ivorius.mcopts.commands.DelegatingSender;
+import ivorius.mcopts.commands.parameters.NaP;
+import ivorius.mcopts.commands.parameters.Parameters;
+import ivorius.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.CapabilitySelection;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.mcopts.commands.CommandExpecting;
-import ivorius.mcopts.commands.parameters.*;
-import ivorius.mcopts.commands.parameters.expect.Expect;
-import ivorius.mcopts.commands.parameters.expect.MCE;
-import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.commands.parameters.RCP;
+import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketSaveStructureHandler;
@@ -97,12 +98,14 @@ public class CommandMapStructure extends CommandExpecting
     @Override
     public void expect(Expect expect)
     {
-        expect.then(RCE::structure).descriptionU("resource expression|structure").required()
+        expect
+                .then(RCE::structure).descriptionU("resource expression|structure").required()
                 .then(RCE::virtualCommand)
-                .stopNamed().then(MCE.commandArguments(p -> p.get(1))).repeat()
+                .stopInterpreting()
+                .then(MCE.commandArguments(p -> p.get(1))).repeat()
                 .named("directory", "d").then(RCE::resourceDirectory)
                 .flag("nosave", "n")
-                ;
+        ;
     }
 
     @Override

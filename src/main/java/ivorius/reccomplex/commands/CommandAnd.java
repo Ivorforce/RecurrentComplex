@@ -42,7 +42,7 @@ public class CommandAnd extends CommandExpecting implements CommandVirtual
     public void expectSubcommand(Expect expect)
     {
         expect
-                .stopNamed()
+                .stopInterpreting()
                 .then(MCE::command)
                 .then(MCE.commandArguments(p -> p.get(0))).repeat()
         ;

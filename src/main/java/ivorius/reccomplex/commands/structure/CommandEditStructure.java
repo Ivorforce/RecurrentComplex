@@ -48,8 +48,8 @@ public class CommandEditStructure extends CommandExpecting
         Parameters parameters = Parameters.of(args, expect()::declare);
 
         String id = parameters.get(0).require();
-        GenericStructure base = parameters.get(0).to(RCP::genericStructure).require();
-        GenericStructure from = parameters.get("from").to(RCP::genericStructure).optional().orElse(base);
+        GenericStructure base = parameters.get(0).to(p -> RCP.genericStructure(p, false)).require();
+        GenericStructure from = parameters.get("from").to(p -> RCP.genericStructure(p, false)).optional().orElse(base);
 
         if (base != from)
         {

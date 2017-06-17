@@ -62,8 +62,8 @@ public class CommandVisual extends CommandExpecting
         }
 
         if (enabled)
-            commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcvisual.enabled", type));
+            commandSender.addChatMessage(RecurrentComplex.translations.format("commands.rcvisual.enabled", type));
         else
-            commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcvisual.disabled", type));
+            commandSender.addChatMessage(RecurrentComplex.translations.format("commands.rcvisual.disabled", type));
     }
 }

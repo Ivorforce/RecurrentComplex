@@ -145,7 +145,7 @@ public class CommandMapStructure extends CommandExpecting
         }
 
         if (!inform)
-            commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcmapall.result", saved, RCTextStyle.path(directory), failed, skipped));
+            commandSender.addChatMessage(RecurrentComplex.translations.format("commands.rcmapall.result", saved, RCTextStyle.path(directory), failed, skipped));
 
         RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
         RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);

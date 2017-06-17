@@ -95,7 +95,7 @@ public class CommandSearchStructure extends CommandExpecting
         }
         else
         {
-            commandSender.sendMessage(RecurrentComplex.translations.get("commands.rcsearch.empty"));
+            commandSender.addChatMessage(RecurrentComplex.translations.get("commands.rcsearch.empty"));
         }
     }
 

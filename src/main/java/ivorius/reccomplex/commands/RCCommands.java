@@ -198,7 +198,7 @@ public class RCCommands
         if (size >= (long) Integer.MAX_VALUE)
             throw RecurrentComplex.translations.commandException("commands.rc.large.error");
         else if (size >= 100 * 100 * 100)
-            sender.sendMessage(RecurrentComplex.translations.get("commands.rc.large.warn"));
+            sender.addChatMessage(RecurrentComplex.translations.get("commands.rc.large.warn"));
     }
 
     public static void informDeleteResult(Pair<Set<Path>, Set<Path>> result, ICommandSender sender, String filetype, String id, ResourceDirectory directory)
@@ -206,9 +206,9 @@ public class RCCommands
         ITextComponent pathComponent = RCTextStyle.path(directory, id);
 
         if (result.getRight().size() > 0)
-            sender.sendMessage(RecurrentComplex.translations.format("reccomplex.delete.failure", filetype, pathComponent));
+            sender.addChatMessage(RecurrentComplex.translations.format("reccomplex.delete.failure", filetype, pathComponent));
         else if (result.getLeft().size() > 0)
-            sender.sendMessage(RecurrentComplex.translations.format("reccomplex.delete.success", filetype, pathComponent));
+            sender.addChatMessage(RecurrentComplex.translations.format("reccomplex.delete.success", filetype, pathComponent));
     }
 
     public static boolean informSaveResult(boolean result, ICommandSender sender, ResourceDirectory directory, String filetype, String id)
@@ -217,13 +217,13 @@ public class RCCommands
 
         if (result)
         {
-            sender.sendMessage(RecurrentComplex.translations.format("reccomplex.save.full",
+            sender.addChatMessage(RecurrentComplex.translations.format("reccomplex.save.full",
                     RecurrentComplex.translations.format("reccomplex.save.success", filetype, pathComponent),
                     RCTextStyle.submit(id))
             );
         }
         else
-            sender.sendMessage(RecurrentComplex.translations.format("reccomplex.save.failure", filetype, pathComponent));
+            sender.addChatMessage(RecurrentComplex.translations.format("reccomplex.save.failure", filetype, pathComponent));
 
         return result;
     }

@@ -57,7 +57,7 @@ public class CommandListStructures extends CommandExpecting
             commandSender.addChatMessage(ServerTranslations.join(components));
         }
         else
-            commandSender.sendMessage(RecurrentComplex.translations.get("commands.rclist.none"));
+            commandSender.addChatMessage(RecurrentComplex.translations.get("commands.rclist.none"));
     }
 
     public static void linkToPage(ITextComponent component, int page, ITextComponent hoverTitle)

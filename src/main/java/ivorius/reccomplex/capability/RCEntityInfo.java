@@ -178,7 +178,7 @@ public class RCEntityInfo implements NBTCompoundObject, PartialUpdateHandler
     {
         if (danglingOperation != null)
         {
-            danglingOperation.update(entity.world, entity.ticksExisted);
+            danglingOperation.update(entity.worldObj, entity.ticksExisted);
 
             if (danglingOperation.checkDead(entity))
             {

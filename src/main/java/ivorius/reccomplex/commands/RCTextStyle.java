@@ -100,7 +100,7 @@ public class RCTextStyle
         style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s types %s", RCCommands.biomeDict.getCommandName(), biome.getRegistryName())));
         style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                RecurrentComplex.translations.format("commands.biomedict.list.number", BiomeDictionary.getTypes(biome).size())));
+                RecurrentComplex.translations.format("commands.biomedict.list.number", BiomeDictionary.getTypesForBiome(biome).length)));
         style.setColor(TextFormatting.AQUA);
         return component;
     }
@@ -113,7 +113,7 @@ public class RCTextStyle
         style.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                 String.format("/%s list %s", RCCommands.biomeDict.getCommandName(), type)));
         style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                RecurrentComplex.translations.format("commands.biomedict.get.number", BiomeDictionary.getBiomes(type).size())));
+                RecurrentComplex.translations.format("commands.biomedict.get.number", BiomeDictionary.getBiomesForType(type).length)));
         style.setColor(TextFormatting.AQUA);
         return component;
     }
@@ -152,7 +152,7 @@ public class RCTextStyle
         ITextComponent component = RecurrentComplex.translations.format("commands.rcarea.get", pos(area.getPoint1()), pos(area.getPoint2()));
         component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("commands.rcarea.select")));
         component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s %d %d %d %d %d %d --first --second",
-                RCCommands.select.getName(), RCCommands.select.set.getName(),
+                RCCommands.select.getCommandName(), RCCommands.select.set.getCommandName(),
                 area.getPoint1().getX(), area.getPoint1().getY(), area.getPoint1().getZ(),
                 area.getPoint2().getX(), area.getPoint2().getY(), area.getPoint2().getZ()
         )));
@@ -170,7 +170,7 @@ public class RCTextStyle
         TextComponentString forget = new TextComponentString("X");
         String uuidString = entry.getUuid().toString();
         forget.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s %s id %s", RCCommands.sight.getName(), RCCommands.sight.delete.getName(), uuidString)));
+                String.format("/%s %s id %s", RCCommands.sight.getCommandName(), RCCommands.sight.delete.getCommandName(), uuidString)));
         forget.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 RecurrentComplex.translations.format("commands.rcforget.forget", uuidString)));
         forget.getStyle().setColor(TextFormatting.RED);
@@ -182,7 +182,7 @@ public class RCTextStyle
         {
             name = new TextComponentString(entry.description());
             name.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("commands.rcsightinfo.lookup")));
-            name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s %s", RCCommands.sight.getName(), RCCommands.sight.info.getName(), entry.getUuid())));
+            name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s %s %s", RCCommands.sight.getCommandName(), RCCommands.sight.info.getCommandName(), entry.getUuid())));
         }
 
         name.getStyle().setColor(TextFormatting.AQUA);

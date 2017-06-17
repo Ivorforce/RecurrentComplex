@@ -57,10 +57,10 @@ public class CommandSightCheck extends CommandExpecting
 
         List<WorldStructureGenerationData.Entry> entries = WorldStructureGenerationData.get(world).entriesAt(pos).collect(Collectors.toCollection(ArrayList::new));
         if (entries.size() > 0)
-            commandSender.sendMessage(RecurrentComplex.translations.format(new ArrayList<ITextComponent>().size() > 1 ? "commands.whatisthis.many" : "commands.whatisthis.one",
+            commandSender.addChatMessage(RecurrentComplex.translations.format(new ArrayList<ITextComponent>().size() > 1 ? "commands.whatisthis.many" : "commands.whatisthis.one",
                     ServerTranslations.join(entries.stream().map(RCTextStyle::sight).collect(Collectors.toList()))));
         else
-            commandSender.sendMessage(RecurrentComplex.translations.format("commands.whatisthis.none"));
+            commandSender.addChatMessage(RecurrentComplex.translations.format("commands.whatisthis.none"));
     }
 
     @Override

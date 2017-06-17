@@ -131,13 +131,13 @@ public class OperationGenerateStructure implements Operation
     {
         if (!instanceData.exists())
         {
-            target.sendMessage(RecurrentComplex.translations.get("commands.strucGen.canceled"));
+            target.addChatMessage(RecurrentComplex.translations.get("commands.strucGen.canceled"));
             return true;
         }
 
         if (lowerCoord == null)
         {
-            target.sendMessage(RecurrentComplex.translations.get("commands.strucGen.noPlace"));
+            target.addChatMessage(RecurrentComplex.translations.get("commands.strucGen.noPlace"));
             return true;
         }
 

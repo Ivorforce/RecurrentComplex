@@ -48,6 +48,6 @@ public class CommandEval extends CommandExpecting
         DependencyExpression matcher = parameters.get(0).rest(NaP::join).to(RCP.expression(new DependencyExpression())).require();
 
         boolean result = matcher.test(RecurrentComplex.saver);
-        commandSender.sendMessage(RecurrentComplex.translations.get(result ? "commands.rceval.result.true" : "commands.rceval.result.false"));
+        commandSender.addChatMessage(RecurrentComplex.translations.get(result ? "commands.rceval.result.true" : "commands.rceval.result.false"));
     }
 }

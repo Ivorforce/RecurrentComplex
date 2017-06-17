@@ -50,7 +50,7 @@ public class CommandReload extends CommandExpecting
         {
             RCCommands.tryReload(RecurrentComplex.loader, level);
 
-            commandSender.sendMessage(RecurrentComplex.translations.format("commands.strucReload.success", level));
+            commandSender.addChatMessage(RecurrentComplex.translations.format("commands.strucReload.success", level));
         }
         catch (IllegalArgumentException e)
         {

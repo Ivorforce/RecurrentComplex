@@ -91,15 +91,15 @@ public class OperationRegistry
 
                     ITextComponent confirmComponent = new TextComponentString("/" + RCCommands.confirm.getCommandName());
                     confirmComponent.getStyle().setColor(TextFormatting.GREEN);
-                    confirmComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.confirm.getName()));
+                    confirmComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.confirm.getCommandName()));
                     confirmComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("commands.rcconfirm.run")));
 
                     ITextComponent cancelComponent = new TextComponentString("/" + RCCommands.cancel.getCommandName());
                     cancelComponent.getStyle().setColor(TextFormatting.RED);
-                    cancelComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.cancel.getName()));
+                    cancelComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + RCCommands.cancel.getCommandName()));
                     cancelComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("commands.rccancel.run")));
 
-                    commandSender.sendMessage(RecurrentComplex.translations.format("commands.rc.queuedOp", confirmComponent, cancelComponent));
+                    commandSender.addChatMessage(RecurrentComplex.translations.format("commands.rc.queuedOp", confirmComponent, cancelComponent));
                 }
             }
         }

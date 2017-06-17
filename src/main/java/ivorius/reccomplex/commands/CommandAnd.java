@@ -26,7 +26,7 @@ import java.util.Arrays;
 public class CommandAnd extends CommandExpecting implements CommandVirtual
 {
     @Override
-    public String getName()
+    public String getCommandName()
     {
         return RCConfig.commandPrefix + "&";
     }

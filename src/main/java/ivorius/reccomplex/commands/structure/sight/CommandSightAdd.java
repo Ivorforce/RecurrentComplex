@@ -51,6 +51,6 @@ public class CommandSightAdd extends CommandExpecting
         String name = parameters.get(0).rest(NaP::join).require();
 
         generationData.addEntry(WorldStructureGenerationData.CustomEntry.from(name, BlockAreas.toBoundingBox(owner.getSelection())));
-        commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcremember.success", name));
+        commandSender.addChatMessage(RecurrentComplex.translations.format("commands.rcremember.success", name));
     }
 }

@@ -98,7 +98,7 @@ public class CommandSelectFill extends CommandExpecting implements CommandVirtua
                 break;
             }
             default:
-                throw new WrongUsageException(getUsage(sender));
+                throw new WrongUsageException(getCommandUsage(sender));
         }
 
     }

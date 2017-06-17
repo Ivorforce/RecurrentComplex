@@ -56,6 +56,6 @@ public class CommandPreview extends CommandExpecting
         RCEntityInfo.setPreviewType(previewType);
         RCEntityInfo.sendPreviewTypeToClients(player);
 
-        commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcpreview.success", previewType.key));
+        commandSender.addChatMessage(RecurrentComplex.translations.format("commands.rcpreview.success", previewType.key));
     }
 }

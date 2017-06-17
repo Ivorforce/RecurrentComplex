@@ -78,13 +78,13 @@ public class CommandSanity extends CommandExpecting
 
         if (StructureRegistry.INSTANCE.ids().isEmpty())
         {
-            commandSender.sendMessage(new TextComponentString("No registered structures!"));
+            commandSender.addChatMessage(new TextComponentString("No registered structures!"));
             sane = false;
         }
 
         if (!Files.isReadable(ResourceDirectory.getCustomDirectory().toPath()))
         {
-            commandSender.sendMessage(new TextComponentString("Can't read files from custom directory"));
+            commandSender.addChatMessage(new TextComponentString("Can't read files from custom directory"));
             sane = false;
         }
 
@@ -101,20 +101,20 @@ public class CommandSanity extends CommandExpecting
             catch (RCFiles.ResourceLocationLoadException e)
             {
                 RecurrentComplex.logger.error(e);
-                commandSender.sendMessage(new TextComponentString("Error reading files from mod " + mod.getModId() + ": "));
-                commandSender.sendMessage(new TextComponentString(RCCommands.reason(e)));
+                commandSender.addChatMessage(new TextComponentString("Error reading files from mod " + mod.getModId() + ": "));
+                commandSender.addChatMessage(new TextComponentString(RCCommands.reason(e)));
                 sane = false;
             }
             if (path != null && !Files.isReadable(path))
             {
-                commandSender.sendMessage(new TextComponentString("Can't read files from mod: " + mod.getModId()));
+                commandSender.addChatMessage(new TextComponentString("Can't read files from mod: " + mod.getModId()));
                 sane = false;
             }
         }
 
         if (!Files.isReadable(ResourceDirectory.getServerDirectory().toPath()))
         {
-            commandSender.sendMessage(new TextComponentString("Can't read files from server directory"));
+            commandSender.addChatMessage(new TextComponentString("Can't read files from server directory"));
             sane = false;
         }
 
@@ -195,7 +195,7 @@ public class CommandSanity extends CommandExpecting
         }
 
         if (sane && !parameters.has("silent"))
-            commandSender.sendMessage(new TextComponentString("No problems identified!"));
+            commandSender.addChatMessage(new TextComponentString("No problems identified!"));
     }
 
     protected <T extends GenerationType> boolean addGenerationLog(ICommandSender commandSender, Class<T> tClass, BiPredicate<Structure<?>, T> predicate, String msg)

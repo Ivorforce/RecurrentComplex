@@ -161,7 +161,7 @@ public class WorldGenStructures
     public static long chunkSeed(long seed, ChunkPos chunkPos)
     {
         // From world.setRandomSeed
-        return (long) chunkPos.x * 341873128712L + (long) chunkPos.z * 132897987541L + seed;
+        return (long) chunkPos.chunkXPos * 341873128712L + (long) chunkPos.chunkZPos * 132897987541L + seed;
     }
 
     public static BlockSurfacePos randomSurfacePos(ChunkPos chunkPos, long seed)

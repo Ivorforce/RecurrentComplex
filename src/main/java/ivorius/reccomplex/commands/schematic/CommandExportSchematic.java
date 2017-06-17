@@ -83,7 +83,7 @@ public class CommandExportSchematic extends CommandExpecting
         SchematicFile schematicFile = toSchematic(data);
         SchematicLoader.writeSchematicByName(schematicFile, structureName);
 
-        commandSender.sendMessage(RecurrentComplex.translations.format("commands.strucExportSchematic.success", structureName));
+        commandSender.addChatMessage(RecurrentComplex.translations.format("commands.strucExportSchematic.success", structureName));
     }
 
     @Override

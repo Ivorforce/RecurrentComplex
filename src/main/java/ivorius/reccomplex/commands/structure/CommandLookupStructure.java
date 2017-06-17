@@ -69,11 +69,11 @@ public class CommandLookupStructure extends CommandExpecting
         ITextComponent level = new TextComponentString(StructureRegistry.INSTANCE.status(id).getLevel().toString());
         level.getStyle().setColor(TextFormatting.YELLOW);
 
-        commandSender.sendMessage(RecurrentComplex.translations.format(
+        commandSender.addChatMessage(RecurrentComplex.translations.format(
                 StructureRegistry.INSTANCE.hasActive(id) ? "commands.rclookup.reply.generates" : "commands.rclookup.reply.silent",
                 id, RCTextStyle.users(metadata.authors), level, weblink));
 
         if (!metadata.comment.trim().isEmpty())
-            commandSender.sendMessage(RecurrentComplex.translations.format("commands.rclookup.reply.comment", metadata.comment));
+            commandSender.addChatMessage(RecurrentComplex.translations.format("commands.rclookup.reply.comment", metadata.comment));
     }
 }

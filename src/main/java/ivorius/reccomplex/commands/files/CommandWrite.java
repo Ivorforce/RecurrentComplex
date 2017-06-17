@@ -85,7 +85,7 @@ public class CommandWrite extends CommandExpecting
                 failed++;
         }
 
-        commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcsaveall.result", saved, RCTextStyle.path(directory), failed));
+        commandSender.addChatMessage(RecurrentComplex.translations.format("commands.rcsaveall.result", saved, RCTextStyle.path(directory), failed));
 
         RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.CUSTOM);
         RCCommands.tryReload(RecurrentComplex.loader, LeveledRegistry.Level.SERVER);

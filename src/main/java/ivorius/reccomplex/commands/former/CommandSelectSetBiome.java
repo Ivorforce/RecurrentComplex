@@ -34,7 +34,7 @@ public class CommandSelectSetBiome extends CommandExpecting
     }
 
     @Override
-    public String getName()
+    public String getCommandName()
     {
         return RCConfig.commandPrefix + "setbiome";
     }

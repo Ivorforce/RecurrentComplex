@@ -114,6 +114,6 @@ public class CommandRetrogen extends CommandExpecting
 
         long count = retrogen(world, structurePredicate);
 
-        commandSender.sendMessage(RecurrentComplex.translations.format("commands.rcretro.count", String.valueOf(count)));
+        commandSender.addChatMessage(RecurrentComplex.translations.format("commands.rcretro.count", String.valueOf(count)));
     }
 }

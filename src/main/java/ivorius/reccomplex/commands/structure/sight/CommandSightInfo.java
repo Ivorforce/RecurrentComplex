@@ -48,10 +48,10 @@ public class CommandSightInfo extends SimpleCommand
             if (entry instanceof WorldStructureGenerationData.StructureEntry)
             {
                 WorldStructureGenerationData.StructureEntry structureEntry = (WorldStructureGenerationData.StructureEntry) entry;
-                sender.sendMessage(new TextComponentTranslation("commands.rcsightinfo.structure", RCTextStyle.structure(structureEntry.getStructureID()), area, RCTextStyle.copy(String.valueOf(structureEntry.getSeed())), sight));
+                sender.addChatMessage(new TextComponentTranslation("commands.rcsightinfo.structure", RCTextStyle.structure(structureEntry.getStructureID()), area, RCTextStyle.copy(String.valueOf(structureEntry.getSeed())), sight));
             }
             else
-                sender.sendMessage(new TextComponentTranslation("commands.rcsightinfo.get", entry.description(), area, sight));
+                sender.addChatMessage(new TextComponentTranslation("commands.rcsightinfo.get", entry.description(), area, sight));
         }
     }
 }

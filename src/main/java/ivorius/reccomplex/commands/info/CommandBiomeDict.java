@@ -62,8 +62,8 @@ public class CommandBiomeDict extends CommandSplit
 
                 Biome biome = parameters.get(0).to(MCP::biome).require();
 
-                sender.sendMessage(RecurrentComplex.translations.format("commands.biomedict.get", RCTextStyle.biome(biome),
-                        ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getTypes(biome)).stream()
+                sender.addChatMessage(RecurrentComplex.translations.format("commands.biomedict.get", RCTextStyle.biome(biome),
+                        ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getTypesForBiome(biome)).stream()
                                 .map(RCTextStyle::biomeType).toArray())
                 ));
             }
@@ -78,8 +78,8 @@ public class CommandBiomeDict extends CommandSplit
 
                 BiomeDictionary.Type type = parameters.get(0).to(MCP::biomeDictionaryType).require();
 
-                sender.sendMessage(RecurrentComplex.translations.format("commands.biomedict.list", RCTextStyle.biomeType(type),
-                        ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getBiomes(type))
+                sender.addChatMessage(RecurrentComplex.translations.format("commands.biomedict.list", RCTextStyle.biomeType(type),
+                        ServerTranslations.join(Lists.newArrayList(BiomeDictionary.getBiomesForType(type))
                                 .stream().map(RCTextStyle::biome).toArray())
                 ));
             }

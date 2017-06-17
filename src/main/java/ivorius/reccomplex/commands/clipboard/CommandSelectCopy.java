@@ -55,6 +55,6 @@ public class CommandSelectCopy extends CommandExpecting implements CommandVirtua
         IvWorldData worldData = IvWorldData.capture(world, area, true);
 
         RCEntityInfo.setWorldDataClipboard(worldData.createTagCompound());
-        sender.sendMessage(RecurrentComplex.translations.format("commands.selectCopy.success", RCTextStyle.area(area)));
+        sender.addChatMessage(RecurrentComplex.translations.format("commands.selectCopy.success", RCTextStyle.area(area)));
     }
 }

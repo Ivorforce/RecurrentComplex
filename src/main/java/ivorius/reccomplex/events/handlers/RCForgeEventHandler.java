@@ -226,7 +226,7 @@ public class RCForgeEventHandler
             WorldRandomData randomData = WorldRandomData.get(FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
             if (randomData.postWorldStatus(event.player.getName()))
             {
-                event.player.getServer().commandManager.executeCommand(event.player, RCCommands.sanity.getName() + " --silent --short");
+                event.player.getServer().commandManager.executeCommand(event.player, RCCommands.sanity.getCommandName() + " --silent --short");
 
                 ITextComponent count = new TextComponentString("" + StructureRegistry.INSTANCE.activeIDs().size());
                 count.getStyle().setColor(TextFormatting.AQUA);

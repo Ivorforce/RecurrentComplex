@@ -58,9 +58,9 @@ public class CommandSelection extends CommandSplit implements CommandVirtual
             @Override
             public void execute(MockWorld world, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
-                sender.sendMessage(RecurrentComplex.translations.format("commands.selectSet.get", RCTextStyle.area(owner.getSelection())));
+                sender.addChatMessage(RecurrentComplex.translations.format("commands.selectSet.get", RCTextStyle.area(owner.getSelection())));
                 if (owner.hasValidSelection())
-                    sender.sendMessage(RecurrentComplex.translations.format("commands.selectSet.size", RCTextStyle.size(owner.getSelection().areaSize()), IvVecMathHelper.product(owner.getSelection().areaSize())));
+                    sender.addChatMessage(RecurrentComplex.translations.format("commands.selectSet.size", RCTextStyle.size(owner.getSelection().areaSize()), IvVecMathHelper.product(owner.getSelection().areaSize())));
             }
         });
 
@@ -192,7 +192,7 @@ public class CommandSelection extends CommandSplit implements CommandVirtual
     }
 
     @Override
-    public String getName()
+    public String getCommandName()
     {
         return RCConfig.commandPrefix + "selection";
     }

@@ -42,7 +42,7 @@ public class CommandSightDelete extends CommandSplit
                 if (entry == null)
                     throw RecurrentComplex.translations.commandException("commands.rcsightinfo.unknown");
                 else
-                    sender.sendMessage(RecurrentComplex.translations.format("commands.rcforget.success", entry.description()));
+                    sender.addChatMessage(RecurrentComplex.translations.format("commands.rcforget.success", entry.description()));
             }
         });
 
@@ -61,9 +61,9 @@ public class CommandSightDelete extends CommandSplit
                 entries.forEach(e -> generationData.removeEntry(e.getUuid()));
 
                 if (entries.size() == 1)
-                    sender.sendMessage(RecurrentComplex.translations.format("commands.rcforget.success", entries.get(0).description()));
+                    sender.addChatMessage(RecurrentComplex.translations.format("commands.rcforget.success", entries.get(0).description()));
                 else
-                    sender.sendMessage(RecurrentComplex.translations.format("commands.rcforgetall.success", entries.size()));
+                    sender.addChatMessage(RecurrentComplex.translations.format("commands.rcforgetall.success", entries.size()));
             }
         });
 

@@ -106,7 +106,7 @@ public class CommandSelection extends CommandSplit implements CommandVirtual
             {
                 BlockArea area = owner.getSelection();
 
-                PositionedBlockExpression matcher = parameters.get(0).rest(NaP::join).orElse("").to(RCP.expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
+                PositionedBlockExpression matcher = parameters.get(0).rest(NaP::join).orElse("is:air").to(RCP.expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
 
                 for (EnumFacing direction : EnumFacing.VALUES)
                     while (area != null && sideStream(area, direction).allMatch(p -> matcher.test(PositionedBlockExpression.Argument.at(world, p))))

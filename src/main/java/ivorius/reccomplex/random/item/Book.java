@@ -65,7 +65,7 @@ public class Book
         List<Integer> pageIndices = new ArrayList<>();
 
         int currentLineChars = 0;
-        int currentLineNumber = 0;
+        int currentLineNumber = 1;
 
         int hardcodedLineIndex = 0;
 
@@ -77,15 +77,14 @@ public class Book
             {
                 String word = scanner.next();
 
-                if (word.length() > CHARS_PER_LINE)
+                if (word.length() > CHARS_PER_LINE && currentLineChars > 0)
                 {
                     int lines = word.length() / CHARS_PER_LINE;
 
-                    if (currentLineNumber + lines > LINES_PER_PAGE)
+                    if (currentLineNumber + lines > LINES_PER_PAGE && currentLineNumber > 0)
                     {
-                        int index = scanner.match().end() + hardcodedLineIndex;
-                        pageIndices.add(index);
-                        currentLineNumber = 0;
+                        pageIndices.add(scanner.match().end() + hardcodedLineIndex);
+                        currentLineNumber = 1;
                     }
 
                     currentLineNumber += lines;
@@ -95,9 +94,8 @@ public class Book
                 {
                     if (currentLineNumber >= LINES_PER_PAGE)
                     {
-                        int index = scanner.match().end() + hardcodedLineIndex;
-                        pageIndices.add(index);
-                        currentLineNumber = 0;
+                        pageIndices.add(scanner.match().end() + hardcodedLineIndex);
+                        currentLineNumber = 1;
                     }
                     else
                     {
@@ -121,7 +119,7 @@ public class Book
             if (currentLineNumber >= LINES_PER_PAGE)
             {
                 pageIndices.add(hardcodedLineIndex);
-                currentLineNumber = 0;
+                currentLineNumber = 1;
             }
         }
 
@@ -129,21 +127,19 @@ public class Book
         int lastIndex = 0;
         for (Integer index : pageIndices)
         {
-            String newPage = text.substring(lastIndex, index);
+            String page = text.substring(lastIndex, index).trim();
 
-            if (newPage.trim().length() > 0)
-                pages.add(newPage.trim());
+            if (page.length() > 0)
+                pages.add(page);
 
             lastIndex = index;
         }
         if (text.length() > lastIndex)
         {
-            String newPage = text.substring(lastIndex, text.length());
+            String page = text.substring(lastIndex, text.length()).trim();
 
-            if (newPage.trim().length() > 0)
-            {
-                pages.add(newPage.trim());
-            }
+            if (page.length() > 0)
+                pages.add(page);
         }
 
         return pages;

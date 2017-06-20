@@ -43,6 +43,7 @@ public class TokenReplacer
                 boolean repeat = symbol.flags.contains("rep");
 
                 List<Token> tokens = repeat ? repeats.get(symbol.tag) : symbol.explode(theme, context, random);
+                if (repeat && tokens == null) tokens = Collections.singletonList(new StringToken(symbol.startIndex, symbol.endIndex, "EMPTY_REPEAT"));
                 if (remember) repeats.put(symbol.tag, tokens);
 
                 // Add it backwards since it's reversed
@@ -151,7 +152,7 @@ public class TokenReplacer
             return null;
         }
 
-        protected abstract Exploder<T> exploder(String tag, List<String> flags);
+        protected abstract Exploder<T> exploder(String tag, List<String> params);
 
         @Nonnull
         @Override
@@ -171,7 +172,7 @@ public class TokenReplacer
                     .collect(Collectors.toMap(Map.Entry::getKey, k -> Lists.newArrayList(k.getValue())));
         }
 
-        public static String flag(List<String> flags, int index, String def)
+        public static String parameter(List<String> flags, int index, String def)
         {
             return flags.size() > index ? flags.get(index) : def;
         }

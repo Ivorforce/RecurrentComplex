@@ -110,7 +110,7 @@ public class Poem
         return new TokenReplacer.ReplaceFactory<PoemContext>()
         {
             @Nonnull
-            protected TokenReplacer.Exploder<PoemContext> exploder(String tag, List<String> flags)
+            protected TokenReplacer.Exploder<PoemContext> exploder(String tag, List<String> params)
             {
                 switch (tag)
                 {
@@ -124,9 +124,9 @@ public class Poem
                                 Poem.getRandomElementFrom(context.names, random));
                     case "number":
                         return TokenReplacer.Exploder.string(numEvaluator(
-                                Integer.valueOf(TokenReplacer.Theme.flag(flags, 0, "2")),
-                                Integer.valueOf(TokenReplacer.Theme.flag(flags, 1, "10")),
-                                Integer.valueOf(TokenReplacer.Theme.flag(flags, 2, "1"))
+                                Integer.valueOf(TokenReplacer.Theme.parameter(params, 0, "2")),
+                                Integer.valueOf(TokenReplacer.Theme.parameter(params, 1, "10")),
+                                Integer.valueOf(TokenReplacer.Theme.parameter(params, 2, "1"))
                         ));
                     default:
                         return (token, theme, context, random) ->

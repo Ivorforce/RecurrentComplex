@@ -22,6 +22,10 @@ import java.util.stream.Collectors;
  */
 public class Book
 {
+
+    public static final int LINES_PER_PAGE = 12;
+    public static final int CHARS_PER_LINE = 15;
+
     public static ItemStack any(Random random)
     {
         return random.nextFloat() < 0.5f ? generic(random) : poem(random);
@@ -60,9 +64,6 @@ public class Book
     {
         List<Integer> pageIndices = new ArrayList<>();
 
-        int allowedLines = 12;
-        int charsPerLine = 15;
-
         int currentLineChars = 0;
         int currentLineNumber = 0;
 
@@ -76,11 +77,11 @@ public class Book
             {
                 String word = scanner.next();
 
-                if (word.length() > charsPerLine)
+                if (word.length() > CHARS_PER_LINE)
                 {
-                    int lines = word.length() / charsPerLine;
+                    int lines = word.length() / CHARS_PER_LINE;
 
-                    if (currentLineNumber + lines > allowedLines)
+                    if (currentLineNumber + lines > LINES_PER_PAGE)
                     {
                         int index = scanner.match().end() + hardcodedLineIndex;
                         pageIndices.add(index);
@@ -88,11 +89,11 @@ public class Book
                     }
 
                     currentLineNumber += lines;
-                    currentLineChars = word.length() - lines * charsPerLine;
+                    currentLineChars = word.length() - lines * CHARS_PER_LINE;
                 }
-                else if (word.length() + currentLineChars > charsPerLine)
+                else if (word.length() + currentLineChars > CHARS_PER_LINE)
                 {
-                    if (currentLineNumber >= allowedLines)
+                    if (currentLineNumber >= LINES_PER_PAGE)
                     {
                         int index = scanner.match().end() + hardcodedLineIndex;
                         pageIndices.add(index);
@@ -114,9 +115,10 @@ public class Book
             currentLineChars = 0;
             currentLineNumber++;
 
+            // +1 because of the newline
             hardcodedLineIndex += hardcodedLine.length() + 1;
 
-            if (currentLineNumber >= allowedLines)
+            if (currentLineNumber >= LINES_PER_PAGE)
             {
                 pageIndices.add(hardcodedLineIndex);
                 currentLineNumber = 0;
@@ -130,9 +132,7 @@ public class Book
             String newPage = text.substring(lastIndex, index);
 
             if (newPage.trim().length() > 0)
-            {
                 pages.add(newPage.trim());
-            }
 
             lastIndex = index;
         }

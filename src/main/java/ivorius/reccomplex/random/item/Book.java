@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.random.item;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.JsonPrimitive;
 import ivorius.ivtoolkit.tools.NBTTagLists;
@@ -13,8 +14,11 @@ import ivorius.reccomplex.random.Poem;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagString;
+import org.apache.commons.lang3.text.WordUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -24,7 +28,7 @@ public class Book
 {
 
     public static final int LINES_PER_PAGE = 12;
-    public static final int CHARS_PER_LINE = 15;
+    public static final int CHARS_PER_LINE = 18;
 
     public static ItemStack any(Random random)
     {
@@ -62,89 +66,22 @@ public class Book
 
     public static List<String> bookPages(String text)
     {
-        List<Integer> pageIndices = new ArrayList<>();
-
-        int currentLineChars = 0;
-        int currentLineNumber = 1;
-
-        int hardcodedLineIndex = 0;
-
-        String[] hardcodedLines = text.split("\n");
-        for (String hardcodedLine : hardcodedLines)
-        {
-            Scanner scanner = new Scanner(hardcodedLine);
-            while (scanner.hasNext())
-            {
-                String word = scanner.next();
-
-                if (word.length() > CHARS_PER_LINE && currentLineChars > 0)
-                {
-                    int lines = word.length() / CHARS_PER_LINE;
-
-                    if (currentLineNumber + lines > LINES_PER_PAGE && currentLineNumber > 0)
-                    {
-                        pageIndices.add(scanner.match().end() + hardcodedLineIndex);
-                        currentLineNumber = 1;
-                    }
-
-                    currentLineNumber += lines;
-                    currentLineChars = word.length() - lines * CHARS_PER_LINE;
-                }
-                else if (word.length() + currentLineChars > CHARS_PER_LINE)
-                {
-                    if (currentLineNumber >= LINES_PER_PAGE)
-                    {
-                        pageIndices.add(scanner.match().end() + hardcodedLineIndex);
-                        currentLineNumber = 1;
-                    }
-                    else
-                    {
-                        currentLineNumber++;
-                    }
-
-                    currentLineChars = word.length();
-                }
-                else
-                {
-                    currentLineChars += word.length();
-                }
-            }
-
-            currentLineChars = 0;
-            currentLineNumber++;
-
-            // +1 because of the newline
-            hardcodedLineIndex += hardcodedLine.length() + 1;
-
-            if (currentLineNumber >= LINES_PER_PAGE)
-            {
-                pageIndices.add(hardcodedLineIndex);
-                currentLineNumber = 1;
-            }
-        }
-
-        List<String> pages = new ArrayList<>();
-        int lastIndex = 0;
-        for (Integer index : pageIndices)
-        {
-            String page = text.substring(lastIndex, index).trim();
-
-            if (page.length() > 0)
-                pages.add(page);
-
-            lastIndex = index;
-        }
-        if (text.length() > lastIndex)
-        {
-            String page = text.substring(lastIndex, text.length()).trim();
-
-            if (page.length() > 0)
-                pages.add(page);
-        }
-
-        return pages;
+        List<String> lines = Arrays.stream(text.split("\n"))
+                // Add manual newlines
+                .map(line -> line + "\n")
+                // Split hardcoded lines into final lines
+                .flatMap(line -> Arrays.stream(WordUtils.wrap(line, CHARS_PER_LINE, "\r", true)
+                        // Add back spaces that were deleted on wrap
+                        .replaceAll("\r", " \r")
+                        .split("\r")))
+                .collect(Collectors.toList());
+        // Partition by page
+        return Lists.partition(lines, LINES_PER_PAGE).stream()
+                .map(pageLines -> pageLines.stream().reduce("", (l, r) -> l + r))
+                .collect(Collectors.toList());
     }
 
+    // With FontRenderer
     //    public static String[] getPages(String content, FontRenderer fontRenderer, int maxStringWidth, int maxCharacters)
 //    {
 //        ArrayList<String> returnList = new ArrayList<>();

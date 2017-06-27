@@ -56,7 +56,7 @@ public class StructureSpawnContext extends StructureLiveContext
                 ? RCStructureBoundingBoxes.intersection(area, BlockAreas.toBoundingBox(
                 RCAxisAlignedTransform.apply(RCAxisAlignedTransform.invert(this.transform),
                         RCBlockAreas.sub(RCBlockAreas.from(this.generationBB), StructureBoundingBoxes.min(this.boundingBox)),
-                        StructureBoundingBoxes.size(boundingBox), 2)))
+                        StructureBoundingBoxes.size(boundingBox), 1)))
                 : area;
     }
 

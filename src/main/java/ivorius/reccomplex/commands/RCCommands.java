@@ -114,7 +114,6 @@ public class RCCommands
             event.registerServerCommand(new CommandVisual());
 
         event.registerServerCommand(new CommandSelectFill());
-        event.registerServerCommand(new CommandSelectReplace());
         event.registerServerCommand(new CommandSetProperty());
         event.registerServerCommand(new CommandSelectFlood());
         if (!RecurrentComplex.isLite())

@@ -91,7 +91,7 @@ commands.rc.didhide=Hidden GUI - %s?
 commands.rcimportschematic.missing=The file '%s' was not found in %s
 commands.rcimportschematic.format=The file '%s' has an unsupported format (%s)
 
-commands.strucExportSchematic.success=Exported schematic to '%s'
+commands.strucExportSchematic.success=Exported schematic to %s
 
 commands.biomedict.get=Biome Types for %s: %s
 commands.biomedict.get.number=Lookup (%s biomes)
@@ -170,8 +170,8 @@ reccomplex.save.full=%s: %s
 reccomplex.save.success=Saved %s to %s
 reccomplex.save.submit=[Submit]
 reccomplex.save.submit.hover=Submit to Repository
-reccomplex.delete.failure=Failed to delete %s from '%s'
-reccomplex.delete.success=Deleted %s from '%s'
+reccomplex.delete.failure=Failed to delete %s from %s
+reccomplex.delete.success=Deleted %s from %s
 
 reccomplex.configgui.title=Structure Gen Config
 reccomplex.configgui.ctgy.general=General

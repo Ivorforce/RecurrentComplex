@@ -38,6 +38,17 @@ public class RCStructureBoundingBoxes
                 && boundingBox.minZ <= boundingBox.maxZ;
     }
 
+    public static StructureBoundingBox expand(StructureBoundingBox box, int x, int y, int z)
+    {
+        box.minX -= x;
+        box.minY -= y;
+        box.minZ -= z;
+        box.maxX += x;
+        box.maxY += y;
+        box.maxZ += z;
+        return box;
+    }
+
     @Nonnull
     public static BlockPos getCenter(StructureBoundingBox boundingBox)
     {

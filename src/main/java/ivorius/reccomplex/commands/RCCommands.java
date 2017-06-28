@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.commands;
 
+import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.Repository;
@@ -140,6 +141,7 @@ public class RCCommands
                 new CommandExportSchematic(),
                 new CommandConvertSchematic()
         ));
+        event.registerServerCommand(new CommandVanilla());
 
         event.registerServerCommand(sight = new CommandSight());
         event.registerServerCommand(new CommandSightCheck(RCConfig.commandPrefix + "whatisthis"));
@@ -258,4 +260,9 @@ public class RCCommands
         return e.getCause() instanceof AccessDeniedException ? "Access Denied! (check your server's read privileges on the Minecraft directory)" : "Unknown Cause! (see logs)";
     }
 
+    public static void select(ICommandSender sender, BlockArea area) throws CommandException
+    {
+        SelectionOwner owner = getSelectionOwner(sender, null, false);
+        owner.setSelection(area);
+    }
 }

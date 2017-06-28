@@ -113,6 +113,7 @@ commands.whatisthis.many=This is any, or all of: %s
 commands.rcarea.get=%s to %s
 commands.rcarea.select=Select this area
 commands.rcpos.get=[%d,%d,%d]
+commands.rcchunkpos.get=[%d,%d]
 commands.rcpos.none=§onowhere§r
 commands.rcsize.get=[%d,%d,%d]
 commands.rccopy.suggest=Copy

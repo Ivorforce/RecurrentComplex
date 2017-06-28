@@ -7,7 +7,6 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.mcopts.commands.SimpleCommand;
 import ivorius.mcopts.commands.parameters.MCP;
 import ivorius.mcopts.commands.parameters.Parameters;
@@ -15,7 +14,6 @@ import ivorius.mcopts.commands.parameters.expect.Expect;
 import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.IvP;
 import ivorius.reccomplex.commands.parameters.RCP;
@@ -33,9 +31,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.Generat
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
@@ -83,7 +79,6 @@ public class CommandGenerateStructure extends SimpleCommand
         GenerationType generationType = parameters.get("gen").to(RCP.generationType(structure)).require();
         BlockSurfacePos pos = parameters.get(IvP.surfacePos("x", "z", sender.getPosition(), false)).require();
         String seed = parameters.get("seed").optional().orElse(null);
-        boolean select = parameters.has("select");
         boolean suggest = parameters.has("suggest");
 
         Placer placer = generationType.placer();
@@ -110,10 +105,7 @@ public class CommandGenerateStructure extends SimpleCommand
                 throw RecurrentComplex.translations.commandException("commands.strucGen.noPlace");
         }
 
-        if (select)
-        {
-            SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
-            owner.setSelection(RCBlockAreas.from(generator.boundingBox().get()));
-        }
+        if (parameters.has("select")) RCCommands.select(sender, RCBlockAreas.from(generator.boundingBox().get()));
     }
+
 }

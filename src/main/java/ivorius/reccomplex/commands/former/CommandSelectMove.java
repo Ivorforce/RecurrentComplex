@@ -8,20 +8,21 @@ package ivorius.reccomplex.commands.former;
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.mcopts.commands.CommandExpecting;
+import ivorius.mcopts.commands.parameters.MCP;
+import ivorius.mcopts.commands.parameters.Parameters;
+import ivorius.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.mcopts.commands.CommandExpecting;
-import ivorius.mcopts.commands.parameters.*;
-import ivorius.mcopts.commands.parameters.expect.Expect;
-import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.parameters.IvP;
-import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.utils.RCBlockAreas;
-import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.operation.OperationClearArea;
 import ivorius.reccomplex.operation.OperationGenerateStructure;
 import ivorius.reccomplex.operation.OperationMulti;
+import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.utils.RCBlockAreas;
+import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -48,7 +49,9 @@ public class CommandSelectMove extends CommandExpecting
         expect.then(MCE.pos("x", "y", "z"))
                 .named("rotation", "r").then(MCE::rotation)
                 .flag("mirror", "m")
-                .flag("noselect", "s");
+                .flag("noselect", "s")
+                .flag("duplicate", "c")
+        ;
     }
 
     public int getRequiredPermissionLevel()
@@ -67,6 +70,7 @@ public class CommandSelectMove extends CommandExpecting
         BlockPos pos = parameters.get(MCP.pos("x", "y", "z", selectionOwner.getSelectedPoint1(), false)).require();
         AxisAlignedTransform2D transform = parameters.get(IvP.transform("rotation", "mirror")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         boolean noselect = parameters.has("noselect");
+        boolean duplicate = parameters.has("duplicate");
 
         BlockArea area = selectionOwner.getSelection();
 
@@ -76,7 +80,10 @@ public class CommandSelectMove extends CommandExpecting
         GenericStructure structure = GenericStructure.createDefaultStructure();
         structure.worldDataCompound = worldDataCompound;
 
-        OperationRegistry.queueOperation(new OperationMulti(new OperationClearArea(area), new OperationGenerateStructure(structure, null, transform, pos, true).prepare((WorldServer) commandSender.getEntityWorld())), commandSender);
+        if (duplicate)
+            OperationRegistry.queueOperation(new OperationGenerateStructure(structure, null, transform, pos, true).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
+        else
+            OperationRegistry.queueOperation(new OperationMulti(new OperationClearArea(area), new OperationGenerateStructure(structure, null, transform, pos, true).prepare((WorldServer) commandSender.getEntityWorld())), commandSender);
 
         if (!noselect)
         {

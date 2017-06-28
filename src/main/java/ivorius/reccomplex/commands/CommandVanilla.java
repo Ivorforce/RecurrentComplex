@@ -47,8 +47,6 @@ import java.util.stream.Stream;
  */
 public class CommandVanilla extends CommandSplit
 {
-    public static Method getStructureAt;
-
     public CommandVanilla()
     {
         super(RCConfig.commandPrefix + "vanilla");

@@ -24,6 +24,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -46,17 +47,11 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
         return new BlockPos(blockX, blockY, blockZ);
     }
 
-    @Nonnull
+    @Nullable
     @Override
-    public ActionResult<ItemStack> onItemRightClick(@Nonnull ItemStack itemStackIn, World worldIn, EntityPlayer playerIn, EnumHand hand)
+    public BlockPos hoveredBlock(ItemStack stack, EntityLivingBase entity)
     {
-        if (worldIn.isRemote)
-        {
-            BlockPos position = getHoveredBlock(playerIn, getSelectionRange(itemStackIn));
-            sendClickToServer(itemStackIn, worldIn, playerIn, position);
-        }
-
-        return new ActionResult<>(EnumActionResult.SUCCESS, itemStackIn);
+        return getHoveredBlock(entity, getSelectionRange(stack));
     }
 
     public float getSelectionRange(ItemStack stack)

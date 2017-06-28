@@ -23,8 +23,7 @@ public class RCAccessorNBT
     public static void writeEntry(String name, NBTBase nbt, DataOutput dataOutput)
     {
         if (methodSetNBTTagName == null)
-            methodSetNBTTagName = ReflectionHelper.findMethod(NBTTagCompound.class, new NBTTagCompound(),
-                    new String[]{"func_150298_a", "writeEntry"},
+            methodSetNBTTagName = ReflectionHelper.findMethod(NBTTagCompound.class, "func_150298_a", "writeEntry",
                     String.class, NBTBase.class, DataOutput.class);
 
         try

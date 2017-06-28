@@ -238,8 +238,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
                     {
                         IBlockState state = PosTransformer.transformBlockState(blockCollection.getBlockState(sourcePos), context.transform);
 
-                        if (RecurrentComplex.specialRegistry.isSafe(state.getBlock())
-                                && pass == getPass(state) && (transformer == null || !transformer.transformer.skipGeneration(transformer.instanceData, context, worldPos, state, worldData, sourcePos)))
+                        if (pass == getPass(state) && (transformer == null || !transformer.transformer.skipGeneration(transformer.instanceData, context, worldPos, state, worldData, sourcePos)))
                         {
                             GeneratingTileEntity<?> generatingTE = generatingTEs.get(sourcePos);
 

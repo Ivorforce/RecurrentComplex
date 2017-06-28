@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.world.gen.feature.structure;
+package ivorius.reccomplex.operation;
 
 import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.reccomplex.operation.Operation;

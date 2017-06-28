@@ -20,7 +20,7 @@ import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
-import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
+import ivorius.reccomplex.operation.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;

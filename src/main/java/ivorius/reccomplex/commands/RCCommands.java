@@ -144,7 +144,7 @@ public class RCCommands
         event.registerServerCommand(new CommandVanilla());
 
         event.registerServerCommand(sight = new CommandSight());
-        event.registerServerCommand(new CommandSightCheck(RCConfig.commandPrefix + "whatisthis"));
+        event.registerServerCommand(new CommandSightCheck(RCConfig.commandPrefix + "whatisthis", true));
 
         event.registerServerCommand(lookup = new CommandLookupStructure());
         event.registerServerCommand(list = new CommandListStructures());

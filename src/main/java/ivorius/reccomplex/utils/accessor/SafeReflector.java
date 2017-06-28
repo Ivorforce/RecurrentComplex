@@ -15,27 +15,27 @@ import java.lang.reflect.Field;
  */
 public class SafeReflector
 {
-    public static <T> T get(Class<?> clazz, String name, Object object)
+    public static <T, O> T get(Class<O> clazz, O object, String... names)
     {
         try
         {
             //noinspection unchecked
-            return (T) ReflectionHelper.findField(clazz, name).get(object);
+            return (T) ReflectionHelper.findField(clazz, names).get(object);
         }
         catch (Exception e)
         {
             RecurrentComplex.logger.error(e);
         }
 
-        throw new RuntimeException("Unable to resolve: " + name);
+        throw new RuntimeException("Unable to resolve: " + names);
     }
 
-    public static <T> T get(Class<?> clazz, String name, Object object, T fallback)
+    public static <T, O> T get(Class<O> clazz, O object, T fallback, String... names)
     {
         try
         {
             //noinspection unchecked
-            return (T) ReflectionHelper.findField(clazz, name).get(object);
+            return (T) ReflectionHelper.findField(clazz, names).get(object);
         }
         catch (Exception e)
         {
@@ -45,11 +45,11 @@ public class SafeReflector
         return fallback;
     }
 
-    public static boolean of(Class<?> clazz, String name, FieldTask task)
+    public static boolean of(Class<?> clazz, FieldTask task, String... names)
     {
         try
         {
-            task.execute(ReflectionHelper.findField(clazz, name));
+            task.execute(ReflectionHelper.findField(clazz, names));
             return true;
         }
         catch (Exception e)

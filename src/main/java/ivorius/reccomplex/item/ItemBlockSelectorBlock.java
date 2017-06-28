@@ -12,6 +12,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 
 import javax.annotation.Nonnull;
@@ -28,7 +29,8 @@ public class ItemBlockSelectorBlock extends ItemBlockSelector
     @Override
     public BlockPos hoveredBlock(ItemStack stack, EntityLivingBase entity)
     {
-        return entity.rayTrace(300, 0).getBlockPos();
+        RayTraceResult rayTraceResult = entity.rayTrace(300, 0);
+        return rayTraceResult != null ? rayTraceResult.getBlockPos() : null;
     }
 
     @Override

@@ -38,8 +38,6 @@ import java.util.stream.StreamSupport;
  */
 public class CommandSelection extends CommandSplit implements CommandVirtual
 {
-    // TODO Make virtual
-
     public ICommand set;
 
     public CommandSelection()

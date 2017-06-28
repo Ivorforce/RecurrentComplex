@@ -28,11 +28,10 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.gen.MapGenBase;
-import net.minecraft.world.gen.structure.MapGenStructure;
-import net.minecraft.world.gen.structure.MapGenVillage;
-import net.minecraft.world.gen.structure.StructureStart;
+import net.minecraft.world.gen.structure.*;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -56,28 +55,12 @@ public class CommandVanilla extends CommandSplit
             {
                 Parameters parameters = Parameters.of(args, expect()::declare);
 
-                Type type = parameters.get(0).map(Type::valueOf, s -> new CommandException("No such structure type")).require();
+                Type type = parameters.get(0).map(Type::fromName, s -> new CommandException("No such structure type")).require();
                 WorldServer world = parameters.get("dimension").to(MCP.dimension(server, sender)).require();
                 BlockSurfacePos pos = parameters.get(IvP.surfacePos("x", "z", sender.getPosition(), false)).require();
                 String seed = parameters.get("seed").optional().orElseGet(() -> Person.chaoticName(new Random(), new Random().nextBoolean()));
 
-                MapGenStructure gen;
-
-                switch (type)
-                {
-                    case VILLAGE:
-                        gen = new MapGenVillage()
-                        {
-                            @Override
-                            protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
-                            {
-                                return true;
-                            }
-                        };
-                        break;
-                    default:
-                        throw new InternalError();
-                }
+                MapGenStructure gen = type.generator();
 
                 // Don't recursive generate
                 ReflectionHelper.setPrivateValue(MapGenBase.class, gen, 0, "range", "field_75040_a");
@@ -101,13 +84,100 @@ public class CommandVanilla extends CommandSplit
 
                 sender.addChatMessage(new TextComponentTranslation("Structure generated at %s with seed %s", RCTextStyle.chunkPos(chunkPos), RCTextStyle.copy(seed)));
 
-                if (parameters.has("select")) RCCommands.select(sender, RCBlockAreas.from(structureStart.getBoundingBox()));
+                if (parameters.has("select"))
+                    RCCommands.select(sender, RCBlockAreas.from(structureStart.getBoundingBox()));
             }
         });
     }
 
     public enum Type
     {
-        VILLAGE
+        VILLAGE,
+        MINESHAFT,
+        STRONGHOLD,
+        TEMPLE,
+        OCEAN_MONUMENT,
+        NETHER_STRONGHOLD;
+
+        public static Type fromName(String name)
+        {
+            return Arrays.stream(Type.values())
+                    .filter(t -> t.structureName().equals(name))
+                    .findFirst().orElse(null);
+        }
+
+        public String structureName()
+        {
+            return generator().getStructureName();
+        }
+
+        public MapGenStructure generator()
+        {
+            switch (this)
+            {
+                case VILLAGE:
+                    return new MapGenVillage()
+                    {
+                        @Override
+                        protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
+                        {
+                            return true;
+                        }
+                    };
+                case MINESHAFT:
+                    return new MapGenMineshaft()
+                    {
+                        @Override
+                        protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
+                        {
+                            return true;
+                        }
+                    };
+                case STRONGHOLD:
+                    return new MapGenStronghold()
+                    {
+                        @Override
+                        protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
+                        {
+                            return true;
+                        }
+                    };
+                case TEMPLE:
+                    return new MapGenScatteredFeature()
+                    {
+                        @Override
+                        protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
+                        {
+                            return true;
+                        }
+                    };
+                case OCEAN_MONUMENT:
+                    return new StructureOceanMonument()
+                    {
+                        @Override
+                        protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
+                        {
+                            return true;
+                        }
+                    };
+                case NETHER_STRONGHOLD:
+                    return new MapGenNetherBridge()
+                    {
+                        @Override
+                        protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
+                        {
+                            return true;
+                        }
+                    };
+                default:
+                    throw new InternalError();
+            }
+        }
+
+        @Override
+        public String toString()
+        {
+            return structureName();
+        }
     }
 }

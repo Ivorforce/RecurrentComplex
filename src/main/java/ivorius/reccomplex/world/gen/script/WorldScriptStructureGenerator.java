@@ -16,6 +16,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.worldscripts.structuregenerator.TableDataSourceWorldScriptStructureGenerator;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.world.gen.feature.structure.ReadableInstanceData;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import ivorius.reccomplex.world.gen.feature.structure.*;
@@ -315,7 +316,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             structureID = compound.getString("structureID");
             generationInfoID = compound.hasKey(generationInfoID, Constants.NBT.TAG_STRING) ? compound.getString("generationInfoID") : null;
             lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
-            structureTransform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
+            structureTransform = RCAxisAlignedTransform.read(compound, "rotation", "mirrorX");
             structureData.readFromNBT("structureData", compound);
         }
 
@@ -327,8 +328,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
             compound.setString("structureID", structureID);
             if (generationInfoID != null) compound.setString("generationInfoID", generationInfoID);
             BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
-            compound.setInteger("rotation", structureTransform.getRotation());
-            compound.setBoolean("mirrorX", structureTransform.isMirrorX());
+            RCAxisAlignedTransform.write(compound, structureTransform, "rotation", "mirrorX");
             structureData.writeToNBT("structureData", compound);
 
             return compound;

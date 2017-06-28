@@ -7,6 +7,7 @@ package ivorius.reccomplex.utils;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -72,5 +73,16 @@ public class RCAxisAlignedTransform
             return size;
         }
         return size;
+    }
+
+    public static AxisAlignedTransform2D read(NBTTagCompound compound, String rotation, String mirrorX)
+    {
+        return AxisAlignedTransform2D.from(compound.getInteger(rotation), compound.getBoolean(mirrorX));
+    }
+
+    public static void write(NBTTagCompound compound, AxisAlignedTransform2D transform, String rotation, String mirrorX)
+    {
+        compound.setInteger(rotation, transform.getRotation());
+        compound.setBoolean(mirrorX, transform.isMirrorX());
     }
 }

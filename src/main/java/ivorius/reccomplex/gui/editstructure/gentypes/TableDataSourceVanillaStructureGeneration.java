@@ -21,6 +21,7 @@ import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraft.util.EnumFacing;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Created by lukas on 07.10.14.
@@ -83,7 +84,7 @@ public class TableDataSourceVanillaStructureGeneration extends TableDataSourceSe
                         return RCGuiTables.defaultWeightElement(val -> generationInfo.generationWeight = TableCells.toDouble(val), generationInfo.generationWeight);
                     case 1:
                     {
-                        TableCellEnum<EnumFacing> cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
+                        TableCellEnum<EnumFacing> cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(ArrayUtils.add(Directions.HORIZONTAL, null), "all"));
                         cell.addPropertyConsumer(val -> generationInfo.front = val);
                         return new TitledCell(IvTranslations.get("reccomplex.generationInfo.vanilla.front"), cell);
                     }

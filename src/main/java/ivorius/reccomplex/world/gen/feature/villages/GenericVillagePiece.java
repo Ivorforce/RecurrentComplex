@@ -5,16 +5,19 @@
 
 package ivorius.reccomplex.world.gen.feature.villages;
 
+import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.reccomplex.utils.RCDirections;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
+import ivorius.reccomplex.nbt.NBTStorable;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
+import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
-import ivorius.reccomplex.world.gen.feature.structure.*;
+import ivorius.reccomplex.world.gen.feature.structure.Environment;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaGeneration;
-import ivorius.reccomplex.nbt.NBTStorable;
-import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
-import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -38,10 +41,10 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 {
     public String structureID;
     public String generationID;
+    public AxisAlignedTransform2D transform;
 
     public long seed;
 
-    public boolean mirrorX;
     public boolean startedGeneration;
     public NBTBase instanceData;
 
@@ -54,14 +57,26 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         super(start, generationDepth);
     }
 
-    public static AxisAlignedTransform2D getTransform(EnumFacing front, boolean mirrorX, EnumFacing toFront)
+    public static AxisAlignedTransform2D getTransform(@Nonnull EnumFacing front, boolean mirrorX, @Nonnull EnumFacing toFront)
     {
         return AxisAlignedTransform2D.from(getRotations(front, mirrorX, toFront), mirrorX);
     }
 
+    @Nullable
+    public static AxisAlignedTransform2D getTransform(@Nullable EnumFacing front, boolean canMirror, boolean canRotate, EnumFacing toFront, Random random)
+    {
+        boolean mirror = canMirror && random.nextBoolean();
+
+        AxisAlignedTransform2D transform = front != null
+                ? getTransform(front, mirror, toFront)
+                : AxisAlignedTransform2D.from((canRotate ? random.nextInt(4) : 0), mirror);
+
+        return canRotate || transform.getRotation() == 0 ? transform : null;
+    }
+
     public static int getRotations(EnumFacing front, boolean mirrorX, EnumFacing toFront)
     {
-        Integer rotations = RCDirections.getHorizontalClockwiseRotations(front, toFront, mirrorX);
+        Integer rotations = Directions.getHorizontalClockwiseRotations(front, toFront, mirrorX);
         return rotations == null ? 0 : rotations;
     }
 
@@ -88,15 +103,18 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         this.generationID = generationID;
     }
 
-    public void setOrientation(EnumFacing front, boolean mirrorX, StructureBoundingBox boundingBox)
+    public void setOrientation(EnumFacing front, AxisAlignedTransform2D transform, StructureBoundingBox boundingBox)
     {
         setCoordBaseMode(front);
-        this.mirrorX = mirrorX;
+        this.transform = transform;
         this.boundingBox = boundingBox;
     }
 
     @Nonnull
-    private Biome biome(WorldServer world) {return startPiece != null ? startPiece.biome : Environment.getBiome(world, boundingBox);}
+    private Biome biome(WorldServer world)
+    {
+        return startPiece != null ? startPiece.biome : Environment.getBiome(world, boundingBox);
+    }
 
     @Nonnull
     protected Environment environment(WorldServer world, GenerationType generationType)
@@ -115,9 +133,8 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 
         if (!(generationType instanceof VanillaGeneration))
             return;
-        
+
         VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
-        AxisAlignedTransform2D transform = getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite());
 
         instanceData = new StructureGenerator<>(structure).seed(seed).environment(environment(world, generationType)).transform(transform).boundingBox(boundingBox)
                 .instanceData().map(NBTStorable::writeToNBT).orElse(null);
@@ -137,7 +154,6 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
             return false;
 
         VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
-        AxisAlignedTransform2D transform = getCoordBaseMode() != null ? getTransform(vanillaGenInfo.front, mirrorX, getCoordBaseMode().getOpposite()) : AxisAlignedTransform2D.ORIGINAL;
 
         BlockPos structureShift = transform.apply(vanillaGenInfo.spawnShift, new int[]{1, 1, 1});
 
@@ -153,12 +169,12 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
         }
 
         if (world instanceof WorldServer)
-            generate((WorldServer) world, boundingBox, structure, generationType, transform);
+            generate((WorldServer) world, boundingBox, structure, generationType);
 
         return true;
     }
 
-    protected <T extends NBTStorable> void generate(WorldServer world, StructureBoundingBox generationBB, Structure<T> structure, GenerationType generationType, AxisAlignedTransform2D transform)
+    protected <T extends NBTStorable> void generate(WorldServer world, StructureBoundingBox generationBB, Structure<T> structure, GenerationType generationType)
     {
         if (!startedGeneration)
             prepare(world);
@@ -174,28 +190,35 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
     }
 
     @Override
-    protected void writeStructureToNBT(NBTTagCompound tagCompound)
+    protected void writeStructureToNBT(NBTTagCompound compound)
     {
-        super.writeStructureToNBT(tagCompound);
-        tagCompound.setString("RcSId", structureID);
-        tagCompound.setString("RcGtId", generationID);
-        tagCompound.setLong("seed", seed);
-        tagCompound.setBoolean("RcMirror", mirrorX);
-        tagCompound.setBoolean("RcStartGen", startedGeneration);
+        super.writeStructureToNBT(compound);
+
+        compound.setString("RcSId", structureID);
+        compound.setString("RcGtId", generationID);
+
+        RCAxisAlignedTransform.write(compound, transform, "RcRotation", "RcMirror");
+
+        compound.setLong("seed", seed);
+        compound.setBoolean("RcStartGen", startedGeneration);
         if (instanceData != null)
-            tagCompound.setTag("RcInstDat", instanceData);
+            compound.setTag("RcInstDat", instanceData);
     }
 
     @Override
-    protected void readStructureFromNBT(NBTTagCompound tagCompound)
+    protected void readStructureFromNBT(NBTTagCompound compound)
     {
-        super.readStructureFromNBT(tagCompound);
-        structureID = tagCompound.getString("RcSId");
-        generationID = tagCompound.getString("RcGtId");
-        seed = tagCompound.hasKey("seed") ? tagCompound.getLong("seed")
+        super.readStructureFromNBT(compound);
+
+        structureID = compound.getString("RcSId");
+        generationID = compound.getString("RcGtId");
+
+        seed = compound.hasKey("seed") ? compound.getLong("seed")
                 : new Random().nextLong(); // Legacy
-        mirrorX = tagCompound.getBoolean("RcMirror");
-        startedGeneration = tagCompound.getBoolean("RcStartGen");
-        instanceData = tagCompound.hasKey("RcInstDat") ? tagCompound.getTag("RcInstDat") : null;
+
+        transform = RCAxisAlignedTransform.read(compound, "RcRotation", "RcMirror");
+
+        startedGeneration = compound.getBoolean("RcStartGen");
+        instanceData = compound.hasKey("RcInstDat") ? compound.getTag("RcInstDat") : null;
     }
 }

@@ -338,7 +338,7 @@ public class WorldStructureGenerationData extends WorldSavedData
             seed = compound.hasKey("seed") ? compound.getLong("seed")
                     : new Random().nextLong(); // Legacy
 
-            transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
+            transform = RCAxisAlignedTransform.read(compound, "rotation", "mirrorX");
 
             if (compound.hasKey("lowerCoord")) // legacy
             {
@@ -367,8 +367,7 @@ public class WorldStructureGenerationData extends WorldSavedData
 
             compound.setLong("seed", seed);
 
-            compound.setInteger("rotation", transform.getRotation());
-            compound.setBoolean("mirrorX", transform.isMirrorX());
+            RCAxisAlignedTransform.write(compound, transform, "rotation", "mirrorX");
 
             if (instanceData != null)
                 compound.setTag("instanceData", instanceData);

@@ -43,7 +43,7 @@ public class RecurrentComplex
 {
     public static final String NAME = "Recurrent Complex";
     public static final String MOD_ID = "reccomplex";
-    public static final String VERSION = "1.4.1-1.10";
+    public static final String VERSION = "1.4.1.1-1.10";
 
     public static final boolean USE_JSON_FOR_NBT = true;
     public static final boolean USE_ZIP_FOR_STRUCTURE_FILES = true;

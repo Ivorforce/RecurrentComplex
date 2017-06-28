@@ -92,10 +92,9 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
 
         VanillaGeneration vanillaGenInfo = (VanillaGeneration) generationType;
 
-        boolean mirrorX = structure.isMirrorable() && random.nextBoolean();
-        AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo.front, mirrorX, front.getOpposite());
+        AxisAlignedTransform2D transform = GenericVillagePiece.getTransform(vanillaGenInfo.front, structure.isMirrorable(), structure.isRotatable(), front.getOpposite(), random);
 
-        if (!vanillaGenInfo.generatesIn(startPiece.biome) || (!structure.isRotatable() && transform.getRotation() != 0))
+        if (!vanillaGenInfo.generatesIn(startPiece.biome) || transform == null)
             return kill(villagePiece);
 
         int[] structureSize = RCAxisAlignedTransform.applySize(transform, structure.size());
@@ -112,7 +111,7 @@ public class GenericVillageCreationHandler implements VillagerRegistry.IVillageC
             return kill(villagePiece);
 
         genericVillagePiece.setIds(structureID, generationID);
-        genericVillagePiece.setOrientation(front, mirrorX, strucBB);
+        genericVillagePiece.setOrientation(front, transform, strucBB);
 
         return genericVillagePiece;
     }

@@ -10,13 +10,13 @@ import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaStructureGeneration;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.utils.expression.BiomeExpression;
+import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -38,6 +38,7 @@ public class VanillaGeneration extends GenerationType
     public double minScaledLimit;
     public double maxScaledLimit;
 
+    @Nullable
     public EnumFacing front;
 
     public BlockPos spawnShift;
@@ -134,7 +135,9 @@ public class VanillaGeneration extends GenerationType
             int spawnY = JsonUtils.getInt(jsonObject, "spawnShiftY", 0);
             int spawnZ = JsonUtils.getInt(jsonObject, "spawnShiftZ", 0);
 
-            EnumFacing front = Directions.deserialize(JsonUtils.getString(jsonObject, "front", "NORTH"));
+            EnumFacing front = jsonObject.has("front")
+                    ? Directions.deserialize(JsonUtils.getString(jsonObject, "front"))
+                    : null;
 
             String biomeExpression = JsonUtils.getString(jsonObject, "biomeExpression", "");
 
@@ -160,7 +163,8 @@ public class VanillaGeneration extends GenerationType
             jsonObject.addProperty("spawnShiftY", src.spawnShift.getY());
             jsonObject.addProperty("spawnShiftZ", src.spawnShift.getZ());
 
-            jsonObject.addProperty("front", Directions.serialize(src.front));
+            if (src.front != null)
+                jsonObject.addProperty("front", Directions.serialize(src.front));
 
             jsonObject.addProperty("biomeExpression", src.biomeExpression.getExpression());
 

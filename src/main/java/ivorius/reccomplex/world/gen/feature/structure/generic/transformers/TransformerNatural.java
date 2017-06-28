@@ -86,7 +86,6 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
     @Override
     public boolean canPenetrate(Environment environment, IvWorldData worldData, BlockPos pos, double density, TransformerMulti transformer, TransformerMulti.InstanceData transformerID)
     {
-        IBlockState state = environment.world.getBlockState(pos);
         return density >= 1 || destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(environment.world, pos));
     }
 

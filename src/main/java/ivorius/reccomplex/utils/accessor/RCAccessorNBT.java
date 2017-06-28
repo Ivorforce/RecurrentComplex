@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.utils.accessor;
 
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.io.DataOutput;
 import java.lang.reflect.InvocationTargetException;
@@ -23,8 +23,7 @@ public class RCAccessorNBT
     public static void writeEntry(String name, NBTBase nbt, DataOutput dataOutput)
     {
         if (methodSetNBTTagName == null)
-            methodSetNBTTagName = ReflectionHelper.findMethod(NBTTagCompound.class, new NBTTagCompound(),
-                    new String[]{"func_150298_a", "writeEntry"},
+            methodSetNBTTagName = ReflectionHelper.findMethod(NBTTagCompound.class, null, new String[]{"func_150298_a", "writeEntry"},
                     String.class, NBTBase.class, DataOutput.class);
 
         try

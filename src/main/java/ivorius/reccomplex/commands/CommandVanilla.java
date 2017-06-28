@@ -7,7 +7,6 @@ package ivorius.reccomplex.commands;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
-import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.mcopts.commands.CommandSplit;
 import ivorius.mcopts.commands.SimpleCommand;
 import ivorius.mcopts.commands.parameters.MCP;
@@ -22,6 +21,7 @@ import ivorius.reccomplex.random.Person;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
+import ivorius.reccomplex.utils.accessor.SafeReflector;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -48,6 +48,8 @@ import java.util.stream.Stream;
  */
 public class CommandVanilla extends CommandSplit
 {
+    private static Method recursiveGenerate;
+
     public CommandVanilla()
     {
         super(RCConfig.commandPrefix + "vanilla");
@@ -73,14 +75,11 @@ public class CommandVanilla extends CommandSplit
 
                 MapGenStructure gen = type.generator(suggest);
 
-                // Don't recursive generate
-                ReflectionHelper.setPrivateValue(MapGenBase.class, gen, 0, "range", "field_75040_a");
-
                 ChunkPos chunkPos = pos.chunkCoord();
                 Random random = new Random(RCStrings.seed(seed));
 
-                // ChunkPrimer mostly doesn't get used
-                gen.generate(world, chunkPos.chunkXPos, chunkPos.chunkZPos, new ChunkPrimer());
+                ReflectionHelper.setPrivateValue(MapGenBase.class, gen, random, "rand", "field_75038_b");
+                recursiveGenerate(gen, world, chunkPos);
 
                 Long2ObjectMap<StructureStart> structureMap = ReflectionHelper.getPrivateValue(MapGenStructure.class, gen, "structureMap", "field_75053_d");
 
@@ -127,6 +126,20 @@ public class CommandVanilla extends CommandSplit
                             .map(t -> t.generator(false))
                             .peek(m -> ReflectionHelper.setPrivateValue(MapGenBase.class, m, world, "worldObj", "field_75039_c"))
                             .filter(m -> m.isInsideStructure(pos));
+    }
+
+    public static void recursiveGenerate(MapGenBase gen, World world, ChunkPos pos)
+    {
+        // ChunkPrimer mostly doesn't get used
+        ChunkPrimer primer = new ChunkPrimer();
+
+        if (recursiveGenerate == null)
+            recursiveGenerate = ReflectionHelper.findMethod(MapGenBase.class, null, new String[]{"recursiveGenerate", "func_180701_a"},
+                    World.class, Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE, ChunkPrimer.class);
+
+        ReflectionHelper.setPrivateValue(MapGenBase.class, gen, world, "world", "field_75039_c");
+
+        SafeReflector.invoke(gen, recursiveGenerate, null, world, pos.chunkXPos, pos.chunkZPos, 0, 0, primer);
     }
 
     public enum Type

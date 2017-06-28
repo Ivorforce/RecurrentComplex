@@ -15,6 +15,7 @@ import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.RCAxisAlignedTransform;
+import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
@@ -91,7 +92,7 @@ public class WorldStructureGenerationData extends WorldSavedData
 
     public Stream<Entry> entriesAt(final StructureBoundingBox boundingBox)
     {
-        return StructureBoundingBoxes.rasterize(boundingBox).stream().flatMap(chunkPos -> entriesAt(chunkPos).filter(input ->
+        return RCStructureBoundingBoxes.rasterize(boundingBox).stream().flatMap(chunkPos -> entriesAt(chunkPos).filter(input ->
         {
             StructureBoundingBox bb = input.getBoundingBox();
             return bb != null && bb.intersectsWith(boundingBox);
@@ -225,7 +226,7 @@ public class WorldStructureGenerationData extends WorldSavedData
 
         public Set<ChunkPos> rasterize()
         {
-            return StructureBoundingBoxes.rasterize(getBoundingBox());
+            return RCStructureBoundingBoxes.rasterize(getBoundingBox());
         }
 
         public abstract String description();

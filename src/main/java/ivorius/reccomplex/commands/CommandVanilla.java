@@ -91,7 +91,7 @@ public class CommandVanilla extends CommandSplit
 
                 // 'retro'-generate all chunks
                 // Expand because the generator usually expects chunk pos + 8
-                for (ChunkPos retroPos : RCStructureBoundingBoxes.rasterize(RCStructureBoundingBoxes.expand(structureStart.getBoundingBox(), 8, 0, 8)))
+                for (ChunkPos retroPos : RCStructureBoundingBoxes.rasterize(RCStructureBoundingBoxes.offset(structureStart.getBoundingBox(), -8, 0, -8)))
                     gen.generateStructure(world, random, retroPos);
 
                 sender.addChatMessage(new TextComponentTranslation("Structure generated at %s with seed %s", RCTextStyle.chunkPos(chunkPos), RCTextStyle.copy(seed)));

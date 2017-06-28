@@ -16,6 +16,7 @@ import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import joptsimple.internal.Strings;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
@@ -196,6 +197,13 @@ public class RCTextStyle
         comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("commands.rccopy.suggest")));
         comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, text));
         return comp;
+    }
+
+    public static ITextComponent chunkPos(ChunkPos pos)
+    {
+        return pos != null
+                ? RecurrentComplex.translations.format("commands.rcchunkpos.get", pos.chunkXPos, pos.chunkZPos)
+                : RecurrentComplex.translations.format("commands.selectSet.point.none");
     }
 
     public static ITextComponent pos(BlockPos pos)

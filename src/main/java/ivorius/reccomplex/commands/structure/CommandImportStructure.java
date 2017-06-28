@@ -7,7 +7,6 @@ package ivorius.reccomplex.commands.structure;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.mcopts.commands.CommandExpecting;
 import ivorius.mcopts.commands.parameters.*;
@@ -65,7 +64,6 @@ public class CommandImportStructure extends CommandExpecting
         WorldServer world = parameters.get("dimension").to(MCP.dimension(server, sender)).require();
         AxisAlignedTransform2D transform = parameters.get(IvP.transform("rotation", "mirror")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         BlockPos pos = parameters.get(MCP.pos("x", "y", "z", sender.getPosition(), false)).require();
-        boolean select = parameters.has("select");
 
         StructureGenerator<?> generator = new StructureGenerator<>(structure).world(world)
                 .transform(transform).lowerCoord(pos).asSource(true);
@@ -80,10 +78,6 @@ public class CommandImportStructure extends CommandExpecting
         else
             generator.generate();
 
-        if (select)
-        {
-            SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
-            owner.setSelection(RCBlockAreas.from(boundingBox));
-        }
+        if (parameters.has("select")) RCCommands.select(sender, RCBlockAreas.from(boundingBox));
     }
 }

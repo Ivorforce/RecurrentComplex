@@ -6,17 +6,17 @@
 package ivorius.reccomplex.commands.clipboard;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.mcopts.commands.CommandExpecting;
+import ivorius.mcopts.commands.parameters.MCP;
+import ivorius.mcopts.commands.parameters.Parameters;
+import ivorius.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.RCEntityInfo;
-import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.reccomplex.commands.parameters.expect.RCE;
-import ivorius.mcopts.commands.CommandExpecting;
-import ivorius.mcopts.commands.parameters.*;
-import ivorius.mcopts.commands.parameters.expect.Expect;
-import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.parameters.IvP;
+import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
@@ -29,7 +29,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 /**
  * Created by lukas on 25.05.14.
@@ -80,7 +79,6 @@ public class CommandPaste extends CommandExpecting
         AxisAlignedTransform2D transform = parameters.get(IvP.transform("rotation", "mirror")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         String seed = parameters.get("seed").optional().orElse(null);
         boolean generate = parameters.has("generate");
-        boolean select = parameters.has("select");
 
         GenericStructure structure = GenericStructure.createDefaultStructure();
         structure.worldDataCompound = worldData;
@@ -90,16 +88,12 @@ public class CommandPaste extends CommandExpecting
                 .withSeed(seed)
                 .prepare(world), sender);
 
-        if (select)
+        if (parameters.has("select"))
         {
             StructureGenerator<?> generator = new StructureGenerator<>(structure).transform(transform).lowerCoord(pos);
-
             // Can never not place so don't handle
             //noinspection OptionalGetWithoutIsPresent
-            StructureBoundingBox boundingBox = generator.boundingBox().get();
-
-            SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
-            owner.setSelection(RCBlockAreas.from(boundingBox));
+            RCCommands.select(sender, RCBlockAreas.from(generator.boundingBox().get()));
         }
     }
 }

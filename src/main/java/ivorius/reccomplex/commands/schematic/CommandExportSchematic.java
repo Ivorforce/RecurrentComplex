@@ -15,13 +15,17 @@ import ivorius.reccomplex.commands.RCCommands;
 import ivorius.mcopts.commands.CommandExpecting;
 import ivorius.mcopts.commands.parameters.*;
 import ivorius.mcopts.commands.parameters.expect.Expect;
+import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+
+import static ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader.getValidatedSchematicsFile;
 
 /**
  * Created by lukas on 25.05.14.
@@ -83,7 +87,7 @@ public class CommandExportSchematic extends CommandExpecting
         SchematicFile schematicFile = toSchematic(data);
         SchematicLoader.writeSchematicByName(schematicFile, structureName);
 
-        commandSender.addChatMessage(RecurrentComplex.translations.format("commands.strucExportSchematic.success", structureName));
+        commandSender.addChatMessage(RecurrentComplex.translations.format("commands.strucExportSchematic.success", RCTextStyle.visit(getValidatedSchematicsFile(), "schematics/" + structureName)));
     }
 
     @Override

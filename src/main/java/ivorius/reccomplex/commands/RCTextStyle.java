@@ -24,9 +24,11 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.MapGenStructure;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.DimensionManager;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.File;
 
 /**
  * Created by lukas on 20.03.17.
@@ -34,27 +36,23 @@ import javax.annotation.Nullable;
 public class RCTextStyle
 {
     @Nonnull
-    public static ITextComponent path(ResourceDirectory directory, String... path)
+    public static ITextComponent visit(File file, String... path)
     {
-        ITextComponent pathComponent = new TextComponentString(String.format("%s%s%s", directory, path.length > 0 ? "/" : "", Strings.join(path, "/")));
+        ITextComponent pathComponent = new TextComponentString(Strings.join(path, "/"));
         pathComponent.getStyle().setColor(TextFormatting.GOLD);
         pathComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Visit File")));
-        pathComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, directory.toFile().getAbsolutePath()));
+        pathComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
         return pathComponent;
     }
 
     @Nonnull
-    public static ITextComponent submit(String id)
+    public static ITextComponent path(ResourceDirectory directory, String... path)
     {
-        ITextComponent submit = RecurrentComplex.translations.get("reccomplex.save.submit");
-        submit.getStyle().setColor(TextFormatting.AQUA);
-        submit.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, RecurrentComplex.translations.get("reccomplex.save.submit.hover")));
-        submit.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, Repository.submitURL(id)));
-        return submit;
+        return visit(directory.toFile(), ArrayUtils.add(path, 0, directory.toString()));
     }
 
     @Nonnull
-    public static ITextComponent visitFile(String id)
+    public static ITextComponent submit(String id)
     {
         ITextComponent submit = RecurrentComplex.translations.get("reccomplex.save.submit");
         submit.getStyle().setColor(TextFormatting.AQUA);

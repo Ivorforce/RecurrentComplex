@@ -8,7 +8,7 @@ package ivorius.reccomplex.network;
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.inspector.GuiInspectBlock;
-import ivorius.reccomplex.world.gen.feature.structure.OperationClearArea;
+import ivorius.reccomplex.operation.OperationClearArea;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;

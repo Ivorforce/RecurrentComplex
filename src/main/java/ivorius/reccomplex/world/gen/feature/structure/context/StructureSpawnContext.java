@@ -8,11 +8,13 @@ package ivorius.reccomplex.world.gen.feature.structure.context;
 import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -76,13 +78,20 @@ public class StructureSpawnContext extends StructureLiveContext
 
     public boolean setBlock(BlockPos coord, IBlockState state, int flag)
     {
+        if (!RecurrentComplex.specialRegistry.isSafe(state.getBlock()))
+        {
+            environment.world.setBlockState(coord.toImmutable(), Blocks.AIR.getDefaultState(), 2);
+            return false;
+        }
+
         if (includes(coord))
         {
+            // world.setBlock returns false on 'no change'
             environment.world.setBlockState(coord.toImmutable(), state, flag);
             return true;
         }
 
-        return false; // world.setBlock returns false on 'no change'
+        return false;
     }
 
     public enum GenerateMaturity

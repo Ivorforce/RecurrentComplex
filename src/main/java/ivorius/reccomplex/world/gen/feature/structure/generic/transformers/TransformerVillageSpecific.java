@@ -66,8 +66,7 @@ public class TransformerVillageSpecific extends TransformerSingleBlock<NBTNone>
         if (village.trySetType(context.environment.villageType))
         {
             IBlockState state = village.getBiomeSpecificBlockState(sourceState);
-            if (RecurrentComplex.specialRegistry.isSafe(state.getBlock()))
-                context.setBlock(coord, PosTransformer.transformBlockState(state, context.transform), 2);
+            context.setBlock(coord, PosTransformer.transformBlockState(state, context.transform), 2);
         }
     }
 

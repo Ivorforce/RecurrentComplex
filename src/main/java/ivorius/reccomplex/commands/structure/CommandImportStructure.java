@@ -18,7 +18,7 @@ import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
-import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
+import ivorius.reccomplex.operation.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandException;

@@ -23,7 +23,7 @@ import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
-import ivorius.reccomplex.world.gen.feature.structure.OperationGenerateStructure;
+import ivorius.reccomplex.operation.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;

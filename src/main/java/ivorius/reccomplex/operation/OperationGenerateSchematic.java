@@ -1,13 +1,14 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.world.gen.feature.structure.schematics;
+package ivorius.reccomplex.operation;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.RCAxisAlignedTransform;
+import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;

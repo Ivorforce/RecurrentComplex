@@ -15,7 +15,7 @@ import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.parameters.IvP;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.schematics.OperationGenerateSchematic;
+import ivorius.reccomplex.operation.OperationGenerateSchematic;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicFile;
 import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader;
 import net.minecraft.command.CommandException;

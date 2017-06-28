@@ -131,7 +131,6 @@ public class RCCommands
         event.registerServerCommand(new CommandPaste());
 
         event.registerServerCommand(new CommandSelectMove());
-        event.registerServerCommand(new CommandSelectDuplicate());
 
         event.registerServerCommand(biomeDict = new CommandBiomeDict());
         event.registerServerCommand(dimensionDict = new CommandDimensionDict());

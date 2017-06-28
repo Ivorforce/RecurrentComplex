@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.rendering.grid.AreaRenderer;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
+import ivorius.reccomplex.item.ItemBlockSelector;
 import ivorius.reccomplex.item.ItemBlockSelectorFloating;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -70,10 +71,10 @@ public class SelectionRenderer
         {
             ItemStack heldItem = entity.getHeldItem(enumHand);
 
-            if (heldItem != null && heldItem.getItem() instanceof ItemBlockSelectorFloating)
+            if (heldItem != null && heldItem.getItem() instanceof ItemBlockSelector)
             {
-                float selectionRange = ((ItemBlockSelectorFloating) heldItem.getItem()).getSelectionRange(heldItem);
-                BlockPos hoverPoint = ItemBlockSelectorFloating.getHoveredBlock(entity, selectionRange);
+                ItemBlockSelector selector = (ItemBlockSelector) heldItem.getItem();
+                BlockPos hoverPoint = selector.hoveredBlock(heldItem, entity);
                 GlStateManager.color(0.6f, 0.6f, 1.0f);
                 AreaRenderer.renderAreaLined(new BlockArea(hoverPoint, hoverPoint), 0.05f);
             }

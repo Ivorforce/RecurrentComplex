@@ -7,6 +7,10 @@ package ivorius.reccomplex.item;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.reccomplex.capability.SelectionOwner;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import io.netty.buffer.ByteBuf;
@@ -20,6 +24,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Created by lukas on 11.02.15.
@@ -62,5 +69,26 @@ public class ItemBlockSelector extends Item implements ItemEventHandler
                     selectionOwner.setSelectedPoint1(coord);
             }
         }
+    }
+
+    @Nonnull
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer player, EnumHand hand)
+    {
+        ItemStack stack = player.getHeldItem(hand);
+
+        if (worldIn.isRemote)
+        {
+            BlockPos position = hoveredBlock(stack, player);
+            sendClickToServer(stack, worldIn, player, position);
+        }
+
+        return new ActionResult<>(EnumActionResult.SUCCESS, stack);
+    }
+
+    @Nullable
+    public BlockPos hoveredBlock(ItemStack stack, EntityLivingBase entity)
+    {
+        return null;
     }
 }

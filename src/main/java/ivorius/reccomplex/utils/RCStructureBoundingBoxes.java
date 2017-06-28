@@ -49,6 +49,12 @@ public class RCStructureBoundingBoxes
         return box;
     }
 
+    public static StructureBoundingBox offset(StructureBoundingBox box, int x, int y, int z)
+    {
+        box.offset(x, y, z);
+        return box;
+    }
+
     @Nonnull
     public static BlockPos getCenter(StructureBoundingBox boundingBox)
     {

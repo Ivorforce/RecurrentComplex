@@ -48,6 +48,7 @@ public class CommandVanilla extends CommandSplit
                 .named("dimension", "d").then(MCE::dimension)
                 .named("seed").then(RCE::randomString)
                 .flag("select", "s")
+                .flag("suggest", "t")
         )
         {
             @Override
@@ -59,8 +60,9 @@ public class CommandVanilla extends CommandSplit
                 WorldServer world = parameters.get("dimension").to(MCP.dimension(server, sender)).require();
                 BlockSurfacePos pos = parameters.get(IvP.surfacePos("x", "z", sender.getPosition(), false)).require();
                 String seed = parameters.get("seed").optional().orElseGet(() -> Person.chaoticName(new Random(), new Random().nextBoolean()));
+                boolean suggest = parameters.has("suggest");
 
-                MapGenStructure gen = type.generator();
+                MapGenStructure gen = type.generator(suggest);
 
                 // Don't recursive generate
                 ReflectionHelper.setPrivateValue(MapGenBase.class, gen, 0, "range", "field_75040_a");
@@ -108,10 +110,10 @@ public class CommandVanilla extends CommandSplit
 
         public String structureName()
         {
-            return generator().getStructureName();
+            return generator(false).getStructureName();
         }
 
-        public MapGenStructure generator()
+        public MapGenStructure generator(boolean suggest)
         {
             switch (this)
             {
@@ -121,7 +123,7 @@ public class CommandVanilla extends CommandSplit
                         @Override
                         protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
                         {
-                            return true;
+                            return !suggest || super.canSpawnStructureAtCoords(chunkX, chunkZ);
                         }
                     };
                 case MINESHAFT:
@@ -130,7 +132,7 @@ public class CommandVanilla extends CommandSplit
                         @Override
                         protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
                         {
-                            return true;
+                            return !suggest || super.canSpawnStructureAtCoords(chunkX, chunkZ);
                         }
                     };
                 case STRONGHOLD:
@@ -139,7 +141,7 @@ public class CommandVanilla extends CommandSplit
                         @Override
                         protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
                         {
-                            return true;
+                            return !suggest || super.canSpawnStructureAtCoords(chunkX, chunkZ);
                         }
                     };
                 case TEMPLE:
@@ -148,7 +150,7 @@ public class CommandVanilla extends CommandSplit
                         @Override
                         protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
                         {
-                            return true;
+                            return !suggest || super.canSpawnStructureAtCoords(chunkX, chunkZ);
                         }
                     };
                 case OCEAN_MONUMENT:
@@ -157,7 +159,7 @@ public class CommandVanilla extends CommandSplit
                         @Override
                         protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
                         {
-                            return true;
+                            return !suggest || super.canSpawnStructureAtCoords(chunkX, chunkZ);
                         }
                     };
                 case NETHER_STRONGHOLD:
@@ -166,7 +168,7 @@ public class CommandVanilla extends CommandSplit
                         @Override
                         protected boolean canSpawnStructureAtCoords(int chunkX, int chunkZ)
                         {
-                            return true;
+                            return !suggest || super.canSpawnStructureAtCoords(chunkX, chunkZ);
                         }
                     };
                 default:

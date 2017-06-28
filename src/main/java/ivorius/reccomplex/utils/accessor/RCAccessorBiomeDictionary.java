@@ -26,7 +26,7 @@ public class RCAccessorBiomeDictionary
 
     public static Map<String, BiomeDictionary.Type> getMap()
     {
-        return SafeReflector.get(BiomeDictionary.Type.class, "byName", null);
+        return SafeReflector.get(BiomeDictionary.Type.class, null, "byName");
     }
 
     public static void addSubtypes(BiomeDictionary.Type type, BiomeDictionary.Type... subtypes)
@@ -41,11 +41,11 @@ public class RCAccessorBiomeDictionary
 
     public static List<BiomeDictionary.Type> getSubtypes(BiomeDictionary.Type type)
     {
-        return SafeReflector.get(BiomeDictionary.Type.class, "subTypes", type, new ArrayList<>());
+        return SafeReflector.get(BiomeDictionary.Type.class, type, new ArrayList<>(), "subTypes");
     }
 
     public static void setSubtypes(BiomeDictionary.Type type, List<BiomeDictionary.Type> types)
     {
-        SafeReflector.of(BiomeDictionary.Type.class, "subTypes", field -> field.set(type, types));
+        SafeReflector.of(BiomeDictionary.Type.class, field -> field.set(type, types), "subTypes");
     }
 }

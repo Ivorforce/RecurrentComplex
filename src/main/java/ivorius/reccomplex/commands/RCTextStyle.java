@@ -210,7 +210,7 @@ public class RCTextStyle
     public static ITextComponent chunkPos(ChunkPos pos)
     {
         return pos != null
-                ? RecurrentComplex.translations.format("commands.rcchunkpos.get", pos.chunkXPos, pos.chunkZPos)
+                ? RecurrentComplex.translations.format("commands.rcchunkpos.get", pos.x, pos.z)
                 : RecurrentComplex.translations.format("commands.selectSet.point.none");
     }
 

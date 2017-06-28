@@ -21,6 +21,7 @@ import ivorius.reccomplex.commands.structure.sight.CommandSightCheck;
 import ivorius.reccomplex.random.Person;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
+import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -85,11 +86,11 @@ public class CommandVanilla extends CommandSplit
 
                 StructureStart structureStart = structureMap.get(ChunkPos.asLong(chunkPos.x, chunkPos.z));
 
-                if (structureStart == null)
+                if (structureStart == null || !RCStructureBoundingBoxes.valid(structureStart.getBoundingBox()))
                     throw new CommandException("Failed to place structure!");
 
                 // 'retro'-generate all chunks
-                for (ChunkPos retroPos : StructureBoundingBoxes.rasterize(structureStart.getBoundingBox()))
+                for (ChunkPos retroPos : RCStructureBoundingBoxes.rasterize(structureStart.getBoundingBox()))
                     gen.generateStructure(world, random, retroPos);
 
                 sender.sendMessage(new TextComponentTranslation("Structure generated at %s with seed %s", RCTextStyle.chunkPos(chunkPos), RCTextStyle.copy(seed)));

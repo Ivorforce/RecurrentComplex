@@ -5,21 +5,39 @@
 
 package ivorius.reccomplex.utils;
 
-import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.Set;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * Created by lukas on 29.11.16.
  */
 public class RCStructureBoundingBoxes
 {
+    public static Set<ChunkPos> rasterize(StructureBoundingBox boundingBox)
+    {
+        if (!valid(boundingBox))
+            return Collections.emptySet();
+
+        return StructureBoundingBoxes.rasterize(boundingBox);
+    }
+
+    public static boolean valid(StructureBoundingBox boundingBox)
+    {
+        return boundingBox != null
+                && boundingBox.minX <= boundingBox.maxX
+                && boundingBox.minY <= boundingBox.maxY
+                && boundingBox.minZ <= boundingBox.maxZ;
+    }
+
     @Nonnull
     public static BlockPos getCenter(StructureBoundingBox boundingBox)
     {

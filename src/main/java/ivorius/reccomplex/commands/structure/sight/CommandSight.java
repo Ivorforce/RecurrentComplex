@@ -23,7 +23,7 @@ public class CommandSight extends CommandSplit
 
         add(delete = new CommandSightDelete());
         add(new CommandSightAdd());
-        add(new CommandSightCheck("check"));
+        add(new CommandSightCheck("check", false));
         add(info = new CommandSightInfo());
     }
 }

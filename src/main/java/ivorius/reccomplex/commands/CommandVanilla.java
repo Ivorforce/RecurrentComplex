@@ -17,28 +17,38 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.commands.parameters.IvP;
 import ivorius.reccomplex.commands.parameters.expect.IvE;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
+import ivorius.reccomplex.commands.structure.sight.CommandSightCheck;
 import ivorius.reccomplex.random.Person;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.gen.MapGenBase;
 import net.minecraft.world.gen.structure.*;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 28.06.17.
  */
 public class CommandVanilla extends CommandSplit
 {
+    public static Method getStructureAt;
+
     public CommandVanilla()
     {
         super(RCConfig.commandPrefix + "vanilla");
@@ -90,6 +100,33 @@ public class CommandVanilla extends CommandSplit
                     RCCommands.select(sender, RCBlockAreas.from(structureStart.getBoundingBox()));
             }
         });
+
+        add(new SimpleCommand("check", expect -> expect.then(MCE::xyz))
+        {
+            @Override
+            public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
+            {
+                Parameters parameters = Parameters.of(args, expect()::declare);
+
+                World world = sender.getEntityWorld();
+                BlockPos pos = parameters.get(MCP.pos("x", "y", "z", sender.getPosition(), false)).require();
+
+                sender.addChatMessage(CommandSightCheck.list(sightNames(world, pos)));
+            }
+        });
+    }
+
+    public static List<ITextComponent> sightNames(World world, BlockPos pos)
+    {
+        return sights(world, pos).map(RCTextStyle::vanillaSight).collect(Collectors.toList());
+    }
+
+    public static Stream<MapGenStructure> sights(World world, BlockPos pos)
+    {
+        return Arrays.stream(Type.values())
+                            .map(t -> t.generator(false))
+                            .peek(m -> ReflectionHelper.setPrivateValue(MapGenBase.class, m, world, "worldObj", "field_75039_c"))
+                            .filter(m -> m.isInsideStructure(pos));
     }
 
     public enum Type

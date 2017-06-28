@@ -37,7 +37,7 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 09.06.14.
  */
-public class CommandSelectFill extends CommandExpecting implements CommandVirtual
+public class CommandFill extends CommandExpecting implements CommandVirtual
 {
     public static void runShape(String shape, BlockArea area, Consumer<BlockPos> consumer) throws CommandException
     {
@@ -77,6 +77,11 @@ public class CommandSelectFill extends CommandExpecting implements CommandVirtua
         runShape(shape, selectionOwner.getSelection(), consumer);
     }
 
+    public static void shape(Expect expect)
+    {
+        expect.any("cube", "sphere");
+    }
+
     @Override
     public String getName()
     {
@@ -89,7 +94,7 @@ public class CommandSelectFill extends CommandExpecting implements CommandVirtua
         expect.then(MCE::block)
                 .then(MCE::block).descriptionU("source expression").optional().repeat()
                 .named("metadata", "m").then(RCE::metadata)
-                .named("shape", "s").any("cube", "sphere");
+                .named("shape", "s").then(CommandFill::shape);
     }
 
     public int getRequiredPermissionLevel()

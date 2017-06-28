@@ -124,7 +124,7 @@ public class CommandVanilla extends CommandSplit
     {
         return Arrays.stream(Type.values())
                             .map(t -> t.generator(false))
-                            .peek(m -> ReflectionHelper.setPrivateValue(MapGenBase.class, m, world, "worldObj", "field_75039_c"))
+                            .peek(m -> ReflectionHelper.setPrivateValue(MapGenBase.class, m, world, "world", "field_75039_c"))
                             .filter(m -> m.isInsideStructure(pos));
     }
 

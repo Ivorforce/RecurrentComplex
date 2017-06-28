@@ -150,8 +150,7 @@ public class OperationGenerateStructure implements Operation
         compound.setString("structureInfo", StructureSaveHandler.INSTANCE.toJSON(structure));
         compound.setTag("structureData", structure.worldDataCompound);
 
-        compound.setInteger("rotation", transform.getRotation());
-        compound.setBoolean("mirrorX", transform.isMirrorX());
+        RCAxisAlignedTransform.write(compound, transform, "rotation", "mirrorX");
 
         BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
 
@@ -172,7 +171,7 @@ public class OperationGenerateStructure implements Operation
         structure = StructureSaveHandler.INSTANCE.fromJSON(compound.getString("structureInfo"),
                 compound.getCompoundTag("structureData"));
 
-        transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
+        transform = RCAxisAlignedTransform.read(compound, "rotation", "mirrorX");
 
         lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
 

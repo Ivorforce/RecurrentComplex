@@ -399,6 +399,7 @@ reccomplex.direction.south=South (+Z)
 reccomplex.direction.east=East (+X)
 reccomplex.direction.west=West (-X)
 reccomplex.direction.none=None
+reccomplex.direction.all=All Sides
 reccomplex.direction.random=Random
 
 reccomplex.maze=Maze

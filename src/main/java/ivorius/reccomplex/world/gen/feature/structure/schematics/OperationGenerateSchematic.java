@@ -58,8 +58,7 @@ public class OperationGenerateSchematic implements Operation
         file.writeToNBT(fileCompound);
         compound.setTag("schematic", fileCompound);
 
-        compound.setInteger("rotation", transform.getRotation());
-        compound.setBoolean("mirrorX", transform.isMirrorX());
+        RCAxisAlignedTransform.write(compound, transform, "rotation", "mirrorX");
 
         BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
     }
@@ -77,7 +76,7 @@ public class OperationGenerateSchematic implements Operation
             file = new SchematicFile((short) 0, (short) 0, (short) 0);
         }
 
-        transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
+        transform = RCAxisAlignedTransform.read(compound, "rotation", "mirrorX");
 
         lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
     }

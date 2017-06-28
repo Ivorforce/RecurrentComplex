@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
+import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.world.gen.feature.structure.VariableDomain;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -47,7 +48,7 @@ public class PlacedStructure implements NBTCompoundObject
     {
         structureID = compound.getString("structureID");
         generationInfoID = compound.hasKey(generationInfoID, Constants.NBT.TAG_STRING) ? compound.getString("generationInfoID") : null;
-        transform = AxisAlignedTransform2D.from(compound.getInteger("rotation"), compound.getBoolean("mirrorX"));
+        transform = RCAxisAlignedTransform.read(compound, "rotation", "mirrorX");
         variableDomain = NBTCompoundObjects.readFrom(compound, "variableDomain", VariableDomain::new);
         lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
         instanceData = compound.hasKey("instanceData", Constants.NBT.TAG_COMPOUND) ? compound.getTag("instanceData") : null;
@@ -58,8 +59,7 @@ public class PlacedStructure implements NBTCompoundObject
     {
         compound.setString("structureID", structureID);
         if (generationInfoID != null) compound.setString("generationInfoID", generationInfoID);
-        compound.setInteger("rotation", transform.getRotation());
-        compound.setBoolean("mirrorX", transform.isMirrorX());
+        RCAxisAlignedTransform.write(compound, transform, "rotation", "mirrorX");
         NBTCompoundObjects.writeTo(compound, "variableDomain", variableDomain);
         BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
         if (instanceData != null)

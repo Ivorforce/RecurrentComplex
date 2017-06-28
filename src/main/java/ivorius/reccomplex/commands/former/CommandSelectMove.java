@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.mcopts.commands.CommandExpecting;
 import ivorius.mcopts.commands.parameters.MCP;
+import ivorius.mcopts.commands.parameters.NaP;
 import ivorius.mcopts.commands.parameters.Parameters;
 import ivorius.mcopts.commands.parameters.expect.Expect;
 import ivorius.mcopts.commands.parameters.expect.MCE;
@@ -51,6 +52,7 @@ public class CommandSelectMove extends CommandExpecting
                 .flag("mirror", "m")
                 .flag("noselect", "s")
                 .flag("duplicate", "c")
+                .named("times", "t").any(1, 2, 3)
         ;
     }
 
@@ -67,10 +69,11 @@ public class CommandSelectMove extends CommandExpecting
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
 
-        BlockPos pos = parameters.get(MCP.pos("x", "y", "z", selectionOwner.getSelectedPoint1(), false)).require();
+        BlockPos move = parameters.get(MCP.pos("x", "y", "z", BlockPos.ORIGIN, false)).require();
         AxisAlignedTransform2D transform = parameters.get(IvP.transform("rotation", "mirror")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         boolean noselect = parameters.has("noselect");
         boolean duplicate = parameters.has("duplicate");
+        int times = parameters.get("times").to(NaP::asInt).optional().orElse(1);
 
         BlockArea area = selectionOwner.getSelection();
 
@@ -80,10 +83,16 @@ public class CommandSelectMove extends CommandExpecting
         GenericStructure structure = GenericStructure.createDefaultStructure();
         structure.worldDataCompound = worldDataCompound;
 
-        if (duplicate)
-            OperationRegistry.queueOperation(new OperationGenerateStructure(structure, null, transform, pos, true).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
-        else
-            OperationRegistry.queueOperation(new OperationMulti(new OperationClearArea(area), new OperationGenerateStructure(structure, null, transform, pos, true).prepare((WorldServer) commandSender.getEntityWorld())), commandSender);
+        BlockPos pos = selectionOwner.getSelection().getLowerCorner();
+        for (int i = 0; i < times; i++)
+        {
+            pos = pos.add(move);
+
+            if (duplicate)
+                OperationRegistry.queueOperation(new OperationGenerateStructure(structure, null, transform, pos, true).prepare((WorldServer) commandSender.getEntityWorld()), commandSender);
+            else
+                OperationRegistry.queueOperation(new OperationMulti(new OperationClearArea(area), new OperationGenerateStructure(structure, null, transform, pos, true).prepare((WorldServer) commandSender.getEntityWorld())), commandSender);
+        }
 
         if (!noselect)
         {

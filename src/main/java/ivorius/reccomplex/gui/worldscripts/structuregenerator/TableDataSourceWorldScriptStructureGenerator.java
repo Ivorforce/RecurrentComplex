@@ -16,7 +16,6 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptStructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import joptsimple.internal.Strings;
 import net.minecraft.util.EnumFacing;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -91,7 +90,7 @@ public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourc
         {
             if (script.isSimpleMode())
             {
-                TableCellString cell = new TableCellString("generators", Strings.join(script.getStructureNames(), ","));
+                TableCellString cell = new TableCellString("generators", String.join(",", script.getStructureNames()));
                 cell.setShowsValidityState(true);
                 cell.setValidityState(doAllStructuresExist(script.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
                 cell.addPropertyConsumer(val -> {

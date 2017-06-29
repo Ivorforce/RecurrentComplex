@@ -12,7 +12,6 @@ import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.utils.algebra.SupplierCache;
-import joptsimple.internal.Strings;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.Loader;
 import org.apache.commons.lang3.tuple.Pair;
@@ -43,7 +42,7 @@ public class DependencyExpression extends BoolFunctionExpressionCache<FileSaver,
     public static String ofMods(String... ids)
     {
         return ids.length > 0
-                ? MOD_PREFIX + Strings.join(Arrays.asList(ids), " & " + MOD_PREFIX)
+                ? MOD_PREFIX + String.join(" & " + MOD_PREFIX, Arrays.asList(ids))
                 : "";
     }
 

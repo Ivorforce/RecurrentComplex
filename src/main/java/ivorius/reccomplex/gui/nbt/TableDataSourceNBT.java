@@ -12,7 +12,6 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.json.NBTTagEndSerializer;
-import joptsimple.internal.Strings;
 import net.minecraft.nbt.*;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -131,7 +130,7 @@ public class TableDataSourceNBT
         {
             NBTTagByteArray cNBT = (NBTTagByteArray) nbt;
             TableCellString cell = new TableCellString(null,
-                    Strings.join(Arrays.stream(ArrayUtils.toObject(cNBT.getByteArray())).map(String::valueOf).collect(Collectors.toList()), ",")
+                    String.join(",", (Iterable<String>) Arrays.stream(ArrayUtils.toObject(cNBT.getByteArray())).map(String::valueOf)::iterator)
             );
             cell.setShowsValidityState(true);
             cell.addPropertyConsumer(value ->
@@ -172,7 +171,7 @@ public class TableDataSourceNBT
         {
             NBTTagIntArray cNBT = (NBTTagIntArray) nbt;
             TableCellString cell = new TableCellString(null,
-                    Strings.join(Arrays.stream(ArrayUtils.toObject(cNBT.getIntArray())).map(String::valueOf).collect(Collectors.toList()), ",")
+                    String.join(",", (Iterable<String>) Arrays.stream(ArrayUtils.toObject(cNBT.getIntArray())).map(String::valueOf)::iterator)
             );
             cell.setShowsValidityState(true);
             cell.addPropertyConsumer(value ->

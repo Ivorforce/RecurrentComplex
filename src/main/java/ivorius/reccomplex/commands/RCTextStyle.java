@@ -13,7 +13,6 @@ import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
-import joptsimple.internal.Strings;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -38,7 +37,7 @@ public class RCTextStyle
     @Nonnull
     public static ITextComponent visit(File file, String... path)
     {
-        ITextComponent pathComponent = new TextComponentString(Strings.join(path, "/"));
+        ITextComponent pathComponent = new TextComponentString(String.join("/", path));
         pathComponent.getStyle().setColor(TextFormatting.GOLD);
         pathComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Visit File")));
         pathComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));

@@ -11,7 +11,6 @@ import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.utils.algebra.SupplierCache;
-import joptsimple.internal.Strings;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.biome.Biome;
@@ -42,7 +41,7 @@ public class BiomeExpression extends BoolFunctionExpressionCache<Biome, Object>
 
     public static String ofTypes(BiomeDictionary.Type... biomeTypes)
     {
-        return BIOME_TYPE_PREFIX + Strings.join(Lists.transform(Arrays.asList(biomeTypes), input -> input != null ? IvGsonHelper.serializedName(input) : null), " & " + BIOME_TYPE_PREFIX);
+        return BIOME_TYPE_PREFIX + String.join(" & " + BIOME_TYPE_PREFIX, Lists.transform(Arrays.asList(biomeTypes), input -> input != null ? IvGsonHelper.serializedName(input) : null));
     }
 
     protected class BiomeNameVariableType extends VariableType<Boolean, Biome, Object>

@@ -131,7 +131,7 @@ public class MazeGeneration extends GenerationType implements WeightedSelector.I
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "MazeGenerationInfo");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
+            String id = readID(jsonObject);
 
             String mazeID = JsonUtils.getString(jsonObject, "mazeID");
 

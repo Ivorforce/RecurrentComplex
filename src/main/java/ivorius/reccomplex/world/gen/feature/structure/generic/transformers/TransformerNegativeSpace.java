@@ -93,7 +93,7 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerNegativeSpace");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
+            String id = readID(jsonObject);
 
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)

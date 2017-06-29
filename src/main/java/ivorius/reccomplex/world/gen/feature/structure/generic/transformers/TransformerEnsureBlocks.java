@@ -121,7 +121,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerEnsureSpace");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
+            String id = readID(jsonObject);
 
             String expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
             String destExpression = JsonUtils.getString(jsonObject, "destExpression", "");

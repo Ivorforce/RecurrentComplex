@@ -5,21 +5,31 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 
+import com.google.gson.JsonObject;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
+import java.util.Stack;
 
 /**
  * Created by lukas on 19.02.15.
  */
 public abstract class GenerationType
 {
+    // Legacy for missing IDs
+    public static Stack<Random> idRandomizers = new Stack<>();
+
+    static {
+        idRandomizers.push(new Random(0xDEADBEEF));
+    }
+
     @Nonnull
     protected String id;
 
@@ -38,6 +48,13 @@ public abstract class GenerationType
     {
         Random random = new Random();
         return String.format("%s_%s", type, Integer.toHexString(random.nextInt()));
+    }
+
+    public static String readID(JsonObject object)
+    {
+        String id = JsonUtils.getString(object, "id", null);
+        if (id == null) id = Integer.toHexString(idRandomizers.peek().nextInt()); // Legacy support for missing IDs
+        return id;
     }
 
     @Nonnull

@@ -457,8 +457,10 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
                 RecurrentComplex.logger.warn("Structure JSON missing 'version', using latest (" + LATEST_VERSION + ")");
             }
 
+            GenerationType.idRandomizers.push(new Random(0xDEADBEEF)); // Legacy for missing IDs
             if (jsonObject.has("generationInfos"))
                 Collections.addAll(structureInfo.generationTypes, context.<GenerationType[]>deserialize(jsonObject.get("generationInfos"), GenerationType[].class));
+            GenerationType.idRandomizers.pop();
 
             if (version == 1)
                 structureInfo.generationTypes.add(NaturalGeneration.deserializeFromVersion1(jsonObject, context));
@@ -472,12 +474,14 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
                     structureInfo.generationTypes.add(MazeGeneration.getGson().fromJson(jsonObject.get("mazeGenerationInfo"), MazeGeneration.class));
             }
 
+            Transformer.idRandomizers.push(new Random(0xDEADBEEF)); // Legacy for missing IDs
             if (jsonObject.has("transformer"))
                 structureInfo.transformer = context.deserialize(jsonObject.get("transformer"), TransformerMulti.class);
             else if (jsonObject.has("transformers")) // Legacy
                 Collections.addAll(structureInfo.transformer.getTransformers(), context.<Transformer[]>deserialize(jsonObject.get("transformers"), Transformer[].class));
             else if (jsonObject.has("blockTransformers")) // Legacy
                 Collections.addAll(structureInfo.transformer.getTransformers(), context.<Transformer[]>deserialize(jsonObject.get("blockTransformers"), Transformer[].class));
+            Transformer.idRandomizers.pop();
 
             structureInfo.rotatable = JsonUtils.getBoolean(jsonObject, "rotatable", false);
             structureInfo.mirrorable = JsonUtils.getBoolean(jsonObject, "mirrorable", false);

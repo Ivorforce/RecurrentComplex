@@ -112,7 +112,7 @@ public class SaplingGeneration extends GenerationType
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
+            String id = readID(jsonObject);
 
             Double spawnWeight = jsonObject.has("generationWeight") ? JsonUtils.getDouble(jsonObject, "generationWeight") : null;
 

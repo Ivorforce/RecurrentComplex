@@ -5,10 +5,12 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 
+import com.google.gson.JsonObject;
 import ivorius.ivtoolkit.tools.IvWorldData;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.*;
 import ivorius.reccomplex.nbt.NBTStorable;
 import ivorius.reccomplex.world.gen.feature.structure.context.*;
@@ -18,12 +20,20 @@ import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import java.util.Random;
+import java.util.Stack;
 
 /**
  * Created by lukas on 25.05.14.
  */
 public abstract class Transformer<S extends NBTStorable>
 {
+    // Legacy for missing IDs
+    public static Stack<Random> idRandomizers = new Stack<>();
+
+    static {
+        idRandomizers.push(new Random(0xDEADBEEF));
+    }
+
     @Nonnull
     protected String id;
 
@@ -42,6 +52,13 @@ public abstract class Transformer<S extends NBTStorable>
     {
         Random random = new Random();
         return String.format("%s_%s", type, Integer.toHexString(random.nextInt()));
+    }
+
+    public static String readID(JsonObject object)
+    {
+        String id = JsonUtils.getString(object, "id", null);
+        if (id == null) id = Integer.toHexString(idRandomizers.peek().nextInt()); // Legacy support for missing IDs
+        return id;
     }
 
     @Nonnull

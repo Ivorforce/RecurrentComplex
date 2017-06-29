@@ -10,6 +10,7 @@ import ivorius.reccomplex.gui.inventorygen.GuiEditItemStack;
 import ivorius.reccomplex.gui.inventorygen.TableDataSourceInvGenSingleTag;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -23,6 +24,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -59,10 +61,10 @@ public class ItemInventoryGenSingleTag extends ItemInventoryGenerationTag implem
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advancedInformation)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
-        super.addInformation(stack, player, list, advancedInformation);
-        list.add(String.format("%f Chance", getItemChance(stack)));
+        super.addInformation(stack, worldIn, tooltip, flagIn);
+        tooltip.add(String.format("%f Chance", getItemChance(stack)));
     }
 
     public float getItemChance(ItemStack stack)

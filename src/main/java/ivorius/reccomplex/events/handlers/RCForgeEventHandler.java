@@ -50,6 +50,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.CommandEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.terraingen.PopulateChunkEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -209,9 +210,9 @@ public class RCForgeEventHandler
     }
 
     @SubscribeEvent
-    public void onEntityCapapabilityAttach(AttachCapabilitiesEvent.Entity event)
+    public void onEntityCapapabilityAttach(AttachCapabilitiesEvent event)
     {
-        if (event.getEntity() instanceof EntityPlayer)
+        if (event.getObject() instanceof EntityPlayer)
         {
             event.addCapability(new ResourceLocation(RecurrentComplex.MOD_ID, RCEntityInfo.CAPABILITY_KEY), new SimpleCapabilityProvider<>(RCEntityInfo.CAPABILITY));
             event.addCapability(new ResourceLocation(RecurrentComplex.MOD_ID, CapabilitySelection.CAPABILITY_KEY), new SimpleCapabilityProvider<>(CapabilitySelection.CAPABILITY));
@@ -256,6 +257,12 @@ public class RCForgeEventHandler
                 event.player.sendMessage(statusMessage);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onMissingMapping(RegistryEvent.MissingMappings event)
+    {
+        RecurrentComplex.missingRemapper.onMissingMapping(event);
     }
 
     private static class SimpleCapabilityProvider<T> implements ICapabilityProvider, INBTSerializable

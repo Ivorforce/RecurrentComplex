@@ -8,9 +8,9 @@ package ivorius.reccomplex.gui;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResource;
@@ -77,9 +77,9 @@ public class GuiTexturedButton extends GuiButton
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY)
+    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
     {
-        super.drawButton(mc, mouseX, mouseY);
+        super.drawButton(mc, mouseX, mouseY, partialTicks);
 
         if (this.visible && texture != null)
         {
@@ -90,7 +90,7 @@ public class GuiTexturedButton extends GuiButton
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            this.drawTexture(this.xPosition + (width - textureWidth) / 2, this.yPosition + (height - textureHeight) / 2, 0, 0, textureWidth, textureHeight);
+            this.drawTexture(this.x + (width - textureWidth) / 2, this.y + (height - textureHeight) / 2, 0, 0, textureWidth, textureHeight);
         }
     }
 
@@ -99,7 +99,7 @@ public class GuiTexturedButton extends GuiButton
         float f = 0.00390625F;
         float f1 = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
-        VertexBuffer vertexbuffer = tessellator.getBuffer();
+        BufferBuilder vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
         vertexbuffer.pos((double)(x + 0), (double)(y + height), (double)this.zLevel).tex((double)((float)(textureX + 0) / textureWidth), (double)((float)(textureY + height) / textureHeight)).endVertex();
         vertexbuffer.pos((double)(x + width), (double)(y + height), (double)this.zLevel).tex((double)((float)(textureX + width) / textureWidth), (double)((float)(textureY + height) / textureHeight)).endVertex();

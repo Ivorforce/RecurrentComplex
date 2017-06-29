@@ -62,6 +62,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -199,7 +200,7 @@ public class RCRegistryHandler
         item.setRegistryName(id);
 
         if (!RecurrentComplex.isLite())
-            GameRegistry.register(item);
+            ForgeRegistries.ITEMS.register(item);
         else
             specialRegistry.register(item.getRegistryName(), item);
     }
@@ -211,8 +212,8 @@ public class RCRegistryHandler
 
         if (!RecurrentComplex.isLite())
         {
-            GameRegistry.register(block);
-            GameRegistry.register(item);
+            ForgeRegistries.BLOCKS.register(block);
+            ForgeRegistries.ITEMS.register(item);
         }
         else
         {
@@ -236,12 +237,12 @@ public class RCRegistryHandler
     public static void register(Class<? extends TileEntity> tileEntity, String id, String... alternatives)
     {
         if (!RecurrentComplex.isLite())
-            GameRegistry.registerTileEntityWithAlternatives(tileEntity, id, alternatives);
+            GameRegistry.registerTileEntity(tileEntity, id);
         else
-        {
             specialRegistry.register(new ResourceLocation(id), tileEntity);
-            for (String aid : alternatives) specialRegistry.register(new ResourceLocation(aid), tileEntity);
-        }
+
+        // TODO Register alternatives in the game if not lite
+        for (String aid : alternatives) specialRegistry.register(new ResourceLocation(aid), tileEntity);
     }
 
     public static void load(FMLInitializationEvent event, RecurrentComplex mod)

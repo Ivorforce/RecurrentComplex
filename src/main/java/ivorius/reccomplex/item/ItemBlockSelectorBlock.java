@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.item;
 
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
@@ -34,10 +35,10 @@ public class ItemBlockSelectorBlock extends ItemBlockSelector
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
-        super.addInformation(stack, player, list, advanced);
+        super.addInformation(stack, worldIn, tooltip, flagIn);
 
-        list.add("(Hold ctrl for secondary selection)");
+        tooltip.add("(Hold ctrl for secondary selection)");
     }
 }

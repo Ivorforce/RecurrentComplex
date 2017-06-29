@@ -13,6 +13,7 @@ import ivorius.reccomplex.gui.inventorygen.GuiEditItemStack;
 import ivorius.reccomplex.gui.inventorygen.TableDataSourceInvGenMultiTag;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -26,6 +27,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -87,11 +89,12 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advancedInformation)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
-        super.addInformation(stack, player, list, advancedInformation);
+        super.addInformation(stack, worldIn, tooltip, flagIn);
+
         IntegerRange range = getGenerationCount(stack);
-        list.add(String.format("%d - %d Items", range.getMin(), range.getMax()));
+        tooltip.add(String.format("%d - %d Items", range.getMin(), range.getMax()));
     }
 
     public IntegerRange getGenerationCount(ItemStack stack)

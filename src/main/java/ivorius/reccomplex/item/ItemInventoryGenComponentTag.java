@@ -9,6 +9,7 @@ import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -25,6 +26,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Random;
@@ -89,34 +91,37 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advancedInformation)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
-        super.addInformation(stack, player, list, advancedInformation);
+        super.addInformation(stack, worldIn, tooltip, flagIn);
 
         Component component = component(stack);
 
         if (component != null)
         {
-            list.add(component.inventoryGeneratorID);
-            list.add(GenericItemCollectionRegistry.INSTANCE.hasActive(componentKey(stack))
+            tooltip.add(component.inventoryGeneratorID);
+            tooltip.add(GenericItemCollectionRegistry.INSTANCE.hasActive(componentKey(stack))
                     ? IvTranslations.format("inventoryGen.active", TextFormatting.GREEN, TextFormatting.RESET)
                     : IvTranslations.format("inventoryGen.inactive", TextFormatting.RED, TextFormatting.RESET));
         }
         else
-            list.add(IvTranslations.get("inventoryGen.create"));
+            tooltip.add(IvTranslations.get("inventoryGen.create"));
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void getSubItems(Item item, CreativeTabs creativeTabs, NonNullList<ItemStack> list)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list)
     {
-        super.getSubItems(item, creativeTabs, list);
+        super.getSubItems(tab, list);
 
-        for (String key : GenericItemCollectionRegistry.INSTANCE.ids())
+        if (this.isInCreativeTab(tab))
         {
-            ItemStack stack = new ItemStack(item);
-            setComponentKey(stack, key);
-            list.add(stack);
+            for (String key : GenericItemCollectionRegistry.INSTANCE.ids())
+            {
+                ItemStack stack = new ItemStack(this);
+                setComponentKey(stack, key);
+                list.add(stack);
+            }
         }
     }
 }

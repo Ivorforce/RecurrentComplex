@@ -24,6 +24,6 @@ public class NBTTagIntArraySerializer implements JsonSerializer<NBTTagIntArray>,
     @Override
     public NBTTagIntArray deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        return new NBTTagIntArray(context.deserialize(json, int[].class));
+        return new NBTTagIntArray(context.<int[]>deserialize(json, int[].class));
     }
 }

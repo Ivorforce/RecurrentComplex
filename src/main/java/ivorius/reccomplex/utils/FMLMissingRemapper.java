@@ -5,9 +5,11 @@
 
 package ivorius.reccomplex.utils;
 
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
 import ivorius.ivtoolkit.tools.MCRegistry;
+import net.minecraftforge.event.RegistryEvent;
 
 /**
  * Created by lukas on 25.04.16.
@@ -23,26 +25,25 @@ public class FMLMissingRemapper
         this.remapper = remapper;
     }
 
-    public void onMissingMapping(FMLMissingMappingsEvent event)
+    public void onMissingMapping(RegistryEvent.MissingMappings<?> event)
     {
-        for (FMLMissingMappingsEvent.MissingMapping missingMapping : event.get())
+        for (RegistryEvent.MissingMappings.Mapping missingMapping : event.getAllMappings())
         {
-            switch (missingMapping.type)
+            if (missingMapping.getTarget() instanceof Block)
             {
-                case BLOCK:
-                {
-                    ResourceLocation remap = remapper.remapBlock(new ResourceLocation(missingMapping.name));
-                    if (remap != null)
-                        missingMapping.remap(parent.blockFromID(remap));
-                    break;
-                }
-                case ITEM:
-                {
-                    ResourceLocation remap = remapper.remapItem(new ResourceLocation(missingMapping.name));
-                    if (remap != null)
-                        missingMapping.remap(parent.itemFromID(remap));
-                    break;
-                }
+                ResourceLocation remap = remapper.remapBlock(missingMapping.key);
+                if (remap != null)
+                    //noinspection unchecked
+                    missingMapping.remap(parent.blockFromID(remap));
+                break;
+            }
+            else if (missingMapping.getTarget() instanceof Item)
+            {
+                ResourceLocation remap = remapper.remapItem(missingMapping.key);
+                if (remap != null)
+                    //noinspection unchecked
+                    missingMapping.remap(parent.itemFromID(remap));
+                break;
             }
         }
     }

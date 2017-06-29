@@ -23,6 +23,7 @@ import ivorius.reccomplex.world.gen.feature.structure.schematics.SchematicLoader
 import ivorius.reccomplex.utils.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -167,12 +168,6 @@ public class RecurrentComplex
         ResourceDirectory.tryReload(loader, LeveledRegistry.Level.CUSTOM);
 
         SchematicLoader.initializeFolder();
-    }
-
-    @EventHandler
-    public void onMissingMapping(FMLMissingMappingsEvent event)
-    {
-        missingRemapper.onMissingMapping(event);
     }
 
     @EventHandler

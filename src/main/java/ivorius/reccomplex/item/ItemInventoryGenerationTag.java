@@ -10,6 +10,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.world.storage.loot.InventoryGenerationHandler;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollectionRegistry;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -28,6 +29,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
@@ -88,13 +90,16 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     }
 
     @Override
-    public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items)
     {
-        for (String key : WeightedItemCollectionRegistry.INSTANCE.ids())
+        if (this.isInCreativeTab(tab))
         {
-            ItemStack stack = new ItemStack(item);
-            setItemStackGeneratorKey(stack, key);
-            list.add(stack);
+            for (String key : WeightedItemCollectionRegistry.INSTANCE.ids())
+            {
+                ItemStack stack = new ItemStack(this);
+                setItemStackGeneratorKey(stack, key);
+                items.add(stack);
+            }
         }
     }
 
@@ -109,12 +114,12 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advancedInformation)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
         WeightedItemCollection generator = inventoryGenerator(stack);
         if (generator != null)
-            list.add(generator.getDescriptor());
+            tooltip.add(generator.getDescriptor());
         else
-            list.add(IvTranslations.get("inventoryGen.none"));
+            tooltip.add(IvTranslations.get("inventoryGen.none"));
     }
 }

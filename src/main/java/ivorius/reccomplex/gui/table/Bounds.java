@@ -36,26 +36,26 @@ public class Bounds
 
     public static Bounds fromButton(GuiButton button)
     {
-        return fromAxes(button.xPosition, button.width, button.yPosition, button.height);
+        return fromAxes(button.x, button.width, button.y, button.height);
     }
 
     public static Bounds fromTextField(GuiTextField textField)
     {
-        return fromAxes(textField.xPosition, textField.width, textField.yPosition, textField.height);
+        return fromAxes(textField.x, textField.width, textField.y, textField.height);
     }
 
     public static void set(GuiButton button, Bounds bounds)
     {
-        button.xPosition = bounds.getMinX();
-        button.yPosition = bounds.getMinY();
+        button.x = bounds.getMinX();
+        button.y = bounds.getMinY();
         button.width = bounds.getWidth();
         button.height = bounds.getHeight();
     }
 
     public static void set(GuiTextField textField, Bounds bounds)
     {
-        textField.xPosition = bounds.getMinX();
-        textField.yPosition = bounds.getMinY();
+        textField.x = bounds.getMinX();
+        textField.y = bounds.getMinY();
         textField.width = bounds.getWidth();
         textField.height = bounds.getHeight();
     }

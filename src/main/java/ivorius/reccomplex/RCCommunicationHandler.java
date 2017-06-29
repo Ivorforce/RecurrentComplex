@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex;
 
+import com.google.common.base.Strings;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import ivorius.ivtoolkit.tools.IvFMLIntercommHandler;
@@ -17,7 +18,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.helpers.Strings;
 
 import java.util.Arrays;
 
@@ -102,7 +102,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             String type = cmp.getString("type");
             String[] subtypes = IvNBTHelper.readNBTStrings("subtypes", cmp); // NBTTagList of NBTTagString
 
-            if (!Strings.isEmpty(type))
+            if (!Strings.isNullOrEmpty(type))
                 DimensionDictionary.registerSubtypes(type, Arrays.asList(subtypes));
             else
                 getLogger().warn("Could not handle message with key '" + message.key + "' - missing 'subtypes' key!");
@@ -115,7 +115,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
             String type = cmp.getString("type");
             String[] subtypes = IvNBTHelper.readNBTStrings("supertypes", cmp); // NBTTagList of NBTTagString
 
-            if (!Strings.isEmpty(type))
+            if (!Strings.isNullOrEmpty(type))
                 DimensionDictionary.registerSupertypes(type, Arrays.asList(subtypes));
             else
                 getLogger().warn("Could not handle message with key '" + message.key + "' - missing 'supertypes' key!");

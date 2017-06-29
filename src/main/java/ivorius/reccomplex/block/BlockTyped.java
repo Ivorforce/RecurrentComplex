@@ -33,10 +33,10 @@ public class BlockTyped extends Block
 
     @Override
     @SideOnly(Side.CLIENT)
-    public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list)
+    public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list)
     {
         for (int j = 0; j < 16; ++j)
-            list.add(new ItemStack(itemIn, 1, j));
+            list.add(new ItemStack(this, 1, j));
     }
 
     @SuppressWarnings("deprecation")

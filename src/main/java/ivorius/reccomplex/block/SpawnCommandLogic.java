@@ -134,7 +134,7 @@ public abstract class SpawnCommandLogic implements ICommandSender
     public boolean sendCommandFeedback()
     {
         MinecraftServer minecraftserver = this.getServer();
-        return minecraftserver == null || !minecraftserver.isAnvilFileSet() || minecraftserver.worldServerForDimension(0).getGameRules().getBoolean("commandBlockOutput");
+        return minecraftserver == null || !minecraftserver.isAnvilFileSet() || minecraftserver.getWorld(0).getGameRules().getBoolean("commandBlockOutput");
     }
 
     @Override

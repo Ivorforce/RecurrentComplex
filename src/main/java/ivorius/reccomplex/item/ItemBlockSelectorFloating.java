@@ -7,6 +7,7 @@ package ivorius.reccomplex.item;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.network.PacketSyncItem;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -40,9 +41,9 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
     public static BlockPos getHoveredBlock(EntityLivingBase entity, float selectionRange)
     {
         Vec3d look = entity.getLookVec();
-        int blockX = MathHelper.floor(look.xCoord * selectionRange + entity.posX);
-        int blockY = MathHelper.floor(look.yCoord * selectionRange + entity.posY + entity.getEyeHeight());
-        int blockZ = MathHelper.floor(look.zCoord * selectionRange + entity.posZ);
+        int blockX = MathHelper.floor(look.x * selectionRange + entity.posX);
+        int blockY = MathHelper.floor(look.y * selectionRange + entity.posY + entity.getEyeHeight());
+        int blockZ = MathHelper.floor(look.z * selectionRange + entity.posZ);
 
         return new BlockPos(blockX, blockY, blockZ);
     }
@@ -67,13 +68,13 @@ public class ItemBlockSelectorFloating extends ItemBlockSelector implements Item
     }
 
     @Override
-    public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced)
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
-        super.addInformation(stack, player, list, advanced);
+        super.addInformation(stack, worldIn, tooltip, flagIn);
 
-        list.add(String.format("Range: %.02f", getSelectionRange(stack)));
-        list.add("(Hold ctrl and scroll to modify range)");
-        list.add("(Hold ctrl for secondary selection)");
+        tooltip.add(String.format("Range: %.02f", getSelectionRange(stack)));
+        tooltip.add("(Hold ctrl and scroll to modify range)");
+        tooltip.add("(Hold ctrl for secondary selection)");
     }
 
     @Override

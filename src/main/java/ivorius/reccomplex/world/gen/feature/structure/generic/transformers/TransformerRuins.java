@@ -603,7 +603,7 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerRuins");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
+            String id = readID(jsonObject);
 
             EnumFacing decayDirection = Directions.deserialize(JsonUtils.getString(jsonObject, "decayDirection", "DOWN"));
             float minDecay = JsonUtils.getFloat(jsonObject, "minDecay", 0.0f);

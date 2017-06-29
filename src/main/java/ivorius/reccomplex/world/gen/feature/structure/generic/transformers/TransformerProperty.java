@@ -142,7 +142,7 @@ public class TransformerProperty extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerPropertyReplace");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
+            String id = readID(jsonObject);
 
             String expression = JsonUtils.getString(jsonObject, "sourceExpression", "");
             String propertyName = JsonUtils.getString(jsonObject, "propertyName", "");

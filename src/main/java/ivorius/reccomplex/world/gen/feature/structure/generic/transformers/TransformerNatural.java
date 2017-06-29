@@ -172,7 +172,7 @@ public class TransformerNatural extends TransformerAbstractCloud<TransformerNatu
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerNatural");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
+            String id = readID(jsonObject);
 
             String expression = TransformerReplace.Serializer.readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)

@@ -153,7 +153,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(jsonElement, "transformerReplace");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
+            String id = readID(jsonObject);
 
             String expression = readLegacyMatcher(jsonObject, "source", "sourceMetadata"); // Legacy
             if (expression == null)

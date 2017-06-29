@@ -30,10 +30,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -236,9 +233,12 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
             Data data = new Data();
 
             data.environmentExpression.setExpression(JsonUtils.getString(jsonObject, "environmentMatcher", ""));
+
+            Transformer.idRandomizers.push(new Random(0xDEADBEEF)); // Legacy for missing IDs
             Transformer[] transformers = gson.fromJson(jsonObject.get("transformers"), Transformer[].class);
             if (transformers != null)
                 Collections.addAll(data.transformers, transformers);
+            Transformer.idRandomizers.pop();
 
             return data;
         }
@@ -264,7 +264,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
 
             TransformerMulti transformer = new TransformerMulti();
 
-            transformer.setID(JsonUtils.getString(jsonObject, "id", null));
+            transformer.setID(readID(jsonObject));
             if (!PresettedObjects.read(jsonObject, gson, transformer.data, "dataPreset", "data", Data.class)
                     && jsonObject.has("environmentMatcher") && jsonObject.has("transformers"))
             {

@@ -16,6 +16,7 @@ import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStrategy;
 import net.minecraft.command.CommandException;
@@ -123,6 +124,10 @@ public class CommandSanity extends CommandExpecting
             sane &= addStructureLog(commandSender, (s, structure) ->
                     !structure.generationTypes(GenerationType.class).isEmpty(), "Missing generation type");
 
+            sane &= addGenericStructureLog(commandSender, (s, structure) ->
+                    structure.transformer.getTransformers().stream().allMatch(t -> t.id().length() > 0)
+            , "Transformer has empty ID");
+
             sane &= addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
                             values(Biome.REGISTRY).anyMatch(b -> StructureSelector.generationWeightInBiome(gen.biomeWeights, b) > 0)
                     , "Natural generation type won't accept any known biomes");
@@ -201,6 +206,12 @@ public class CommandSanity extends CommandExpecting
     protected <T extends GenerationType> boolean addGenerationLog(ICommandSender commandSender, Class<T> tClass, BiPredicate<Structure<?>, T> predicate, String msg)
     {
         return addStructureLog(commandSender, (s, structure) -> structure.generationTypes(tClass).stream().allMatch(gen -> predicate.test(structure, gen)), msg);
+    }
+
+    protected boolean addGenericStructureLog(ICommandSender commandSender, BiPredicate<String, GenericStructure> predicate, String msg)
+    {
+        return addStructureLog(commandSender, (s, structure) ->
+                !(structure instanceof GenericStructure) || predicate.test(s, (GenericStructure) structure), msg);
     }
 
     protected boolean addStructureLog(ICommandSender commandSender, BiPredicate<String, Structure<?>> predicate, String msg)

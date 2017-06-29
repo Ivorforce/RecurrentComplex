@@ -206,7 +206,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "naturalGenerationInfo");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
+            String id = readID(jsonObject);
 
             String generationCategory = JsonUtils.getString(jsonObject, "generationCategory");
 

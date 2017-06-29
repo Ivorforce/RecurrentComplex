@@ -104,7 +104,7 @@ public class ListGeneration extends GenerationType implements WeightedSelector.I
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
+            String id = readID(jsonObject);
 
             String listID = JsonUtils.getString(jsonObject, "listID", "");
 

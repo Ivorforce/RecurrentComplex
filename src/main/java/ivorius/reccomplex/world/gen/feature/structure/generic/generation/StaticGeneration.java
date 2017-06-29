@@ -152,7 +152,7 @@ public class StaticGeneration extends GenerationType
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
+            String id = readID(jsonObject);
 
             String dimension = JsonUtils.getString(jsonObject, "dimensions", "");
 

@@ -141,7 +141,7 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
         {
             JsonObject jsonObject = JsonUtils.asJsonObject(json, "vanillaStructureSpawnInfo");
 
-            String id = JsonUtils.getString(jsonObject, "id", null);
+            String id = readID(jsonObject);
 
             Double spawnWeight = jsonObject.has("generationWeight") ? JsonUtils.getDouble(jsonObject, "generationWeight") : null;
             RCBiomeDecorator.DecorationType type = context.deserialize(jsonObject.get("type"), RCBiomeDecorator.DecorationType.class);

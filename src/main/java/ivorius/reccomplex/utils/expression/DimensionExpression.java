@@ -10,7 +10,6 @@ import ivorius.reccomplex.dimensions.DimensionDictionary;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.utils.algebra.SupplierCache;
-import joptsimple.internal.Strings;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.WorldProvider;
 import net.minecraftforge.common.DimensionManager;
@@ -36,7 +35,7 @@ public class DimensionExpression extends BoolFunctionExpressionCache<WorldProvid
 
     public static String ofTypes(String... dimensionTypes)
     {
-        return DIMENSION_TYPE_PREFIX + Strings.join(dimensionTypes, " & " + DIMENSION_TYPE_PREFIX);
+        return DIMENSION_TYPE_PREFIX + String.join(" & " + DIMENSION_TYPE_PREFIX, dimensionTypes);
     }
 
     protected class DimensionVariableType extends VariableType<Boolean, WorldProvider, Object>

@@ -53,7 +53,7 @@ public abstract class GenerationType
     public static String readID(JsonObject object)
     {
         String id = JsonUtils.getString(object, "id", null);
-        if (id == null) id = Integer.toHexString(idRandomizers.peek().nextInt()); // Legacy support for missing IDs
+        if (id == null || id.length() == 0) id = Integer.toHexString(idRandomizers.peek().nextInt()); // Legacy support for missing IDs
         return id;
     }
 

@@ -20,7 +20,6 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
-import joptsimple.internal.Strings;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -74,7 +73,7 @@ public class CommandSearchStructure extends CommandExpecting
 
     public static float searchRank(List<String> query, Collection<String> keywords)
     {
-        return keywords.stream().filter(Predicates.contains(Pattern.compile(Strings.join(Lists.transform(query, Pattern::quote), "|"), Pattern.CASE_INSENSITIVE))::apply).count();
+        return keywords.stream().filter(Predicates.contains(Pattern.compile(String.join("|", Lists.transform(query, Pattern::quote)), Pattern.CASE_INSENSITIVE))::apply).count();
     }
 
     public static <T> void postResultMessage(ICommandSender commandSender, Function<T, ? extends ITextComponent> toComponent, Queue<T> list)

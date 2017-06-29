@@ -125,8 +125,12 @@ public class CommandSanity extends CommandExpecting
                     !structure.generationTypes(GenerationType.class).isEmpty(), "Missing generation type");
 
             sane &= addGenericStructureLog(commandSender, (s, structure) ->
-                    structure.transformer.getTransformers().stream().allMatch(t -> t.id().length() > 0)
-            , "Transformer has empty ID");
+                            structure.transformer.getTransformers().stream().allMatch(t -> t.id().length() > 0)
+                    , "Transformer has empty ID");
+
+            sane &= addGenerationLog(commandSender, GenerationType.class, (structure, gen) ->
+                            gen.id().length() > 0
+                    , "Generation type has empty ID");
 
             sane &= addGenerationLog(commandSender, NaturalGeneration.class, (structure, gen) ->
                             values(Biome.REGISTRY).anyMatch(b -> StructureSelector.generationWeightInBiome(gen.biomeWeights, b) > 0)

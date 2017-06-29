@@ -92,7 +92,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
     {
         String generationCategory = JsonUtils.getString(jsonObject, "generationCategory");
 
-        NaturalGeneration naturalGeneration = new NaturalGeneration("", generationCategory);
+        NaturalGeneration naturalGeneration = new NaturalGeneration(readID(new JsonObject()), generationCategory);
         if (jsonObject.has("generationBiomes"))
         {
             WeightedBiomeMatcher[] infos = gson.fromJson(jsonObject.get("generationBiomes"), WeightedBiomeMatcher[].class);

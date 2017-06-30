@@ -21,6 +21,8 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.MapGenStructure;
+import net.minecraft.world.gen.structure.MapGenStructureIO;
+import net.minecraft.world.gen.structure.StructureComponent;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.common.DimensionManager;
 import org.apache.commons.lang3.ArrayUtils;
@@ -193,6 +195,13 @@ public class RCTextStyle
     {
         TextComponentString name = new TextComponentString(mapGen.getStructureName());
         name.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Vanilla Structure")));
+        return name;
+    }
+
+    public static ITextComponent vanillaComponentSight(StructureComponent component)
+    {
+        TextComponentString name = new TextComponentString(MapGenStructureIO.getStructureComponentName(component));
+        name.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Vanilla Structure Component")));
         return name;
     }
 

@@ -21,6 +21,7 @@ import ivorius.reccomplex.random.Person;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
+import ivorius.reccomplex.utils.accessor.RCAccessorMapGenStructure;
 import ivorius.reccomplex.utils.accessor.SafeReflector;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -37,6 +38,7 @@ import net.minecraft.world.gen.structure.*;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -117,15 +119,29 @@ public class CommandVanilla extends CommandSplit
 
     public static List<ITextComponent> sightNames(World world, BlockPos pos)
     {
-        return sights(world, pos).map(RCTextStyle::vanillaSight).collect(Collectors.toList());
+        List<ITextComponent> sights = sights(world, pos).map(RCTextStyle::vanillaSight)
+                .collect(Collectors.toCollection(ArrayList::new));
+        sights.addAll(sights(world, pos)
+                .map(s -> RCAccessorMapGenStructure.getStructureAt(s, pos))
+                .flatMap(s -> s.getComponents().stream().filter(c -> c.getBoundingBox().isVecInside(pos)))
+                .map(RCTextStyle::vanillaComponentSight)
+                .collect(Collectors.toList())
+        );
+        return sights;
     }
 
     public static Stream<MapGenStructure> sights(World world, BlockPos pos)
     {
         return Arrays.stream(Type.values())
-                            .map(t -> t.generator(false))
-                            .peek(m -> ReflectionHelper.setPrivateValue(MapGenBase.class, m, world, "worldObj", "field_75039_c"))
-                            .filter(m -> m.isInsideStructure(pos));
+                .map(t -> t.generator(false))
+                .peek(m -> ReflectionHelper.setPrivateValue(MapGenBase.class, m, world, "worldObj", "field_75039_c"))
+                .filter(m -> m.isInsideStructure(pos));
+    }
+
+    public static Stream<StructureComponent> sights(StructureStart structure, BlockPos pos)
+    {
+        return structure.getComponents().stream()
+                .filter(s -> s.getBoundingBox().isVecInside(pos));
     }
 
     public static void recursiveGenerate(MapGenBase gen, World world, ChunkPos pos)

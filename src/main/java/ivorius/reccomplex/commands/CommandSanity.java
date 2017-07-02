@@ -98,6 +98,12 @@ public class CommandSanity extends CommandExpecting
             try
             {
                 path = RCFiles.pathFromResourceLocation(new ResourceLocation(domain.toLowerCase(), ""));
+
+                if (path != null && !Files.isReadable(path))
+                {
+                    commandSender.sendMessage(new TextComponentString("Can't read files from mod: " + mod.getModId()));
+                    sane = false;
+                }
             }
             catch (RCFiles.ResourceLocationLoadException e)
             {
@@ -106,10 +112,10 @@ public class CommandSanity extends CommandExpecting
                 commandSender.sendMessage(new TextComponentString(RCCommands.reason(e)));
                 sane = false;
             }
-            if (path != null && !Files.isReadable(path))
+            finally
             {
-                commandSender.sendMessage(new TextComponentString("Can't read files from mod: " + mod.getModId()));
-                sane = false;
+                if (path != null)
+                    RCFiles.closeQuietly(path.getFileSystem());
             }
         }
 

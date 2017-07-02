@@ -17,8 +17,6 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import javax.annotation.Nonnull;
 import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -97,9 +95,18 @@ public enum ResourceDirectory
                 {
                     String domain = mod.getModId();
 
-                    Path path = RCFiles.pathFromResourceLocation(new ResourceLocation(domain.toLowerCase(), ""));
-                    if (path != null)
-                        tryLoadResources(loader, level, path, domain, false);
+                    Path path = null;
+
+                    try
+                    {
+                        path = RCFiles.pathFromResourceLocation(new ResourceLocation(domain.toLowerCase(), ""));
+                        if (path != null)
+                            tryLoadResources(loader, level, path, domain, false);
+                    }
+                    finally
+                    {
+                        RCFiles.closeQuietly(path);
+                    }
                 }
 
                 break;

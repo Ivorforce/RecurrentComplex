@@ -43,6 +43,27 @@ public class RCFiles
 //        return path;
     }
 
+    public static void closeQuietly(FileSystem fileSystem)
+    {
+        if (fileSystem != FileSystems.getDefault())
+        {
+            try
+            {
+                fileSystem.close();
+            }
+            catch (IOException | ClosedFileSystemException ignored)
+            {
+
+            }
+        }
+    }
+
+    public static void closeQuietly(Path path)
+    {
+        if (path != null)
+            closeQuietly(path.getFileSystem());
+    }
+
     static Path resourceToPath(URL resource) throws IOException, URISyntaxException
     {
         Objects.requireNonNull(resource, "Resource URL cannot be null");
@@ -76,6 +97,7 @@ public class RCFiles
         return fs.getPath(entryName);
     }
 
+    @Nullable
     public static Path pathFromResourceLocation(ResourceLocation resourceLocation) throws ResourceLocationLoadException
     {
         try
@@ -90,6 +112,7 @@ public class RCFiles
         }
     }
 
+    @Nullable
     public static Path tryPathFromResourceLocation(ResourceLocation resourceLocation)
     {
         try

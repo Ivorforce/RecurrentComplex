@@ -13,7 +13,6 @@ import org.apache.commons.io.FilenameUtils;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashMap;
@@ -111,22 +110,31 @@ public class FileLoader extends FileHandler
     @ParametersAreNonnullByDefault
     public boolean tryLoad(ResourceLocation resourceLocation, @Nullable String customID, FileLoadContext context)
     {
-        Path path = RCFiles.tryPathFromResourceLocation(resourceLocation);
+        Path path = null;
 
-        if (path != null)
+        try
         {
-            try
+            path = RCFiles.tryPathFromResourceLocation(resourceLocation);
+
+            if (path != null)
             {
-                return load(path, customID, context);
+                try
+                {
+                    return load(path, customID, context);
+                }
+                catch (UnsupportedOperationException e)
+                {
+                    RecurrentComplex.logger.error(String.format("Reading unsupported: ?.%s", RCFiles.extension(path)), e);
+                }
+                catch (Exception e)
+                {
+                    RecurrentComplex.logger.error("Error reading from resource location '" + resourceLocation + "'", e);
+                }
             }
-            catch (UnsupportedOperationException e)
-            {
-                RecurrentComplex.logger.error(String.format("Reading unsupported: ?.%s", RCFiles.extension(path)), e);
-            }
-            catch (Exception e)
-            {
-                RecurrentComplex.logger.error("Error reading from resource location '" + resourceLocation + "'", e);
-            }
+        }
+        finally
+        {
+            RCFiles.closeQuietly(path);
         }
 
         return false;

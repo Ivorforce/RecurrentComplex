@@ -340,11 +340,11 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
             TransformerMulti transformer = TransformerMulti.fuse(Arrays.asList(this.transformer, foreignTransformer));
             TransformerMulti.InstanceData cInstanceData = transformer.fuseDatas(Arrays.asList(instanceData.transformerData, instanceData.foreignTransformerData));
 
+            if (context.generateMaturity.isSuggest() && !transformer.mayGenerate(cInstanceData, context, worldData))
+                return null;
+
             RunTransformer runTransformer = new RunTransformer(transformer, cInstanceData);
             transformer.configureInstanceData(cInstanceData, context, worldData, runTransformer);
-
-            if (context.generateMaturity.isSuggest() && !transformer.mayGenerate(cInstanceData, context, worldData, runTransformer))
-                return null;
 
             worldData.tileEntities.forEach(tileEntityCompound ->
             {

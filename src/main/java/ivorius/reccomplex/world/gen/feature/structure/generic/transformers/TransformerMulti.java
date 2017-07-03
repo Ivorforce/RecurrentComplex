@@ -135,16 +135,18 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
     public InstanceData prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
     {
         InstanceData instanceData = new InstanceData();
-        getTransformers().forEach(t -> instanceData.pairedTransformers.add(Pair.of(t, t.prepareInstanceData(context, worldData))));
         instanceData.deactivated = !getEnvironmentMatcher().test(context.environment);
+        if (!instanceData.deactivated)
+            getTransformers().forEach(t -> instanceData.pairedTransformers.add(Pair.of(t, t.prepareInstanceData(context, worldData))));
         return instanceData;
     }
 
     @Override
     public void configureInstanceData(InstanceData instanceData, StructurePrepareContext context, IvWorldData worldData, RunTransformer transformer)
     {
-        //noinspection unchecked
-        instanceData.pairedTransformers.forEach(pair -> pair.getLeft().configureInstanceData(pair.getRight(), context, worldData, transformer));
+        if (!instanceData.deactivated)
+            //noinspection unchecked
+            instanceData.pairedTransformers.forEach(pair -> pair.getLeft().configureInstanceData(pair.getRight(), context, worldData, transformer));
     }
 
     @Override

@@ -52,7 +52,7 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
     }
 
     @Override
-    public boolean mayGenerate(NBTNone instanceData, StructurePrepareContext context, IvWorldData worldData, RunTransformer transformer)
+    public boolean mayGenerate(NBTNone instanceData, StructurePrepareContext context, IvWorldData worldData)
     {
         IvBlockCollection blockCollection = worldData.blockCollection;
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};

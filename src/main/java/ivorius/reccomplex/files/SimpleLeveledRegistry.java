@@ -121,10 +121,11 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
         return items.getMap().inverse().get(s);
     }
 
+    @Nullable
     public RawResourceLocation resourceLocation(S s)
     {
         String id = id(s);
-        return new RawResourceLocation(status(id).domain, id);
+        return id != null ? new RawResourceLocation(status(id).domain, id) : null;
     }
 
     @Override

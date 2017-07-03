@@ -19,6 +19,7 @@ import ivorius.reccomplex.utils.expression.CommandExpression;
 import ivorius.reccomplex.utils.expression.DimensionExpression;
 import ivorius.reccomplex.utils.expression.ResourceExpression;
 import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
@@ -89,6 +90,8 @@ public class RCConfig
     private static BiomeExpression universalBiomeExpression = new BiomeExpression();
     private static DimensionExpression universalDimensionExpression = new DimensionExpression();
 
+    private static ResourceExpression failingStructureLogExpression = new ResourceExpression(s -> true);
+
     private static final List<String> universalTransformerPresets = new ArrayList<>();
     private static TransformerMulti universalTransformer;
 
@@ -150,6 +153,9 @@ public class RCConfig
 
             universalDimensionExpression.setExpression(config.getString("universalDimensionMatcher", CATEGORY_BALANCING, "", "Dimension Expression that will be checked for every single structure. Use this if you want to blacklist / whitelist specific dimensions that shouldn't have structures."));
             logExpressionException(universalDimensionExpression, "universalDimensionMatcher", RecurrentComplex.logger);
+
+            failingStructureLogExpression.setExpression(config.getString("failingStructureLogExpression", CATEGORY_BALANCING, "", "Resource Expression that will restrict logging of structures that fail to generate."));
+            logExpressionException(failingStructureLogExpression, "failingStructureLogExpression", RecurrentComplex.logger);
 
             customArtifactTag = Pair.of(
                     config.getString("customArtifactTag", CATEGORY_BALANCING, "", "Custom Inventory Generator to override when an artifact generation tag fires."),
@@ -271,6 +277,12 @@ public class RCConfig
     {
         CommandExpression matcher = commandMatchers.get(command);
         return matcher == null || matcher.test(new CommandExpression.Argument(command, sender));
+    }
+
+    public static boolean logFailingStructure(Structure structure)
+    {
+        RawResourceLocation loc = StructureRegistry.INSTANCE.resourceLocation(structure);
+        return loc == null || failingStructureLogExpression.test(loc);
     }
 
     public static TransformerMulti getUniversalTransformer()

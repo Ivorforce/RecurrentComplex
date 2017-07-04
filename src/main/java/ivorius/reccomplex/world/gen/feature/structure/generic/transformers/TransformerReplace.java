@@ -65,10 +65,8 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
     public static void setBlock(StructureSpawnContext context, int[] areaSize, BlockPos pos, WeightedBlockState entry, Supplier<NBTTagCompound> tileEntity)
     {
-        if (entry.state != null && RecurrentComplex.specialRegistry.isSafe(entry.state.getBlock()))
-        {
+        if (entry.state != null)
             GenericStructure.setBlock(context, areaSize, pos, entry.state, tileEntity);
-        }
     }
 
     public TransformerReplace replaceWith(WeightedBlockState... states)

@@ -22,9 +22,12 @@ public class Structures
         return new StructureBoundingBox(coord, coord.add(size[0] - 1, size[1] - 1, size[2] - 1));
     }
 
-    public static StructureBoundingBox chunkBoundingBox(ChunkPos chunkPos)
+    public static StructureBoundingBox chunkBoundingBox(ChunkPos chunkPos, boolean decorate)
     {
-        return new StructureBoundingBox(chunkPos.chunkXPos << 4, chunkPos.chunkZPos << 4, (chunkPos.chunkXPos << 4) + 15, (chunkPos.chunkZPos << 4) + 15);
+        int shift = decorate ? 8 : 0;
+        int minZ = (chunkPos.chunkZPos << 4) + shift;
+        int minX = (chunkPos.chunkXPos << 4) + shift;
+        return new StructureBoundingBox(minX, minZ, minX + 15, minZ + 15);
     }
 
     public static StructureBoundingBox intersection(StructureBoundingBox bb1, StructureBoundingBox bb2)

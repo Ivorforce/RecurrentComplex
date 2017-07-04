@@ -92,7 +92,7 @@ public class WorldStructureGenerationData extends WorldSavedData
 
     public Stream<Entry> entriesAt(final StructureBoundingBox boundingBox)
     {
-        return RCStructureBoundingBoxes.rasterize(boundingBox).stream().flatMap(chunkPos -> entriesAt(chunkPos).filter(input ->
+        return RCStructureBoundingBoxes.rasterize(boundingBox, true).stream().flatMap(chunkPos -> entriesAt(chunkPos).filter(input ->
         {
             StructureBoundingBox bb = input.getBoundingBox();
             return bb != null && bb.intersectsWith(boundingBox);
@@ -226,7 +226,7 @@ public class WorldStructureGenerationData extends WorldSavedData
 
         public Set<ChunkPos> rasterize()
         {
-            return RCStructureBoundingBoxes.rasterize(getBoundingBox());
+            return RCStructureBoundingBoxes.rasterize(getBoundingBox(), true);
         }
 
         public abstract String description();

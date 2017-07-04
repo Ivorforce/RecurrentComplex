@@ -190,7 +190,7 @@ public class StructureGenerator<S extends NBTStorable>
             StructureBoundingBox oldBB = this.generationBB;
             for (ChunkPos existingChunk : existingChunks)
             {
-                generationBB(Structures.chunkBoundingBox(existingChunk));
+                generationBB(Structures.chunkBoundingBox(existingChunk, true));
 
                 structure.generate(spawn().get(), instanceData, RCConfig.getUniversalTransformer());
             }
@@ -478,7 +478,7 @@ public class StructureGenerator<S extends NBTStorable>
     public StructureGenerator<S> partially(boolean partially, ChunkPos pos)
     {
         this.partially = partially;
-        generationBB(partially ? Structures.chunkBoundingBox(pos) : null);
+        generationBB(partially ? Structures.chunkBoundingBox(pos, true) : null);
         return this;
     }
 

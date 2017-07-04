@@ -14,6 +14,7 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -22,12 +23,24 @@ import java.util.stream.Stream;
  */
 public class RCStructureBoundingBoxes
 {
-    public static Set<ChunkPos> rasterize(StructureBoundingBox boundingBox)
+    public static Set<ChunkPos> rasterize(StructureBoundingBox boundingBox, boolean decorate)
     {
         if (!valid(boundingBox))
             return Collections.emptySet();
 
-        return StructureBoundingBoxes.rasterize(boundingBox);
+        int shift = decorate ? 8 : 0;
+        int minX = (boundingBox.minX - shift) >> 4;
+        int maxX = (boundingBox.maxX - shift) >> 4;
+
+        int minZ = (boundingBox.minZ - shift) >> 4;
+        int maxZ = (boundingBox.maxZ - shift) >> 4;
+
+        Set<ChunkPos> pairs = new HashSet<>((maxX - minX + 1) * (maxZ - minZ + 1));
+        for (int x = minX; x <= maxX; x++)
+            for (int z = minZ; z <= maxZ; z++)
+                pairs.add(new ChunkPos(x, z));
+
+        return pairs;
     }
 
     public static boolean valid(StructureBoundingBox boundingBox)

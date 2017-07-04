@@ -6,6 +6,7 @@
 package ivorius.reccomplex.commands.former;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.ivtoolkit.math.IvShapeHelper;
 import ivorius.ivtoolkit.world.MockWorld;
@@ -23,6 +24,7 @@ import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
+import ivorius.reccomplex.world.gen.feature.HeightMapFreezer;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
@@ -69,14 +71,6 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
         }
     }
 
-    public static void runShape(ICommandSender sender, String shape, Consumer<BlockPos> consumer) throws CommandException
-    {
-        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
-        RCCommands.assertSize(sender, selectionOwner);
-
-        runShape(shape, selectionOwner.getSelection(), consumer);
-    }
-
     public static void shape(Expect expect)
     {
         expect.any("cube", "sphere");
@@ -115,13 +109,20 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
 
         PositionedBlockExpression matcher = parameters.get(1).rest(NaP::join).orElse("").to(RCP.expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
 
-        runShape(sender, shape, pos ->
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
+        RCCommands.assertSize(sender, selectionOwner);
+
+        // Can't freeze because the update won't get sent
+//        HeightMapFreezer freezer = HeightMapFreezer.freeze(BlockAreas.toBoundingBox(selectionOwner.getSelection()), sender.getEntityWorld());
+        runShape(shape, selectionOwner.getSelection(), pos ->
         {
             if (matcher.evaluate(() -> PositionedBlockExpression.Argument.at(world, pos)))
             {
                 IBlockState state = dst.get(world.rand().nextInt(dst.size()));
                 world.setBlockState(pos, state, 2);
+//                freezer.markBlock(pos, state);
             }
         });
+//        freezer.melt();
     }
 }

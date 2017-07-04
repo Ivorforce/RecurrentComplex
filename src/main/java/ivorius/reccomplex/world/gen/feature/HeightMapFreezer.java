@@ -46,7 +46,7 @@ public class HeightMapFreezer
         this.world = world;
         this.chunkMin = new ChunkPos(StructureBoundingBoxes.min(boundingBox));
         ChunkPos chunkMax = new ChunkPos(StructureBoundingBoxes.max(boundingBox));
-        this.chunkSize = new int[]{chunkMax.x - chunkMin.x + 1, chunkMax.z - chunkMin.z + 1,};
+        this.chunkSize = new int[]{chunkMax.chunkXPos - chunkMin.chunkXPos + 1, chunkMax.chunkZPos - chunkMin.chunkZPos + 1,};
     }
 
     public static HeightMapFreezer freeze(StructureBoundingBox boundingBox, World world)
@@ -59,7 +59,7 @@ public class HeightMapFreezer
     protected void initialize()
     {
         for (ChunkPos pos : RCStructureBoundingBoxes.rasterize(boundingBox, false))
-            chunks.put(index(pos), new Entry(world.getChunkFromChunkCoords(pos.x, pos.z)));
+            chunks.put(index(pos), new Entry(world.getChunkFromChunkCoords(pos.chunkXPos, pos.chunkZPos)));
 
         //noinspection ConstantConditions
         RCStructureBoundingBoxes.streamMutablePositions(boundingBox).forEach(pos ->
@@ -77,7 +77,7 @@ public class HeightMapFreezer
 
     private Integer index(ChunkPos pos)
     {
-        return (pos.x - chunkMin.x) * chunkSize[1] + (pos.z - chunkMin.z);
+        return (pos.chunkXPos - chunkMin.chunkXPos) * chunkSize[1] + (pos.chunkZPos - chunkMin.chunkZPos);
     }
 
     private int chunkSurfaceIndex(BlockPos pos)
@@ -113,10 +113,10 @@ public class HeightMapFreezer
     public void melt()
     {
         if (relightBlock == null)
-            relightBlock = ReflectionHelper.findMethod(Chunk.class, "relightBlock", "func_76615_h",
+            relightBlock = ReflectionHelper.findMethod(Chunk.class, null, new String[]{"relightBlock", "func_76615_h"},
                     Integer.TYPE, Integer.TYPE, Integer.TYPE);
         if (propagateSkylightOcclusion == null)
-            propagateSkylightOcclusion = ReflectionHelper.findMethod(Chunk.class, "propagateSkylightOcclusion", "func_76595_e",
+            propagateSkylightOcclusion = ReflectionHelper.findMethod(Chunk.class, null, new String[]{"propagateSkylightOcclusion", "func_76595_e"},
                     Integer.TYPE, Integer.TYPE);
 
         // Restore
@@ -140,7 +140,7 @@ public class HeightMapFreezer
                         pos.getX() & 15, entry.heightMap[surfaceIndex] + 1, pos.getZ() & 15);
                 SafeReflector.invoke(entry.chunk, propagateSkylightOcclusion, null,
                         pos.getX() & 15, pos.getZ() & 15);
-                if (world.provider.hasSkyLight())
+                if (!world.provider.getHasNoSky())
                     world.checkLight(new BlockPos(pos.getX(), entry.heightMap[surfaceIndex], pos.getZ()));
             }
         });

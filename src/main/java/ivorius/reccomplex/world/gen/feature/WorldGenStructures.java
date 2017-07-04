@@ -144,7 +144,7 @@ public class WorldGenStructures
             }
 
             new StructureGenerator<>(structure).world(world).generationInfo(entry.generationInfoID)
-                    .seed(chunkSeed(entry.seed, chunkPos)).boundingBox(entry.boundingBox).transform(entry.transform).generationBB(Structures.chunkBoundingBox(chunkPos))
+                    .seed(chunkSeed(entry.seed, chunkPos)).boundingBox(entry.boundingBox).transform(entry.transform).generationBB(Structures.chunkBoundingBox(chunkPos, true))
                     .structureID(entry.getStructureID()).instanceData(entry.instanceData)
                     // Could use entry.firstTime but then StructureGenerator would add a new entry
                     .maturity(StructureSpawnContext.GenerateMaturity.COMPLEMENT)

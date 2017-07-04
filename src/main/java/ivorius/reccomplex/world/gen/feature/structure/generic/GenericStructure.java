@@ -223,10 +223,12 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
         if (transformer != null)
             transformer.transformer.transform(transformer.instanceData, Transformer.Phase.BEFORE, context, worldData, transformer);
 
-        StructureBoundingBox relevantSourceArea = context.intersection(BlockAreas.toBoundingBox(blockCollection.area()));
+        StructureBoundingBox relevantSourceArea = context.sourceIntersection(BlockAreas.toBoundingBox(blockCollection.area()));
 
         if (relevantSourceArea != null) // Why did we get asked to generate again?
         {
+            context.freezeHeightMap(relevantSourceArea);
+
             BlockPos.MutableBlockPos worldPos = new BlockPos.MutableBlockPos();
             for (int pass = 0; pass < 2; pass++)
             {
@@ -251,6 +253,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
                     }
                 }
             }
+
+            context.meltHeightMap();
         }
 
         if (transformer != null)

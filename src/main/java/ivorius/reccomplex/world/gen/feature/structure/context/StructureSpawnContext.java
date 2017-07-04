@@ -12,6 +12,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.RCAxisAlignedTransform;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
+import ivorius.reccomplex.world.gen.feature.HeightMapFreezer;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
@@ -41,6 +42,8 @@ public class StructureSpawnContext extends StructureLiveContext
 
     public final GenerateMaturity generateMaturity;
 
+    private HeightMapFreezer heightMapFreezer;
+
     public StructureSpawnContext(@Nonnull Environment environment, @Nonnull Random random, @Nonnull AxisAlignedTransform2D transform, @Nonnull StructureBoundingBox boundingBox, @Nullable StructureBoundingBox generationBB, Predicate<Vec3i> generationPredicate, int generationLayer, boolean generateAsSource, GenerateMaturity generateMaturity)
     {
         super(transform, boundingBox, generateAsSource, environment);
@@ -52,13 +55,20 @@ public class StructureSpawnContext extends StructureLiveContext
     }
 
     @Nullable
-    public StructureBoundingBox intersection(StructureBoundingBox area)
+    public StructureBoundingBox sourceIntersection(StructureBoundingBox area)
     {
         return this.generationBB != null
                 ? RCStructureBoundingBoxes.intersection(area, BlockAreas.toBoundingBox(
                 RCAxisAlignedTransform.apply(RCAxisAlignedTransform.invert(this.transform),
                         RCBlockAreas.sub(RCBlockAreas.from(this.generationBB), StructureBoundingBoxes.min(this.boundingBox)),
                         StructureBoundingBoxes.size(boundingBox), 1)))
+                : area;
+    }
+
+    public StructureBoundingBox intersection(StructureBoundingBox area)
+    {
+        return this.generationBB != null
+                ? RCStructureBoundingBoxes.intersection(area, generationBB)
                 : area;
     }
 
@@ -76,22 +86,34 @@ public class StructureSpawnContext extends StructureLiveContext
         return generationPredicate == null || generationPredicate.test(coord);
     }
 
-    public boolean setBlock(BlockPos coord, IBlockState state, int flag)
+    public boolean setBlock(BlockPos pos, IBlockState state, int flag)
     {
         if (!RecurrentComplex.specialRegistry.isSafe(state.getBlock()))
         {
-            environment.world.setBlockState(coord.toImmutable(), Blocks.AIR.getDefaultState(), 2);
+            environment.world.setBlockState(pos.toImmutable(), Blocks.AIR.getDefaultState(), 2);
             return false;
         }
 
-        if (includes(coord))
+        if (includes(pos))
         {
             // world.setBlock returns false on 'no change'
-            environment.world.setBlockState(coord.toImmutable(), state, flag);
+            environment.world.setBlockState(pos.toImmutable(), state, flag);
+            if (heightMapFreezer != null) heightMapFreezer.markBlock(pos, state);
             return true;
         }
 
         return false;
+    }
+
+    public void freezeHeightMap(StructureBoundingBox boundingBox)
+    {
+        heightMapFreezer = HeightMapFreezer.freeze(boundingBox, environment.world);
+    }
+
+    public void meltHeightMap()
+    {
+        heightMapFreezer.melt();
+        heightMapFreezer = null;
     }
 
     public enum GenerateMaturity

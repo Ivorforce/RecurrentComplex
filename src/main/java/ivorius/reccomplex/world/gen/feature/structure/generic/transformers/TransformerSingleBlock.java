@@ -45,12 +45,15 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
 
         IvBlockCollection blockCollection = worldData.blockCollection;
 
-        StructureBoundingBox relevantSourceArea = context.intersection(BlockAreas.toBoundingBox(blockCollection.area()));
+        StructureBoundingBox relevantSourceArea = context.sourceIntersection(BlockAreas.toBoundingBox(blockCollection.area()));
         if (relevantSourceArea == null)
             return;
 
         BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
         int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
+
+        // Freeze height to speed up light calculation
+        context.freezeHeightMap(context.intersection(context.boundingBox));
 
         BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
         for (BlockPos sourceCoord : RCStructureBoundingBoxes.mutablePositions(relevantSourceArea))
@@ -65,6 +68,8 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
             if (matches(context.environment, instanceData, state))
                 transformBlock(instanceData, Phase.BEFORE, context, areaSize, worldCoord, state);
         }
+
+        context.meltHeightMap();
     }
 
     public abstract boolean generatesInPhase(S instanceData, Phase phase);

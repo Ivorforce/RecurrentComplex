@@ -60,12 +60,12 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
         BlockPos.MutableBlockPos worldCoord = new BlockPos.MutableBlockPos();
         for (BlockPos sourcePos : BlockAreas.mutablePositions(blockCollection.area()))
         {
-            IvMutableBlockPos.add(context.transform.applyOn(sourcePos, worldCoord, areaSize), lowerCoord);
-            IBlockState state = blockCollection.getBlockState(sourcePos);
-
-            if (sourceMatcher.test(state) &&
-                    !(destMatcher.expressionIsEmpty() || destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(context.environment.world, worldCoord))))
-                return false;
+            if (sourceMatcher.test(blockCollection.getBlockState(sourcePos)))
+            {
+                IvMutableBlockPos.add(context.transform.applyOn(sourcePos, worldCoord, areaSize), lowerCoord);
+                if (!(destMatcher.expressionIsEmpty() || destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(context.environment.world, worldCoord))))
+                    return false;
+            }
         }
 
         return true;

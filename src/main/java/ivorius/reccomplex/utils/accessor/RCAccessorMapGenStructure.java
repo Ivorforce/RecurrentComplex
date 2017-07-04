@@ -22,7 +22,7 @@ public class RCAccessorMapGenStructure
     public static StructureStart getStructureAt(MapGenStructure gen, BlockPos pos)
     {
         if (getStructureAt == null)
-            getStructureAt = ReflectionHelper.findMethod(MapGenStructure.class, "getStructureAt", "func_175797_c", BlockPos.class);
+            getStructureAt = ReflectionHelper.findMethod(MapGenStructure.class, null, new String[]{"getStructureAt", "func_175797_c"}, BlockPos.class);
 
         return SafeReflector.invoke(gen, getStructureAt, null, pos);
     }

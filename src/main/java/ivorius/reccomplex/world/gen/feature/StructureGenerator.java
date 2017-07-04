@@ -205,7 +205,7 @@ public class StructureGenerator<S extends NBTStorable>
     protected Optional<WorldStructureGenerationData.StructureEntry> failGenerate(String reason)
     {
         if (RCConfig.logFailingStructure(structure))
-            RecurrentComplex.logger.trace(String.format("%s canceled generation at %s (%d) (%s)", structure, lowerCoord(), world.provider.getDimension(), reason));
+            RecurrentComplex.logger.trace(String.format("%s canceled generation at %s (%d) (%s)", structure, lowerCoord().orElse(null), world.provider.getDimension(), reason));
         return null; // Failed to place
     }
 

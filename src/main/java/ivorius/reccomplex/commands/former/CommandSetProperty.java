@@ -12,7 +12,9 @@ import ivorius.mcopts.commands.parameters.expect.Expect;
 import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
+import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
@@ -20,6 +22,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -55,11 +58,15 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
 
         String shape = parameters.get("shape").optional().orElse("cube");
 
-        CommandFill.runShape(sender, shape, (BlockPos pos) ->
+        Consumer<BlockPos> consumer = (BlockPos pos) ->
         {
             PositionedBlockExpression.Argument at = PositionedBlockExpression.Argument.at(world, pos);
             if (matcher.test(at))
                 TransformerProperty.withProperty(at.state, propertyName, propertyValue).ifPresent(state -> world.setBlockState(pos, state, 3));
-        });
+        };
+        SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
+        RCCommands.assertSize(sender, selectionOwner);
+
+        CommandFill.runShape(shape, selectionOwner.getSelection(), consumer);
     }
 }

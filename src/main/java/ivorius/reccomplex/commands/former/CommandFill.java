@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.commands.former;
 
+import com.google.common.collect.Sets;
 import ivorius.ivtoolkit.blocks.BlockArea;
-import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.ivtoolkit.math.IvShapeHelper;
 import ivorius.ivtoolkit.world.MockWorld;
@@ -23,15 +23,19 @@ import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
+import ivorius.reccomplex.utils.expression.Expressions;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
-import ivorius.reccomplex.world.gen.feature.HeightMapFreezer;
+import ivorius.reccomplex.utils.expression.PreloadedBooleanExpression;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -41,6 +45,8 @@ import java.util.stream.IntStream;
  */
 public class CommandFill extends CommandExpecting implements CommandVirtual
 {
+    public static final int MAX_FLOOD = 50 * 50 * 50;
+
     public static void runShape(String shape, BlockArea area, Consumer<BlockPos> consumer) throws CommandException
     {
         BlockPos p1 = area.getPoint1();
@@ -90,6 +96,7 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
                 .then(MCE::block).descriptionU("source expression").optional().repeat()
                 .named("metadata", "m").then(RCE::metadata)
                 .named("shape", "s").then(CommandFill::shape)
+                .named("flood", "f").words(RCE::directionExpression)
         ;
     }
 
@@ -115,17 +122,54 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
         RCCommands.assertSize(sender, selectionOwner);
 
-        // Can't freeze because the update won't get sent
-//        HeightMapFreezer freezer = HeightMapFreezer.freeze(BlockAreas.toBoundingBox(selectionOwner.getSelection()), sender.getEntityWorld());
-        runShape(shape, selectionOwner.getSelection(), pos ->
+        if (parameters.has("flood"))
         {
-            if (matcher.evaluate(() -> PositionedBlockExpression.Argument.at(world, pos)))
+            PreloadedBooleanExpression<EnumFacing> directionExpression = parameters.get("flood").rest(NaP::join).orElse("")
+                    .to(RCP.expression(Expressions.direction())).require();
+            List<EnumFacing> directions = Expressions.directions(directionExpression);
+
+            List<BlockPos> dirty = new ArrayList<>();
+            Set<BlockPos> visited = Sets.newHashSet(dirty);
+
+            runShape(shape, selectionOwner.getSelection(), dirty::add);
+
+            while (!dirty.isEmpty())
+            {
+                BlockPos pos = dirty.remove(dirty.size() - 1);
+
+                for (EnumFacing facing : directions)
+                {
+                    BlockPos offset = pos.offset(facing);
+                    if (matcher.evaluate(() -> PositionedBlockExpression.Argument.at(world, offset))
+                            && visited.add(offset))
+                        dirty.add(offset);
+                }
+
+                if (visited.size() > MAX_FLOOD)
+                    throw new CommandException("Area too big to flood!");
+            }
+
+            for (BlockPos pos : visited)
             {
                 IBlockState state = dst.get(world.rand().nextInt(dst.size()));
                 world.setBlockState(pos, state, 2);
-//                freezer.markBlock(pos, state);
             }
-        });
+        }
+        else
+        {
+            // TODO Can't freeze because the lighting update won't get sent
+//            HeightMapFreezer freezer = HeightMapFreezer.freeze(BlockAreas.toBoundingBox(selectionOwner.getSelection()), sender.getEntityWorld());
+            runShape(shape, selectionOwner.getSelection(), pos ->
+            {
+                if (matcher.evaluate(() -> PositionedBlockExpression.Argument.at(world, pos)))
+                {
+                    IBlockState state = dst.get(world.rand().nextInt(dst.size()));
+                    world.setBlockState(pos, state, 2);
+//                freezer.markBlock(pos, state);
+                }
+            });
 //        freezer.melt();
+        }
     }
+
 }

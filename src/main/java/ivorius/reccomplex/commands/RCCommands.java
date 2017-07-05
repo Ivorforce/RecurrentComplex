@@ -115,7 +115,6 @@ public class RCCommands
 
         event.registerServerCommand(new CommandFill());
         event.registerServerCommand(new CommandSetProperty());
-        event.registerServerCommand(new CommandSelectFlood());
         if (!RecurrentComplex.isLite())
         {
             event.registerServerCommand(new CommandSplit(RCConfig.commandPrefix + "natural",

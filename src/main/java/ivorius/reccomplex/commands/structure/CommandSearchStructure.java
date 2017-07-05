@@ -10,6 +10,7 @@ import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.mcopts.commands.CommandExpecting;
+import ivorius.mcopts.commands.parameters.MCP;
 import ivorius.mcopts.commands.parameters.Parameter;
 import ivorius.mcopts.commands.parameters.Parameters;
 import ivorius.mcopts.commands.parameters.expect.Expect;
@@ -20,11 +21,14 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.utils.expression.BlockExpression;
+import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaDecorationGeneration;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -32,7 +36,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.util.text.TextComponentString;
-import org.apache.commons.lang3.ArrayUtils;
+import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.Biome;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -127,6 +132,15 @@ public class CommandSearchStructure extends CommandExpecting
                 .anyMatch(p -> matcher.evaluate(collection.getBlockState(p))) ? 1 : 0;
     }
 
+    public static ToDoubleFunction<String> searchRank(Parameter<String> parameter) throws CommandException
+    {
+        if (!parameter.has(1))
+            return null;
+
+        List<String> terms = parameter.varargsList().optional().orElse(null);
+        return name -> searchRank(terms, keywords(name, StructureRegistry.INSTANCE.get(name)));
+    }
+
     public static ToDoubleFunction<String> containedRank(Parameter<String> parameter) throws CommandException
     {
         if (!parameter.has(1))
@@ -136,13 +150,52 @@ public class CommandSearchStructure extends CommandExpecting
         return name -> CommandSearchStructure.containedBlocks(StructureRegistry.INSTANCE.get(name), matcher);
     }
 
-    public static ToDoubleFunction<String> searchRank(Parameter<String> parameter) throws CommandException
+    public static ToDoubleFunction<String> biomeRank(Parameter<String> parameter) throws CommandException
     {
         if (!parameter.has(1))
             return null;
 
-        List<String> terms = parameter.varargsList().optional().orElse(null);
-        return name -> searchRank(terms, keywords(name, StructureRegistry.INSTANCE.get(name)));
+        Biome biome = parameter.to(MCP::biome).require();
+        return name ->
+        {
+            Structure<?> structure = StructureRegistry.INSTANCE.get(name);
+
+            double result = 0;
+
+            result += structure.generationTypes(NaturalGeneration.class).stream()
+                    .mapToDouble(g -> StructureSelector.generationWeightInBiome(g.biomeWeights, biome))
+                    .sum();
+
+            result += structure.generationTypes(VanillaDecorationGeneration.class).stream()
+                    .mapToDouble(g -> StructureSelector.generationWeightInBiome(g.biomeWeights, biome))
+                    .sum();
+
+            return result;
+        };
+    }
+
+    public static ToDoubleFunction<String> dimensionRank(Parameter<String> parameter, MinecraftServer server) throws CommandException
+    {
+        if (!parameter.has(1))
+            return null;
+
+        WorldServer world = parameter.to(MCP.dimension(server, server)).require();
+        return name ->
+        {
+            Structure<?> structure = StructureRegistry.INSTANCE.get(name);
+
+            double result = 0;
+
+            result += structure.generationTypes(NaturalGeneration.class).stream()
+                    .mapToDouble(g -> StructureSelector.generationWeightInDimension(g.dimensionWeights, world.provider))
+                    .sum();
+
+            result += structure.generationTypes(VanillaDecorationGeneration.class).stream()
+                    .mapToDouble(g -> StructureSelector.generationWeightInDimension(g.dimensionWeights, world.provider))
+                    .sum();
+
+            return result;
+        };
     }
 
     @Override
@@ -162,6 +215,8 @@ public class CommandSearchStructure extends CommandExpecting
         expect
                 .skip().descriptionU("terms").required().repeat()
                 .named("containing", "c").words(MCE::block).descriptionU("block expression")
+                .named("biome", "b").then(MCE::biome).descriptionU("biome id")
+                .named("dimension", "d").then(MCE::dimension).descriptionU("dimension id")
         ;
     }
 
@@ -174,6 +229,8 @@ public class CommandSearchStructure extends CommandExpecting
 
         ranks.add(searchRank(parameters.get(0)));
         ranks.add(containedRank(parameters.get("containing")));
+        ranks.add(biomeRank(parameters.get("biome")));
+        ranks.add(dimensionRank(parameters.get("dimension"), server));
 
         if (ranks.stream().noneMatch(Objects::nonNull))
             throw new WrongUsageException(getUsage(sender));

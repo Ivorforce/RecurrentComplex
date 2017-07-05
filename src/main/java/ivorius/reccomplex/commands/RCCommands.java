@@ -146,7 +146,6 @@ public class RCCommands
         event.registerServerCommand(lookup = new CommandLookupStructure());
         event.registerServerCommand(list = new CommandListStructures());
         event.registerServerCommand(new CommandSearchStructure());
-        event.registerServerCommand(new CommandContaining());
 
         event.registerServerCommand(new CommandRetrogen());
         event.registerServerCommand(new CommandDecorate());

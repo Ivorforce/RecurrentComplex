@@ -8,13 +8,18 @@ package ivorius.reccomplex.commands.structure;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.mcopts.commands.CommandExpecting;
+import ivorius.mcopts.commands.parameters.Parameter;
+import ivorius.mcopts.commands.parameters.Parameters;
+import ivorius.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.parameters.expect.MCE;
+import ivorius.mcopts.translation.ServerTranslations;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.mcopts.commands.CommandExpecting;
-import ivorius.mcopts.commands.parameters.*;
-import ivorius.mcopts.commands.parameters.expect.Expect;
-import ivorius.mcopts.translation.ServerTranslations;
+import ivorius.reccomplex.commands.parameters.RCP;
+import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -22,10 +27,12 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.util.text.TextComponentString;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -76,11 +83,12 @@ public class CommandSearchStructure extends CommandExpecting
         return keywords.stream().filter(Predicates.contains(Pattern.compile(String.join("|", Lists.transform(query, Pattern::quote)), Pattern.CASE_INSENSITIVE))::apply).count();
     }
 
-    public static <T> void postResultMessage(ICommandSender commandSender, Function<T, ? extends ITextComponent> toComponent, Queue<T> list)
+    public static <T> void postResultMessage(String prefix, ICommandSender sender, Function<T, ? extends ITextComponent> toComponent, Queue<T> list)
     {
         if (list.size() > 0)
         {
             boolean cut = list.size() > MAX_RESULTS;
+
             ITextComponent[] components = new TextComponentBase[cut ? MAX_RESULTS : list.size()];
             for (int i = 0; i < components.length; i++)
             {
@@ -90,12 +98,11 @@ public class CommandSearchStructure extends CommandExpecting
                     components[i] = toComponent.apply(list.remove());
             }
 
-            commandSender.addChatMessage(ServerTranslations.join((Object[]) components));
+            sender.addChatMessage(ServerTranslations.join("", new TextComponentString(prefix),
+                    ServerTranslations.join((Object[]) components)));
         }
         else
-        {
-            commandSender.addChatMessage(RecurrentComplex.translations.get("commands.rcsearch.empty"));
-        }
+            sender.addChatMessage(RecurrentComplex.translations.get("commands.rcsearch.empty"));
     }
 
     @Nonnull
@@ -104,6 +111,38 @@ public class CommandSearchStructure extends CommandExpecting
         PriorityQueue<T> strucs = new PriorityQueue<>(10, (o1, o2) -> Doubles.compare(rank.applyAsDouble(o1), rank.applyAsDouble(o2)));
         strucs.addAll(omega.stream().filter(s -> rank.applyAsDouble(s) > 0).collect(Collectors.toList()));
         return strucs;
+    }
+
+    public static long containedBlocks(Structure structure, BlockExpression matcher)
+    {
+        if (structure == null)
+            return 0;
+
+        IvBlockCollection collection = structure.blockCollection();
+
+        if (collection == null)
+            return 0;
+
+        return collection.area().stream()
+                .anyMatch(p -> matcher.evaluate(collection.getBlockState(p))) ? 1 : 0;
+    }
+
+    public static ToDoubleFunction<String> containedRank(Parameter<String> parameter) throws CommandException
+    {
+        if (!parameter.has(1))
+            return null;
+
+        BlockExpression matcher = parameter.to(RCP.expression(new BlockExpression(RecurrentComplex.specialRegistry))).require();
+        return name -> CommandSearchStructure.containedBlocks(StructureRegistry.INSTANCE.get(name), matcher);
+    }
+
+    public static ToDoubleFunction<String> searchRank(Parameter<String> parameter) throws CommandException
+    {
+        if (!parameter.has(1))
+            return null;
+
+        List<String> terms = parameter.varargsList().optional().orElse(null);
+        return name -> searchRank(terms, keywords(name, StructureRegistry.INSTANCE.get(name)));
     }
 
     @Override
@@ -121,26 +160,32 @@ public class CommandSearchStructure extends CommandExpecting
     public void expect(Expect expect)
     {
         expect
-                .skip().descriptionU("terms").required().repeat();
+                .skip().descriptionU("terms").required().repeat()
+                .named("containing", "c").words(MCE::block).descriptionU("block expression")
+        ;
     }
 
     @Override
-    public void execute(MinecraftServer server, ICommandSender commandSender, String[] args) throws CommandException
+    public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
         Parameters parameters = Parameters.of(args, expect()::declare);
 
-        if (args.length >= 1)
-        {
-            List<String> terms = parameters.get(0).varargsList().require();
+        List<ToDoubleFunction<String>> ranks = new ArrayList<>();
 
-            postResultMessage(commandSender,
-                    RCTextStyle::structure,
-                    search(StructureRegistry.INSTANCE.ids(),
-                            name -> searchRank(terms, keywords(name, StructureRegistry.INSTANCE.get(name)))
-                    )
-            );
-        }
-        else
-            throw RecurrentComplex.translations.commandException("commands.rcsearch.usage");
+        ranks.add(searchRank(parameters.get(0)));
+        ranks.add(containedRank(parameters.get("containing")));
+
+        if (ranks.stream().noneMatch(Objects::nonNull))
+            throw new WrongUsageException(getCommandUsage(sender));
+
+        postResultMessage("Results: ", sender,
+                RCTextStyle::structure,
+                search(StructureRegistry.INSTANCE.ids(),
+                        name -> ranks.stream()
+                                .filter(Objects::nonNull)
+                                .mapToDouble(f -> f.applyAsDouble(name))
+                                .reduce(1, (a, b) -> a * b)
+                )
+        );
     }
 }

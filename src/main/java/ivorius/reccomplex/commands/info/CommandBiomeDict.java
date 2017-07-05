@@ -46,7 +46,7 @@ public class CommandBiomeDict extends CommandSplit
 
                 List<String> terms = parameters.get(0).varargsList().require();
 
-                CommandSearchStructure.postResultMessage(sender,
+                CommandSearchStructure.postResultMessage("Biomes:", sender,
                         RCTextStyle::biome,
                         CommandSearchStructure.search(Biome.REGISTRY.getKeys(), loc -> CommandSearchStructure.searchRank(terms, keywords(loc, Biome.REGISTRY.getObject(loc))))
                 );

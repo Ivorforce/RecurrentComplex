@@ -85,10 +85,12 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
     @Override
     public void expect(Expect expect)
     {
-        expect.then(MCE::block)
+        expect
+                .then(MCE::block)
                 .then(MCE::block).descriptionU("source expression").optional().repeat()
                 .named("metadata", "m").then(RCE::metadata)
-                .named("shape", "s").then(CommandFill::shape);
+                .named("shape", "s").then(CommandFill::shape)
+        ;
     }
 
     public int getRequiredPermissionLevel()
@@ -107,7 +109,8 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
 
         String shape = parameters.get("shape").optional().orElse("cube");
 
-        PositionedBlockExpression matcher = parameters.get(1).rest(NaP::join).orElse("").to(RCP.expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
+        PositionedBlockExpression matcher = parameters.get(1).rest(NaP::join).orElse("")
+                .to(RCP.expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
         RCCommands.assertSize(sender, selectionOwner);

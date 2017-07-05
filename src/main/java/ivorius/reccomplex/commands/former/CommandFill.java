@@ -45,18 +45,18 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
 {
     public static final int MAX_FLOOD = 50 * 50 * 50;
 
-    public static void runShape(String shape, BlockArea area, Consumer<BlockPos> consumer) throws CommandException
+    public static void runShape(RCP.Shape shape, BlockArea area, Consumer<BlockPos> consumer) throws CommandException
     {
         BlockPos p1 = area.getPoint1();
         BlockPos p2 = area.getPoint2();
 
         switch (shape)
         {
-            case "cube":
+            case cube:
                 for (BlockPos pos : area)
                     consumer.accept(pos);
                 break;
-            case "sphere":
+            case sphere:
             {
                 double[] spheroidOrigin = new double[]{(p1.getX() + p2.getX()) * 0.5, (p1.getY() + p2.getY()) * 0.5, (p1.getZ() + p2.getZ()) * 0.5};
                 int[] areaSize = area.areaSize();
@@ -71,13 +71,8 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
                 break;
             }
             default:
-                throw new CommandException("Unknown Shape!");
+                throw new InternalError();
         }
-    }
-
-    public static void shape(Expect expect)
-    {
-        expect.any("cube", "sphere");
     }
 
     @Override
@@ -93,7 +88,7 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
                 .then(MCE::block)
                 .then(MCE::block).descriptionU("source expression").optional().repeat()
                 .named("metadata", "m").then(RCE::metadata)
-                .named("shape", "s").then(CommandFill::shape)
+                .named("shape", "s").then(RCE::shape)
                 .named("flood", "f").words(RCE::directionExpression).descriptionU("direction expression")
         ;
     }
@@ -112,7 +107,7 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
         int[] dstMeta = parameters.get("metadata").to(RCP::metadatas).optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
-        String shape = parameters.get("shape").optional().orElse("cube");
+        RCP.Shape shape = parameters.get("shape").to(RCP::shape).optional().orElse(RCP.Shape.cube);
 
         PositionedBlockExpression matcher = parameters.get(1).rest(NaP::join).orElse("")
                 .to(RCP.expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();

@@ -19,6 +19,7 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
@@ -141,5 +142,15 @@ public class RCP
     public static Parameter<List<EnumFacing>> directions(Parameter<String> parameter)
     {
         return parameter.to(expression(Expressions.direction())).map(Expressions::directions);
+    }
+
+    public static Parameter<Shape> shape(Parameter<String> parameter)
+    {
+        return parameter.map(Shape::valueOf, s -> new CommandException("Invalid Shape!"));
+    }
+
+    public enum Shape
+    {
+        cube, sphere
     }
 }

@@ -16,6 +16,7 @@ import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.RCP;
+import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerProperty;
 import net.minecraft.command.CommandException;
@@ -43,7 +44,7 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
                 .next(TransformerProperty.propertyNameStream().collect(Collectors.toSet())).descriptionU("key").required()
                 .next(params -> params.get(0).tryGet().map(TransformerProperty::propertyValueStream)).descriptionU("value").required()
                 .named("exp").words(MCE::block).descriptionU("positioned block expression")
-                .named("shape", "s").then(CommandFill::shape);
+                .named("shape", "s").then(RCE::shape);
     }
 
     @Override
@@ -56,7 +57,7 @@ public class CommandSetProperty extends SimpleCommand implements CommandVirtual
         String propertyName = parameters.get(0).require();
         String propertyValue = parameters.get(1).require();
 
-        String shape = parameters.get("shape").optional().orElse("cube");
+        RCP.Shape shape = parameters.get("shape").to(RCP::shape).optional().orElse(RCP.Shape.cube);
 
         Consumer<BlockPos> consumer = (BlockPos pos) ->
         {

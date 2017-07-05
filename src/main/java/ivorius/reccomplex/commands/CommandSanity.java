@@ -232,7 +232,7 @@ public class CommandSanity extends CommandExpecting
         if (structures.size() > 0)
         {
             commandSender.sendMessage(new TextComponentString(msg + ":"));
-            CommandSearchStructure.postResultMessage(commandSender, RCTextStyle::structure, structures);
+            CommandSearchStructure.postResultMessage("", commandSender, RCTextStyle::structure, structures);
             return false;
         }
 

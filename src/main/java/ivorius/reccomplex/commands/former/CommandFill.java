@@ -94,7 +94,7 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
                 .then(MCE::block).descriptionU("source expression").optional().repeat()
                 .named("metadata", "m").then(RCE::metadata)
                 .named("shape", "s").then(CommandFill::shape)
-                .named("flood", "f").words(RCE::directionExpression)
+                .named("flood", "f").words(RCE::directionExpression).descriptionU("direction expression")
         ;
     }
 

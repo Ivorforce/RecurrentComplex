@@ -27,12 +27,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.util.text.TextComponentString;
-import net.minecraft.world.WorldServer;
-import net.minecraft.world.biome.Biome;
 
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.ToDoubleBiFunction;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.Collectors;
 
@@ -82,6 +81,15 @@ public class CommandSearchStructure extends CommandExpecting
         ranks.add(name -> fun.applyAsDouble(StructureRegistry.INSTANCE.get(name)));
     }
 
+    public static <T> void consider(List<ToDoubleFunction<String>> ranks, Parameter<String> parameter, Function<Parameter<String>, Parameter<T>> fun, ToDoubleBiFunction<Structure<?>, T> rank) throws CommandException
+    {
+        consider(ranks, parameter, param ->
+        {
+            T t = param.to(fun).require();
+            return structure -> rank.applyAsDouble(structure, t);
+        });
+    }
+
     @Override
     public String getName()
     {
@@ -114,41 +122,16 @@ public class CommandSearchStructure extends CommandExpecting
 
         List<ToDoubleFunction<String>> ranks = new ArrayList<>();
 
-        consider(ranks, parameters.get(0), parameter ->
-        {
-            List<String> terms = parameter.varargsList().optional().orElse(null);
-            return structure -> StructureSearch.searchRank(terms, StructureSearch.keywords(StructureRegistry.INSTANCE.id(structure), structure));
-        });
+        consider(ranks, parameters.get(0), Parameter::varargsList,
+                (s, t) -> StructureSearch.searchRank(t, StructureSearch.keywords(StructureRegistry.INSTANCE.id(s), s)));
 
-        consider(ranks, parameters.get("containing"), param ->
-        {
-            BlockExpression matcher = param.to(RCP.expression(new BlockExpression(RecurrentComplex.specialRegistry))).require();
-            return structure -> StructureSearch.containedBlocks(structure, matcher);
-        });
-
-        consider(ranks, parameters.get("biome"), param ->
-        {
-            Biome biome = param.to(MCP::biome).require();
-            return structure -> StructureSearch.biome(structure, biome);
-        });
-
-        consider(ranks, parameters.get("dimension"), param ->
-        {
-            WorldServer world = param.to(MCP.dimension(server, sender)).require();
-            return structure -> StructureSearch.dimension(structure, world);
-        });
-
-        consider(ranks, parameters.get("maze"), param ->
-        {
-            String mazeID = param.require();
-            return structure -> StructureSearch.maze(structure, mazeID);
-        });
-
-        consider(ranks, parameters.get("list"), param ->
-        {
-            String listID = param.require();
-            return structure -> StructureSearch.list(structure, listID);
-        });
+        consider(ranks, parameters.get("containing"),
+                RCP.expression(new BlockExpression(RecurrentComplex.specialRegistry)),
+                StructureSearch::containedBlocks);
+        consider(ranks, parameters.get("biome"), MCP::biome, StructureSearch::biome);
+        consider(ranks, parameters.get("dimension"), MCP.dimension(server, sender), StructureSearch::dimension);
+        consider(ranks, parameters.get("maze"), p -> p, StructureSearch::maze);
+        consider(ranks, parameters.get("maze"), p -> p, StructureSearch::list);
 
         boolean all = parameters.has("all");
 

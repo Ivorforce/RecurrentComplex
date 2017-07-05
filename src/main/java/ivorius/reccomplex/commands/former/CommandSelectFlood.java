@@ -9,16 +9,18 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.ivtoolkit.world.MockWorld;
+import ivorius.mcopts.commands.CommandExpecting;
+import ivorius.mcopts.commands.parameters.MCP;
+import ivorius.mcopts.commands.parameters.NaP;
+import ivorius.mcopts.commands.parameters.Parameters;
+import ivorius.mcopts.commands.parameters.expect.Expect;
+import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.mcopts.commands.CommandExpecting;
-import ivorius.mcopts.commands.parameters.*;
-import ivorius.mcopts.commands.parameters.expect.Expect;
-import ivorius.mcopts.commands.parameters.expect.MCE;
-import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.commands.parameters.RCP;
+import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.utils.RCBlockLogic;
 import ivorius.reccomplex.utils.expression.PreloadedBooleanExpression;
 import net.minecraft.block.Block;
@@ -50,8 +52,11 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
     @Override
     public void expect(Expect expect)
     {
-        expect.then(MCE::block).then(RCE::metadata)
-                .then(RCE::directionExpression);
+        expect
+                .then(MCE::block)
+                .then(RCE::directionExpression)
+                .named("metadata", "m").then(RCE::metadata)
+        ;
     }
 
     public int getRequiredPermissionLevel()

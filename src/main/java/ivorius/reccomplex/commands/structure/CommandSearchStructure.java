@@ -5,10 +5,7 @@
 
 package ivorius.reccomplex.commands.structure;
 
-import com.google.common.base.Predicates;
-import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
-import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.mcopts.commands.CommandExpecting;
 import ivorius.mcopts.commands.parameters.MCP;
 import ivorius.mcopts.commands.parameters.Parameter;
@@ -21,14 +18,8 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.utils.expression.BlockExpression;
-import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
-import ivorius.reccomplex.world.gen.feature.structure.generic.Metadata;
-import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
-import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
-import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaDecorationGeneration;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
@@ -43,7 +34,6 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -52,41 +42,6 @@ import java.util.stream.Collectors;
 public class CommandSearchStructure extends CommandExpecting
 {
     public static final int MAX_RESULTS = 20;
-
-    @Nonnull
-    public static Collection<String> keywords(String id, Structure<?> structure)
-    {
-        List<String> keywords = new ArrayList<>();
-
-        keywords.add(id);
-
-        structure.generationTypes(GenerationType.class).forEach(info -> keywords(keywords, info));
-
-        if (structure instanceof GenericStructure)
-            keywords(keywords, ((GenericStructure) structure).metadata);
-
-        return keywords;
-    }
-
-    protected static void keywords(Collection<String> keywords, GenerationType info)
-    {
-        keywords.add(info.id());
-        keywords.add(info.displayString());
-        keywords.add(StructureRegistry.GENERATION_TYPES.iDForType(info.getClass()));
-    }
-
-    @Nonnull
-    public static void keywords(Collection<String> collection, Metadata metadata)
-    {
-        collection.add(metadata.authors);
-        collection.add(metadata.comment);
-        collection.add(metadata.weblink);
-    }
-
-    public static float searchRank(List<String> query, Collection<String> keywords)
-    {
-        return keywords.stream().filter(Predicates.contains(Pattern.compile(String.join("|", Lists.transform(query, Pattern::quote)), Pattern.CASE_INSENSITIVE))::apply).count();
-    }
 
     public static <T> void postResultMessage(String prefix, ICommandSender sender, Function<T, ? extends ITextComponent> toComponent, Queue<T> list)
     {
@@ -118,84 +73,13 @@ public class CommandSearchStructure extends CommandExpecting
         return strucs;
     }
 
-    public static long containedBlocks(Structure structure, BlockExpression matcher)
-    {
-        if (structure == null)
-            return 0;
-
-        IvBlockCollection collection = structure.blockCollection();
-
-        if (collection == null)
-            return 0;
-
-        return collection.area().stream()
-                .anyMatch(p -> matcher.evaluate(collection.getBlockState(p))) ? 1 : 0;
-    }
-
-    public static ToDoubleFunction<String> searchRank(Parameter<String> parameter) throws CommandException
+    public static void consider(List<ToDoubleFunction<String>> ranks, Parameter<String> parameter, Parameter.Function<Parameter<String>, ToDoubleFunction<Structure<?>>> supplier) throws CommandException
     {
         if (!parameter.has(1))
-            return null;
+            return;
 
-        List<String> terms = parameter.varargsList().optional().orElse(null);
-        return name -> searchRank(terms, keywords(name, StructureRegistry.INSTANCE.get(name)));
-    }
-
-    public static ToDoubleFunction<String> containedRank(Parameter<String> parameter) throws CommandException
-    {
-        if (!parameter.has(1))
-            return null;
-
-        BlockExpression matcher = parameter.to(RCP.expression(new BlockExpression(RecurrentComplex.specialRegistry))).require();
-        return name -> CommandSearchStructure.containedBlocks(StructureRegistry.INSTANCE.get(name), matcher);
-    }
-
-    public static ToDoubleFunction<String> biomeRank(Parameter<String> parameter) throws CommandException
-    {
-        if (!parameter.has(1))
-            return null;
-
-        Biome biome = parameter.to(MCP::biome).require();
-        return name ->
-        {
-            Structure<?> structure = StructureRegistry.INSTANCE.get(name);
-
-            double result = 0;
-
-            result += structure.generationTypes(NaturalGeneration.class).stream()
-                    .mapToDouble(g -> StructureSelector.generationWeightInBiome(g.biomeWeights, biome))
-                    .sum();
-
-            result += structure.generationTypes(VanillaDecorationGeneration.class).stream()
-                    .mapToDouble(g -> StructureSelector.generationWeightInBiome(g.biomeWeights, biome))
-                    .sum();
-
-            return result;
-        };
-    }
-
-    public static ToDoubleFunction<String> dimensionRank(Parameter<String> parameter, MinecraftServer server, ICommandSender sender) throws CommandException
-    {
-        if (!parameter.has(1))
-            return null;
-
-        WorldServer world = parameter.to(MCP.dimension(server, sender)).require();
-        return name ->
-        {
-            Structure<?> structure = StructureRegistry.INSTANCE.get(name);
-
-            double result = 0;
-
-            result += structure.generationTypes(NaturalGeneration.class).stream()
-                    .mapToDouble(g -> StructureSelector.generationWeightInDimension(g.dimensionWeights, world.provider))
-                    .sum();
-
-            result += structure.generationTypes(VanillaDecorationGeneration.class).stream()
-                    .mapToDouble(g -> StructureSelector.generationWeightInDimension(g.dimensionWeights, world.provider))
-                    .sum();
-
-            return result;
-        };
+        ToDoubleFunction<Structure<?>> fun = supplier.apply(parameter);
+        ranks.add(name -> fun.applyAsDouble(StructureRegistry.INSTANCE.get(name)));
     }
 
     @Override
@@ -213,10 +97,12 @@ public class CommandSearchStructure extends CommandExpecting
     public void expect(Expect expect)
     {
         expect
-                .skip().descriptionU("terms").required().repeat()
+                .skip().descriptionU("terms").optional().repeat()
                 .named("containing", "c").words(MCE::block).descriptionU("block expression")
                 .named("biome", "b").then(MCE::biome).descriptionU("biome id")
                 .named("dimension", "d").then(MCE::dimension).descriptionU("dimension id")
+                .named("maze").skip().descriptionU("maze id")
+                .named("list").skip().descriptionU("structure list id")
                 .flag("all", "a")
         ;
     }
@@ -228,10 +114,41 @@ public class CommandSearchStructure extends CommandExpecting
 
         List<ToDoubleFunction<String>> ranks = new ArrayList<>();
 
-        ranks.add(searchRank(parameters.get(0)));
-        ranks.add(containedRank(parameters.get("containing")));
-        ranks.add(biomeRank(parameters.get("biome")));
-        ranks.add(dimensionRank(parameters.get("dimension"), server, sender));
+        consider(ranks, parameters.get(0), parameter ->
+        {
+            List<String> terms = parameter.varargsList().optional().orElse(null);
+            return structure -> StructureSearch.searchRank(terms, StructureSearch.keywords(StructureRegistry.INSTANCE.id(structure), structure));
+        });
+
+        consider(ranks, parameters.get("containing"), param ->
+        {
+            BlockExpression matcher = param.to(RCP.expression(new BlockExpression(RecurrentComplex.specialRegistry))).require();
+            return structure -> StructureSearch.containedBlocks(structure, matcher);
+        });
+
+        consider(ranks, parameters.get("biome"), param ->
+        {
+            Biome biome = param.to(MCP::biome).require();
+            return structure -> StructureSearch.biome(structure, biome);
+        });
+
+        consider(ranks, parameters.get("dimension"), param ->
+        {
+            WorldServer world = param.to(MCP.dimension(server, sender)).require();
+            return structure -> StructureSearch.dimension(structure, world);
+        });
+
+        consider(ranks, parameters.get("maze"), param ->
+        {
+            String mazeID = param.require();
+            return structure -> StructureSearch.maze(structure, mazeID);
+        });
+
+        consider(ranks, parameters.get("list"), param ->
+        {
+            String listID = param.require();
+            return structure -> StructureSearch.list(structure, listID);
+        });
 
         boolean all = parameters.has("all");
 

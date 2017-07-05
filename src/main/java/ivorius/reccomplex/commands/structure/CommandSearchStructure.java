@@ -174,12 +174,12 @@ public class CommandSearchStructure extends CommandExpecting
         };
     }
 
-    public static ToDoubleFunction<String> dimensionRank(Parameter<String> parameter, MinecraftServer server) throws CommandException
+    public static ToDoubleFunction<String> dimensionRank(Parameter<String> parameter, MinecraftServer server, ICommandSender sender) throws CommandException
     {
         if (!parameter.has(1))
             return null;
 
-        WorldServer world = parameter.to(MCP.dimension(server, server)).require();
+        WorldServer world = parameter.to(MCP.dimension(server, sender)).require();
         return name ->
         {
             Structure<?> structure = StructureRegistry.INSTANCE.get(name);
@@ -230,7 +230,7 @@ public class CommandSearchStructure extends CommandExpecting
         ranks.add(searchRank(parameters.get(0)));
         ranks.add(containedRank(parameters.get("containing")));
         ranks.add(biomeRank(parameters.get("biome")));
-        ranks.add(dimensionRank(parameters.get("dimension"), server));
+        ranks.add(dimensionRank(parameters.get("dimension"), server, sender));
 
         if (ranks.stream().noneMatch(Objects::nonNull))
             throw new WrongUsageException(getCommandUsage(sender));

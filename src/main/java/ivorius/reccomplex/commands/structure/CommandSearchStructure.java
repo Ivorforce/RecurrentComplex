@@ -217,6 +217,7 @@ public class CommandSearchStructure extends CommandExpecting
                 .named("containing", "c").words(MCE::block).descriptionU("block expression")
                 .named("biome", "b").then(MCE::biome).descriptionU("biome id")
                 .named("dimension", "d").then(MCE::dimension).descriptionU("dimension id")
+                .flag("all", "a")
         ;
     }
 
@@ -232,12 +233,14 @@ public class CommandSearchStructure extends CommandExpecting
         ranks.add(biomeRank(parameters.get("biome")));
         ranks.add(dimensionRank(parameters.get("dimension"), server, sender));
 
+        boolean all = parameters.has("all");
+
         if (ranks.stream().noneMatch(Objects::nonNull))
             throw new WrongUsageException(getCommandUsage(sender));
 
         postResultMessage("Results: ", sender,
                 RCTextStyle::structure,
-                search(StructureRegistry.INSTANCE.ids(),
+                search(all ? StructureRegistry.INSTANCE.ids() : StructureRegistry.INSTANCE.activeIDs(),
                         name -> ranks.stream()
                                 .filter(Objects::nonNull)
                                 .mapToDouble(f -> f.applyAsDouble(name))

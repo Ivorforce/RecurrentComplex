@@ -145,11 +145,7 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
                     throw new CommandException("Area too big to flood!");
             }
 
-            for (BlockPos pos : visited)
-            {
-                IBlockState state = dst.get(world.rand().nextInt(dst.size()));
-                world.setBlockState(pos, state, 2);
-            }
+            visited.forEach(p -> setFrom(world, dst, p));
         }
         else
         {
@@ -159,8 +155,7 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
             {
                 if (matcher.evaluate(() -> PositionedBlockExpression.Argument.at(world, pos)))
                 {
-                    IBlockState state = dst.get(world.rand().nextInt(dst.size()));
-                    world.setBlockState(pos, state, 2);
+                    setFrom(world, dst, pos);
 //                freezer.markBlock(pos, state);
                 }
             });
@@ -168,4 +163,9 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
         }
     }
 
+    public static void setFrom(MockWorld world, List<IBlockState> dst, BlockPos pos)
+    {
+        IBlockState state = dst.get(world.rand().nextInt(dst.size()));
+        world.setBlockState(pos, state, 2);
+    }
 }

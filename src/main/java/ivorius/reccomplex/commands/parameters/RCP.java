@@ -5,13 +5,14 @@
 
 package ivorius.reccomplex.commands.parameters;
 
+import ivorius.mcopts.commands.parameters.MCP;
+import ivorius.mcopts.commands.parameters.Parameter;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
-import ivorius.mcopts.commands.parameters.MCP;
-import ivorius.mcopts.commands.parameters.Parameter;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
+import ivorius.reccomplex.utils.expression.Expressions;
 import ivorius.reccomplex.utils.expression.ResourceExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
@@ -20,7 +21,9 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.Generat
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.EnumFacing;
 
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -133,5 +136,10 @@ public class RCP
                 throw RecurrentComplex.translations.commandException("commands.rcmap.nonvirtual");
             return (CommandVirtual) c;
         });
+    }
+
+    public static Parameter<List<EnumFacing>> directions(Parameter<String> parameter)
+    {
+        return parameter.to(expression(Expressions.direction())).map(Expressions::directions);
     }
 }

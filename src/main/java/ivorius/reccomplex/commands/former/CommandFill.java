@@ -23,9 +23,7 @@ import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
-import ivorius.reccomplex.utils.expression.Expressions;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
-import ivorius.reccomplex.utils.expression.PreloadedBooleanExpression;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.CommandException;
@@ -124,9 +122,7 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
 
         if (parameters.has("flood"))
         {
-            PreloadedBooleanExpression<EnumFacing> directionExpression = parameters.get("flood").rest(NaP::join).orElse("")
-                    .to(RCP.expression(Expressions.direction())).require();
-            List<EnumFacing> directions = Expressions.directions(directionExpression);
+            List<EnumFacing> directions = parameters.get("flood").orElse("").to(RCP::directions).require();
 
             List<BlockPos> dirty = new ArrayList<>();
             Set<BlockPos> visited = Sets.newHashSet(dirty);

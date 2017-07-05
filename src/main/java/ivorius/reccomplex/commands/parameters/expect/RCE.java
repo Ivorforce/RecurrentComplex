@@ -83,4 +83,9 @@ public class RCE
         e.any(Person.chaoticName(rand, rand.nextBoolean()));
     }
 
+    public static void shape(Expect expect)
+    {
+        expect.any((Object[]) RCP.Shape.values()).descriptionU("shape");
+    }
+
 }

@@ -16,12 +16,13 @@ import ivorius.mcopts.commands.parameters.Parameters;
 import ivorius.mcopts.commands.parameters.expect.Expect;
 import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
-import ivorius.reccomplex.utils.RCBlockLogic;
+import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.utils.expression.PreloadedBooleanExpression;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -54,7 +55,8 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
     {
         expect
                 .then(MCE::block)
-                .then(RCE::directionExpression)
+                .then(MCE::block).descriptionU("source expression").optional().repeat()
+                .named("direction", "d").then(RCE::directionExpression)
                 .named("metadata", "m").then(RCE::metadata)
         ;
     }
@@ -72,14 +74,17 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
         RCCommands.assertSize(sender, selectionOwner);
 
-        PreloadedBooleanExpression<EnumFacing> facingExpression = PreloadedBooleanExpression.with(exp ->
-        {
-            exp.addConstants(EnumFacing.values());
-            exp.addEvaluators(axis -> facing -> facing.getAxis() == axis, EnumFacing.Axis.values());
-            exp.addEvaluator("horizontal", f -> f.getHorizontalIndex() >= 0);
-            exp.addEvaluator("vertical", f -> f.getHorizontalIndex() < 0);
-        });
-        facingExpression.setExpression(parameters.get(2).rest(NaP::join).optional().orElse(""));
+        PreloadedBooleanExpression<EnumFacing> facingExpression = parameters.get("direction").rest(NaP::join).orElse("")
+                .to(RCP.expression(PreloadedBooleanExpression.<EnumFacing>with(exp ->
+                {
+                    exp.addConstants(EnumFacing.values());
+                    exp.addEvaluators(axis -> facing -> facing.getAxis() == axis, EnumFacing.Axis.values());
+                    exp.addEvaluator("horizontal", f -> f.getHorizontalIndex() >= 0);
+                    exp.addEvaluator("vertical", f -> f.getHorizontalIndex() < 0);
+                }))).require();
+
+        PositionedBlockExpression matcher = parameters.get(1).rest(NaP::join).orElse("is:air")
+                .to(RCP.expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
 
         List<EnumFacing> available = Arrays.stream(EnumFacing.values()).filter(facingExpression).collect(Collectors.toList());
 
@@ -87,7 +92,7 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
         Set<BlockPos> visited = Sets.newHashSet(dirty);
 
         Block dstBlock = parameters.get(0).to(MCP.block(sender)).require();
-        int[] dstMeta = parameters.get(1).to(RCP::metadatas).optional().orElse(new int[1]);
+        int[] dstMeta = parameters.get("metadata").to(RCP::metadatas).optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
         while (!dirty.isEmpty())
@@ -97,7 +102,8 @@ public class CommandSelectFlood extends CommandExpecting implements CommandVirtu
             for (EnumFacing facing : available)
             {
                 BlockPos offset = pos.offset(facing);
-                if (RCBlockLogic.isAir(world, offset) && visited.add(offset))
+                if (matcher.evaluate(() -> PositionedBlockExpression.Argument.at(world, offset))
+                        && visited.add(offset))
                     dirty.add(offset);
             }
 

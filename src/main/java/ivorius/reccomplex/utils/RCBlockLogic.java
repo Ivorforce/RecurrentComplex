@@ -21,12 +21,6 @@ import net.minecraft.world.World;
  */
 public class RCBlockLogic
 {
-    public static boolean isAir(IBlockAccess world, BlockPos pos)
-    {
-        IBlockState state = world.getBlockState(pos);
-        return state.getBlock().isAir(state, world, pos);
-    }
-
     public static boolean canStay(IBlockState state, World world, BlockPos pos)
     {
         return (state.getBlock() != Blocks.SNOW_LAYER && !(state.getBlock() instanceof BlockBush)) || state.getBlock().canPlaceBlockAt(world, pos);

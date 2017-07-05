@@ -15,6 +15,7 @@ import ivorius.mcopts.commands.parameters.*;
 import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.commands.structure.CommandSearchStructure;
 import ivorius.mcopts.translation.ServerTranslations;
+import ivorius.reccomplex.commands.structure.StructureSearch;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -47,7 +48,7 @@ public class CommandBiomeDict extends CommandSplit
 
                 CommandSearchStructure.postResultMessage("Biomes:", sender,
                         RCTextStyle::biome,
-                        CommandSearchStructure.search(Biome.REGISTRY.getKeys(), loc -> CommandSearchStructure.searchRank(terms, keywords(loc, Biome.REGISTRY.getObject(loc))))
+                        CommandSearchStructure.search(Biome.REGISTRY.getKeys(), loc -> StructureSearch.searchRank(terms, keywords(loc, Biome.REGISTRY.getObject(loc))))
                 );
             }
         });

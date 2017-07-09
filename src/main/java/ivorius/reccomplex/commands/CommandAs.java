@@ -37,7 +37,7 @@ public class CommandAs extends CommandExpecting
         expect
                 .then(MCE::entity).required()
                 .then(MCE::command).required()
-                .then(MCE.commandArguments(p -> p.get(1))).repeat();
+                .then(MCE::commandArguments, p -> p.get(1)).repeat();
     }
 
     @Override

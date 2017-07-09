@@ -44,7 +44,7 @@ public class CommandAnd extends CommandExpecting implements CommandVirtual
         expect
                 .stopInterpreting()
                 .then(MCE::command)
-                .then(MCE.commandArguments(p -> p.get(0))).repeat()
+                .then(MCE::commandArguments, p -> p.get(0)).repeat()
         ;
     }
 

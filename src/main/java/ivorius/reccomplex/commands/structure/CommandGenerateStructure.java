@@ -19,11 +19,11 @@ import ivorius.reccomplex.commands.parameters.IvP;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.commands.parameters.expect.IvE;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
+import ivorius.reccomplex.operation.OperationGenerateStructure;
 import ivorius.reccomplex.operation.OperationRegistry;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
-import ivorius.reccomplex.operation.OperationGenerateStructure;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
@@ -57,13 +57,13 @@ public class CommandGenerateStructure extends SimpleCommand
                 .then(RCE::structure).required()
                 .then(IvE.surfacePos("x", "z"))
                 .named("dimension", "d").then(MCE::dimension)
-                .named("gen").then(RCE.generationType(p -> p.get(0)))
+                .named("gen").then(RCE::generationType, p -> p.get(0))
                 .named("rotation", "r").then(MCE::rotation)
                 .named("seed").words(RCE::randomString).descriptionU("seed")
                 .flag("mirror", "m")
                 .flag("select", "s")
                 .flag("suggest", "t")
-                ;
+        ;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CommandGenerateStructure extends SimpleCommand
         Structure<?> structure = parameters.get(0).to(RCP::structure).require();
         WorldServer world = parameters.get("dimension").to(MCP.dimension(server, sender)).require();
         AxisAlignedTransform2D transform = parameters.get(IvP.transform("rotation", "mirror")).optional().orElse(null);
-        GenerationType generationType = parameters.get("gen").to(RCP.generationType(structure)).require();
+        GenerationType generationType = parameters.get("gen").to(RCP::generationType, structure).require();
         BlockSurfacePos pos = parameters.get(IvP.surfacePos("x", "z", sender.getPosition(), false)).require();
         String seed = parameters.get("seed").optional().orElse(null);
         boolean suggest = parameters.has("suggest");

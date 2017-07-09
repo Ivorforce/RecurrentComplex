@@ -66,7 +66,7 @@ public class CommandAnd extends CommandExpecting implements CommandVirtual
         for (String param : parameters.get(0).varargsList().require())
         {
             String[] commandArgs = param.split(" ");
-            CommandVirtual command = Parameter.makeUp("command", 0, commandArgs[0]).to(RCP.virtualCommand(server)).require();
+            CommandVirtual command = Parameter.makeUp("command", 0, commandArgs[0]).to(RCP::virtualCommand, server).require();
 
             command.execute(world, sender, Arrays.stream(commandArgs).skip(1).toArray(String[]::new));
         }

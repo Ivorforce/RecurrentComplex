@@ -126,7 +126,7 @@ public class CommandSearchStructure extends CommandExpecting
                 (s, t) -> StructureSearch.searchRank(t, StructureSearch.keywords(StructureRegistry.INSTANCE.id(s), s)));
 
         consider(ranks, parameters.get("containing"),
-                RCP.expression(new BlockExpression(RecurrentComplex.specialRegistry)),
+                e -> RCP.expression(e, new BlockExpression(RecurrentComplex.specialRegistry)),
                 StructureSearch::containedBlocks);
         consider(ranks, parameters.get("biome"), MCP::biome, StructureSearch::biome);
         consider(ranks, parameters.get("dimension"), MCP.dimension(server, sender), StructureSearch::dimension);

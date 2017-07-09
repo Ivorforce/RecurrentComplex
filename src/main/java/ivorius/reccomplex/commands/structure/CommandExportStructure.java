@@ -51,7 +51,7 @@ public class CommandExportStructure extends CommandExpecting
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
         String structureID = parameters.get(0).optional().orElse(null);
-        GenericStructure from = parameters.get("from").to(RCP.structureFromBlueprint(commandSender)).require();
+        GenericStructure from = parameters.get("from").to(RCP::structureFromBlueprint, commandSender).require();
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);

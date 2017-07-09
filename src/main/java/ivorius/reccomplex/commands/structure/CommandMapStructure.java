@@ -102,7 +102,7 @@ public class CommandMapStructure extends CommandExpecting
                 .then(RCE::structure).descriptionU("resource expression|structure").required()
                 .then(RCE::virtualCommand)
                 .stopInterpreting()
-                .then(MCE.commandArguments(p -> p.get(1))).repeat()
+                .then(MCE::commandArguments, p -> p.get(1)).repeat()
                 .named("directory", "d").then(RCE::resourceDirectory)
                 .flag("nosave", "n")
         ;

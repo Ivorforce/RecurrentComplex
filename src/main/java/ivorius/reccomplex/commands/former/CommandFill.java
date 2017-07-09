@@ -75,6 +75,12 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
         }
     }
 
+    public static void setFrom(MockWorld world, List<IBlockState> dst, BlockPos pos)
+    {
+        IBlockState state = dst.get(world.rand().nextInt(dst.size()));
+        world.setBlockState(pos, state, 2);
+    }
+
     @Override
     public String getCommandName()
     {
@@ -103,7 +109,7 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
     {
         Parameters parameters = Parameters.of(args, expect()::declare);
 
-        Block dstBlock = parameters.get(0).to(MCP.block(sender)).require();
+        Block dstBlock = parameters.get(0).to(MCP::block, sender).require();
         int[] dstMeta = parameters.get("metadata").to(RCP::metadatas).optional().orElse(new int[1]);
         List<IBlockState> dst = IntStream.of(dstMeta).mapToObj(m -> BlockStates.fromMetadata(dstBlock, m)).collect(Collectors.toList());
 
@@ -156,11 +162,5 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
             });
 //        freezer.melt();
         }
-    }
-
-    public static void setFrom(MockWorld world, List<IBlockState> dst, BlockPos pos)
-    {
-        IBlockState state = dst.get(world.rand().nextInt(dst.size()));
-        world.setBlockState(pos, state, 2);
     }
 }

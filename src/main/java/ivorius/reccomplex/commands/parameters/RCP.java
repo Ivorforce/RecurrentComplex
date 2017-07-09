@@ -131,7 +131,7 @@ public class RCP
 
     public static Function<Parameter<String>, Parameter<CommandVirtual>> virtualCommand(MinecraftServer server)
     {
-        return p -> p.to(MCP.command(server)).map(c ->
+        return p -> p.to(MCP::command, server).map(c ->
         {
             if (!(c instanceof CommandVirtual))
                 throw RecurrentComplex.translations.commandException("commands.rcmap.nonvirtual");

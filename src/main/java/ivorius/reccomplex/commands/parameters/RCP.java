@@ -25,7 +25,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -58,9 +57,9 @@ public class RCP
         });
     }
 
-    public static Function<Parameter<String>, Parameter<GenericStructure>> structureFromBlueprint(ICommandSender sender)
+    public static Parameter<GenericStructure> structureFromBlueprint(Parameter<String> p, ICommandSender sender)
     {
-        return p -> genericStructure(p, true).map(GenericStructure::copyAsGenericStructure)
+        return genericStructure(p, true).map(GenericStructure::copyAsGenericStructure)
                 .orElseGet(() ->
                 {
                     GenericStructure structure = GenericStructure.createDefaultStructure();
@@ -69,16 +68,16 @@ public class RCP
                 });
     }
 
-    public static Function<Parameter<String>, Parameter<GenerationType>> generationType(Structure<?> structure)
+    public static Parameter<GenerationType> generationType(Parameter<String> p, Structure<?> structure)
     {
-        return p -> p.map(structure::generationType, t -> RecurrentComplex.translations.commandException("No Generation by this ID"))
+        return p.map(structure::generationType, t -> RecurrentComplex.translations.commandException("No Generation by this ID"))
                 .orElseGet(() -> structure.<GenerationType>generationTypes(NaturalGeneration.class).stream().findFirst()
                         .orElse(structure.generationTypes(GenerationType.class).stream().findFirst().orElse(null)));
     }
 
     public static Parameter<Predicate<Structure>> structurePredicate(Parameter<String> p)
     {
-        return p.to(expression(new ResourceExpression(s1 -> !s1.isEmpty()))).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
+        return p.to(RCP::expression, new ResourceExpression(s1 -> !s1.isEmpty())).map(m -> s -> m.test(StructureRegistry.INSTANCE.resourceLocation(s)));
     }
 
     public static Parameter<ResourceDirectory> resourceDirectory(Parameter<String> p)
@@ -119,9 +118,9 @@ public class RCP
         });
     }
 
-    public static <T extends ExpressionCache<I>, I> Function<Parameter<String>, Parameter<T>> expression(T t)
+    public static <T extends ExpressionCache<I>, I> Parameter<T> expression(Parameter<String> p, T t)
     {
-        return p -> p.map(s ->
+        return p.map(s ->
         {
             T cache = ExpressionCache.of(t, s);
             RCCommands.ensureValid(cache, p.name(0));
@@ -129,9 +128,9 @@ public class RCP
         });
     }
 
-    public static Function<Parameter<String>, Parameter<CommandVirtual>> virtualCommand(MinecraftServer server)
+    public static Parameter<CommandVirtual> virtualCommand(Parameter<String> p, MinecraftServer server)
     {
-        return p -> p.to(MCP::command, server).map(c ->
+        return p.to(MCP::command, server).map(c ->
         {
             if (!(c instanceof CommandVirtual))
                 throw RecurrentComplex.translations.commandException("commands.rcmap.nonvirtual");
@@ -141,7 +140,7 @@ public class RCP
 
     public static Parameter<List<EnumFacing>> directions(Parameter<String> parameter)
     {
-        return parameter.to(expression(Expressions.direction())).map(Expressions::directions);
+        return parameter.to(RCP::expression, Expressions.direction()).map(Expressions::directions);
     }
 
     public static Parameter<Shape> shape(Parameter<String> parameter)

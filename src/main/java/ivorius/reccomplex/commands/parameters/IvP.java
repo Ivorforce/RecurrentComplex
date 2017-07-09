@@ -42,16 +42,13 @@ public class IvP
         return p -> surfacePos(p.move(1), ref, centerBlock).apply(p);
     }
 
-    public static Function<Parameter<String>, Parameter<AxisAlignedTransform2D>> transform(boolean mirror)
+    public static Parameter<AxisAlignedTransform2D> transform(Parameter<String> p, boolean mirror)
     {
-        return p ->
-        {
-            if (p.has(1) || mirror)
-                return p.map(CommandBase::parseInt)
-                        .map(i -> i > 40 ? i / 90 : i)
-                        .orElse(0).map(r -> AxisAlignedTransform2D.from(r, mirror));
-            return new Parameter<>(p, s -> null);
-        };
+        if (p.has(1) || mirror)
+            return p.map(CommandBase::parseInt)
+                    .map(i -> i > 40 ? i / 90 : i)
+                    .orElse(0).map(r -> AxisAlignedTransform2D.from(r, mirror));
+        return new Parameter<>(p, s -> null);
     }
 
     public static Function<Parameters, Parameter<BlockSurfacePos>> surfacePos(String x, String z, BlockPos ref, boolean centerBlock)
@@ -61,6 +58,6 @@ public class IvP
 
     public static Function<Parameters, Parameter<AxisAlignedTransform2D>> transform(String rotation, String mirror) throws CommandException
     {
-        return ps -> ps.get(rotation).to(transform(ps.has(mirror)));
+        return ps -> ps.get(rotation).to(IvP::transform, ps.has(mirror));
     }
 }

@@ -50,7 +50,7 @@ public class CommandConvertSchematic extends CommandExpecting
         String schematicName = parameters.get(0).require();
         SchematicFile schematicFile = CommandImportSchematic.parseSchematic(schematicName);
 
-        GenericStructure from = parameters.get("from").to(RCP.structureFromBlueprint(commandSender)).require();
+        GenericStructure from = parameters.get("from").to(RCP::structureFromBlueprint, commandSender).require();
 
         from.worldDataCompound = CommandExportSchematic.toWorldData(schematicFile).createTagCompound();
 

@@ -116,7 +116,7 @@ public class CommandFill extends CommandExpecting implements CommandVirtual
         RCP.Shape shape = parameters.get("shape").to(RCP::shape).optional().orElse(RCP.Shape.cube);
 
         PositionedBlockExpression matcher = parameters.get(1).rest(NaP::join).orElse("")
-                .to(RCP.expression(new PositionedBlockExpression(RecurrentComplex.specialRegistry))).require();
+                .to(RCP::expression, new PositionedBlockExpression(RecurrentComplex.specialRegistry)).require();
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(sender, null, true);
         RCCommands.assertSize(sender, selectionOwner);

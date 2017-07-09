@@ -38,9 +38,9 @@ public class RCE
         e.next(StructureRegistry.INSTANCE.ids()).descriptionU("structure");
     }
 
-    public static Consumer<Expect> generationType(Function<Parameters, Parameter<String>> fun)
+    public static void generationType(Expect e, Function<Parameters, Parameter<String>> fun)
     {
-        return e -> e.next(params -> fun.apply(params).to(RCP::structure).tryGet()
+        e.next(params -> fun.apply(params).to(RCP::structure).tryGet()
                 .map(structure -> structure.generationTypes(GenerationType.class).stream().map(GenerationType::id)))
                 .descriptionU("generation type id");
     }

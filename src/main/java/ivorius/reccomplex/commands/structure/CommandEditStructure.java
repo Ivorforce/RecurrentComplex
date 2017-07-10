@@ -11,6 +11,7 @@ import ivorius.mcopts.commands.parameters.*;
 import ivorius.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.commands.parameters.RCP;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandException;
@@ -37,8 +38,12 @@ public class CommandEditStructure extends CommandExpecting
     @Override
     public void expect(Expect expect)
     {
-        expect.then(RCE::structure)
-                .named("from").then(RCE::structure);
+        expect
+                .then(RCE::structure)
+                .named("id").then(RCE::randomString).descriptionU("export id")
+                .named("from").then(RCE::structure)
+                .named("directory", "d").then(RCE::resourceDirectory)
+        ;
     }
 
     @Override
@@ -47,7 +52,9 @@ public class CommandEditStructure extends CommandExpecting
         EntityPlayerMP entityPlayerMP = getCommandSenderAsPlayer(commandSender);
         Parameters parameters = Parameters.of(args, expect()::declare);
 
-        String id = parameters.get(0).require();
+        ResourceDirectory directory = parameters.get("directory").to(RCP::resourceDirectory).optional().orElse(null);
+
+        String structureID = parameters.get("id").optional().orElse(parameters.get(0).require());
         GenericStructure base = parameters.get(0).to(p -> RCP.genericStructure(p, false)).require();
         GenericStructure from = parameters.get("from").to(p -> RCP.genericStructure(p, false)).optional().orElse(base);
 
@@ -57,6 +64,6 @@ public class CommandEditStructure extends CommandExpecting
             from.worldDataCompound = base.worldDataCompound.copy();
         }
 
-        PacketEditStructureHandler.openEditStructure(from, id, entityPlayerMP);
+        PacketEditStructureHandler.openEditStructure(entityPlayerMP, from, structureID, directory);
     }
 }

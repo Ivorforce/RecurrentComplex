@@ -41,8 +41,8 @@ public class CommandExportStructure extends CommandExpecting
     public void expect(Expect expect)
     {
         expect
-                .then(RCE::structure)
-                .named("name").then(RCE::randomString).descriptionU("structure id")
+                .then(RCE::structure).descriptionU("copy structure")
+                .named("id").then(RCE::randomString).descriptionU("export id")
         ;
     }
 
@@ -52,7 +52,7 @@ public class CommandExportStructure extends CommandExpecting
         Parameters parameters = Parameters.of(args, expect()::declare);
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
 
-        String structureID = parameters.get("name").optional().orElse(parameters.get(0).optional().orElse(null));
+        String structureID = parameters.get("id").optional().orElse(parameters.get(0).optional().orElse(null));
         GenericStructure from = parameters.get(0).to(RCP::structureFromBlueprint, commandSender).require();
 
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);

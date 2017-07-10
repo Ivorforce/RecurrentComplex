@@ -38,7 +38,7 @@ minecraft {
 
 dependencies {
     deobfCompile 'ivorius.ivtoolkit:IvToolkit:1.3.3-1.12'
-    deobfCompile 'ivorius.mcopts:MCOpts:0.9.8'
+    deobfCompile 'ivorius.mcopts:MCOpts:0.9.9.4'
 }
 
 shadowJar {

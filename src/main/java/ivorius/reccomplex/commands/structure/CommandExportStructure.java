@@ -14,6 +14,7 @@ import ivorius.mcopts.commands.parameters.Parameters;
 import ivorius.mcopts.commands.parameters.expect.Expect;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
+import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.network.PacketEditStructureHandler;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandException;
@@ -43,6 +44,7 @@ public class CommandExportStructure extends CommandExpecting
         expect
                 .then(RCE::structure).descriptionU("copy structure")
                 .named("id").then(RCE::randomString).descriptionU("export id")
+                .named("directory", "d").then(RCE::resourceDirectory)
         ;
     }
 
@@ -51,6 +53,8 @@ public class CommandExportStructure extends CommandExpecting
     {
         Parameters parameters = Parameters.of(args, expect()::declare);
         EntityPlayerMP player = getCommandSenderAsPlayer(commandSender);
+
+        ResourceDirectory directory = parameters.get("directory").to(RCP::resourceDirectory).optional().orElse(null);
 
         String structureID = parameters.get("id").optional().orElse(parameters.get(0).optional().orElse(null));
         GenericStructure from = parameters.get(0).to(RCP::structureFromBlueprint, commandSender).require();
@@ -61,6 +65,6 @@ public class CommandExportStructure extends CommandExpecting
         from.worldDataCompound = IvWorldData.capture(commandSender.getEntityWorld(), selectionOwner.getSelection(), true)
                 .createTagCompound();
 
-        PacketEditStructureHandler.openEditStructure(from, structureID, player);
+        PacketEditStructureHandler.openEditStructure(player, from, structureID, directory);
     }
 }

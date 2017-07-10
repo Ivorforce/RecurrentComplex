@@ -23,12 +23,15 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Created by lukas on 03.08.14.
  */
 public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketEditStructure, IMessage>
 {
-    public static void openEditStructure(GenericStructure structure, String id, EntityPlayerMP player)
+    public static void openEditStructure(@Nonnull EntityPlayerMP player, @Nonnull GenericStructure structure, @Nullable String id, @Nullable ResourceDirectory directory)
     {
         if (id == null)
             id = "NewStructure";
@@ -38,10 +41,14 @@ public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketE
         if (entityInfo != null)
             entityInfo.setCachedExportStructureBlockDataNBT(structure.worldDataCompound);
 
-        SimpleLeveledRegistry<Structure<?>>.Status status = StructureRegistry.INSTANCE.status(id);
+        if (directory == null)
+        {
+            SimpleLeveledRegistry<Structure<?>>.Status status = StructureRegistry.INSTANCE.status(id);
+            directory = ResourceDirectory.custom(status != null && status.isActive());
+        }
 
         RecurrentComplex.network.sendTo(new PacketEditStructure(structure, id,
-                SaveDirectoryData.defaultData(id, status != null && status.isActive(),
+                SaveDirectoryData.defaultData(id, directory,
                         RecurrentComplex.loader.tryFindIDs(ResourceDirectory.ACTIVE.toPath(), RCFileSuffix.STRUCTURE),
                         RecurrentComplex.loader.tryFindIDs(ResourceDirectory.INACTIVE.toPath(), RCFileSuffix.STRUCTURE))
         ), player);

@@ -43,7 +43,7 @@ public class RCGuiHandler implements IvGuiHandler
         {
             SimpleLeveledRegistry<Component>.Status status = GenericItemCollectionRegistry.INSTANCE.status(key);
 
-            saveDirectoryData = SaveDirectoryData.defaultData(key, status != null && status.isActive(),
+            saveDirectoryData = SaveDirectoryData.defaultData(key, status != null ? ResourceDirectory.custom(status.isActive()) : null,
                     RecurrentComplex.loader.tryFindIDs(ResourceDirectory.ACTIVE.toPath(), RCFileSuffix.INVENTORY_GENERATION_COMPONENT),
                     RecurrentComplex.loader.tryFindIDs(ResourceDirectory.INACTIVE.toPath(), RCFileSuffix.INVENTORY_GENERATION_COMPONENT));
         }

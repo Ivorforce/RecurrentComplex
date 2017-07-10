@@ -9,6 +9,7 @@ import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -46,11 +47,10 @@ public class SaveDirectoryData
         return IntStream.range(0, buf.readInt()).mapToObj(i -> supplier.apply(buf)).collect(Collectors.toList());
     }
 
-    public static SaveDirectoryData defaultData(String id, boolean active, Set<String> filesInActive, Set<String> filesInInactive)
+    public static SaveDirectoryData defaultData(String id, @Nullable ResourceDirectory directory, Set<String> filesInActive, Set<String> filesInInactive)
     {
-        ResourceDirectory directory = filesInInactive.contains(id) ? ResourceDirectory.INACTIVE
-                : filesInActive.contains(id) ? ResourceDirectory.ACTIVE
-                : ResourceDirectory.custom(active);
+        if (directory == null)
+            directory = filesInActive.contains(id) ? ResourceDirectory.ACTIVE : ResourceDirectory.INACTIVE;
         return new SaveDirectoryData(directory, true, filesInActive, filesInInactive);
     }
 

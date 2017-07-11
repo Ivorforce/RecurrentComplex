@@ -96,6 +96,7 @@ public class RCConfig
     private static TransformerMulti universalTransformer;
 
     public static float mazePlacementReversesPerRoom;
+    public static long mazeTimeout;
 
     public static final Map<String, Boolean> globalToggles = new HashMap<>();
 
@@ -167,6 +168,7 @@ public class RCConfig
             );
 
             mazePlacementReversesPerRoom = config.getFloat("mazePlacementReversesPerRoom", CATEGORY_BALANCING, 3, -1, 100, "Maximum number of reverses per room the maze generator can do. A higher number results in a better generation success rate, but may freeze the server temporarily.");
+            mazeTimeout = config.getInt("mazeTimeout", CATEGORY_BALANCING, 20000, -1, 600000, "Maze generation timeout, in milliseconds. After the time is over, the maze generation will just give up.");
 
             universalTransformer = null;
             Collections.addAll(universalTransformerPresets, config.getStringList("universalTransformerPresets", CATEGORY_BALANCING, new String[0], "Transformer preset names that are gonna be applied to every single generating structure. Use this if you need to enforce specific rules (e.g. \"don't ever spawn wood blocks\" (with a replace transformer)."));

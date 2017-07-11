@@ -20,8 +20,9 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceWorldScriptMazeGenerator;
-import ivorius.reccomplex.utils.IntAreas;
 import ivorius.reccomplex.nbt.NBTStorable;
+import ivorius.reccomplex.utils.IntAreas;
+import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
@@ -29,10 +30,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareCo
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
-import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.BlockedConnectorStrategy;
-import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.LimitAABBStrategy;
-import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRule;
-import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRuleRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.*;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -261,15 +259,27 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         List<MazePredicate<Connector>> predicates = rules.stream().map(r -> r.build(this, blockedConnections, factory, transformedComponents, connectorStrategy)).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
         predicates.add(new LimitAABBStrategy<>(outsideBoundsHigher));
         predicates.add(new BlockedConnectorStrategy<>(blockedConnections));
+        predicates.add(new TimeoutStrategy<>(RCConfig.mazeTimeout));
 
         int totalRooms = mazeComponent.rooms.compile(true).size();
 
-        return MazeComponentConnector.connect(maze,
-                transformedComponents, connectorStrategy,
-                new MazePredicateMany<>(predicates),
-                random,
-                RCConfig.mazePlacementReversesPerRoom >= 0 ? MathHelper.floor(totalRooms * RCConfig.mazePlacementReversesPerRoom + 0.5f) : MazeComponentConnector.INFINITE_REVERSES
-        );
+        try
+        {
+            return MazeComponentConnector.connect(maze,
+                    transformedComponents, connectorStrategy,
+                    new MazePredicateMany<>(predicates),
+                    random,
+                    RCConfig.mazePlacementReversesPerRoom >= 0 ? MathHelper.floor(totalRooms * RCConfig.mazePlacementReversesPerRoom + 0.5f) : MazeComponentConnector.INFINITE_REVERSES
+            );
+        }
+        catch (TimeoutStrategy.TimeoutException e)
+        {
+            throw new GenerationException("Maze generation timed out: " + mazeID);
+        }
+        catch (Exception e)
+        {
+            throw new GenerationException("Error generating maze: " + mazeID, e);
+        }
     }
 
     public static class InstanceData implements NBTStorable
@@ -292,6 +302,25 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
             NBTTagCompound compound = new NBTTagCompound();
             NBTCompoundObjects.writeListTo(compound, "placedStructures", placedStructures);
             return compound;
+        }
+    }
+
+    public static class GenerationException extends RuntimeException implements StructureGenerator.ExpectedException
+    {
+        public GenerationException(String message)
+        {
+            super(message);
+        }
+
+        public GenerationException(String message, Throwable cause)
+        {
+            super(message, cause);
+        }
+
+        @Override
+        public boolean isExpected()
+        {
+            return getCause() == null;
         }
     }
 }

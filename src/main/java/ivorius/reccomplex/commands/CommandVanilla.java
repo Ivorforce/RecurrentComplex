@@ -116,7 +116,7 @@ public class CommandVanilla extends CommandSplit
                 }
                 finally
                 {
-                    if (biome != null)
+                    if (biomeProvider != null)
                         setBiomeProvider(world.provider, biomeProvider);
                 }
             }

@@ -31,7 +31,11 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeProvider;
+import net.minecraft.world.biome.BiomeProviderSingle;
 import net.minecraft.world.chunk.ChunkPrimer;
 import net.minecraft.world.gen.MapGenBase;
 import net.minecraft.world.gen.structure.*;
@@ -60,6 +64,7 @@ public class CommandVanilla extends CommandSplit
                 .then(IvE.surfacePos("x", "z"))
                 .named("dimension", "d").then(MCE::dimension)
                 .named("seed").then(RCE::randomString)
+                .named("biome", "b").then(MCE::biome)
                 .flag("select", "s")
                 .flag("suggest", "t")
         )
@@ -74,30 +79,46 @@ public class CommandVanilla extends CommandSplit
                 BlockSurfacePos pos = parameters.get(IvP.surfacePos("x", "z", sender.getPosition(), false)).require();
                 String seed = parameters.get("seed").optional().orElseGet(() -> Person.chaoticName(new Random(), new Random().nextBoolean()));
                 boolean suggest = parameters.has("suggest");
+                Biome biome = parameters.get("biome").to(MCP::biome).optional().orElse(null);
 
-                MapGenStructure gen = type.generator(suggest);
+                BiomeProvider biomeProvider = null;
+                if (biome != null)
+                {
+                    biomeProvider = world.provider.getBiomeProvider();
+                    setBiomeProvider(world.provider, new BiomeProviderSingle(biome));
+                }
 
-                ChunkPos chunkPos = pos.chunkCoord();
-                Random random = new Random(RCStrings.seed(seed));
+                try
+                {
+                    MapGenStructure gen = type.generator(suggest);
 
-                ReflectionHelper.setPrivateValue(MapGenBase.class, gen, random, "rand", "field_75038_b");
-                recursiveGenerate(gen, world, chunkPos);
+                    ChunkPos chunkPos = pos.chunkCoord();
+                    Random random = new Random(RCStrings.seed(seed));
 
-                Long2ObjectMap<StructureStart> structureMap = ReflectionHelper.getPrivateValue(MapGenStructure.class, gen, "structureMap", "field_75053_d");
+                    ReflectionHelper.setPrivateValue(MapGenBase.class, gen, random, "rand", "field_75038_b");
+                    recursiveGenerate(gen, world, chunkPos);
 
-                StructureStart structureStart = structureMap.get(ChunkPos.chunkXZ2Int(chunkPos.chunkXPos, chunkPos.chunkZPos));
+                    Long2ObjectMap<StructureStart> structureMap = ReflectionHelper.getPrivateValue(MapGenStructure.class, gen, "structureMap", "field_75053_d");
 
-                if (structureStart == null || !RCStructureBoundingBoxes.valid(structureStart.getBoundingBox()))
-                    throw new CommandException("Failed to place structure!");
+                    StructureStart structureStart = structureMap.get(ChunkPos.chunkXZ2Int(chunkPos.chunkXPos, chunkPos.chunkZPos));
 
-                // 'retro'-generate all chunks
-                for (ChunkPos retroPos : RCStructureBoundingBoxes.rasterize(structureStart.getBoundingBox(), true))
-                    gen.generateStructure(world, random, retroPos);
+                    if (structureStart == null || !RCStructureBoundingBoxes.valid(structureStart.getBoundingBox()))
+                        throw new CommandException("Failed to place structure!");
 
-                sender.addChatMessage(new TextComponentTranslation("Structure generated at %s with seed %s", RCTextStyle.chunkPos(chunkPos), RCTextStyle.copy(seed)));
+                    // 'retro'-generate all chunks
+                    for (ChunkPos retroPos : RCStructureBoundingBoxes.rasterize(structureStart.getBoundingBox(), true))
+                        gen.generateStructure(world, random, retroPos);
 
-                if (parameters.has("select"))
-                    RCCommands.select(sender, RCBlockAreas.from(structureStart.getBoundingBox()));
+                    sender.addChatMessage(new TextComponentTranslation("Structure generated at %s with seed %s", RCTextStyle.chunkPos(chunkPos), RCTextStyle.copy(seed)));
+
+                    if (parameters.has("select"))
+                        RCCommands.select(sender, RCBlockAreas.from(structureStart.getBoundingBox()));
+                }
+                finally
+                {
+                    if (biome != null)
+                        setBiomeProvider(world.provider, biomeProvider);
+                }
             }
         });
 
@@ -114,6 +135,11 @@ public class CommandVanilla extends CommandSplit
                 sender.addChatMessage(CommandSightCheck.list(sightNames(world, pos)));
             }
         });
+    }
+
+    public static void setBiomeProvider(WorldProvider provider, BiomeProvider biomeProvider)
+    {
+        ReflectionHelper.setPrivateValue(WorldProvider.class, provider, biomeProvider, "field_76578_c", "biomeProvider");
     }
 
     public static List<ITextComponent> sightNames(World world, BlockPos pos)

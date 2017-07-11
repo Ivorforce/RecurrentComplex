@@ -150,7 +150,15 @@ public class StructureGenerator<S extends NBTStorable>
                 MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, boundingBox, spawn.generationLayer, firstTime));
         }
 
-        structure.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
+        try
+        {
+            structure.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
+        }
+        catch (Exception e)
+        {
+            RecurrentComplex.logger.error("Error on structure generation", e);
+            return failGenerate("exception on generation");
+        }
 
         if (!firstTime)
             return Optional.empty();
@@ -205,7 +213,7 @@ public class StructureGenerator<S extends NBTStorable>
     {
         if (RCConfig.logFailingStructure(structure))
             RecurrentComplex.logger.trace(String.format("%s canceled generation at %s (%d) (%s)", structure, lowerCoord().orElse(null), world.provider.getDimension(), reason));
-        return null; // Failed to place
+        return null;
     }
 
     public StructureGenerator<S> asChild(StructureSpawnContext context, VariableDomain variableDomain)
@@ -466,7 +474,22 @@ public class StructureGenerator<S extends NBTStorable>
     {
         return this.instanceData != null ? Optional.of(this.instanceData)
                 : this.instanceDataNBT != null ? load().map(load -> structure().loadInstanceData(load, this.instanceDataNBT, RCConfig.getUniversalTransformer()))
-                : prepare().map(prepare -> structure().prepareInstanceData(prepare, RCConfig.getUniversalTransformer()));
+                : prepare().flatMap(prepare ->
+        {
+            try
+            {
+                return Optional.ofNullable(structure().prepareInstanceData(prepare, RCConfig.getUniversalTransformer()));
+            }
+            catch (Exception e)
+            {
+                if (e instanceof ExpectedException && ((ExpectedException) e).isExpected())
+                    RecurrentComplex.logger.error(String.format("Error preparing structure: %s, Cause: %s", structure(), e.getMessage()));
+               else
+                    RecurrentComplex.logger.error("Error preparing structure: " + structure(), e);
+            }
+
+            return Optional.empty();
+        });
     }
 
     public StructureGenerator<S> memorize(boolean memorize)
@@ -512,4 +535,8 @@ public class StructureGenerator<S extends NBTStorable>
         return boundingBox().map(bb -> new StructureSpawnContext(environment(), new Random(seed() ^ GENERATE_SEED), transform(), bb, generationBB, generationPredicate, generationLayer, generateAsSource, generateMaturity));
     }
 
+    public interface ExpectedException
+    {
+        boolean isExpected();
+    }
 }

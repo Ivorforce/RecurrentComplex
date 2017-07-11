@@ -27,7 +27,7 @@ public interface Structure<S extends NBTStorable>
 {
     void generate(@Nonnull StructureSpawnContext context, @Nonnull S instanceData, @Nonnull TransformerMulti transformer);
 
-    @Nonnull
+    @Nullable
     S prepareInstanceData(@Nonnull StructurePrepareContext context, @Nonnull TransformerMulti transformer);
 
     @Nonnull

@@ -30,7 +30,10 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareCo
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
-import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.BlockedConnectorStrategy;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.LimitAABBStrategy;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRule;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRuleRegistry;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -39,6 +42,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.util.Constants;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -259,26 +263,33 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         List<MazePredicate<Connector>> predicates = rules.stream().map(r -> r.build(this, blockedConnections, factory, transformedComponents, connectorStrategy)).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
         predicates.add(new LimitAABBStrategy<>(outsideBoundsHigher));
         predicates.add(new BlockedConnectorStrategy<>(blockedConnections));
-        predicates.add(new TimeoutStrategy<>(RCConfig.mazeTimeout));
 
         int totalRooms = mazeComponent.rooms.compile(true).size();
 
+        final ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<List<PlacedMazeComponent<MazeComponentStructure<Connector>, Connector>>> future = executor.submit(() -> MazeComponentConnector.connect(maze,
+                transformedComponents, connectorStrategy,
+                new MazePredicateMany<>(predicates),
+                random,
+                RCConfig.mazePlacementReversesPerRoom >= 0 ? MathHelper.floor(totalRooms * RCConfig.mazePlacementReversesPerRoom + 0.5f) : MazeComponentConnector.INFINITE_REVERSES
+        ));
+        executor.shutdown();
+
         try
         {
-            return MazeComponentConnector.connect(maze,
-                    transformedComponents, connectorStrategy,
-                    new MazePredicateMany<>(predicates),
-                    random,
-                    RCConfig.mazePlacementReversesPerRoom >= 0 ? MathHelper.floor(totalRooms * RCConfig.mazePlacementReversesPerRoom + 0.5f) : MazeComponentConnector.INFINITE_REVERSES
-            );
+            return future.get(RCConfig.mazeTimeout, TimeUnit.MILLISECONDS);
         }
-        catch (TimeoutStrategy.TimeoutException e)
+        catch (TimeoutException e)
         {
+            future.cancel(true);
             throw new GenerationException("Maze generation timed out: " + mazeID);
         }
-        catch (Exception e)
+        catch (ExecutionException | InterruptedException e)
         {
-            throw new GenerationException("Error generating maze: " + mazeID, e);
+            Throwable t = e.getCause();
+
+            if (t instanceof Error) throw (Error) t;
+            else throw new GenerationException("Error generating maze; " + mazeID, t);
         }
     }
 

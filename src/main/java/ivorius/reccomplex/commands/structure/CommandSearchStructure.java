@@ -74,7 +74,7 @@ public class CommandSearchStructure extends CommandExpecting
 
     public static void consider(List<ToDoubleFunction<String>> ranks, Parameter<String> parameter, Parameter.Function<Parameter<String>, ToDoubleFunction<Structure<?>>> supplier) throws CommandException
     {
-        if (!parameter.isSet())
+        if (!parameter.has(1))
             return;
 
         ToDoubleFunction<Structure<?>> fun = supplier.apply(parameter);

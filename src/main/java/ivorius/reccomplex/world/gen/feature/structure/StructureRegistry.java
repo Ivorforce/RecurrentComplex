@@ -71,15 +71,10 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
         return (T) generationCaches.get(cache);
     }
 
-    protected <T extends GenerationType> Collection<Pair<Structure<?>, T>> getCachedGeneration(Class<T> clazz)
-    {
-        //noinspection unchecked
-        return (Collection<Pair<Structure<?>, T>>) ((Map) cachedGeneration).get(clazz);
-    }
-
     public <T extends GenerationType> Collection<Pair<Structure<?>, T>> getGenerationTypes(Class<T> clazz)
     {
-        Collection<Pair<Structure<?>, T>> pairs = getCachedGeneration(clazz);
+        //noinspection unchecked
+        Collection<Pair<Structure<?>, T>> pairs = (Collection<Pair<Structure<?>, T>>) ((Map) cachedGeneration).get(clazz);
 
         if (pairs == null)
         {

@@ -140,7 +140,7 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
 
         RecurrentComplex.logger.trace(String.format(old != null ? "Replaced %s '%s' at level %s" : "Registered %s '%s' at level %s", description, id, level));
 
-        clearCaches();
+        invalidateCaches();
 
         return old;
     }
@@ -149,7 +149,7 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
     public S unregister(String id, ILevel level)
     {
         invalidateActiveCache();
-        clearCaches();
+        invalidateCaches();
         stati.remove(id, level.getLevel());
         return items.remove(id, level.getLevel());
     }
@@ -197,9 +197,9 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
         return (T) modules.get(cache);
     }
 
-    protected void clearCaches()
+    protected void invalidateCaches()
     {
-        modules.values().forEach(Module::clear);
+        modules.values().forEach(Module::invalidate);
     }
 
     public static abstract class Module<R extends SimpleLeveledRegistry>
@@ -211,7 +211,7 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
             this.registry = registry;
         }
 
-        public abstract void clear();
+        public abstract void invalidate();
     }
 
     public class Status implements LeveledRegistry.Status

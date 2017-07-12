@@ -200,7 +200,7 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
         }
 
         @Override
-        public void clear()
+        public void invalidate()
         {
             selectors.clear();
         }

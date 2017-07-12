@@ -9,6 +9,7 @@ import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceNaturalGeneration;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -21,7 +22,6 @@ import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import ivorius.reccomplex.world.gen.feature.selector.*;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry.GenerationCache;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBiomeMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
@@ -110,7 +110,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
 
     public static CachedStructureSelectors<MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category>> selectors(StructureRegistry registry)
     {
-        return registry.getCache(Cache.class).selectors;
+        return registry.module(Cache.class).selectors;
     }
 
     public Double getGenerationWeight()
@@ -259,7 +259,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
         }
     }
 
-    public static class Cache implements GenerationCache
+    public static class Cache extends SimpleLeveledRegistry.Module<StructureRegistry>
     {
         protected CachedStructureSelectors<MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category>> selectors;
 

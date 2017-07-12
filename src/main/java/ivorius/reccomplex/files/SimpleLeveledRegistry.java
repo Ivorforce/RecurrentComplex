@@ -28,6 +28,8 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
 
     public String description;
 
+    private Map<Class<? extends Module<SimpleLeveledRegistry<S>>>, Module<SimpleLeveledRegistry<S>>> modules = new HashMap<>();
+
     public SimpleLeveledRegistry(String description)
     {
         this.description = description;
@@ -138,6 +140,8 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
 
         RecurrentComplex.logger.trace(String.format(old != null ? "Replaced %s '%s' at level %s" : "Registered %s '%s' at level %s", description, id, level));
 
+        clearCaches();
+
         return old;
     }
 
@@ -145,6 +149,7 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
     public S unregister(String id, ILevel level)
     {
         invalidateActiveCache();
+        clearCaches();
         stati.remove(id, level.getLevel());
         return items.remove(id, level.getLevel());
     }
@@ -172,6 +177,41 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
     private void invalidateActiveCache()
     {
         activeCacheValid = false;
+    }
+
+    public <T extends Module<SimpleLeveledRegistry<S>>> void registerModule(Class<T> type, T cache)
+    {
+        modules.put(type, cache);
+        cache.setRegistry(this);
+    }
+
+    public <T extends Module> void registerModule(T cache)
+    {
+        //noinspection unchecked
+        registerModule((Class<T>) cache.getClass(), cache);
+    }
+
+    public <T extends Module> T module(Class<T> cache)
+    {
+        //noinspection unchecked
+        return (T) modules.get(cache);
+    }
+
+    protected void clearCaches()
+    {
+        modules.values().forEach(Module::clear);
+    }
+
+    public static abstract class Module<R extends SimpleLeveledRegistry>
+    {
+        protected R registry;
+
+        public void setRegistry(R registry)
+        {
+            this.registry = registry;
+        }
+
+        public abstract void clear();
     }
 
     public class Status implements LeveledRegistry.Status
@@ -202,6 +242,13 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
         }
 
         @Override
+        public void setActive(boolean active)
+        {
+            this.active = active;
+            invalidateActiveCache();
+        }
+
+        @Override
         public String getDomain()
         {
             return domain;
@@ -211,13 +258,6 @@ public class SimpleLeveledRegistry<S> implements LeveledRegistry<S>
         public ILevel getLevel()
         {
             return level;
-        }
-
-        @Override
-        public void setActive(boolean active)
-        {
-            this.active = active;
-            invalidateActiveCache();
         }
     }
 }

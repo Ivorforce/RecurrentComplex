@@ -5,11 +5,13 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Sets;
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RCConfig;
-import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaStructureGeneration;
+import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaGeneration;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
@@ -17,15 +19,24 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.BiomeExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
+import ivorius.reccomplex.world.gen.feature.villages.GenericVillageCreationHandler;
+import ivorius.reccomplex.world.gen.feature.villages.GenericVillagePiece;
+import ivorius.reccomplex.world.gen.feature.villages.TemporaryVillagerRegistry;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.structure.MapGenStructureIO;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 19.01.15.
@@ -97,7 +108,7 @@ public class VanillaGeneration extends GenerationType
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceVanillaStructureGeneration(navigator, delegate, this);
+        return new TableDataSourceVanillaGeneration(navigator, delegate, this);
     }
 
     public boolean generatesIn(Biome biome)
@@ -169,6 +180,40 @@ public class VanillaGeneration extends GenerationType
             jsonObject.addProperty("biomeExpression", src.biomeExpression.getExpression());
 
             return jsonObject;
+        }
+    }
+
+    public static class Cache implements StructureRegistry.GenerationCache
+    {
+        protected StructureRegistry registry;
+
+        @Override
+        public void setRegistry(StructureRegistry registry)
+        {
+            this.registry = registry;
+        }
+
+        @Override
+        public void clear()
+        {
+            updateVanillaGenerations();
+            for (Pair<Structure<?>, VanillaGeneration> pair : registry.getGenerationTypes(VanillaGeneration.class))
+            {
+                String structureID = registry.id(pair.getLeft());
+                String generationID = pair.getRight().id();
+                Class<? extends GenericVillagePiece> clazz = GenericVillageCreationHandler.getPieceClass(structureID, generationID);
+                if (clazz != null)
+                    MapGenStructureIO.registerStructureComponent(clazz, "Rc:" + structureID + "_" + generationID);
+            }
+        }
+
+        private void updateVanillaGenerations()
+        {
+            TemporaryVillagerRegistry.instance().setHandlers(
+                    Sets.newHashSet(Collections2.transform(registry.getGenerationTypes(VanillaGeneration.class),
+                            input -> GenericVillageCreationHandler.forGeneration(registry.id(input.getLeft()), input.getRight().id())).stream()
+                            .filter(Objects::nonNull).collect(Collectors.toList()))
+            );
         }
     }
 }

@@ -9,21 +9,23 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaDecorationGeneration;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.presets.PresettedList;
+import ivorius.reccomplex.utils.presets.PresettedObjects;
+import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
+import ivorius.reccomplex.world.gen.feature.selector.CachedStructureSelectors;
+import ivorius.reccomplex.world.gen.feature.selector.EnvironmentalSelection;
+import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBiomeMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.DimensionMatcherPresets;
-import ivorius.reccomplex.utils.presets.PresettedList;
-import ivorius.reccomplex.utils.presets.PresettedObjects;
-import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
-import ivorius.reccomplex.world.gen.feature.selector.EnvironmentalSelection;
-import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
@@ -78,6 +80,11 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
     public static Gson getGson()
     {
         return gson;
+    }
+
+    public static CachedStructureSelectors<StructureSelector<VanillaDecorationGeneration, RCBiomeDecorator.DecorationType>> selectors(StructureRegistry registry)
+    {
+        return registry.getCache(Cache.class).selectors;
     }
 
     @Nonnull
@@ -177,6 +184,24 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
             PresettedObjects.write(jsonObject, gson, src.dimensionWeights, "dimensionWeightsPreset", "generationDimensions");
 
             return jsonObject;
+        }
+    }
+
+    public static class Cache implements StructureRegistry.GenerationCache
+    {
+        protected CachedStructureSelectors<StructureSelector<VanillaDecorationGeneration, RCBiomeDecorator.DecorationType>> selectors;
+
+        @Override
+        public void setRegistry(StructureRegistry registry)
+        {
+            selectors = new CachedStructureSelectors<>((biome, worldProvider) ->
+                    new StructureSelector<>(registry.activeMap(), worldProvider, biome, VanillaDecorationGeneration.class));
+        }
+
+        @Override
+        public void clear()
+        {
+            selectors.clear();
         }
     }
 }

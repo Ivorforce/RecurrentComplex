@@ -100,7 +100,7 @@ public class RCBiomeDecorator
 
         Biome biomeIn = worldIn.getBiome(chunkPos.getBlock(16, 0, 16));
 
-        StructureSelector<VanillaDecorationGeneration, DecorationType> selector = StructureRegistry.INSTANCE.decorationSelectors()
+        StructureSelector<VanillaDecorationGeneration, DecorationType> selector = VanillaDecorationGeneration.selectors(StructureRegistry.INSTANCE)
                 .get(biomeIn, worldIn.provider);
 
         double totalWeight = selector.totalWeight(type);

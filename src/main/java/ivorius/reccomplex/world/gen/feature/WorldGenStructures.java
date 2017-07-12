@@ -66,7 +66,7 @@ public class WorldGenStructures
 
     public static void planStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen, @Nullable Predicate<Structure> structurePredicate)
     {
-        MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalSelectors().get(biomeGen, world.provider);
+        MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category> structureSelector = NaturalGeneration.selectors(StructureRegistry.INSTANCE).get(biomeGen, world.provider);
 
         float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
         // TODO Use STRUCTURE_TRIES
@@ -79,7 +79,7 @@ public class WorldGenStructures
 
     public static boolean generateOneStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
     {
-        MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalSelectors().get(biomeGen, world.provider);
+        MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category> structureSelector = NaturalGeneration.selectors(StructureRegistry.INSTANCE).get(biomeGen, world.provider);
 
         float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
 

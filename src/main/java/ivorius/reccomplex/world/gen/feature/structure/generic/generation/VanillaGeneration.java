@@ -11,6 +11,7 @@ import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaGeneration;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -183,16 +184,8 @@ public class VanillaGeneration extends GenerationType
         }
     }
 
-    public static class Cache implements StructureRegistry.GenerationCache
+    public static class Cache extends SimpleLeveledRegistry.Module<StructureRegistry>
     {
-        protected StructureRegistry registry;
-
-        @Override
-        public void setRegistry(StructureRegistry registry)
-        {
-            this.registry = registry;
-        }
-
         @Override
         public void clear()
         {

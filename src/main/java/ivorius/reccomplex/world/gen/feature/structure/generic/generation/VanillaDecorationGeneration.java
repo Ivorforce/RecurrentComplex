@@ -8,6 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaDecorationGeneration;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -84,7 +85,7 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
 
     public static CachedStructureSelectors<StructureSelector<VanillaDecorationGeneration, RCBiomeDecorator.DecorationType>> selectors(StructureRegistry registry)
     {
-        return registry.getCache(Cache.class).selectors;
+        return registry.module(Cache.class).selectors;
     }
 
     @Nonnull
@@ -187,7 +188,7 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
         }
     }
 
-    public static class Cache implements StructureRegistry.GenerationCache
+    public static class Cache extends SimpleLeveledRegistry.Module<StructureRegistry>
     {
         protected CachedStructureSelectors<StructureSelector<VanillaDecorationGeneration, RCBiomeDecorator.DecorationType>> selectors;
 

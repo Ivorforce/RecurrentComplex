@@ -319,9 +319,9 @@ public class RCRegistryHandler
         genInfoRegistry.registerType("sapling", SaplingGeneration.class, new SaplingGeneration.Serializer());
         genInfoRegistry.registerType("decoration", VanillaDecorationGeneration.class, new VanillaDecorationGeneration.Serializer());
 
-        StructureRegistry.INSTANCE.registerCache(new NaturalGeneration.Cache());
-        StructureRegistry.INSTANCE.registerCache(new VanillaDecorationGeneration.Cache());
-        StructureRegistry.INSTANCE.registerCache(new VanillaGeneration.Cache());
+        StructureRegistry.INSTANCE.registerModule(new NaturalGeneration.Cache());
+        StructureRegistry.INSTANCE.registerModule(new VanillaDecorationGeneration.Cache());
+        StructureRegistry.INSTANCE.registerModule(new VanillaGeneration.Cache());
 
         SerializableStringTypeRegistry<GenericPlacer.Factor> placerFactorRegistry = FactorRegistry.INSTANCE.getTypeRegistry();
         placerFactorRegistry.registerType("limit", FactorLimit.class, new FactorLimit.Serializer());

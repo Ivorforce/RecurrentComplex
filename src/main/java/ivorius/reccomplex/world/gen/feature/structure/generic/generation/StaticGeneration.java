@@ -9,6 +9,7 @@ import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.ivtoolkit.world.chunk.Chunks;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStaticGeneration;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -16,6 +17,8 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import ivorius.reccomplex.utils.expression.DimensionExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPlacerPresets;
@@ -23,10 +26,16 @@ import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import ivorius.reccomplex.utils.presets.PresettedObjects;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 21.02.15.
@@ -73,6 +82,27 @@ public class StaticGeneration extends GenerationType
     public static Gson getGson()
     {
         return gson;
+    }
+
+    public static Stream<Triple<Structure<?>, StaticGeneration, BlockSurfacePos>> structuresAt(StructureRegistry registry, ChunkPos chunkPos, final World world, final BlockPos spawnPos)
+    {
+        final Predicate<Pair<Structure<?>, StaticGeneration>> predicate = input ->
+        {
+            StaticGeneration info = input.getRight();
+
+            return info.dimensionExpression.test(world.provider)
+                    && (info.pattern != null || Chunks.contains(chunkPos, info.getPos(spawnPos)));
+        };
+        Stream<Pair<Structure<?>, StaticGeneration>> statics = registry.getGenerationTypes(StaticGeneration.class).stream().filter(predicate);
+
+        return statics.flatMap(pair ->
+        {
+            StaticGeneration info = pair.getRight();
+            //noinspection ConstantConditions
+            return info.hasPattern()
+                    ? Chunks.repeatIntersections(chunkPos, info.getPos(spawnPos), info.pattern.repeatX, info.pattern.repeatZ).map(pos -> Triple.of(pair.getLeft(), info, pos))
+                    : Stream.of(Triple.of(pair.getLeft(), info, info.getPos(spawnPos)));
+        });
     }
 
     public BlockSurfacePos getPosition()

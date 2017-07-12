@@ -29,6 +29,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadConte
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGeneration;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.BlockedConnectorStrategy;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.LimitAABBStrategy;
@@ -240,7 +241,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
         final int[] outsideBoundsHigher = IvVecMathHelper.add(boundsHigher, oneArray);
         final int[] outsideBoundsLower = IvVecMathHelper.sub(boundsLower, oneArray);
 
-        List<MazeComponentStructure<Connector>> transformedComponents = StructureRegistry.INSTANCE.getStructuresInMaze(mazeID)
+        List<MazeComponentStructure<Connector>> transformedComponents = MazeGeneration.structures(StructureRegistry.INSTANCE, mazeID)
                 .flatMap(pair -> pair.getLeft().declaredVariables().omega(environment, true)
                         .flatMap(domain -> WorldGenMaze.transforms(pair.getLeft(), pair.getRight(), transform, factory, environment.copy(domain), blockedConnections))
                 )

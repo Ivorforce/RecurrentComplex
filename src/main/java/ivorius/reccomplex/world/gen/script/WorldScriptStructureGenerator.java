@@ -209,7 +209,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         }
         else
         {
-            Collection<Pair<Structure<?>, ListGeneration>> generationInfos = StructureRegistry.INSTANCE.getStructuresInList(structureListID, front).collect(Collectors.toList());
+            Collection<Pair<Structure<?>, ListGeneration>> generationInfos = ListGeneration.structures(StructureRegistry.INSTANCE, structureListID, front).collect(Collectors.toList());
 
             if (generationInfos.size() > 0)
             {

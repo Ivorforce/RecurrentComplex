@@ -41,7 +41,7 @@ public class WorldGenStructures
 
     public static void planStaticStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, BlockPos spawnPos, @Nullable Predicate<Structure> structurePredicate)
     {
-        StructureRegistry.INSTANCE.getStaticStructuresAt(chunkPos, world, spawnPos).forEach(triple ->
+        StaticGeneration.structuresAt(StructureRegistry.INSTANCE, chunkPos, world, spawnPos).forEach(triple ->
         {
             StaticGeneration staticGenInfo = triple.getMiddle();
             Structure<?> structure = triple.getLeft();
@@ -66,7 +66,7 @@ public class WorldGenStructures
 
     public static void planStructuresInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen, @Nullable Predicate<Structure> structurePredicate)
     {
-        MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
+        MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalSelectors().get(biomeGen, world.provider);
 
         float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
         // TODO Use STRUCTURE_TRIES
@@ -77,9 +77,9 @@ public class WorldGenStructures
                 .forEach(pair -> planStructureInChunk(chunkPos, world, pair.getLeft(), pair.getRight(), random.nextLong()));
     }
 
-    public static boolean generateRandomStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
+    public static boolean generateOneStructureInChunk(Random random, ChunkPos chunkPos, WorldServer world, Biome biomeGen)
     {
-        MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalStructureSelectors().get(biomeGen, world.provider);
+        MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category> structureSelector = StructureRegistry.INSTANCE.naturalSelectors().get(biomeGen, world.provider);
 
         float distanceToSpawn = distance(new ChunkPos(world.getSpawnPoint()), chunkPos);
 

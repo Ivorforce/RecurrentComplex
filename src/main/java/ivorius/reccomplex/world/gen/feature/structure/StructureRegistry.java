@@ -61,9 +61,9 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
     }
 
     @Override
-    protected void clearCaches()
+    protected void invalidateCaches()
     {
-        super.clearCaches();
+        super.invalidateCaches();
         cachedGeneration.clear();
     }
 

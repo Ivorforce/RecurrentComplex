@@ -10,31 +10,24 @@ import com.google.common.collect.Sets;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.generation.*;
-import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
-import ivorius.ivtoolkit.blocks.BlockSurfacePos;
-import ivorius.ivtoolkit.world.chunk.Chunks;
 import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
 import ivorius.reccomplex.world.gen.feature.selector.CachedStructureSelectors;
 import ivorius.reccomplex.world.gen.feature.selector.MixingStructureSelector;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaDecorationGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaGeneration;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
 import ivorius.reccomplex.world.gen.feature.villages.GenericVillageCreationHandler;
 import ivorius.reccomplex.world.gen.feature.villages.GenericVillagePiece;
 import ivorius.reccomplex.world.gen.feature.villages.TemporaryVillagerRegistry;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 
-import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by lukas on 24.05.14.
@@ -87,7 +80,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
         return (Collection<Pair<Structure<?>, T>>) ((Map) cachedGeneration).get(clazz);
     }
 
-    public <T extends GenerationType> Collection<Pair<Structure<?>, T>> getStructureGenerations(Class<T> clazz)
+    public <T extends GenerationType> Collection<Pair<Structure<?>, T>> getGenerationTypes(Class<T> clazz)
     {
         Collection<Pair<Structure<?>, T>> pairs = getCachedGeneration(clazz);
         if (pairs != null)
@@ -108,45 +101,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
         return pairs;
     }
 
-    public Stream<Pair<Structure<?>, ListGeneration>> getStructuresInList(final String listID, @Nullable final EnumFacing front)
-    {
-        final Predicate<Pair<Structure<?>, ListGeneration>> predicate = input -> listID.equals(input.getRight().listID)
-                && (front == null || input.getLeft().isRotatable() || input.getRight().front == front);
-        return getStructureGenerations(ListGeneration.class).stream().filter(predicate);
-    }
-
-    public Stream<Pair<Structure<?>, MazeGeneration>> getStructuresInMaze(final String mazeID)
-    {
-        final Predicate<Pair<Structure<?>, MazeGeneration>> predicate = input ->
-        {
-            MazeGeneration info = input.getRight();
-            return mazeID.equals(info.mazeID) && info.mazeComponent.isValid();
-        };
-        return getStructureGenerations(MazeGeneration.class).stream().filter(predicate);
-    }
-
-    public Stream<Triple<Structure<?>, StaticGeneration, BlockSurfacePos>> getStaticStructuresAt(ChunkPos chunkPos, final World world, final BlockPos spawnPos)
-    {
-        final Predicate<Pair<Structure<?>, StaticGeneration>> predicate = input ->
-        {
-            StaticGeneration info = input.getRight();
-
-            return info.dimensionExpression.test(world.provider)
-                    && (info.pattern != null || Chunks.contains(chunkPos, info.getPos(spawnPos)));
-        };
-        Stream<Pair<Structure<?>, StaticGeneration>> statics = getStructureGenerations(StaticGeneration.class).stream().filter(predicate);
-
-        return statics.flatMap(pair ->
-        {
-            StaticGeneration info = pair.getRight();
-            //noinspection ConstantConditions
-            return info.hasPattern()
-                    ? Chunks.repeatIntersections(chunkPos, info.getPos(spawnPos), info.pattern.repeatX, info.pattern.repeatZ).map(pos -> Triple.of(pair.getLeft(), info, pos))
-                    : Stream.of(Triple.of(pair.getLeft(), info, info.getPos(spawnPos)));
-        });
-    }
-
-    public CachedStructureSelectors<MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category>> naturalStructureSelectors()
+    public CachedStructureSelectors<MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category>> naturalSelectors()
     {
         return naturalSelectors;
     }
@@ -163,7 +118,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
         cachedGeneration.clear();
 
         updateVanillaGenerations();
-        for (Pair<Structure<?>, VanillaGeneration> pair : getStructureGenerations(VanillaGeneration.class))
+        for (Pair<Structure<?>, VanillaGeneration> pair : getGenerationTypes(VanillaGeneration.class))
         {
             String structureID = this.id(pair.getLeft());
             String generationID = pair.getRight().id();
@@ -176,7 +131,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
     private void updateVanillaGenerations()
     {
         TemporaryVillagerRegistry.instance().setHandlers(
-                Sets.newHashSet(Collections2.transform(getStructureGenerations(VanillaGeneration.class),
+                Sets.newHashSet(Collections2.transform(getGenerationTypes(VanillaGeneration.class),
                         input -> GenericVillageCreationHandler.forGeneration(this.id(input.getLeft()), input.getRight().id())).stream()
                         .filter(Objects::nonNull).collect(Collectors.toList()))
         );

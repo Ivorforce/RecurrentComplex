@@ -15,12 +15,17 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 21.02.15.
@@ -47,6 +52,13 @@ public class ListGeneration extends GenerationType implements WeightedSelector.I
         this.weight = weight;
         this.shift = shift;
         this.front = front;
+    }
+
+    public static Stream<Pair<Structure<?>, ListGeneration>> structures(StructureRegistry registry, final String listID, @Nullable final EnumFacing front)
+    {
+        final Predicate<Pair<Structure<?>, ListGeneration>> predicate = input -> listID.equals(input.getRight().listID)
+                && (front == null || input.getLeft().isRotatable() || input.getRight().front == front);
+        return registry.getGenerationTypes(ListGeneration.class).stream().filter(predicate);
     }
 
     @Nonnull

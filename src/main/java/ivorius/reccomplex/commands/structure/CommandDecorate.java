@@ -83,7 +83,7 @@ public class CommandDecorate extends CommandExpecting
 
             BlockPos pos = new BlockPos(lower.x + world.rand.nextInt(size[0]), 0, lower.z + world.rand.nextInt(size[1]));
 
-            if (!WorldGenStructures.generateRandomStructureInChunk(world.rand, new ChunkPos(pos), world, world.getBiome(pos)))
+            if (!WorldGenStructures.generateOneStructureInChunk(world.rand, new ChunkPos(pos), world, world.getBiome(pos)))
                 throw RecurrentComplex.translations.commandException("commands.rcdecorateone.none");
         }
         else

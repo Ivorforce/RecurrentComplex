@@ -16,15 +16,19 @@ import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Created by lukas on 07.10.14.
@@ -74,7 +78,7 @@ public class MazeGeneration extends GenerationType implements WeightedSelector.I
 
     public static boolean exists(String mazeID)
     {
-        return StructureRegistry.INSTANCE.getStructuresInMaze(mazeID).findAny().isPresent();
+        return structures(StructureRegistry.INSTANCE, mazeID).findAny().isPresent();
     }
 
     @SideOnly(Side.CLIENT)
@@ -82,6 +86,16 @@ public class MazeGeneration extends GenerationType implements WeightedSelector.I
     {
         return !Structures.isSimpleID(mazeID) ? GuiValidityStateIndicator.State.INVALID :
                 exists(mazeID) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID;
+    }
+
+    public static Stream<Pair<Structure<?>, MazeGeneration>> structures(StructureRegistry registry, final String mazeID)
+    {
+        final Predicate<Pair<Structure<?>, MazeGeneration>> predicate = input ->
+        {
+            MazeGeneration info = input.getRight();
+            return mazeID.equals(info.mazeID) && info.mazeComponent.isValid();
+        };
+        return registry.getGenerationTypes(MazeGeneration.class).stream().filter(predicate);
     }
 
     public String getMazeID()

@@ -62,7 +62,7 @@ public class RCSaplingGenerator
     {
         Environment baseEnv = Environment.inNature(world, new StructureBoundingBox(pos, pos));
 
-        List<Pair<Structure<?>, SaplingGeneration>> applicable = StructureRegistry.INSTANCE.getStructureGenerations(SaplingGeneration.class).stream()
+        List<Pair<Structure<?>, SaplingGeneration>> applicable = StructureRegistry.INSTANCE.getGenerationTypes(SaplingGeneration.class).stream()
                 .filter(pair1 -> pair1.getRight().generatesIn(baseEnv.withGeneration(pair1.getRight())))
                 .collect(Collectors.toCollection(ArrayList::new));
 

@@ -12,6 +12,7 @@ import ivorius.mcopts.commands.parameters.Parameters;
 import ivorius.mcopts.commands.parameters.expect.Expect;
 import ivorius.mcopts.commands.parameters.expect.MCE;
 import ivorius.reccomplex.RCConfig;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.parameters.IvP;
 import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
@@ -20,6 +21,7 @@ import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 
@@ -52,9 +54,12 @@ public class CommandDecorate extends CommandExpecting
     public void expect(Expect expect)
     {
         expect
-                .then(MCE::xyz).required()
-                .then(MCE::xyz).required()
-                .named("exp").words(RCE::structurePredicate);
+                // TODO Bugged in MCOPts
+                .then(MCE::xz).atOnce(2).descriptionU("x1", "z1")
+                .then(MCE::xz).atOnce(2).descriptionU("x2", "z2")
+                .named("exp").words(RCE::structurePredicate)
+                .flag("one")
+        ;
     }
 
     @Override
@@ -70,6 +75,18 @@ public class CommandDecorate extends CommandExpecting
         Predicate<Structure> structurePredicate = parameters.get("exp").to(RCP::structurePredicate).optional().orElse(structureInfo -> true);
 
         WorldServer world = (WorldServer) commandSender.getEntityWorld();
-        chunkArea.forEach(coord -> WorldGenStructures.decorate(world, world.rand, new ChunkPos(coord.x, coord.z), structurePredicate));
+
+        if (parameters.has("one"))
+        {
+            BlockSurfacePos lower = area.getLowerCorner();
+            int[] size = area.areaSize();
+
+            BlockPos pos = new BlockPos(lower.x + world.rand.nextInt(size[0]), 0, lower.z + world.rand.nextInt(size[1]));
+
+            if (!WorldGenStructures.generateRandomStructureInChunk(world.rand, new ChunkPos(pos), world, world.getBiome(pos)))
+                throw RecurrentComplex.translations.commandException("commands.rcdecorateone.none");
+        }
+        else
+            chunkArea.forEach(coord -> WorldGenStructures.decorate(world, world.rand, new ChunkPos(coord.x, coord.z), structurePredicate));
     }
 }

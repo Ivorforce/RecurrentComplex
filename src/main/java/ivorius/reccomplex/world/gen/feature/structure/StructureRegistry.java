@@ -26,7 +26,6 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
     public static SerializableStringTypeRegistry<GenerationType> GENERATION_TYPES = new SerializableStringTypeRegistry<>("generationInfo", "type", GenerationType.class);
 
     private Map<Class<? extends GenerationType>, Collection<Pair<Structure<?>, ? extends GenerationType>>> cachedGeneration = new HashMap<>();
-    private Map<Class<? extends GenerationCache>, GenerationCache> generationCaches = new HashMap<>();
 
     public StructureRegistry()
     {
@@ -39,36 +38,7 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
         if (active && !(RCConfig.shouldStructureGenerate(id, domain) && structure.areDependenciesResolved()))
             active = false;
 
-        Structure prev = super.register(id, domain, structure, active, level);
-
-        clearCaches();
-
-        return prev;
-    }
-
-    @Override
-    public Structure unregister(String id, ILevel level)
-    {
-        clearCaches();
-        return super.unregister(id, level);
-    }
-
-    public <T extends GenerationCache> void registerCache(Class<T> type, T cache)
-    {
-        generationCaches.put(type, cache);
-        cache.setRegistry(this);
-    }
-
-    public <T extends GenerationCache> void registerCache(T cache)
-    {
-        //noinspection unchecked
-        registerCache((Class<T>) cache.getClass(), cache);
-    }
-
-    public <T extends GenerationCache> T getCache(Class<T> cache)
-    {
-        //noinspection unchecked
-        return (T) generationCaches.get(cache);
+        return super.register(id, domain, structure, active, level);
     }
 
     public <T extends GenerationType> Collection<Pair<Structure<?>, T>> getGenerationTypes(Class<T> clazz)
@@ -90,17 +60,11 @@ public class StructureRegistry extends SimpleLeveledRegistry<Structure<?>>
         return pairs;
     }
 
-    private void clearCaches()
+    @Override
+    protected void clearCaches()
     {
+        super.clearCaches();
         cachedGeneration.clear();
-        generationCaches.values().forEach(GenerationCache::clear);
-    }
-
-    public interface GenerationCache
-    {
-        void setRegistry(StructureRegistry registry);
-
-        void clear();
     }
 
     private static class StructureData

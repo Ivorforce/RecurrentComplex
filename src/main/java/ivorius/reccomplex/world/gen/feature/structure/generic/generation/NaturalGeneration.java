@@ -271,7 +271,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
         }
 
         @Override
-        public void clear()
+        public void invalidate()
         {
             selectors.clear();
         }

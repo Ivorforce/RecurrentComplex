@@ -187,7 +187,7 @@ public class VanillaGeneration extends GenerationType
     public static class Cache extends SimpleLeveledRegistry.Module<StructureRegistry>
     {
         @Override
-        public void clear()
+        public void invalidate()
         {
             updateVanillaGenerations();
             for (Pair<Structure<?>, VanillaGeneration> pair : registry.getGenerationTypes(VanillaGeneration.class))

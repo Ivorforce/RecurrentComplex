@@ -23,15 +23,12 @@ import ivorius.reccomplex.files.saving.FileSaverString;
 import ivorius.reccomplex.item.*;
 import ivorius.reccomplex.json.SerializableStringTypeRegistry;
 import ivorius.reccomplex.network.*;
-import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.operation.*;
 import ivorius.reccomplex.random.Poem;
 import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.utils.presets.PresetRegistry;
 import ivorius.reccomplex.world.gen.feature.GenerationSanityChecker;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
-import ivorius.reccomplex.operation.OperationClearArea;
-import ivorius.reccomplex.operation.OperationGenerateStructure;
-import ivorius.reccomplex.operation.OperationMulti;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.*;
@@ -45,7 +42,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericP
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.*;
-import ivorius.reccomplex.operation.OperationGenerateSchematic;
 import ivorius.reccomplex.world.gen.script.*;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import ivorius.reccomplex.world.storage.loot.ItemCollectionSaveHandler;
@@ -307,6 +303,10 @@ public class RCRegistryHandler
         genInfoRegistry.registerType("vanilla", VanillaGeneration.class, new VanillaGeneration.Serializer());
         genInfoRegistry.registerType("sapling", SaplingGeneration.class, new SaplingGeneration.Serializer());
         genInfoRegistry.registerType("decoration", VanillaDecorationGeneration.class, new VanillaDecorationGeneration.Serializer());
+
+        StructureRegistry.INSTANCE.registerCache(new NaturalGeneration.Cache());
+        StructureRegistry.INSTANCE.registerCache(new VanillaDecorationGeneration.Cache());
+        StructureRegistry.INSTANCE.registerCache(new VanillaGeneration.Cache());
 
         SerializableStringTypeRegistry<GenericPlacer.Factor> placerFactorRegistry = FactorRegistry.INSTANCE.getTypeRegistry();
         placerFactorRegistry.registerType("limit", FactorLimit.class, new FactorLimit.Serializer());

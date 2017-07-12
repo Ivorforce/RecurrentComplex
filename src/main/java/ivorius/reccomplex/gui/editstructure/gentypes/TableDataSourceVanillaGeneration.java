@@ -26,14 +26,14 @@ import org.apache.commons.lang3.ArrayUtils;
 /**
  * Created by lukas on 07.10.14.
  */
-public class TableDataSourceVanillaStructureGeneration extends TableDataSourceSegmented
+public class TableDataSourceVanillaGeneration extends TableDataSourceSegmented
 {
     private TableNavigator navigator;
     private TableDelegate tableDelegate;
 
     private VanillaGeneration generationInfo;
 
-    public TableDataSourceVanillaStructureGeneration(TableNavigator navigator, TableDelegate tableDelegate, VanillaGeneration generationInfo)
+    public TableDataSourceVanillaGeneration(TableNavigator navigator, TableDelegate tableDelegate, VanillaGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;

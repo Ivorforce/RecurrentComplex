@@ -10,24 +10,24 @@ import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceNaturalGeneration;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.presets.PresettedList;
+import ivorius.reccomplex.utils.presets.PresettedObject;
+import ivorius.reccomplex.utils.presets.PresettedObjects;
+import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
+import ivorius.reccomplex.world.gen.feature.selector.*;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry.GenerationCache;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBiomeMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.DimensionMatcherPresets;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPlacerPresets;
-import ivorius.reccomplex.utils.presets.PresettedList;
-import ivorius.reccomplex.utils.presets.PresettedObjects;
-import ivorius.reccomplex.utils.presets.PresettedObject;
-import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
-import ivorius.reccomplex.world.gen.feature.selector.EnvironmentalSelection;
-import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
-import ivorius.reccomplex.world.gen.feature.selector.StructureSelector;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
@@ -106,6 +106,11 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
         GenericPlacer.Serializer.readLegacyPlacer(naturalGeneration.placer, context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
 
         return naturalGeneration;
+    }
+
+    public static CachedStructureSelectors<MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category>> selectors(StructureRegistry registry)
+    {
+        return registry.getCache(Cache.class).selectors;
     }
 
     public Double getGenerationWeight()
@@ -212,7 +217,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
 
             NaturalGeneration naturalGeneration = new NaturalGeneration(id, generationCategory);
 
-            if (!PresettedObjects.read(jsonObject, gson, naturalGeneration.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>(){}.getType())
+            if (!PresettedObjects.read(jsonObject, gson, naturalGeneration.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>() {}.getType())
                     && jsonObject.has("generationY"))
             {
                 // Legacy
@@ -222,8 +227,8 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
             if (jsonObject.has("generationWeight"))
                 naturalGeneration.generationWeight = JsonUtils.getDouble(jsonObject, "generationWeight");
 
-            PresettedObjects.read(jsonObject, gson, naturalGeneration.biomeWeights, "biomeWeightsPreset", "generationBiomes", new TypeToken<ArrayList<WeightedBiomeMatcher>>(){}.getType());
-            PresettedObjects.read(jsonObject, gson, naturalGeneration.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", new TypeToken<ArrayList<WeightedDimensionMatcher>>(){}.getType());
+            PresettedObjects.read(jsonObject, gson, naturalGeneration.biomeWeights, "biomeWeightsPreset", "generationBiomes", new TypeToken<ArrayList<WeightedBiomeMatcher>>() {}.getType());
+            PresettedObjects.read(jsonObject, gson, naturalGeneration.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", new TypeToken<ArrayList<WeightedDimensionMatcher>>() {}.getType());
 
             if (jsonObject.has("spawnLimitation"))
                 naturalGeneration.spawnLimitation = context.deserialize(jsonObject.get("spawnLimitation"), SpawnLimitation.class);
@@ -252,6 +257,23 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
 
             return jsonObject;
         }
+    }
 
+    public static class Cache implements GenerationCache
+    {
+        protected CachedStructureSelectors<MixingStructureSelector<NaturalGeneration, NaturalStructureSelector.Category>> selectors;
+
+        @Override
+        public void setRegistry(StructureRegistry registry)
+        {
+            selectors = new CachedStructureSelectors<>((biome, worldProvider) ->
+                    new MixingStructureSelector<>(registry.activeMap(), worldProvider, biome, NaturalGeneration.class));
+        }
+
+        @Override
+        public void clear()
+        {
+            selectors.clear();
+        }
     }
 }

@@ -190,10 +190,12 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
         while ((curPre = dirty.pollFirst()) != null)
         {
             MazePassage cur = curPre;
+            MazePassage curNormal = cur.normalize();
 
             // Try each ability (i.e. walk through empty space)
             for (Ability ability : (Iterable<Ability<C>>) abilities.stream()
-                    .filter(ability -> ability.start.distance(cur) != null) // Shiftable
+                    .filter(ability -> !visited.contains(ability.destination().add(cur.getSource()))) // Wasn't there
+                    .filter(ability -> ability.start.getDest().equals(curNormal.getDest())) // Shiftable
                     .filter(ability -> ability.rooms.stream().map(r -> r.add(cur.getSource())).allMatch(roomPlaceable)) // Have room
                     .filter(ability -> ability.exits.keySet().stream() // Connectable
                             .allMatch(p -> connector.test(ability.exits.get(p), p.add(cur.getSource())))

@@ -62,4 +62,10 @@ public class ReadableInstanceData<T extends NBTStorable>
         else
             return generator;
     }
+
+    public void set(ReadableInstanceData<T> instanceData)
+    {
+        this.instanceData = instanceData.instanceData;
+        this.instanceDataNBT = instanceData.instanceDataNBT;
+    }
 }

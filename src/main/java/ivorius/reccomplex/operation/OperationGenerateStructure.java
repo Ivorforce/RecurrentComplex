@@ -66,6 +66,15 @@ public class OperationGenerateStructure implements Operation
         this.generateAsSource = generateAsSource;
     }
 
+    public OperationGenerateStructure dummy(GenericStructure structure)
+    {
+        OperationGenerateStructure op = new OperationGenerateStructure(structure, generationInfoID, transform, lowerCoord, generateAsSource)
+                .withSeed(seed)
+                .withStructureID(structureID);
+        op.instanceData.set(instanceData);
+        return op;
+    }
+
     public String getStructureID()
     {
         return structureID;

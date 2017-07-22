@@ -18,6 +18,7 @@ import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.utils.RCPacketBuffer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.PlayerNotFoundException;
 import net.minecraft.entity.player.EntityPlayer;
@@ -69,7 +70,7 @@ public class OperationRegistry
         return compound;
     }
 
-    public static boolean queueOperation(Operation operation, ICommandSender commandSender) throws PlayerNotFoundException
+    public static boolean queueOperation(Operation operation, ICommandSender commandSender) throws CommandException
     {
         if (operation.checkDead(commandSender))
             return false;
@@ -128,7 +129,7 @@ public class OperationRegistry
 
                 GenericStructure dummyStructure = new GenericStructure();
                 dummyStructure.worldDataCompound = dummyWorldData.createTagCompound();
-                return writeOperation(new OperationGenerateStructure(dummyStructure, genStructure.generationInfoID, genStructure.transform, genStructure.lowerCoord, genStructure.generateAsSource));
+                return writeOperation(genStructure.dummy(dummyStructure));
             }
             else if (level == 2)
                 return writeOperation(new OperationClearArea(genStructure.generationArea()));

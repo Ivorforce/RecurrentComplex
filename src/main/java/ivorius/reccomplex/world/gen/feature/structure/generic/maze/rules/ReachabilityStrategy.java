@@ -77,7 +77,19 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
                                 // If it's just the same exit flipped it's not a walk through the component... This helps a bit with prediction
                                 && !source.equals(exit.inverse()))
                         {
-                            abilities.add(Ability.from(source, exit, component));
+                            Ability<C> ability = Ability.from(source, exit);
+
+                            Optional<Ability<C>> existing = abilities.stream()
+                                    .filter(a -> a.same(ability))
+                                    .findFirst();
+
+                            if (existing.isPresent())
+                                existing.get().add(component);
+                            else
+                            {
+                                ability.add(component);
+                                abilities.add(ability);
+                            }
                         }
                     }
                 }
@@ -86,17 +98,27 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
 
 //         An ability starts where you can place a room, and stops where you can place the next room
         // Remove inferrable abilities
-        for (Iterator<Ability<C>> iterator = abilities.iterator(); iterator.hasNext(); )
+        abilities.forEach(ability ->
         {
-            Ability<C> ability = iterator.next();
+            for (int i = 0; i < ability.masks.size(); i++)
+            {
+                Ability<C>.Mask mask = ability.masks.get(i);
+                ability.masks.remove(i); // Test if we can move within without using this mask
 
-            if (approximateCanReach(ability.rooms, (c, p) -> compatible(ability.exits.get(p), c),
-                    abilities.stream().filter(a -> !a.equals(ability)).collect(Collectors.toSet()),
-                    Collections.singleton(ability.start),
-                    Collections.singleton(ability.destination())
-                    , null))
-                iterator.remove();
-        }
+                if (approximateCanReach(mask.rooms, (c, p) -> compatible(mask.exits.get(p), c),
+                        abilities,
+                        Collections.singleton(ability.start()),
+                        Collections.singleton(ability.destination())
+                        , null) != null)
+                    i--; // Redo this index
+                else
+                    ability.masks.add(i, mask); // Re-add the mask
+            }
+        });
+
+        // Purge empty abilities
+        // Can't do this in the forEach for some reason
+        abilities.removeIf(a -> a.masks.isEmpty());
 
         return abilities;
     }
@@ -150,19 +172,19 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
         return added;
     }
 
-    private static <C> boolean approximateCanReach(Set<MazeRoom> rooms, BiPredicate<C, MazePassage> connector, Collection<Ability<C>> abilities, Set<MazePassage> left, Set<MazePassage> right, Predicate<MazeRoom> confiner)
+    private static <C> Set<MazeRoom> approximateCanReach(Set<MazeRoom> rooms, BiPredicate<C, MazePassage> connector, Collection<Ability<C>> abilities, Set<MazePassage> left, Set<MazePassage> right, Predicate<MazeRoom> confiner)
     {
         return approximateCanReach(rooms, abilities, Collections.emptyList(), left, right, Collections.emptyList(), confiner, connector);
     }
 
-    private static <C> boolean approximateCanReach(Set<MazeRoom> rooms, Collection<Ability<C>> abilities, Collection<MazeComponent<C>> mazes, Set<MazePassage> left, Set<MazePassage> right, Collection<MazePassage> pTraversed, Predicate<MazeRoom> confiner, BiPredicate<C, MazePassage> connector)
+    private static <C> Set<MazeRoom> approximateCanReach(Set<MazeRoom> rooms, Collection<Ability<C>> abilities, Collection<MazeComponent<C>> mazes, Set<MazePassage> left, Set<MazePassage> right, Collection<MazePassage> pTraversed, Predicate<MazeRoom> confiner, BiPredicate<C, MazePassage> connector)
     {
         if (left.size() <= 0 || right.size() <= 0)
-            return false;
+            return null;
 
         // This actually might happen
         if (left.stream().anyMatch(right::contains))
-            return true;
+            return null;
 
         final Collection<MazePassage> traversed = Sets.newHashSet(pTraversed); // Editable
 
@@ -196,15 +218,12 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
             for (Ability ability : (Iterable<Ability<C>>) abilities.stream()
                     .filter(ability -> !visited.contains(ability.destination().add(cur.getSource()))) // Wasn't there
                     .filter(ability -> ability.start.getDest().equals(curNormal.getDest())) // Shiftable
-                    .filter(ability -> ability.rooms.stream().map(r -> r.add(cur.getSource())).allMatch(roomPlaceable)) // Have room
-                    .filter(ability -> ability.exits.keySet().stream() // Connectable
-                            .allMatch(p -> connector.test(ability.exits.get(p), p.add(cur.getSource())))
-                    )
+                    .filter(ability -> ability.connect(cur.getSource(), roomPlaceable, connector)) // Connectable
                     ::iterator)
             {
                 MazePassage dest = ability.destination().add(cur.getSource());
                 if (right.contains(dest))
-                    return true;
+                    return compileRoute(visited);
                 if (passagePlaceable.test(dest) && visited.add(dest))
                     dirty.add(dest);
 
@@ -214,7 +233,7 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
                                 .distinct()::iterator)
                 {
                     if (right.contains(p))
-                        return true;
+                        return compileRoute(visited);
                     if (passagePlaceable.test(p) && visited.add(p))
                         dirty.add(p);
                 }
@@ -222,7 +241,14 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
 
         }
 
-        return false;
+        return null;
+    }
+
+    protected static Set<MazeRoom> compileRoute(Set<MazePassage> passages)
+    {
+        return passages.stream()
+                .map(MazePassage::getSource)
+                .collect(Collectors.toSet());
     }
 
     private static int compare(int[] left, int[] right)
@@ -290,7 +316,10 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
             {
                 ConnectionPoint point = connectionPoints.get(i);
 
-                canPlace = stepsReached.containsKey(point) || unconnectable[i] || approximateCanReach(
+                if (!point.intersectsRoute(component))
+                    continue; // Can reuse since path wasn't changed
+
+                canPlace = stepsReached.containsKey(point) || unconnectable[i] || (point.route = approximateCanReach(
                         roomsFromBoth,
                         traversalAbilities,
                         Arrays.asList(maze, component),
@@ -299,7 +328,7 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
                         mainConnectionPoint.traversed.stream().filter(isDirty).map(MazePassage::inverse).collect(Collectors.toSet()),
                         point.traversed,
                         confiner,
-                        (c, p) -> connectionStrategy.connect(p, exitFromEither(maze, component, p.inverse()), c) > 0);
+                        (c, p) -> connectionStrategy.connect(p, exitFromEither(maze, component, p.inverse()), c) > 0)) != null;
                 if (!canPlace) // Can skip checking the rest
                     break;
             }
@@ -321,6 +350,10 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
     public void willPlace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
     {
         place(maze, component, false);
+
+        connectionPoints.stream()
+                .filter(p -> p.intersectsRoute(component))
+                .forEach(point -> point.route = null);
     }
 
     @Override
@@ -422,39 +455,53 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
     private static class Ability<C>
     {
         @Nonnull
-        public final MazePassage start;
+        protected final MazePassage start;
         @Nonnull
-        public final MazePassage destination;
-        @Nonnull
-        public final Set<MazeRoom> rooms;
-        @Nonnull
-        public final Map<MazePassage, C> exits;
+        protected final MazePassage destination;
 
-        public Ability(@Nonnull MazePassage start, @Nonnull MazePassage destination, @Nonnull Set<MazeRoom> rooms, @Nonnull Map<MazePassage, C> exits)
+        protected List<Mask> masks = new ArrayList<>();
+
+        public Ability(@Nonnull MazePassage start, @Nonnull MazePassage destination)
         {
             this.start = start;
             this.destination = destination;
-            this.rooms = rooms;
-            this.exits = exits;
         }
 
-        public static <C> Ability<C> from(@Nonnull MazePassage start, @Nonnull MazePassage destination, MazeComponent<C> component)
+        public static <C> Ability<C> from(@Nonnull MazePassage start, @Nonnull MazePassage destination)
         {
-            return new Ability<>(start.normalize(), destination.sub(start.getSource()),
+            return new Ability<>(start.normalize(), destination.sub(start.getSource()));
+        }
+
+        public boolean same(Ability<C> ability)
+        {
+            return start.equals(ability.start) && destination.equals(ability.destination);
+        }
+
+        public void add(MazeComponent<C> component)
+        {
+            masks.add(new Mask(
                     component.rooms().stream().map(r -> r.sub(start.getSource())).collect(Collectors.toSet()),
                     component.exits().keySet().stream().collect(Collectors.toMap(r -> r.sub(start.getSource()), component.exits()::get))
+            ));
+        }
+
+        public boolean connect(MazeRoom reference, Predicate<MazeRoom> roomPlaceable, BiPredicate<C, MazePassage> connector)
+        {
+            return masks.stream().anyMatch(mask ->
+                    mask.rooms.stream().map(r -> r.add(reference)).allMatch(roomPlaceable) // Have room
+                            && mask.exits.keySet().stream() // Connectable
+                            .allMatch(p -> connector.test(mask.exits.get(p), p.add(reference)))
             );
+        }
+
+        public MazePassage start()
+        {
+            return start;
         }
 
         public MazePassage destination()
         {
             return destination;
-        }
-
-        @Nonnull
-        public Function<MazePassage, C> exits()
-        {
-            return exits::get;
         }
 
         @Override
@@ -465,19 +512,17 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
 
             Ability<?> ability = (Ability<?>) o;
 
-            if (!destination.equals(ability.destination)) return false;
             if (!start.equals(ability.start)) return false;
-            if (!rooms.equals(ability.rooms)) return false;
-            return exits.equals(ability.exits);
+            if (!destination.equals(ability.destination)) return false;
+            return masks != null ? masks.equals(ability.masks) : ability.masks == null;
         }
 
         @Override
         public int hashCode()
         {
-            int result = destination.hashCode();
-            result = 31 * result + start.hashCode();
-            result = 31 * result + rooms.hashCode();
-            result = 31 * result + exits.hashCode();
+            int result = start.hashCode();
+            result = 31 * result + destination.hashCode();
+            result = 31 * result + (masks != null ? masks.hashCode() : 0);
             return result;
         }
 
@@ -485,11 +530,53 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
         public String toString()
         {
             return "Ability{" +
-                    "destination=" + destination +
-                    "expect=" + start +
-                    ", rooms=" + rooms +
-                    ", exits=" + exits +
+                    "start=" + start +
+                    ", destination=" + destination +
+                    ", masks=" + masks +
                     '}';
+        }
+
+        public class Mask
+        {
+            @Nonnull
+            public final Set<MazeRoom> rooms;
+            @Nonnull
+            public final Map<MazePassage, C> exits;
+
+            public Mask(@Nonnull Set<MazeRoom> rooms, @Nonnull Map<MazePassage, C> exits)
+            {
+                this.rooms = rooms;
+                this.exits = exits;
+            }
+
+            @Override
+            public boolean equals(Object o)
+            {
+                if (this == o) return true;
+                if (o == null || getClass() != o.getClass()) return false;
+
+                Mask mask = (Mask) o;
+
+                if (!rooms.equals(mask.rooms)) return false;
+                return exits.equals(mask.exits);
+            }
+
+            @Override
+            public int hashCode()
+            {
+                int result = rooms.hashCode();
+                result = 31 * result + exits.hashCode();
+                return result;
+            }
+
+            @Override
+            public String toString()
+            {
+                return "Mask{" +
+                        "rooms=" + rooms +
+                        ", exits=" + exits +
+                        '}';
+            }
         }
     }
 
@@ -497,6 +584,8 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
     {
         public final Set<MazePassage> traversed = new HashSet<>();
         public final List<Set<MazePassage>> order = new ArrayList<>();
+
+        public Set<MazeRoom> route = null;
 
         @SafeVarargs
         public ConnectionPoint(Collection<MazePassage>... points)
@@ -507,6 +596,11 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
         public void reverseStep()
         {
             traversed.removeAll(order.remove(order.size() - 1));
+        }
+
+        public boolean intersectsRoute(ShiftedMazeComponent<?, C> component)
+        {
+            return route == null || component.getComponent().rooms().stream().anyMatch(r -> route.contains(r));
         }
     }
 }

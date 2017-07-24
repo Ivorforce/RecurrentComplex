@@ -8,6 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic;
 import com.google.gson.annotations.SerializedName;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
@@ -202,6 +203,20 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
 
             if (minCoord.length != maxCoord.length)
                 throw new IllegalArgumentException();
+        }
+
+        public static Area from(boolean additive, int[] left, int[] right, @Nullable String identifier)
+        {
+            int[] min = new int[left.length];
+            int[] max = new int[right.length];
+
+            for (int i = 0; i < left.length; i++)
+            {
+                min[i] = Math.min(left[i], right[i]);
+                max[i] = Math.max(left[i], right[i]);
+            }
+
+            return new Area(additive, min, max, identifier);
         }
 
         public Area(NBTTagCompound tagCompound, int dimensions)

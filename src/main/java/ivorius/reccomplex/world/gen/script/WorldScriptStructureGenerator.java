@@ -282,7 +282,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     }
 
     @Override
-    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate tableDelegate)
+    public TableDataSource tableDataSource(BlockPos realWorldPos, TableNavigator navigator, TableDelegate tableDelegate)
     {
         return new TableDataSourceWorldScriptStructureGenerator(this, navigator, tableDelegate);
     }

@@ -66,7 +66,8 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
                 ? new GuiButton(1, leftEdge(), HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, TextFormatting.GOLD + IvTranslations.get("gui.cancel"))
                 : new GuiButton(2, leftEdge(), HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.format("gui.back.page", tableStack().size() - 1)));
         buttonList.add(new GuiButton(0, leftEdge() + uWidth() / 3 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 2, 20, TextFormatting.GREEN + IvTranslations.get("reccomplex.gui.save")));
-        GuiButton hideButton = new GuiButton(3, leftEdge() + uWidth() / 3 * 2 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20, IvTranslations.get("reccomplex.gui.hidegui"));
+        GuiButton hideButton = new GuiButton(3, leftEdge() + uWidth() / 3 * 2 + 1, HEIGHT_INSET + uHeight() - 20, uWidth() / 3 - 1, 20,
+                currentTable().getDataSource().canVisualize() ? IvTranslations.get("reccomplex.gui.visualizegui") : IvTranslations.get("reccomplex.gui.hidegui"));
         hideButton.enabled = GuiHider.canHide();
         buttonList.add(hideButton);
     }
@@ -106,8 +107,10 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
         }
         else if (button.id == 3)
         {
-            GuiHider.hideGUI();
+            if (currentTable().getDataSource().canVisualize())
+                GuiHider.hideGUI(currentTable().getDataSource().visualizer());
+            else
+                GuiHider.hideGUI();
         }
     }
-
 }

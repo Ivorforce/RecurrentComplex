@@ -109,9 +109,9 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     }
 
     @Override
-    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate tableDelegate)
+    public TableDataSource tableDataSource(BlockPos realWorldPos, TableNavigator navigator, TableDelegate tableDelegate)
     {
-        return new TableDataSourceWorldScriptMazeGenerator(this, tableDelegate, navigator);
+        return new TableDataSourceWorldScriptMazeGenerator(this, realWorldPos, tableDelegate, navigator);
     }
 
     public String getMazeID()

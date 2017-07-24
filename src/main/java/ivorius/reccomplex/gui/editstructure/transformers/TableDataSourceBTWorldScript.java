@@ -7,10 +7,12 @@ package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptMulti;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerWorldScript;
+import net.minecraft.client.Minecraft;
 
 /**
  * Created by lukas on 05.06.14.
@@ -30,7 +32,7 @@ public class TableDataSourceBTWorldScript extends TableDataSourceSegmented
 
         addManagedSegment(0, new TableDataSourceTransformer(transformer, delegate, navigator));
         addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), IvTranslations.getLines("reccomplex.transformer.block.source.tooltip"), transformer.sourceMatcher, null));
-        addManagedSegment(2, new TableDataSourceWorldScriptMulti(transformer.script, delegate, navigator));
+        addManagedSegment(2, new TableDataSourceWorldScriptMulti(transformer.script, Minecraft.getMinecraft().player.getPosition(), delegate, navigator));
     }
 
     public TransformerWorldScript getTransformer()

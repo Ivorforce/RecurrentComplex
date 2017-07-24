@@ -15,6 +15,7 @@ import ivorius.reccomplex.capability.RCEntityInfo;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.events.ItemGenerationEvent;
+import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.item.ItemInputHandler;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import ivorius.reccomplex.world.gen.feature.WorldRandomData;
@@ -126,6 +127,8 @@ public class RCForgeEventHandler
 
         if (info != null && info.danglingOperation != null)
             info.danglingOperation.renderPreview(info.getPreviewType(), mc.world, ticks, event.getPartialTicks());
+
+        GuiHider.draw(renderEntity, event.getPartialTicks());
 
         GlStateManager.popMatrix();
     }

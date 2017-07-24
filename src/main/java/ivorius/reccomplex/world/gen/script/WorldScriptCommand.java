@@ -172,7 +172,7 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
     }
 
     @Override
-    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate tableDelegate)
+    public TableDataSource tableDataSource(BlockPos realWorldPos, TableNavigator navigator, TableDelegate tableDelegate)
     {
         return new TableDataSourceWorldScriptCommand(this, tableDelegate, navigator);
     }

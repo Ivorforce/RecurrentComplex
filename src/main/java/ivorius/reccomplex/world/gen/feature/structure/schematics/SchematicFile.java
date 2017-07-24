@@ -147,10 +147,7 @@ public class SchematicFile
 
     public boolean shouldRenderSide(BlockPos coord, EnumFacing side)
     {
-        BlockPos sideCoord = coord.add(side.getFrontOffsetX(), side.getFrontOffsetY(), side.getFrontOffsetZ());
-
-        IBlockState blockState = getBlockState(sideCoord);
-        return !blockState.isOpaqueCube();
+        return !getBlockState(coord.offset(side)).isOpaqueCube();
     }
 
     public void generate(World world, BlockPos pos)

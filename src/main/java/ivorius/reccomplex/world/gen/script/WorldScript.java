@@ -29,5 +29,5 @@ public interface WorldScript<S extends NBTStorable> extends NBTCompoundObject
 
     String getDisplayString();
 
-    TableDataSource tableDataSource(TableNavigator navigator, TableDelegate tableDelegate);
+    TableDataSource tableDataSource(BlockPos realWorldPos, TableNavigator navigator, TableDelegate tableDelegate);
 }

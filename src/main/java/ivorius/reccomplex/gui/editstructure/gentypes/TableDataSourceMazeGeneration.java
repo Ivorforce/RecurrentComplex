@@ -29,9 +29,7 @@ public class TableDataSourceMazeGeneration extends TableDataSourceSegmented
 
     private MazeGeneration generationInfo;
 
-    protected MazeVisualizationContext visualizationContext;
-
-    public TableDataSourceMazeGeneration(TableNavigator navigator, TableDelegate tableDelegate, MazeGeneration generationInfo)
+    public TableDataSourceMazeGeneration(TableNavigator navigator, MazeVisualizationContext visualizationContext, TableDelegate tableDelegate, MazeGeneration generationInfo)
     {
         this.navigator = navigator;
         this.tableDelegate = tableDelegate;
@@ -39,12 +37,6 @@ public class TableDataSourceMazeGeneration extends TableDataSourceSegmented
 
         addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, tableDelegate));
         addManagedSegment(3, new TableDataSourceMazeComponent(generationInfo.mazeComponent, navigator, tableDelegate).visualizing(visualizationContext));
-    }
-
-    public TableDataSourceMazeGeneration visualizing(MazeVisualizationContext realWorldMapper)
-    {
-        this.visualizationContext = realWorldMapper;
-        return this;
     }
 
     @Override

@@ -136,7 +136,7 @@ public class MazeGeneration extends GenerationType implements WeightedSelector.I
     @Override
     public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceMazeGeneration(navigator, delegate, this);
+        return new TableDataSourceMazeGeneration(navigator, mazeVisualizationContext, delegate, this);
     }
 
     public static class Serializer implements JsonSerializer<MazeGeneration>, JsonDeserializer<MazeGeneration>

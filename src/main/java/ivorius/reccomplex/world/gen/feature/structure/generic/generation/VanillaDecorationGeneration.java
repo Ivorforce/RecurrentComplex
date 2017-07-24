@@ -7,8 +7,8 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceVanillaDecorationGeneration;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -36,7 +36,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.function.Function;
 
 /**
  * Created by lukas on 19.01.15.
@@ -122,7 +121,7 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
     }
 
     @Override
-    public TableDataSource tableDataSource(Function<MazeRoom, BlockPos> realWorldMapper, TableNavigator navigator, TableDelegate delegate)
+    public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {
         return new TableDataSourceVanillaDecorationGeneration(navigator, delegate, this);
     }

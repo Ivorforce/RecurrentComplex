@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
-import ivorius.ivtoolkit.maze.classic.MazeRoom;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.client.rendering.SelectionQuadCache;
 import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.table.TableCells;
@@ -14,12 +14,10 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
-import java.util.function.Function;
 
 /**
  * Created by lukas on 04.06.14.
@@ -29,7 +27,7 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
     private int[] dimensions;
     protected boolean showIdentifier;
 
-    protected Function<MazeRoom, BlockPos> realWorldMapper;
+    protected MazeVisualizationContext visualizationContext;
 
     public TableDataSourceSelection(Selection list, int[] dimensions, TableDelegate tableDelegate, TableNavigator navigator, boolean showIdentifier)
     {
@@ -39,9 +37,9 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
         duplicateTitle = TextFormatting.GREEN + "D";
     }
 
-    public TableDataSourceSelection visualizing(Function<MazeRoom, BlockPos> realWorldMapper)
+    public TableDataSourceSelection visualizing(MazeVisualizationContext visualizationContext)
     {
-        this.realWorldMapper = realWorldMapper;
+        this.visualizationContext = visualizationContext;
         return this;
     }
 
@@ -81,12 +79,12 @@ public class TableDataSourceSelection extends TableDataSourceList<Selection.Area
     @Override
     public boolean canVisualize()
     {
-        return realWorldMapper != null;
+        return visualizationContext != null;
     }
 
     @Override
     public GuiHider.Visualizer visualizer()
     {
-        return new SelectionQuadCache.Visualizer(list, realWorldMapper);
+        return new SelectionQuadCache.Visualizer(list, visualizationContext);
     }
 }

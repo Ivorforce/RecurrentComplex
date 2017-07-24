@@ -62,7 +62,7 @@ public class CommandConvertSchematic extends CommandExpecting
 
         from.worldDataCompound = CommandExportSchematic.toWorldData(schematicFile).createTagCompound();
 
-        PacketEditStructureHandler.openEditStructure(player, from, structureID, directory);
+        PacketEditStructureHandler.openEditStructure(player, from, player.getPosition(), structureID, directory);
     }
 
     @Override

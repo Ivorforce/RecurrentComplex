@@ -6,17 +6,20 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 
 import com.google.gson.JsonObject;
+import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Random;
 import java.util.Stack;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 19.02.15.
@@ -73,5 +76,5 @@ public abstract class GenerationType
     @Nullable
     public abstract Placer placer();
 
-    public abstract TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate);
+    public abstract TableDataSource tableDataSource(Function<MazeRoom, BlockPos> realWorldMapper, TableNavigator navigator, TableDelegate delegate);
 }

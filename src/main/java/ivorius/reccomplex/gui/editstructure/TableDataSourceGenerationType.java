@@ -5,25 +5,31 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 04.06.14.
  */
-public class TableDataSourceStructureGenerationInfo extends TableDataSourceList<GenerationType, List<GenerationType>>
+public class TableDataSourceGenerationType extends TableDataSourceList<GenerationType, List<GenerationType>>
 {
-    public TableDataSourceStructureGenerationInfo(List<GenerationType> list, TableDelegate tableDelegate, TableNavigator navigator)
+    protected Function<MazeRoom, BlockPos> realWorldMapper;
+
+    public TableDataSourceGenerationType(List<GenerationType> list, Function<MazeRoom, BlockPos> realWorldMapper, TableDelegate tableDelegate, TableNavigator navigator)
     {
         super(list, tableDelegate, navigator);
         setUsesPresetActionForAdding(true);
+        this.realWorldMapper = realWorldMapper;
     }
 
     @Override
@@ -48,7 +54,7 @@ public class TableDataSourceStructureGenerationInfo extends TableDataSourceList<
     @Override
     public TableCell entryCell(boolean enabled, GenerationType generationType)
     {
-        return TableCells.edit(enabled, navigator, tableDelegate, () -> generationType.tableDataSource(navigator, tableDelegate));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> generationType.tableDataSource(realWorldMapper, navigator, tableDelegate));
     }
 
     @Nonnull

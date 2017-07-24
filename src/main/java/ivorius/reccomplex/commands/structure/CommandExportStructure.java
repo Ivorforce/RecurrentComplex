@@ -65,6 +65,6 @@ public class CommandExportStructure extends CommandExpecting
         from.worldDataCompound = IvWorldData.capture(commandSender.getEntityWorld(), selectionOwner.getSelection(), true)
                 .createTagCompound();
 
-        PacketEditStructureHandler.openEditStructure(player, from, structureID, directory);
+        PacketEditStructureHandler.openEditStructure(player, from, selectionOwner.getSelection().getLowerCorner(), structureID, directory);
     }
 }

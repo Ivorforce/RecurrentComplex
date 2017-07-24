@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
@@ -21,23 +22,25 @@ import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 05.06.14.
  */
 public class TableDataSourceGenericStructure extends TableDataSourceSegmented
 {
-    private GenericStructure structureInfo;
-    private String structureKey;
+    protected GenericStructure structureInfo;
+    protected String structureKey;
 
-    private SaveDirectoryData saveDirectoryData;
+    protected SaveDirectoryData saveDirectoryData;
 
-    private TableDelegate tableDelegate;
-    private TableNavigator navigator;
+    protected TableDelegate tableDelegate;
+    protected TableNavigator navigator;
 
-    public TableDataSourceGenericStructure(GenericStructure structureInfo, String structureKey, SaveDirectoryData saveDirectoryData, TableDelegate delegate, TableNavigator navigator)
+    public TableDataSourceGenericStructure(GenericStructure structureInfo, String structureKey, SaveDirectoryData saveDirectoryData, TableDelegate delegate, TableNavigator navigator, Function<MazeRoom, BlockPos> realWorldMapper)
     {
         this.structureInfo = structureInfo;
         this.structureKey = structureKey;
@@ -52,7 +55,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                 .buildDataSource(IvTranslations.get("reccomplex.structure.metadata"), IvTranslations.getLines("reccomplex.structure.metadata.tooltip")));
 
         addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceStructureGenerationInfo(structureInfo.generationTypes, delegate, navigator))
+                .addNavigation(() -> new TableDataSourceGenerationType(structureInfo.generationTypes, realWorldMapper, delegate, navigator))
                 .buildDataSource(IvTranslations.get("reccomplex.structure.generation"), IvTranslations.getLines("reccomplex.structure.generation.tooltip")));
 
         addManagedSegment(5, TableCellMultiBuilder.create(navigator, delegate)

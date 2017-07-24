@@ -7,6 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 
 import com.google.gson.*;
 import ivorius.ivtoolkit.blocks.Directions;
+import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStructureListGeneration;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -98,7 +100,7 @@ public class ListGeneration extends GenerationType implements WeightedSelector.I
     }
 
     @Override
-    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
+    public TableDataSource tableDataSource(Function<MazeRoom, BlockPos> realWorldMapper, TableNavigator navigator, TableDelegate delegate)
     {
         return new TableDataSourceStructureListGeneration(navigator, delegate, this);
     }

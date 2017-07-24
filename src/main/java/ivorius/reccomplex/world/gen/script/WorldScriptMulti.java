@@ -74,9 +74,9 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     }
 
     @Override
-    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate tableDelegate)
+    public TableDataSource tableDataSource(BlockPos realWorldPos, TableNavigator navigator, TableDelegate tableDelegate)
     {
-        return new TableDataSourceWorldScriptMulti(this, tableDelegate, navigator);
+        return new TableDataSourceWorldScriptMulti(this, realWorldPos, tableDelegate, navigator);
     }
 
     @Override

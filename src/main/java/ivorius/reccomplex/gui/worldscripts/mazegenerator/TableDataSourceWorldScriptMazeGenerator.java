@@ -5,15 +5,20 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
+import ivorius.ivtoolkit.blocks.BlockPositions;
+import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGeneration;
 import ivorius.reccomplex.world.gen.script.WorldScriptMazeGenerator;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.function.Consumer;
 
@@ -24,10 +29,10 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
 {
     private WorldScriptMazeGenerator script;
 
-    private TableDelegate delegate;
-    private TableNavigator navigator;
+    protected TableDelegate delegate;
+    protected TableNavigator navigator;
 
-    public TableDataSourceWorldScriptMazeGenerator(WorldScriptMazeGenerator script, TableDelegate delegate, TableNavigator navigator)
+    public TableDataSourceWorldScriptMazeGenerator(WorldScriptMazeGenerator script, BlockPos realWorldPos, TableDelegate delegate, TableNavigator navigator)
     {
         this.script = script;
         this.delegate = delegate;
@@ -35,7 +40,9 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
 
         addManagedSegment(0, new TableDataSourceWorldScript(script));
         addManagedSegment(2, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceMazeComponent(script.mazeComponent, navigator, delegate), () -> IvTranslations.get("reccomplex.maze"))
+                .addNavigation(() -> new TableDataSourceMazeComponent(script.mazeComponent, navigator, delegate)
+                                .visualizing(r -> BlockPositions.fromIntArray(IvVecMathHelper.mul(r.getCoordinates(), script.roomSize)).add(script.structureShift).add(realWorldPos)),
+                        () -> IvTranslations.get("reccomplex.maze"))
                 .buildDataSource());
         addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms), () -> IvTranslations.get("reccomplex.worldscript.mazeGen.rules"))

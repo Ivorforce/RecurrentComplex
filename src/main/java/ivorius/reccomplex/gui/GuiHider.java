@@ -9,6 +9,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCCommands;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -24,6 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class GuiHider
 {
     protected static GuiScreen hiddenGUI;
+    protected static Visualizer visualizer;
 
     public static boolean canHide()
     {
@@ -32,11 +34,17 @@ public class GuiHider
 
     public static boolean hideGUI()
     {
+        return hideGUI(null);
+    }
+
+    public static boolean hideGUI(Visualizer visualizer)
+    {
         if (!canHide())
             return false;
 
         Minecraft mc = Minecraft.getMinecraft();
         hiddenGUI = mc.currentScreen;
+        GuiHider.visualizer = visualizer;
 
         if (hiddenGUI == null)
             return false;
@@ -65,6 +73,7 @@ public class GuiHider
 
         GuiScreen hiddenGUI = GuiHider.hiddenGUI;
         GuiHider.hiddenGUI = null;
+        visualizer = null;
 
         Minecraft mc = Minecraft.getMinecraft();
         mc.displayGuiScreen(hiddenGUI);
@@ -90,5 +99,18 @@ public class GuiHider
 
         if (!reopenGUI())
             mc.thePlayer.addChatMessage(RecurrentComplex.translations.get("commands.rcreopen.fail"));
+    }
+
+    public static void draw(Entity renderEntity, float partialTicks)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        if (renderEntity == mc.player && visualizer != null)
+            visualizer.draw(renderEntity, partialTicks);
+    }
+
+    public interface Visualizer
+    {
+        void draw(Entity renderEntity, float partialTicks);
     }
 }

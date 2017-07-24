@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.script.WorldScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptRegistry;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
@@ -22,9 +23,12 @@ import java.util.List;
  */
 public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScript, List<WorldScript>>
 {
-    public TableDataSourceWorldScriptList(List<WorldScript> list, TableDelegate tableDelegate, TableNavigator navigator)
+    protected BlockPos realWorldPos;
+
+    public TableDataSourceWorldScriptList(List<WorldScript> list, BlockPos realWorldPos, TableDelegate tableDelegate, TableNavigator navigator)
     {
         super(list, tableDelegate, navigator);
+        this.realWorldPos = realWorldPos;
         setUsesPresetActionForAdding(true);
         duplicateTitle = TextFormatting.GREEN + "D";
     }
@@ -45,7 +49,7 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     @Override
     public TableCell entryCell(boolean enabled, WorldScript worldScript)
     {
-        return TableCells.edit(enabled, navigator, tableDelegate, () -> worldScript.tableDataSource(navigator, tableDelegate));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> worldScript.tableDataSource(realWorldPos, navigator, tableDelegate));
     }
 
     @Override

@@ -499,6 +499,7 @@ reccomplex.gui.apply=Apply
 reccomplex.gui.later=Later
 reccomplex.gui.earlier=Earlier
 reccomplex.gui.hidegui=Hide GUI
+reccomplex.gui.visualizegui=Visualize
 reccomplex.gui.randomize=Randomize
 reccomplex.gui.randomize.short=??
 reccomplex.gui.biomes=Biomes

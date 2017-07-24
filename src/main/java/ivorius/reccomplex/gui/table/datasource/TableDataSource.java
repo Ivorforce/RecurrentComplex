@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.table.datasource;
 
+import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 
@@ -24,4 +25,14 @@ public interface TableDataSource
     int numberOfCells();
 
     TableCell cellForIndex(GuiTable table, int index);
+
+    default boolean canVisualize()
+    {
+        return false;
+    }
+
+    default GuiHider.Visualizer visualizer()
+    {
+        return null;
+    }
 }

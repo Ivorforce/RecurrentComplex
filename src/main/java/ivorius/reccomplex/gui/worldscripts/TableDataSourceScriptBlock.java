@@ -41,7 +41,7 @@ public class TableDataSourceScriptBlock extends TableDataSourceSegmented
             redstone.setFalseTitle(TextFormatting.GRAY + "Redstone");
             return new TitledCell("Triggerable", new TableCellMulti(spawn, redstone));
         }));
-        addManagedSegment(1, new TableDataSourceWorldScriptMulti(script.script, delegate, navigator));
+        addManagedSegment(1, new TableDataSourceWorldScriptMulti(script.script, script.getPos(), delegate, navigator));
     }
 
     @Nonnull

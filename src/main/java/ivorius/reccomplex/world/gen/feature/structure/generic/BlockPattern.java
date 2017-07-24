@@ -10,6 +10,7 @@ import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.math.Transforms;
 import ivorius.ivtoolkit.tools.GuavaCollectors;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
@@ -18,7 +19,6 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
-import ivorius.ivtoolkit.math.Transforms;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -28,9 +28,8 @@ import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -132,12 +131,12 @@ public class BlockPattern implements NBTCompoundObject
         NBTCompoundObjects.writeListTo(compound, "ingredients", ingredients);
     }
 
-    public void forEach(Predicate<Ingredient> filter, Consumer<Map.Entry<BlockPos, String>> consumer)
+    public void forEach(Predicate<Ingredient> filter, BiConsumer<BlockPos, String> consumer)
     {
         pattern.compile(true).entrySet().stream()
                 .filter(entry -> findIngredient(entry.getValue()).filter(filter).isPresent())
                 .map(entry -> Pair.of(BlockPositions.fromIntArray(entry.getKey().getCoordinates()), entry.getValue()))
-                .forEach(consumer);
+                .forEach(pair -> consumer.accept(pair.getKey(), pair.getValue()));
     }
 
     public static class Ingredient implements NBTCompoundObject

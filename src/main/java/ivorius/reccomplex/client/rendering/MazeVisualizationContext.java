@@ -14,15 +14,16 @@ import net.minecraft.util.math.Vec3i;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
-import java.util.function.Function;
 
 public class MazeVisualizationContext
 {
-    protected Function<MazeRoom, BlockPos> mapper;
+    protected BlockPos lowerCoord;
+    protected int[] scale;
 
-    public MazeVisualizationContext(Function<MazeRoom, BlockPos> mapper)
+    public MazeVisualizationContext(BlockPos lowerCoord, int[] scale)
     {
-        this.mapper = mapper;
+        this.lowerCoord = lowerCoord;
+        this.scale = scale != null ? scale : new int[]{1, 1, 1};
     }
 
     @NotNull
@@ -41,9 +42,15 @@ public class MazeVisualizationContext
         return realWorldSelection;
     }
 
+    @NotNull
+    protected BlockPos apply(int[] coordinates)
+    {
+        return lowerCoord.add(BlockPositions.fromIntArray(IvVecMathHelper.mul(scale, coordinates)));
+    }
+
     public BlockPos min(MazeRoom room)
     {
-        return mapper.apply(room);
+        return apply(room.getCoordinates());
     }
 
     public BlockPos max(MazeRoom room)
@@ -51,7 +58,7 @@ public class MazeVisualizationContext
         int[] one = new int[room.getDimensions()];
         Arrays.fill(one, 1);
 
-        return mapper.apply(new MazeRoom(IvVecMathHelper.add(room.getCoordinates(), one)))
+        return apply(IvVecMathHelper.add(room.getCoordinates(), one))
                 .subtract(new Vec3i(1, 1, 1));
     }
 }

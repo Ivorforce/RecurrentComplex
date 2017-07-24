@@ -124,9 +124,9 @@ public class RCSaplingGenerator
 
         Map<BlockPos, IBlockState> before = new HashMap<>();
         IBlockState air = Blocks.AIR.getDefaultState();
-        saplingGenInfo.pattern.copy(transform, strucSize).forEach(i -> i.delete, entry ->
+        saplingGenInfo.pattern.copy(transform, strucSize).forEach(i -> i.delete, (p, i) ->
         {
-            BlockPos ePos = entry.getKey().add(startPos);
+            BlockPos ePos = p.add(startPos);
             before.put(ePos, world.getBlockState(ePos));
             world.setBlockState(ePos, air, 4);
         });

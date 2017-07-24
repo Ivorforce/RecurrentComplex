@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.editstructure.pattern;
 
 import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
@@ -27,13 +28,13 @@ public class TableDataSourceBlockPattern extends TableDataSourceSegmented
 {
     protected BlockPattern pattern;
 
-    public TableDataSourceBlockPattern(BlockPattern pattern, Function<MazeRoom, BlockPos> realWorldMapper, TableDelegate delegate, TableNavigator navigator)
+    public TableDataSourceBlockPattern(BlockPattern pattern, MazeVisualizationContext visualizationContext, TableDelegate delegate, TableNavigator navigator)
     {
         this.pattern = pattern;
 
         addManagedSegment(0, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceSelection(pattern.pattern, new int[]{50, 50, 50}, delegate, navigator, true)
-                        .visualizing(realWorldMapper))
+                        .visualizing(visualizationContext))
                 .buildDataSource(IvTranslations.get("reccomplex.blockpattern.pattern"), IvTranslations.getLines("reccomplex.blockpattern.pattern.tooltip")));
         addManagedSegment(1, new TableDataSourceSupplied(() -> new TitledCell(
                 new TableCellTitle(null, IvTranslations.get("reccomplex.blockpattern.ingredients")).withTooltip(IvTranslations.formatLines("reccomplex.blockpattern.ingredients.tooltip")))));

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.client.rendering.SelectionQuadCache;
 import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.table.TableCells;
@@ -16,14 +17,12 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Created by lukas on 04.06.14.
@@ -32,7 +31,7 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
 {
     private Selection bounds;
 
-    protected Function<ivorius.ivtoolkit.maze.classic.MazeRoom, BlockPos> realWorldMapper;
+    protected MazeVisualizationContext visualizationContext;
 
     public TableDataSourceMazePathConnectionList(List<SavedMazePathConnection> list, TableDelegate tableDelegate, TableNavigator navigator, Selection bounds)
     {
@@ -41,9 +40,9 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
         duplicateTitle = TextFormatting.GREEN + "D";
     }
 
-    public TableDataSourceMazePathConnectionList visualizing(Function<ivorius.ivtoolkit.maze.classic.MazeRoom, BlockPos> realWorldMapper)
+    public TableDataSourceMazePathConnectionList visualizing(MazeVisualizationContext context)
     {
-        this.realWorldMapper = realWorldMapper;
+        this.visualizationContext = context;
         return this;
     }
 
@@ -83,7 +82,7 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     @Override
     public boolean canVisualize()
     {
-        return realWorldMapper != null;
+        return visualizationContext != null;
     }
 
     @Override
@@ -94,6 +93,6 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
         for (SavedMazePathConnection connection : list)
             selection.add(Selection.Area.from(true, connection.path.sourceRoom.getCoordinates(), connection.path.getDestRoom().getCoordinates(), null));
 
-        return new SelectionQuadCache.Visualizer(selection, realWorldMapper);
+        return new SelectionQuadCache.Visualizer(selection, visualizationContext);
     }
 }

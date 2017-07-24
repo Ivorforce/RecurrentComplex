@@ -10,6 +10,7 @@ import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStructureListGeneration;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -100,7 +101,7 @@ public class ListGeneration extends GenerationType implements WeightedSelector.I
     }
 
     @Override
-    public TableDataSource tableDataSource(Function<MazeRoom, BlockPos> realWorldMapper, TableNavigator navigator, TableDelegate delegate)
+    public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {
         return new TableDataSourceStructureListGeneration(navigator, delegate, this);
     }

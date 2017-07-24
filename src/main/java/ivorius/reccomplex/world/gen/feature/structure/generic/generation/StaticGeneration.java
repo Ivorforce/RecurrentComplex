@@ -8,24 +8,24 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import ivorius.ivtoolkit.maze.classic.MazeRoom;
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.ivtoolkit.world.chunk.Chunks;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceStaticGeneration;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
+import ivorius.reccomplex.utils.expression.DimensionExpression;
+import ivorius.reccomplex.utils.presets.PresettedObject;
+import ivorius.reccomplex.utils.presets.PresettedObjects;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
-import ivorius.reccomplex.utils.expression.DimensionExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPlacerPresets;
-import ivorius.ivtoolkit.blocks.BlockSurfacePos;
-import ivorius.reccomplex.utils.presets.PresettedObject;
-import ivorius.reccomplex.utils.presets.PresettedObjects;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -35,7 +35,6 @@ import org.apache.commons.lang3.tuple.Triple;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -149,7 +148,7 @@ public class StaticGeneration extends GenerationType
     }
 
     @Override
-    public TableDataSource tableDataSource(Function<MazeRoom, BlockPos> realWorldMapper, TableNavigator navigator, TableDelegate delegate)
+    public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {
         return new TableDataSourceStaticGeneration(navigator, delegate, this);
     }
@@ -196,7 +195,7 @@ public class StaticGeneration extends GenerationType
 
             StaticGeneration staticGenInfo = new StaticGeneration(id, ExpressionCache.of(new DimensionExpression(), dimension), relativeToSpawn, new BlockSurfacePos(positionX, positionZ), pattern);
 
-            if (!PresettedObjects.read(jsonObject, gson, staticGenInfo.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>(){}.getType())
+            if (!PresettedObjects.read(jsonObject, gson, staticGenInfo.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>() {}.getType())
                     && jsonObject.has("generationY"))
             {
                 // Legacy

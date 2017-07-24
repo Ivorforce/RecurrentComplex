@@ -8,8 +8,8 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceNaturalGeneration;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -29,7 +29,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericP
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.DimensionMatcherPresets;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPlacerPresets;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
@@ -39,7 +38,6 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.Function;
 
 /**
  * Created by lukas on 07.10.14.
@@ -185,7 +183,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
     }
 
     @Override
-    public TableDataSource tableDataSource(Function<MazeRoom, BlockPos> realWorldMapper, TableNavigator navigator, TableDelegate delegate)
+    public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {
         return new TableDataSourceNaturalGeneration(navigator, delegate, this);
     }

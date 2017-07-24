@@ -8,6 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 import com.google.gson.*;
 import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceSaplingGeneration;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -86,9 +87,9 @@ public class SaplingGeneration extends GenerationType
     }
 
     @Override
-    public TableDataSource tableDataSource(Function<MazeRoom, BlockPos> realWorldMapper, TableNavigator navigator, TableDelegate delegate)
+    public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceSaplingGeneration(this, realWorldMapper, navigator, delegate);
+        return new TableDataSourceSaplingGeneration(this, mazeVisualizationContext, navigator, delegate);
     }
 
     public boolean generatesIn(Environment environment)

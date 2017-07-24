@@ -8,7 +8,6 @@ package ivorius.reccomplex.world.gen.feature.structure.generic;
 import com.google.gson.annotations.SerializedName;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
@@ -205,6 +204,15 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
                 throw new IllegalArgumentException();
         }
 
+        public Area(NBTTagCompound tagCompound, int dimensions)
+        {
+            additive = tagCompound.getBoolean("additive");
+            minCoord = IvNBTHelper.readIntArrayFixedSize("min", dimensions, tagCompound);
+            maxCoord = IvNBTHelper.readIntArrayFixedSize("max", dimensions, tagCompound);
+            identifier = tagCompound.hasKey("identifier", Constants.NBT.TAG_STRING)
+                    ? tagCompound.getString("identifier") : null;
+        }
+
         public static Area from(boolean additive, int[] left, int[] right, @Nullable String identifier)
         {
             int[] min = new int[left.length];
@@ -217,15 +225,6 @@ public class Selection extends ArrayList<Selection.Area> implements NBTCompoundO
             }
 
             return new Area(additive, min, max, identifier);
-        }
-
-        public Area(NBTTagCompound tagCompound, int dimensions)
-        {
-            additive = tagCompound.getBoolean("additive");
-            minCoord = IvNBTHelper.readIntArrayFixedSize("min", dimensions, tagCompound);
-            maxCoord = IvNBTHelper.readIntArrayFixedSize("max", dimensions, tagCompound);
-            identifier = tagCompound.hasKey("identifier", Constants.NBT.TAG_STRING)
-                    ? tagCompound.getString("identifier") : null;
         }
 
         public NBTTagCompound writeToNBT()

@@ -5,27 +5,27 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.ivtoolkit.maze.classic.MazeRoom;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
+import ivorius.reccomplex.gui.table.TableCells;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
-import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * Created by lukas on 04.06.14.
  */
 public class TableDataSourceGenerationType extends TableDataSourceList<GenerationType, List<GenerationType>>
 {
-    protected Function<MazeRoom, BlockPos> realWorldMapper;
+    protected MazeVisualizationContext realWorldMapper;
 
-    public TableDataSourceGenerationType(List<GenerationType> list, Function<MazeRoom, BlockPos> realWorldMapper, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceGenerationType(List<GenerationType> list, MazeVisualizationContext realWorldMapper, TableDelegate tableDelegate, TableNavigator navigator)
     {
         super(list, tableDelegate, navigator);
         setUsesPresetActionForAdding(true);

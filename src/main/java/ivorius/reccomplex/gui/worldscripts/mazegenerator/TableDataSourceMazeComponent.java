@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
-import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
@@ -14,10 +14,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability.TableDataSourceMazeReachability;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeComponent;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeReachability;
-import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
-import java.util.function.Function;
 
 /**
  * Created by lukas on 26.04.15.
@@ -31,7 +29,7 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented
     protected TableNavigator navigator;
     protected TableDelegate tableDelegate;
 
-    protected Function<MazeRoom, BlockPos> realWorldMapper;
+    protected MazeVisualizationContext visualizationContext;
 
     public TableDataSourceMazeComponent(SavedMazeComponent component, TableNavigator navigator, TableDelegate tableDelegate)
     {
@@ -42,12 +40,12 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented
 
         addManagedSegment(1, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> new TableDataSourceSelection(component.rooms, DEFAULT_MAX_COMPONENT_SIZE, tableDelegate, navigator, false)
-                        .visualizing(realWorldMapper))
+                        .visualizing(visualizationContext))
                 .buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.rooms"), IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.rooms.tooltip")));
 
         addManagedSegment(2, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> new TableDataSourceMazePathConnectionList(component.exitPaths, tableDelegate, navigator, component.rooms)
-                        .visualizing(realWorldMapper))
+                        .visualizing(visualizationContext))
                 .enabled(() -> component.rooms.size() > 0)
                 .buildDataSource(IvTranslations.get("reccomplex.generationInfo.mazeComponent.exits"), IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.exits.tooltip")));
 
@@ -58,9 +56,9 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented
 
     }
 
-    public TableDataSourceMazeComponent visualizing(Function<MazeRoom, BlockPos> realWorldMapper)
+    public TableDataSourceMazeComponent visualizing(MazeVisualizationContext visualizationContext)
     {
-        this.realWorldMapper = realWorldMapper;
+        this.visualizationContext = visualizationContext;
         return this;
     }
 

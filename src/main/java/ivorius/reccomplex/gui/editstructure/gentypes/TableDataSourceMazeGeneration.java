@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
-import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableCells;
@@ -18,9 +18,6 @@ import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazeComponent;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGeneration;
-import net.minecraft.util.math.BlockPos;
-
-import java.util.function.Function;
 
 /**
  * Created by lukas on 07.10.14.
@@ -32,7 +29,7 @@ public class TableDataSourceMazeGeneration extends TableDataSourceSegmented
 
     private MazeGeneration generationInfo;
 
-    protected Function<MazeRoom, BlockPos> realWorldMapper;
+    protected MazeVisualizationContext visualizationContext;
 
     public TableDataSourceMazeGeneration(TableNavigator navigator, TableDelegate tableDelegate, MazeGeneration generationInfo)
     {
@@ -41,12 +38,12 @@ public class TableDataSourceMazeGeneration extends TableDataSourceSegmented
         this.generationInfo = generationInfo;
 
         addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, tableDelegate));
-        addManagedSegment(3, new TableDataSourceMazeComponent(generationInfo.mazeComponent, navigator, tableDelegate).visualizing(realWorldMapper));
+        addManagedSegment(3, new TableDataSourceMazeComponent(generationInfo.mazeComponent, navigator, tableDelegate).visualizing(visualizationContext));
     }
 
-    public TableDataSourceMazeGeneration visualizing(Function<MazeRoom, BlockPos> realWorldMapper)
+    public TableDataSourceMazeGeneration visualizing(MazeVisualizationContext realWorldMapper)
     {
-        this.realWorldMapper = realWorldMapper;
+        this.visualizationContext = realWorldMapper;
         return this;
     }
 

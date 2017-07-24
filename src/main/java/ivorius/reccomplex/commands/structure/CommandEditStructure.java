@@ -64,6 +64,6 @@ public class CommandEditStructure extends CommandExpecting
             from.worldDataCompound = base.worldDataCompound.copy();
         }
 
-        PacketEditStructureHandler.openEditStructure(entityPlayerMP, from, structureID, directory);
+        PacketEditStructureHandler.openEditStructure(entityPlayerMP, from, entityPlayerMP.getPosition(), structureID, directory);
     }
 }

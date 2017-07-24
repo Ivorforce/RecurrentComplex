@@ -6,6 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceSaplingGeneration;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
@@ -23,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.function.Function;
 
 /**
  * Created by lukas on 19.01.15.
@@ -84,9 +86,9 @@ public class SaplingGeneration extends GenerationType
     }
 
     @Override
-    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
+    public TableDataSource tableDataSource(Function<MazeRoom, BlockPos> realWorldMapper, TableNavigator navigator, TableDelegate delegate)
     {
-        return new TableDataSourceSaplingGeneration(navigator, delegate, this);
+        return new TableDataSourceSaplingGeneration(this, realWorldMapper, navigator, delegate);
     }
 
     public boolean generatesIn(Environment environment)

@@ -6,9 +6,11 @@
 package ivorius.reccomplex.network;
 
 import io.netty.buffer.ByteBuf;
+import ivorius.ivtoolkit.blocks.BlockPositions;
+import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
-import ivorius.reccomplex.utils.SaveDirectoryData;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
@@ -17,19 +19,22 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
  */
 public class PacketEditStructure implements IMessage
 {
-    private GenericStructure structureInfo;
-    private String structureID;
+    protected GenericStructure structureInfo;
+    protected String structureID;
 
-    private SaveDirectoryData saveDirectoryData;
+    protected BlockPos lowerCoord;
+
+    protected SaveDirectoryData saveDirectoryData;
 
     public PacketEditStructure()
     {
     }
 
-    public PacketEditStructure(GenericStructure structureInfo, String structureID, SaveDirectoryData saveDirectoryData)
+    public PacketEditStructure(GenericStructure structureInfo, String structureID, BlockPos lowerCoord, SaveDirectoryData saveDirectoryData)
     {
         this.structureInfo = structureInfo;
         this.structureID = structureID;
+        this.lowerCoord = lowerCoord;
         this.saveDirectoryData = saveDirectoryData;
     }
 
@@ -63,11 +68,22 @@ public class PacketEditStructure implements IMessage
         this.saveDirectoryData = saveDirectoryData;
     }
 
+    public BlockPos getLowerCoord()
+    {
+        return lowerCoord;
+    }
+
+    public void setLowerCoord(BlockPos lowerCoord)
+    {
+        this.lowerCoord = lowerCoord;
+    }
+
     @Override
     public void fromBytes(ByteBuf buf)
     {
         structureID = ByteBufUtils.readUTF8String(buf);
         structureInfo = StructureSaveHandler.INSTANCE.fromJSON(ByteBufUtils.readUTF8String(buf), null);
+        lowerCoord = BlockPositions.readFromBuffer(buf);
         saveDirectoryData = SaveDirectoryData.readFrom(buf);
     }
 
@@ -76,6 +92,7 @@ public class PacketEditStructure implements IMessage
     {
         ByteBufUtils.writeUTF8String(buf, structureID);
         ByteBufUtils.writeUTF8String(buf, StructureSaveHandler.INSTANCE.toJSON(structureInfo));
+        BlockPositions.writeToBuffer(lowerCoord, buf);
         saveDirectoryData.writeTo(buf);
     }
 }

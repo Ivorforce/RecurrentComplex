@@ -18,6 +18,7 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
@@ -31,7 +32,7 @@ import javax.annotation.Nullable;
  */
 public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketEditStructure, IMessage>
 {
-    public static void openEditStructure(@Nonnull EntityPlayerMP player, @Nonnull GenericStructure structure, @Nullable String id, @Nullable ResourceDirectory directory)
+    public static void openEditStructure(@Nonnull EntityPlayerMP player, @Nonnull GenericStructure structure, BlockPos lowerCoord, @Nullable String id, @Nullable ResourceDirectory directory)
     {
         if (id == null)
             id = "NewStructure";
@@ -47,7 +48,7 @@ public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketE
             directory = ResourceDirectory.custom(status != null && status.isActive());
         }
 
-        RecurrentComplex.network.sendTo(new PacketEditStructure(structure, id,
+        RecurrentComplex.network.sendTo(new PacketEditStructure(structure, id, lowerCoord,
                 SaveDirectoryData.defaultData(id, directory,
                         RecurrentComplex.loader.tryFindIDs(ResourceDirectory.ACTIVE.toPath(), RCFileSuffix.STRUCTURE),
                         RecurrentComplex.loader.tryFindIDs(ResourceDirectory.INACTIVE.toPath(), RCFileSuffix.STRUCTURE))
@@ -58,6 +59,6 @@ public class PacketEditStructureHandler extends SchedulingMessageHandler<PacketE
     @Override
     public void processClient(PacketEditStructure message, MessageContext ctx)
     {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditGenericStructure(message.getStructureID(), message.getStructureInfo(), message.getSaveDirectoryData()));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditGenericStructure(message.getStructureID(), message.getStructureInfo(), message.getLowerCoord(), message.getSaveDirectoryData()));
     }
 }

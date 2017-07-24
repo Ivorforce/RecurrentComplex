@@ -21,12 +21,14 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -133,7 +135,7 @@ public class MazeGeneration extends GenerationType implements WeightedSelector.I
     }
 
     @Override
-    public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
+    public TableDataSource tableDataSource(Function<ivorius.ivtoolkit.maze.classic.MazeRoom, BlockPos> realWorldMapper, TableNavigator navigator, TableDelegate delegate)
     {
         return new TableDataSourceMazeGeneration(navigator, delegate, this);
     }

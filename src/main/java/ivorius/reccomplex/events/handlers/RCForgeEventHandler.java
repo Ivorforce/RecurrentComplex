@@ -123,12 +123,12 @@ public class RCForgeEventHandler
             GlStateManager.enableTexture2D();
         }
 
+        GuiHider.draw(renderEntity, event.getPartialTicks());
+
         SelectionRenderer.renderSelection(mc.player, ticks, event.getPartialTicks());
 
         if (info != null && info.danglingOperation != null)
             info.danglingOperation.renderPreview(info.getPreviewType(), mc.world, ticks, event.getPartialTicks());
-
-        GuiHider.draw(renderEntity, event.getPartialTicks());
 
         GlStateManager.popMatrix();
     }

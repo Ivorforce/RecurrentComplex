@@ -7,6 +7,7 @@ package ivorius.reccomplex.client.rendering;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
@@ -15,7 +16,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
-import java.util.Set;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class SelectionQuadCache
@@ -27,21 +29,22 @@ public class SelectionQuadCache
 
         public Visualizer(Selection selection, MazeVisualizationContext context)
         {
-            final Object handle = new Object();
-
             Selection realWorldSelection = context.mapSelection(selection);
             lowerCoord = BlockPositions.fromIntArray(realWorldSelection.boundsLower());
-            Set<BlockPos> coords = realWorldSelection.compile(true).keySet().stream()
-                    .map(r -> BlockPositions.fromIntArray(r.getCoordinates()))
-                    .map(p -> p.subtract(lowerCoord))
-                    .collect(Collectors.toSet());
+
+            Map<MazeRoom, String> compiled = realWorldSelection.compile(true);
+            Map<BlockPos, String> coords = compiled.entrySet().stream().collect(Collectors.toMap(
+                    e -> BlockPositions.fromIntArray(e.getKey().getCoordinates()).subtract(lowerCoord),
+                    Map.Entry::getValue
+            ));
 
             quadCache = GridQuadCache.createQuadCache(realWorldSelection.boundsSize(), new float[]{1, 1, 1}, input -> {
                 BlockPos coord = input.getLeft();
                 EnumFacing direction = input.getRight();
 
-                return coords.contains(coord) && !coords.contains(coord.offset(direction))
-                        ? handle
+                String cur = coords.get(coord);
+                return cur != null && !Objects.equals(coords.get(coord.offset(direction)), cur)
+                        ? cur
                         : null;
             });
         }

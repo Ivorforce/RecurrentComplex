@@ -91,7 +91,10 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
         Selection selection = new Selection(bounds.dimensions);
 
         for (SavedMazePathConnection connection : list)
-            selection.add(Selection.Area.from(true, connection.path.sourceRoom.getCoordinates(), connection.path.getDestRoom().getCoordinates(), null));
+        {
+            selection.add(Selection.Area.from(true, connection.path.sourceRoom.getCoordinates(), connection.path.sourceRoom.getCoordinates(), "s"));
+            selection.add(Selection.Area.from(true, connection.path.getDestRoom().getCoordinates(), connection.path.getDestRoom().getCoordinates(), "d"));
+        }
 
         return new SelectionQuadCache.Visualizer(selection, visualizationContext);
     }

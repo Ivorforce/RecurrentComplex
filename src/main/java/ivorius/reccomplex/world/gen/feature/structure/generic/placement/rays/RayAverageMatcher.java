@@ -92,10 +92,10 @@ public class RayAverageMatcher extends FactorLimit.Ray
         if (list.isEmpty())
             return -1;
         else
-            return averageIgnoringErrors(list.toArray());
+            return robustAverage(list.toArray());
     }
 
-    protected static int averageIgnoringErrors(int... values)
+    protected static int robustAverage(int... values)
     {
         int average = 0;
         for (int val : values)

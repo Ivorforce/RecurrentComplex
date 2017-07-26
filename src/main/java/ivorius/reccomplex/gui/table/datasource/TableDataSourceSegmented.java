@@ -9,6 +9,7 @@ import com.google.common.primitives.Ints;
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.set.TIntSet;
+import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 
@@ -108,5 +109,22 @@ public class TableDataSourceSegmented implements TableDataSource
     {
         TableDataSource managed = managedSections.get(segment);
         return managed != null ? managed.cellForIndex(table, index) : null;
+    }
+
+    @Override
+    public boolean canVisualize()
+    {
+        return managedSections.valueCollection().stream()
+                .filter(s -> s.canVisualize())
+                .count() == 1;
+    }
+
+    @Override
+    public GuiHider.Visualizer visualizer()
+    {
+        return managedSections.valueCollection().stream()
+                .filter(s -> s.canVisualize())
+                .findFirst().orElseThrow(InternalError::new)
+                .visualizer();
     }
 }

@@ -5,9 +5,12 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
+import com.google.common.collect.Iterables;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
+import ivorius.reccomplex.client.rendering.SelectionQuadCache;
+import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.TableDirections;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -22,11 +25,12 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStra
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
 import net.minecraft.util.EnumFacing;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -42,6 +46,8 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
 
     private TableCellButton invertableButton;
     private final TableDataSourceMazeRoom source;
+
+    protected MazeVisualizationContext visualizationContext;
 
     public TableDataSourceMazePath(SavedMazePath mazePath, Selection bounds, TableDelegate tableDelegate, TableNavigator navigator)
     {
@@ -86,6 +92,30 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
         int offset = side.getFrontOffsetX() + side.getFrontOffsetY() + side.getFrontOffsetZ();
 
         return new SavedMazePathConnection(pathDim, new MazeRoom(room[0], room[1], room[2]), offset > 0, ConnectorStrategy.DEFAULT_PATH, Collections.emptyList());
+    }
+
+    public static void addToSelection(Selection selection, SavedMazePath path)
+    {
+        selection.add(Selection.Area.from(true, path.sourceRoom.getCoordinates(), path.sourceRoom.getCoordinates(), "s"));
+        selection.add(Selection.Area.from(true, path.getDestRoom().getCoordinates(), path.getDestRoom().getCoordinates(), "d"));
+    }
+
+    @NotNull
+    public static GuiHider.Visualizer visualizePaths(MazeVisualizationContext visualizationContext, Collection<SavedMazePath> mazePaths)
+    {
+        if (mazePaths.size() <= 0)
+            return new SelectionQuadCache.Visualizer(new Selection(0), visualizationContext);
+        
+        Selection selection = new Selection(Iterables.getFirst(mazePaths, null).sourceRoom.getDimensions());
+        mazePaths.forEach(p -> addToSelection(selection, p));
+        return new SelectionQuadCache.Visualizer(selection, visualizationContext);
+
+    }
+
+    public TableDataSourceMazePath visualizing(MazeVisualizationContext context)
+    {
+        this.visualizationContext = context;
+        return this;
     }
 
     @Nonnull
@@ -150,5 +180,17 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
     protected boolean isInvertable()
     {
         return contains(mazePath.inverse().getSourceRoom().getCoordinates(), bounds);
+    }
+
+    @Override
+    public boolean canVisualize()
+    {
+        return visualizationContext != null;
+    }
+
+    @Override
+    public GuiHider.Visualizer visualizer()
+    {
+        return visualizePaths(visualizationContext, Collections.singletonList(mazePath));
     }
 }

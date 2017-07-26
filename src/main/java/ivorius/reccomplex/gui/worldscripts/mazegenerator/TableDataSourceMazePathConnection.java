@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
@@ -20,7 +21,7 @@ import javax.annotation.Nonnull;
  */
 public class TableDataSourceMazePathConnection extends TableDataSourceSegmented
 {
-    public TableDataSourceMazePathConnection(SavedMazePathConnection mazePath, Selection bounds, TableDelegate tableDelegate, TableNavigator navigator)
+    public TableDataSourceMazePathConnection(SavedMazePathConnection mazePath, Selection bounds, MazeVisualizationContext visualizationContext, TableDelegate tableDelegate, TableNavigator navigator)
     {
         addManagedSegment(0, new TableDataSourceConnector(mazePath.connector, IvTranslations.get("reccomplex.maze.connector")));
 
@@ -28,7 +29,8 @@ public class TableDataSourceMazePathConnection extends TableDataSourceSegmented
                 .addNavigation(() -> new TableDataSourceMazePathConditionalConnectorList(mazePath.conditionalConnectors, tableDelegate, navigator))
                 .buildDataSource(IvTranslations.get("reccomplex.maze.conditional_connectors"), IvTranslations.getLines("reccomplex.maze.conditional_connectors.tooltip")));
 
-        addManagedSegment(2, new TableDataSourceMazePath(mazePath.path, bounds, tableDelegate, navigator));
+        addManagedSegment(2, new TableDataSourceMazePath(mazePath.path, bounds, tableDelegate, navigator)
+                .visualizing(visualizationContext));
     }
 
     @Nonnull

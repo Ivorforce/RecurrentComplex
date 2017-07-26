@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
@@ -29,7 +30,7 @@ public class TableDataSourceMazeReachability extends TableDataSourceSegmented
     private TableDelegate tableDelegate;
     private TableNavigator tableNavigator;
 
-    public TableDataSourceMazeReachability(SavedMazeReachability reachability, TableDelegate tableDelegate, TableNavigator tableNavigator, Set<SavedMazePath> expected, Selection bounds)
+    public TableDataSourceMazeReachability(SavedMazeReachability reachability, MazeVisualizationContext visualizationContext, TableDelegate tableDelegate, TableNavigator tableNavigator, Set<SavedMazePath> expected, Selection bounds)
     {
         this.reachability = reachability;
         this.tableDelegate = tableDelegate;
@@ -43,7 +44,8 @@ public class TableDataSourceMazeReachability extends TableDataSourceSegmented
         addManagedSegment(2, new TableDataSourcePreloaded(new TitledCell(
                 new TableCellTitle("", IvTranslations.get("reccomplex.reachability.crossconnections")))
                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.reachability.crossconnections.tooltip"))));
-        addManagedSegment(3, new TableDataSourcePathConnectionList(reachability.crossConnections, tableDelegate, tableNavigator, bounds));
+        addManagedSegment(3, new TableDataSourceMazePathPairList(reachability.crossConnections, tableDelegate, tableNavigator, bounds)
+                .visualizing(visualizationContext));
     }
 
     public SavedMazeReachability getReachability()

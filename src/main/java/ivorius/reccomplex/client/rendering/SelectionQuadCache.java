@@ -24,6 +24,8 @@ public class SelectionQuadCache
 {
     public static class Visualizer implements GuiHider.Visualizer
     {
+        public static final String NULL_PLACEHOLDER = "_null_";
+
         protected GridQuadCache<?> quadCache;
         protected BlockPos lowerCoord;
 
@@ -35,7 +37,7 @@ public class SelectionQuadCache
             Map<MazeRoom, String> compiled = realWorldSelection.compile(true);
             Map<BlockPos, String> coords = compiled.entrySet().stream().collect(Collectors.toMap(
                     e -> BlockPositions.fromIntArray(e.getKey().getCoordinates()).subtract(lowerCoord),
-                    Map.Entry::getValue
+                    e -> e.getValue() != null ? e.getValue() : NULL_PLACEHOLDER // Hax, because null value crashes with NPE
             ));
 
             quadCache = GridQuadCache.createQuadCache(realWorldSelection.boundsSize(), new float[]{1, 1, 1}, input -> {

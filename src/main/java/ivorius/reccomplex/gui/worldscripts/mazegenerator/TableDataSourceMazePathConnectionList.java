@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
+import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
-import ivorius.reccomplex.client.rendering.SelectionQuadCache;
 import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -69,7 +69,7 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     @Override
     public TableCell entryCell(boolean enabled, SavedMazePathConnection savedMazePathConnection)
     {
-        return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceMazePathConnection(savedMazePathConnection, bounds, tableDelegate, navigator));
+        return TableCells.edit(enabled, navigator, tableDelegate, () -> new TableDataSourceMazePathConnection(savedMazePathConnection, bounds, visualizationContext, tableDelegate, navigator));
     }
 
     @Nonnull
@@ -88,14 +88,6 @@ public class TableDataSourceMazePathConnectionList extends TableDataSourceList<S
     @Override
     public GuiHider.Visualizer visualizer()
     {
-        Selection selection = new Selection(bounds.dimensions);
-
-        for (SavedMazePathConnection connection : list)
-        {
-            selection.add(Selection.Area.from(true, connection.path.sourceRoom.getCoordinates(), connection.path.sourceRoom.getCoordinates(), "s"));
-            selection.add(Selection.Area.from(true, connection.path.getDestRoom().getCoordinates(), connection.path.getDestRoom().getCoordinates(), "d"));
-        }
-
-        return new SelectionQuadCache.Visualizer(selection, visualizationContext);
+        return TableDataSourceMazePath.visualizePaths(visualizationContext, Lists.transform(list, p -> p.path));
     }
 }

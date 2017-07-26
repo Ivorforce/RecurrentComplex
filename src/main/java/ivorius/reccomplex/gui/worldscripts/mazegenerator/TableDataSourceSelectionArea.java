@@ -7,7 +7,10 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
+import ivorius.reccomplex.client.rendering.SelectionQuadCache;
+import ivorius.reccomplex.gui.GuiHider;
+import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
@@ -16,8 +19,8 @@ import net.minecraft.util.text.TextFormatting;
 import javax.annotation.Nonnull;
 
 /**
-* Created by lukas on 08.10.14.
-*/
+ * Created by lukas on 08.10.14.
+ */
 public class TableDataSourceSelectionArea extends TableDataSourceSegmented
 {
     public static final String[] COORD_NAMES = {"x", "y", "z"};
@@ -27,11 +30,19 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented
     private int[] dimensions;
     private boolean showIdentifier;
 
+    protected MazeVisualizationContext visualizationContext;
+
     public TableDataSourceSelectionArea(Selection.Area area, int[] dimensions, boolean showIdentifier)
     {
         this.area = area;
         this.dimensions = dimensions;
         this.showIdentifier = showIdentifier;
+    }
+
+    public TableDataSourceSelectionArea visualizing(MazeVisualizationContext visualizationContext)
+    {
+        this.visualizationContext = visualizationContext;
+        return this;
     }
 
     @Nonnull
@@ -90,5 +101,19 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented
         }
 
         return super.cellForIndexInSegment(table, index, segment);
+    }
+
+    @Override
+    public boolean canVisualize()
+    {
+        return visualizationContext != null;
+    }
+
+    @Override
+    public GuiHider.Visualizer visualizer()
+    {
+        Selection selection = new Selection(dimensions.length);
+        selection.add(area);
+        return new SelectionQuadCache.Visualizer(selection, visualizationContext);
     }
 }

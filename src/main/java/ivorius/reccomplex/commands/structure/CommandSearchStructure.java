@@ -131,7 +131,7 @@ public class CommandSearchStructure extends CommandExpecting
         consider(ranks, parameters.get("biome"), MCP::biome, StructureSearch::biome);
         consider(ranks, parameters.get("dimension"), MCP.dimension(server, sender), StructureSearch::dimension);
         consider(ranks, parameters.get("maze"), p -> p, StructureSearch::maze);
-        consider(ranks, parameters.get("maze"), p -> p, StructureSearch::list);
+        consider(ranks, parameters.get("list"), p -> p, StructureSearch::list);
 
         boolean all = parameters.has("all");
 

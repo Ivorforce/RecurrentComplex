@@ -195,10 +195,12 @@ public class StructureGenerator<S extends NBTStorable>
         {
             maturity(StructureSpawnContext.GenerateMaturity.COMPLEMENT);
 
-            StructureBoundingBox oldBB = this.generationBB;
+            StructureBoundingBox oldBB = generationBB;
             for (ChunkPos existingChunk : existingChunks)
             {
                 generationBB(Structures.chunkBoundingBox(existingChunk, true));
+
+                if (oldBB.intersectsWith(generationBB)) continue; // Skip those that we just generated in, especially the same chunk
 
                 structure.generate(spawn().get(), instanceData, RCConfig.getUniversalTransformer());
             }

@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.item;
 
-import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import net.minecraft.creativetab.CreativeTabs;
@@ -16,9 +16,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
@@ -110,11 +110,11 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     {
         super.getSubItems(item, creativeTabs, list);
 
-        for (String key : GenericItemCollectionRegistry.INSTANCE.ids())
+        GenericItemCollectionRegistry.INSTANCE.ids().stream().sorted().forEach(key ->
         {
             ItemStack stack = new ItemStack(item);
             setComponentKey(stack, key);
             list.add(stack);
-        }
+        });
     }
 }

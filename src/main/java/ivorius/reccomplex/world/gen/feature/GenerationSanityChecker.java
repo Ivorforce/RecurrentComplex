@@ -40,9 +40,9 @@ public class GenerationSanityChecker
 
             // @ Mod authors
             // Please fire PopulateChunkEvent.Pre before, and PopulateChunkEvent.Post after chunk decoration.
-            // Use net.minecraftforge.event.ForgeEventFactory.onChunkPopulate(true, this, this.world, this.rand, x, z, flag); for pre
-            // Use net.minecraftforge.event.ForgeEventFactory.onChunkPopulate(false, this, this.world, this.rand, x, z, flag); for post
-            // Via net.minecraft.world.gen.ChunkGeneratorOverworld.
+            // Use ForgeEventFactory.onChunkPopulate(true, this, world, random, x, z, hasVillage); for pre
+            // Use ForgeEventFactory.onChunkPopulate(false, this, world, random, x, z, hasVillage); for post
+            // Via ChunkGeneratorOverworld
 
             // This IChunkGenerator setup will work, but it's not preferred.
 

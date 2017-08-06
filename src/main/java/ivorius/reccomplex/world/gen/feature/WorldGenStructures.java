@@ -186,13 +186,19 @@ public class WorldGenStructures
         synchronized (data)
         {
             // TODO Synchronize on chunk pos instead (need to make sure these are only added on same sync though)
-            // If not partially, complement before generating so we don't generate structures twice
 
             List<WorldStructureGenerationData.StructureEntry> complement = data.structureEntriesIn(chunkPos).collect(Collectors.toList());
             if (structurePredicate == null)
                 data.checkChunk(chunkPos);
 
-            if (!RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
+            // Complement before generating so we don't complement newly planned structures:
+            // Chunk checked
+            // Structure starts generating
+            // Triggers other chunks, sight doesn't exist yet so no complementation in those
+            // Structure stops generating and adds entry
+            // Other structures that generated into this one are not complemented into it because complementation happened already
+
+            if (structurePredicate == null)
                 complementStructuresInChunk(chunkPos, world, complement);
 
             if ((!RCConfig.honorStructureGenerationOption || worldWantsStructures)
@@ -217,9 +223,6 @@ public class WorldGenStructures
 
                 generated = true;
             }
-
-            if (RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES && structurePredicate == null)
-                complementStructuresInChunk(chunkPos, world, complement);
         }
 
         return generated;

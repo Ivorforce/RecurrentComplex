@@ -93,14 +93,12 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items)
     {
         if (this.isInCreativeTab(tab))
-        {
-            for (String key : WeightedItemCollectionRegistry.INSTANCE.ids())
+            WeightedItemCollectionRegistry.INSTANCE.ids().stream().sorted().forEach(key ->
             {
                 ItemStack stack = new ItemStack(this);
                 setItemStackGeneratorKey(stack, key);
                 items.add(stack);
-            }
-        }
+            });
     }
 
     @Nonnull

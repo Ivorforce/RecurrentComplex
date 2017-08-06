@@ -229,7 +229,7 @@ public class CommandSelection extends CommandSplit implements CommandVirtual
         public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
         {
             SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
-            Parameters parameters = Parameters.of(args, null);
+            Parameters parameters = Parameters.of(args, expect()::declare);
 
             execute(MockWorld.of(sender.getEntityWorld()), sender, parameters, owner);
         }
@@ -238,7 +238,7 @@ public class CommandSelection extends CommandSplit implements CommandVirtual
         public void execute(MockWorld world, ICommandSender sender, String[] args) throws CommandException
         {
             SelectionOwner owner = RCCommands.getSelectionOwner(sender, null, false);
-            Parameters parameters = Parameters.of(args, null);
+            Parameters parameters = Parameters.of(args, expect()::declare);
 
             execute(world, sender, parameters, owner);
         }

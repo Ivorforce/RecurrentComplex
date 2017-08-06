@@ -32,7 +32,7 @@ public class CommandSightInfo extends SimpleCommand
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
     {
-        Parameters parameters = Parameters.of(args, null);
+        Parameters parameters = Parameters.of(args, expect()::declare);
 
         WorldStructureGenerationData generationData = WorldStructureGenerationData.get(sender.getEntityWorld());
 

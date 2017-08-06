@@ -70,6 +70,7 @@ public class RCE
     public static void directionExpression(Expect ex)
     {
         List<String> ret = new ArrayList<>();
+        Collections.addAll(ret, "true", "false");
         ret.addAll(Arrays.stream(EnumFacing.values()).map(EnumFacing::getName2).collect(Collectors.toList()));
         ret.addAll(Arrays.stream(EnumFacing.Axis.values()).map(EnumFacing.Axis::getName).collect(Collectors.toList()));
         Collections.addAll(ret, "horizontal", "vertical");

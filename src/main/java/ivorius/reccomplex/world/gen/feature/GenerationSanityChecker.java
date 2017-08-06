@@ -38,6 +38,14 @@ public class GenerationSanityChecker
             if (FAILED_DIMENSIONS.add(world.provider.getDimension()))
                 RecurrentComplex.logger.error(String.format("Chunk finished generating without Forge population being triggered (dimension %d). This is a bug with the dimension - please report this to the dimension's author. Recurrent Complex will proceed to generate in compatibility mode.", world.provider.getDimension()));
 
+            // @ Mod authors
+            // Please fire PopulateChunkEvent.Pre before, and PopulateChunkEvent.Post after chunk decoration.
+            // Use net.minecraftforge.event.ForgeEventFactory.onChunkPopulate(true, this, this.world, this.rand, x, z, flag); for pre
+            // Use net.minecraftforge.event.ForgeEventFactory.onChunkPopulate(false, this, this.world, this.rand, x, z, flag); for post
+            // Via net.minecraft.world.gen.ChunkGeneratorOverworld.
+
+            // This IChunkGenerator setup will work, but it's not preferred.
+
             WorldGenStructures.decorate((WorldServer) world, random, pos, null);
         }, 1);
     }

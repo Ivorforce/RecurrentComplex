@@ -105,7 +105,7 @@ public class GuiHider
     {
         Minecraft mc = Minecraft.getMinecraft();
 
-        if (renderEntity == mc.player && visualizer != null)
+        if (renderEntity == mc.thePlayer && visualizer != null)
             visualizer.draw(renderEntity, partialTicks);
     }
 

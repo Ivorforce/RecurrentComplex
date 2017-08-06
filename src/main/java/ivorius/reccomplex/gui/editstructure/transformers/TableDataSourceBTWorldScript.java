@@ -32,7 +32,7 @@ public class TableDataSourceBTWorldScript extends TableDataSourceSegmented
 
         addManagedSegment(0, new TableDataSourceTransformer(transformer, delegate, navigator));
         addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), IvTranslations.getLines("reccomplex.transformer.block.source.tooltip"), transformer.sourceMatcher, null));
-        addManagedSegment(2, new TableDataSourceWorldScriptMulti(transformer.script, Minecraft.getMinecraft().player.getPosition(), delegate, navigator));
+        addManagedSegment(2, new TableDataSourceWorldScriptMulti(transformer.script, Minecraft.getMinecraft().thePlayer.getPosition(), delegate, navigator));
     }
 
     public TransformerWorldScript getTransformer()

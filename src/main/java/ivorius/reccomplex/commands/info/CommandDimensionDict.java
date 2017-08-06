@@ -40,7 +40,7 @@ public class CommandDimensionDict extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                Parameters parameters = Parameters.of(args, null);
+                Parameters parameters = Parameters.of(args, expect()::declare);
 
                 WorldProvider provider = parameters.get(0).to(MCP.dimension(server, sender)).require().provider;
 
@@ -56,7 +56,7 @@ public class CommandDimensionDict extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                Parameters parameters = Parameters.of(args, null);
+                Parameters parameters = Parameters.of(args, expect()::declare);
 
                 String type = parameters.get(0).require();
 

@@ -42,7 +42,7 @@ public class CommandBiomeDict extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                Parameters parameters = Parameters.of(args, null);
+                Parameters parameters = Parameters.of(args, expect()::declare);
 
                 List<String> terms = parameters.get(0).varargsList().require();
 
@@ -58,7 +58,7 @@ public class CommandBiomeDict extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                Parameters parameters = Parameters.of(args, null);
+                Parameters parameters = Parameters.of(args, expect()::declare);
 
                 Biome biome = parameters.get(0).to(MCP::biome).require();
 
@@ -74,7 +74,7 @@ public class CommandBiomeDict extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                Parameters parameters = Parameters.of(args, null);
+                Parameters parameters = Parameters.of(args, expect()::declare);
 
                 BiomeDictionary.Type type = parameters.get(0).to(MCP::biomeDictionaryType).require();
 

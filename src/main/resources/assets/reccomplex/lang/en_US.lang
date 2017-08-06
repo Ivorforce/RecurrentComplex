@@ -204,14 +204,14 @@ reccomplex.structure.blocking.false=§7Non-Blocking§r
 reccomplex.structure.blocking.tooltip=Whether the structure stops other structures<br>from spawning in the same place.
 reccomplex.structure.randomrange=Randomized between the two values.
 
-reccomplex.structure.variables=Variables
-reccomplex.structure.variables.tooltip=Toggles that can be used in environment<br>expressions everywhere within the<br> structure.
+reccomplex.structure.variables=Local Toggles
+reccomplex.structure.variables.tooltip=Toggles specific to the structure<br>that can be used in environment<br>expressions everywhere within the<br> structure.
 reccomplex.structure.variables.id=Identifier
-reccomplex.structure.variables.id.tooltip=Unique Identifier of the variable<br>(what is used in the expressions)
+reccomplex.structure.variables.id.tooltip=Unique Identifier of the toggle<br>(what is used in the expressions)
 reccomplex.structure.variables.chance=Chance
-reccomplex.structure.variables.chance.tooltip=Chance for the variable to trigger
+reccomplex.structure.variables.chance.tooltip=Chance for the toggle to trigger (-> true)
 reccomplex.structure.variables.logical=Logical
-reccomplex.structure.variables.logical.tooltip=True if the variable affects placement logic<br>(e.g. maze exits).<br>False if it's purely visual.
+reccomplex.structure.variables.logical.tooltip=True if the toggle affects placement logic<br>(e.g. maze exits).<br>False if it's purely visual.
 reccomplex.structure.variables.condition=Condition
 
 reccomplex.structure.id=Structure ID

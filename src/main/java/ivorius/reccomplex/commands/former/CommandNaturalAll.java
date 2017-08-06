@@ -51,10 +51,10 @@ public class CommandNaturalAll extends CommandExpecting implements CommandVirtua
         BlockArea area = selectionOwner.getSelection();
 
         double expandFloor = parameters.get("floor-expansion").to(NaP::asDouble).optional().orElse(1.);
-        int floorDistance = parameters.get("space-distance-to-floor").to(NaP::asInt).optional().orElse(0) + 1;
+        int floorDistance = parameters.get("space-distance-to-floor").to(NaP::asInt).optional().orElse(2) + 1;
         int maxClosedSides = parameters.get("space-max-closed-sides").to(NaP::asInt).optional().orElse(3);
 
         CommandNaturalFloor.placeNaturalFloor(world, area, expandFloor);
-        CommandNaturalSpace.placeNaturalAir(world, area, 3, 3);
+        CommandNaturalSpace.placeNaturalAir(world, area, floorDistance, maxClosedSides);
     }
 }

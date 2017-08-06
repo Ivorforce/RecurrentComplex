@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.item;
 
-import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import net.minecraft.creativetab.CreativeTabs;
@@ -112,11 +112,11 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     {
         super.getSubItems(item, creativeTabs, list);
 
-        for (String key : GenericItemCollectionRegistry.INSTANCE.ids())
+        GenericItemCollectionRegistry.INSTANCE.ids().stream().sorted().forEach(key ->
         {
             ItemStack stack = new ItemStack(item);
             setComponentKey(stack, key);
             list.add(stack);
-        }
+        });
     }
 }

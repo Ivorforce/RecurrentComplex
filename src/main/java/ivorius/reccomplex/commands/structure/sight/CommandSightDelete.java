@@ -34,7 +34,7 @@ public class CommandSightDelete extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                Parameters parameters = Parameters.of(args, null);
+                Parameters parameters = Parameters.of(args, expect()::declare);
                 WorldStructureGenerationData generationData = WorldStructureGenerationData.get(sender.getEntityWorld());
 
                 WorldStructureGenerationData.Entry entry = generationData.removeEntry(UUID.fromString(parameters.get(0).require()));
@@ -51,7 +51,7 @@ public class CommandSightDelete extends CommandSplit
             @Override
             public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException
             {
-                Parameters parameters = Parameters.of(args, null);
+                Parameters parameters = Parameters.of(args, expect()::declare);
                 WorldStructureGenerationData generationData = WorldStructureGenerationData.get(sender.getEntityWorld());
 
                 BlockPos pos = parameters.get(0).to(MCP.pos(sender.getPosition(), false)).require();

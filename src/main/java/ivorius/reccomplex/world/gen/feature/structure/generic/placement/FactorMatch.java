@@ -11,25 +11,27 @@ import ivorius.ivtoolkit.blocks.BlockAreas;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.util.LineSelection;
+import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.placer.TableDataSourceFactorMatch;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.IntegerRanges;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
-import ivorius.reccomplex.utils.*;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -58,21 +60,18 @@ public class FactorMatch extends GenericPlacer.Factor
 
     protected float weight(WorldCache cache, Set<? extends BlockPos> sources, float needed)
     {
-        int[] failChances = new int[]{(int) (sources.size() * (1f - needed))};
-        int[] matched = new int[]{0};
+        int failChances = (int) (sources.size() * (1f - needed));
+        int matched = 0;
 
         for (BlockPos pos : sources)
         {
             if (destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(cache, pos)))
-                matched[0]++;
-            else
-            {
-                if (--failChances[0] > 0)
-                    break;  // Already lost
-            }
+                matched++;
+            else if (--failChances < 0)
+                break;  // Already lost
         }
 
-        return failChances[0] > 0 ? (float) matched[0] / sources.size() : 0;
+        return failChances >= 0 ? (float) matched / sources.size() : 0;
     }
 
     @Override

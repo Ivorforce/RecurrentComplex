@@ -150,6 +150,7 @@ public class RecurrentComplex
 
         RCRegistryHandler.preInit(event, this);
         proxy.preInit(event);
+        proxy.registerRenderers(); // Needs to be called during preInit now
     }
 
     @EventHandler
@@ -158,7 +159,6 @@ public class RecurrentComplex
         network = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
 
         RCRegistryHandler.load(event, this);
-        proxy.registerRenderers();
     }
 
     @EventHandler

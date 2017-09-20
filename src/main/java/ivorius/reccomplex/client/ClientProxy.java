@@ -11,11 +11,11 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCCommands;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.lwjgl.input.Keyboard;
 
@@ -120,14 +120,11 @@ public class ClientProxy implements RCProxy
         Item item = Item.getItemFromBlock(block);
         ResourceLocation id = RecurrentComplex.mcRegistry.idFromItem(item);
         for (int i = 0; i < 16; i++)
-        {
-            Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, i, new ModelResourceLocation(String.format("%s_%d", id, i), "inventory"));
-            ModelBakery.registerItemVariants(item, new ResourceLocation(String.format("%s_%d", id, i)));
-        }
+            ModelLoader.setCustomModelResourceLocation(item, i, new ModelResourceLocation(String.format("%s_%d", id, i), "inventory"));
     }
 
     protected void registerItemForDefaultRender(Item item)
     {
-        Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(item, 0, new ModelResourceLocation(RecurrentComplex.mcRegistry.idFromItem(item), "inventory"));
+        ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(RecurrentComplex.mcRegistry.idFromItem(item), "inventory"));
     }
 }

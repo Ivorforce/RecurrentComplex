@@ -10,7 +10,6 @@ import ivorius.reccomplex.utils.accessor.RCAccessorBiomeDictionary;
 import ivorius.reccomplex.utils.algebra.BoolFunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.RCBoolAlgebra;
 import ivorius.reccomplex.utils.algebra.SupplierCache;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
@@ -34,7 +33,7 @@ public class BiomeExpression extends BoolFunctionExpressionCache<Biome, Object>
         super(RCBoolAlgebra.algebra(), true, TextFormatting.GREEN + "Any Biome");
 
         addTypes(new BiomeNameVariableType(BIOME_NAME_PREFIX, ""));
-        addTypes(new BiomeIDVariableType(BIOME_ID_PREFIX, ""), t -> t.alias("", ""));
+        addTypes(Expressions.registryVariableType(BIOME_ID_PREFIX, "", Biome.REGISTRY), t -> t.alias("", ""));
         addTypes(new BiomeDictVariableType(BIOME_TYPE_PREFIX, ""), t -> t.alias("$", ""));
     }
 
@@ -64,28 +63,6 @@ public class BiomeExpression extends BoolFunctionExpressionCache<Biome, Object>
         public Validity validity(final String var, final Object biomes)
         {
             return Biome.REGISTRY.getKeys().stream().map(Biome.REGISTRY::getObject).anyMatch(b -> b.getBiomeName().equals(var))
-                    ? Validity.KNOWN : Validity.UNKNOWN;
-        }
-    }
-
-    protected class BiomeIDVariableType extends VariableType<Boolean, Biome, Object>
-    {
-        public BiomeIDVariableType(String prefix, String suffix)
-        {
-            super(prefix, suffix);
-        }
-
-        @Override
-        public Function<SupplierCache<Biome>, Boolean> parse(String var)
-        {
-            Biome biome = Biome.REGISTRY.getObject(new ResourceLocation(var));
-            return b -> b.get() == biome;
-        }
-
-        @Override
-        public Validity validity(final String var, final Object biomes)
-        {
-            return Biome.REGISTRY.containsKey(new ResourceLocation(var))
                     ? Validity.KNOWN : Validity.UNKNOWN;
         }
     }

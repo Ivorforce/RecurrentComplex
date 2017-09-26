@@ -68,14 +68,19 @@ public class TileEntityBlockScript extends TileEntity implements GeneratingTileE
     @Override
     public void generate(StructureSpawnContext context, WorldScriptMulti.InstanceData instanceData)
     {
-    	if (spawnTriggerable || (redstoneTriggerable && redstoneTriggered))
     		script.generate(context, instanceData, pos);
     }
 
     @Override
     public boolean shouldPlaceInWorld(StructureSpawnContext context, WorldScriptMulti.InstanceData instanceData)
     {
-        return !spawnTriggerable || (redstoneTriggerable && !redstoneTriggered);
+        if (spawnTriggerable) {
+        	return false;
+        } else if (redstoneTriggerable) {
+        	return !redstoneTriggered;
+        } else {
+        	return true;
+        }
     }
 
     @Override

@@ -28,7 +28,7 @@ public class TileEntityBlockScript extends TileEntity implements GeneratingTileE
 
     public boolean spawnTriggerable = true;
     public boolean redstoneTriggerable = false;
-    public boolean redstoneTriggered = true;
+    public boolean redstoneTriggered = false;
 
     @Override
     public void readFromNBT(NBTTagCompound nbtTagCompound)
@@ -74,7 +74,7 @@ public class TileEntityBlockScript extends TileEntity implements GeneratingTileE
     @Override
     public boolean shouldPlaceInWorld(StructureSpawnContext context, WorldScriptMulti.InstanceData instanceData)
     {
-        return false;
+        return redstoneTriggerable;
     }
 
     @Override

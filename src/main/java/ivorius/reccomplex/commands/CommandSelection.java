@@ -102,7 +102,7 @@ public class CommandSelection extends CommandSplit implements CommandVirtual
             @Override
             public void execute(MockWorld world, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
-                RCCommands.ensureValidSelection(owner);
+                RCCommands.ensureValidSelection(owner, false);
                 BlockArea area = owner.getSelection();
 
                 PositionedBlockExpression matcher = parameters.get(0).rest(NaP::join).orElse("is:air").to(RCP::expression, new PositionedBlockExpression(RecurrentComplex.specialRegistry)).require();
@@ -120,7 +120,7 @@ public class CommandSelection extends CommandSplit implements CommandVirtual
             @Override
             public void execute(MockWorld world, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
-                RCCommands.ensureValidSelection(owner);
+                RCCommands.ensureValidSelection(owner, true);
                 BlockArea area = owner.getSelection();
 
                 boolean changed = true;
@@ -158,7 +158,7 @@ public class CommandSelection extends CommandSplit implements CommandVirtual
             @Override
             public void execute(MockWorld world, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
-                RCCommands.ensureValidSelection(owner);
+                RCCommands.ensureValidSelection(owner, false);
                 BlockPos base = parameters.get(0).to(MCP.pos(parameters.get(0), parameters.get(0), BlockPos.ORIGIN, false)).require();
                 BlockPos shrink = parameters.get(MCP.pos("x", "y", "z", base, false)).require();
 
@@ -176,7 +176,7 @@ public class CommandSelection extends CommandSplit implements CommandVirtual
             @Override
             public void execute(MockWorld world, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException
             {
-                RCCommands.ensureValidSelection(owner);
+                RCCommands.ensureValidSelection(owner, true);
                 BlockPos base = parameters.get(0).to(MCP.pos(parameters.get(0), parameters.get(0), BlockPos.ORIGIN, false)).require();
                 BlockPos shrink = parameters.get(MCP.pos("x", "y", "z", base, false)).require();
 

@@ -181,15 +181,22 @@ public class RCCommands
         if (owner == null)
             throw RecurrentComplex.translations.commandException("commands.rc.noSelection");
 
-        if (ensureValid) ensureValidSelection(owner);
+        if (ensureValid) ensureValidSelection(owner, false);
 
         return owner;
     }
 
-    public static void ensureValidSelection(SelectionOwner owner) throws CommandException
+    public static void ensureValidSelection(SelectionOwner owner, boolean inferSecond) throws CommandException
     {
         if (!owner.hasValidSelection())
-            throw RecurrentComplex.translations.commandException("commands.selectModify.noSelection");
+        {
+            if (inferSecond && owner.getSelectedPoint1() != null)
+                owner.setSelectedPoint2(owner.getSelectedPoint1());
+            else if (inferSecond && owner.getSelectedPoint2() != null)
+                owner.setSelectedPoint1(owner.getSelectedPoint2());
+            else
+                throw RecurrentComplex.translations.commandException("commands.selectModify.noSelection");
+        }
     }
 
     public static void assertSize(ICommandSender sender, SelectionOwner owner) throws CommandException

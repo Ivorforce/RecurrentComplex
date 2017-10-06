@@ -6,6 +6,8 @@
 package ivorius.reccomplex.commands;
 
 import ivorius.ivtoolkit.blocks.BlockArea;
+import ivorius.mcopts.commands.CommandSplit;
+import ivorius.mcopts.commands.parameters.DirectCommand;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.Repository;
@@ -19,8 +21,6 @@ import ivorius.reccomplex.commands.files.CommandWrite;
 import ivorius.reccomplex.commands.former.*;
 import ivorius.reccomplex.commands.info.CommandBiomeDict;
 import ivorius.reccomplex.commands.info.CommandDimensionDict;
-import ivorius.mcopts.commands.CommandSplit;
-import ivorius.mcopts.commands.parameters.DirectCommand;
 import ivorius.reccomplex.commands.preview.CommandCancel;
 import ivorius.reccomplex.commands.preview.CommandConfirm;
 import ivorius.reccomplex.commands.preview.CommandPreview;
@@ -181,10 +181,15 @@ public class RCCommands
         if (owner == null)
             throw RecurrentComplex.translations.commandException("commands.rc.noSelection");
 
-        if (ensureValid && !owner.hasValidSelection())
-            throw RecurrentComplex.translations.commandException("commands.selectModify.noSelection");
+        if (ensureValid) ensureValidSelection(owner);
 
         return owner;
+    }
+
+    public static void ensureValidSelection(SelectionOwner owner) throws CommandException
+    {
+        if (!owner.hasValidSelection())
+            throw RecurrentComplex.translations.commandException("commands.selectModify.noSelection");
     }
 
     public static void assertSize(ICommandSender sender, SelectionOwner owner) throws CommandException

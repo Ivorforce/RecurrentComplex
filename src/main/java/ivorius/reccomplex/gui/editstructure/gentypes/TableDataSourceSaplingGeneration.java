@@ -39,6 +39,6 @@ public class TableDataSourceSaplingGeneration extends TableDataSourceSegmented
         addManagedSegment(2, new TableDataSourceBlockPattern(generationInfo.pattern, visualizationContext, tableDelegate, navigator));
         addManagedSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.environment"), generationInfo.environmentExpression, null));
         addManagedSegment(4, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift,
-                IvTranslations.get("reccomplex.gui.blockpos.shift.tooltip"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
+                IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
     }
 }

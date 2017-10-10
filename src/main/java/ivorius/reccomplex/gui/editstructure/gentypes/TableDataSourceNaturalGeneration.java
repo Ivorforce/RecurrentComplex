@@ -56,10 +56,10 @@ public class TableDataSourceNaturalGeneration extends TableDataSourceSegmented
                 .buildDataSource(IvTranslations.get("reccomplex.gui.dimensions")));
 
         addManagedSegment(6, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, delegate), () -> IvTranslations.get("reccomplex.generationInfo.natural.limitations"))
+                .addNavigation(() -> new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, delegate))
                 .enabled(generationInfo::hasLimitations)
                 .addAction(() -> generationInfo.spawnLimitation = generationInfo.hasLimitations() ? null : new NaturalGeneration.SpawnLimitation(), () -> generationInfo.hasLimitations() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null
-                ).buildDataSource());
+                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.natural.limitations")));
     }
 
     public static List<TableCellEnum.Option<String>> allGenerationCategories()

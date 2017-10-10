@@ -10,6 +10,8 @@ import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.utils.RCStrings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,6 +20,8 @@ import java.util.List;
 /**
  * Created by lukas on 02.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TitledCell extends TableCellDefault
 {
     public static final int TITLE_WIDTH = 100;
@@ -136,7 +140,7 @@ public class TitledCell extends TableCellDefault
 
             List<String> tooltip = getTitleTooltip();
             if (tooltip != null)
-                screen.drawTooltipRect(tooltip, Bounds.fromSize(bounds.getMinX() + TITLE_WIDTH- stringWidth - 10, bounds.getCenterY() - 6, stringWidth, 12), mouseX, mouseY, fontRenderer);
+                screen.drawTooltipRect(tooltip, Bounds.fromSize(bounds.getMinX() + TITLE_WIDTH - stringWidth - 10, bounds.getCenterY() - 6, stringWidth, 12), mouseX, mouseY, fontRenderer);
         }
     }
 

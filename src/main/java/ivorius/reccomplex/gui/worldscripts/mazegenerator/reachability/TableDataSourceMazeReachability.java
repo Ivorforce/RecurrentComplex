@@ -16,6 +16,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeReachability;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.Set;
@@ -23,6 +25,8 @@ import java.util.Set;
 /**
  * Created by lukas on 16.03.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceMazeReachability extends TableDataSourceSegmented
 {
     protected SavedMazeReachability reachability;

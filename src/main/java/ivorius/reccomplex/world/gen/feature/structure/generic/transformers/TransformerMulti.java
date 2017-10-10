@@ -26,6 +26,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -113,6 +115,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
         return data;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public String getDisplayString()
     {
@@ -125,6 +128,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
                 : IvTranslations.format("reccomplex.transformer.multi.multiple", amount);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {

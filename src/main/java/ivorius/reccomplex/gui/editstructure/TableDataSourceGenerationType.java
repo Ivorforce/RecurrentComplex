@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -15,6 +14,8 @@ import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -22,6 +23,8 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceGenerationType extends TableDataSourceList<GenerationType, List<GenerationType>>
 {
     protected MazeVisualizationContext realWorldMapper;

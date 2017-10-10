@@ -14,12 +14,16 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability.TableDataSourceMazeReachability;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeComponent;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeReachability;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
 /**
  * Created by lukas on 26.04.15.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceMazeComponent extends TableDataSourceSegmented
 {
     public static final int[] DEFAULT_MAX_COMPONENT_SIZE = {100, 100, 100};

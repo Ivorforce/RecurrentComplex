@@ -14,6 +14,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nonnull;
@@ -25,6 +27,8 @@ import java.util.Stack;
 /**
  * Created by lukas on 03.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class GuiScreenModalTable extends GuiScreen implements TableDelegate, TableNavigator
 {
     private Stack<GuiTable> tableStack = new Stack<>();

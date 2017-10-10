@@ -13,21 +13,24 @@ import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.gui.container.IvGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
+import ivorius.reccomplex.gui.inventorygen.ContainerEditInventoryGenItems;
 import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGen;
+import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGenItems;
 import ivorius.reccomplex.utils.SaveDirectoryData;
+import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import ivorius.reccomplex.world.storage.loot.ItemCollectionSaveHandler;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import ivorius.reccomplex.gui.inventorygen.ContainerEditInventoryGenItems;
-import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGenItems;
-import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 26.05.14.
  */
+
 public class RCGuiHandler implements IvGuiHandler
 {
     public static final int editInventoryGen = 0;

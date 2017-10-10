@@ -5,14 +5,16 @@
 
 package ivorius.reccomplex.gui;
 
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellInteger;
 import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.ivtoolkit.blocks.BlockSurfacePos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -20,6 +22,8 @@ import java.util.function.Consumer;
 /**
  * Created by lukas on 13.04.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceBlockSurfacePos extends TableDataSourceSegmented
 {
     private BlockSurfacePos coord;

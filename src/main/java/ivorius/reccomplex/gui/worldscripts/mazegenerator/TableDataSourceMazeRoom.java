@@ -8,12 +8,14 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 import com.google.common.collect.ImmutableList;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellInteger;
 import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -22,6 +24,8 @@ import java.util.function.Consumer;
 /**
  * Created by lukas on 13.04.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceMazeRoom extends TableDataSourceSegmented
 {
     public MazeRoom room;

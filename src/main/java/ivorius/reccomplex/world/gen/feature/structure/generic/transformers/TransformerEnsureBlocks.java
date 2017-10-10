@@ -26,6 +26,8 @@ import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
@@ -83,12 +85,14 @@ public class TransformerEnsureBlocks extends Transformer<NBTNone>
 
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public String getDisplayString()
     {
         return String.format("Ensure: %s", destMatcher.getDisplayString(null));
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {

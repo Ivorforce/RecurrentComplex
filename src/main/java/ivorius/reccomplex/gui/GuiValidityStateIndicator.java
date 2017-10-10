@@ -8,12 +8,16 @@ package ivorius.reccomplex.gui;
 import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 12.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class GuiValidityStateIndicator extends Gui
 {
     protected static final ResourceLocation textureSprite = new ResourceLocation(RecurrentComplex.MOD_ID, RecurrentComplex.filePathTextures + "gui_states.png");

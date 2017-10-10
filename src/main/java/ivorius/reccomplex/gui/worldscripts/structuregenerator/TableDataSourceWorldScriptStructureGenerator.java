@@ -10,13 +10,17 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDirections;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
-import ivorius.reccomplex.world.gen.script.WorldScriptStructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.script.WorldScriptStructureGenerator;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
@@ -26,6 +30,8 @@ import static ivorius.reccomplex.gui.table.cell.TableCellEnum.Option;
 /**
  * Created by lukas on 05.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourceSegmented
 {
     protected WorldScriptStructureGenerator script;

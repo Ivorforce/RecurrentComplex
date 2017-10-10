@@ -25,6 +25,8 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStra
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -36,6 +38,8 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 22.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceMazePath extends TableDataSourceSegmented
 {
     public static final String[] COORD_NAMES = {"x", "y", "z"};
@@ -105,7 +109,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
     {
         if (mazePaths.size() <= 0)
             return new SelectionQuadCache.Visualizer(new Selection(0), visualizationContext);
-        
+
         Selection selection = new Selection(Iterables.getFirst(mazePaths, null).sourceRoom.getDimensions());
         mazePaths.forEach(p -> addToSelection(selection, p));
         return new SelectionQuadCache.Visualizer(selection, visualizationContext);

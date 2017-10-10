@@ -15,6 +15,8 @@ import ivorius.reccomplex.json.NBTTagEndSerializer;
 import net.minecraft.nbt.*;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
@@ -27,6 +29,8 @@ import java.util.function.Supplier;
 /**
  * Created by lukas on 17.01.17.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceNBT
 {
     private static final Object[] TYPE_LOOKUP = new Object[]{

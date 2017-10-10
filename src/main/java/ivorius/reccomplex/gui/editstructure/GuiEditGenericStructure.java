@@ -11,10 +11,14 @@ import ivorius.reccomplex.network.PacketSaveStructureHandler;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 26.05.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class GuiEditGenericStructure extends GuiScreenEditTable<TableDataSourceGenericStructure>
 {
     public GuiEditGenericStructure(String key, GenericStructure structureInfo, BlockPos lowerCoord, SaveDirectoryData data)

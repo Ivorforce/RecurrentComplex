@@ -8,10 +8,14 @@ package ivorius.reccomplex.gui.table.cell;
 import ivorius.ivtoolkit.gui.*;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 02.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableCellIntegerRange extends TableCellPropertyDefault<IntegerRange> implements GuiControlListener<GuiSliderMultivalue>
 {
     private GuiSliderRange slider;

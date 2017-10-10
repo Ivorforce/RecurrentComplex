@@ -8,13 +8,18 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockState;
 import ivorius.reccomplex.gui.nbt.TableDataSourceNBTTagCompound;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableCells;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -23,6 +28,8 @@ import java.util.function.Supplier;
 /**
  * Created by lukas on 05.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented
 {
     private WeightedBlockState weightedBlockState;

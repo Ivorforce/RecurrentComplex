@@ -25,6 +25,8 @@ import net.minecraft.block.state.IBlockState;
 import ivorius.reccomplex.nbt.NBTNone;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
@@ -55,12 +57,14 @@ public class TransformerNegativeSpace extends Transformer<NBTNone>
         return sourceMatcher.test(state) && (destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(context.environment.world, pos)));
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public String getDisplayString()
     {
         return "Space: " + sourceMatcher.getDisplayString(null);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {

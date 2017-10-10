@@ -7,16 +7,20 @@ package ivorius.reccomplex.gui;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.function.Supplier;
 
 /**
  * Created by lukas on 31.08.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableElementSaveDirectory
 {
     public static TitledCell create(SaveDirectoryData data, Supplier<String> idSupplier, TableDelegate delegate)

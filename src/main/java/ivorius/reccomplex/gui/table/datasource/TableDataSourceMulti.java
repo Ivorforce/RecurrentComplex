@@ -5,12 +5,17 @@
 
 package ivorius.reccomplex.gui.table.datasource;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by lukas on 22.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceMulti extends TableDataSourceSegmented
 {
     public TableDataSourceMulti(List<TableDataSource> sources)

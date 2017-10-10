@@ -6,12 +6,16 @@
 package ivorius.reccomplex.gui.table.cell;
 
 import com.google.common.primitives.Ints;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
 /**
  * Created by lukas on 02.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableCellStringInt extends TableCellTextField<Integer>
 {
     public TableCellStringInt(String id, Integer value)

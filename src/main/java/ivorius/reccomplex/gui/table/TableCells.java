@@ -9,6 +9,8 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.cell.TableCellPresetAction;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 28.02.15.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableCells
 {
     public static Float toFloat(Double value)
@@ -79,7 +83,7 @@ public class TableCells
     @NotNull
     public static List<String> getTooltip(String baseKey, String type)
     {
-        return IvTranslations.formatLines(baseKey+ type + ".tooltip");
+        return IvTranslations.formatLines(baseKey + type + ".tooltip");
     }
 
     @Nonnull

@@ -8,6 +8,8 @@ package ivorius.reccomplex.gui.table.cell;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -19,6 +21,8 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 02.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableCellPresetAction extends TableCellPropertyDefault<String>
 {
     public static final int DIRECTION_BUTTON_WIDTH = 20;

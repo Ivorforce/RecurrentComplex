@@ -21,6 +21,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourcePreloaded;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePath;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import javax.annotation.Nonnull;
@@ -32,6 +34,8 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 16.03.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceMazePathPairList extends TableDataSourceList<ImmutablePair<SavedMazePath, SavedMazePath>, List<ImmutablePair<SavedMazePath, SavedMazePath>>>
 {
     private Selection bounds;

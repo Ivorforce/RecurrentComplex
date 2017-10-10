@@ -16,10 +16,14 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.utils.scale.Scales;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerRuins;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 05.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceBTRuins extends TableDataSourceSegmented
 {
     private TransformerRuins transformer;

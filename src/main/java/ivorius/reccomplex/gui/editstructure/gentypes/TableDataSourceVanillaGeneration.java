@@ -5,27 +5,34 @@
 
 package ivorius.reccomplex.gui.editstructure.gentypes;
 
+import ivorius.ivtoolkit.blocks.Directions;
 import ivorius.ivtoolkit.gui.FloatRange;
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableDirections;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableCells;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellFloatRange;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaGeneration;
-import ivorius.ivtoolkit.blocks.Directions;
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.utils.scale.Scales;
+import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaGeneration;
 import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Created by lukas on 07.10.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceVanillaGeneration extends TableDataSourceSegmented
 {
     private TableNavigator navigator;

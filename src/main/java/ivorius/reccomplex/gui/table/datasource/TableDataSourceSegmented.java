@@ -12,6 +12,8 @@ import gnu.trove.set.TIntSet;
 import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.TableCell;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -20,6 +22,8 @@ import java.util.List;
 /**
  * Created by lukas on 22.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceSegmented implements TableDataSource
 {
     protected final TIntObjectMap<TableDataSource> managedSections = new TIntObjectHashMap<>();

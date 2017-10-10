@@ -13,6 +13,8 @@ import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -24,6 +26,8 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 02.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableCellEnum<T> extends TableCellPropertyDefault<T>
 {
     public static final String LEFT_ARROW = TextFormatting.BOLD + "←";

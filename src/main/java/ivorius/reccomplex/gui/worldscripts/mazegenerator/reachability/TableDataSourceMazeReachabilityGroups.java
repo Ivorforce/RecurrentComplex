@@ -7,13 +7,17 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazeReachability;
 import net.minecraft.util.text.TextFormatting;
-import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.*;
-import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,6 +26,8 @@ import java.util.Set;
 /**
  * Created by lukas on 16.03.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceMazeReachabilityGroups extends TableDataSourceSegmented
 {
     private SavedMazeReachability reachability;

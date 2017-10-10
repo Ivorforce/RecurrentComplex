@@ -7,16 +7,21 @@ package ivorius.reccomplex.gui;
 
 import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.blocks.BlockStates;
-import ivorius.reccomplex.gui.table.cell.*;
-import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNatural;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableCells;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
+import ivorius.reccomplex.gui.table.cell.*;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -28,6 +33,8 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 06.05.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceBlockState extends TableDataSourceSegmented
 {
     private String block = "";

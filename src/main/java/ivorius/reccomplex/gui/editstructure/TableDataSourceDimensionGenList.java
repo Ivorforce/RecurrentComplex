@@ -9,26 +9,29 @@ import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedList;
 import ivorius.reccomplex.gui.editstructure.preset.TableDataSourcePresettedObject;
 import ivorius.reccomplex.gui.table.TableCells;
-import ivorius.reccomplex.gui.table.cell.TableCell;
-import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.utils.RCStrings;
-import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
+import ivorius.reccomplex.gui.table.cell.TableCell;
+import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.utils.presets.PresettedList;
+import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
 /**
  * Created by lukas on 04.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
 {
     public TableDataSourceDimensionGenList(PresettedList<WeightedDimensionMatcher> list, TableDelegate delegate, TableNavigator navigator)
     {
         addManagedSegment(0, new TableDataSourcePresettedObject<>(list, RCFileSaver.DIMENSION_PRESET, delegate, navigator)
-            .withApplyPresetAction(() -> addPresetSegments(list, delegate, navigator)));
+                .withApplyPresetAction(() -> addPresetSegments(list, delegate, navigator)));
 
         addPresetSegments(list, delegate, navigator);
     }

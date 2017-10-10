@@ -7,6 +7,8 @@ package ivorius.reccomplex.gui.table.datasource;
 
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.TableCell;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,6 +17,8 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourcePreloaded implements TableDataSource
 {
     public final List<TableCell> cells = new ArrayList<>();

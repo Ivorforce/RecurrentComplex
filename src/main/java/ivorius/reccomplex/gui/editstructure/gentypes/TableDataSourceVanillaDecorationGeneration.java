@@ -21,10 +21,14 @@ import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaDecorationGeneration;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 07.10.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceVanillaDecorationGeneration extends TableDataSourceSegmented
 {
     private TableNavigator navigator;

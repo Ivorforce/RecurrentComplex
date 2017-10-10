@@ -15,6 +15,7 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,7 @@ import java.util.Map;
 /**
  * Created by lukas on 28.08.16.
  */
+
 public class IvGuiRegistry
 {
     public static final IvGuiRegistry INSTANCE = new IvGuiRegistry();

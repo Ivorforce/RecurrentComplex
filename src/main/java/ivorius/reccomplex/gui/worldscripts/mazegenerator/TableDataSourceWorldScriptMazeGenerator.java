@@ -18,12 +18,16 @@ import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMa
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGeneration;
 import ivorius.reccomplex.world.gen.script.WorldScriptMazeGenerator;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.function.Consumer;
 
 /**
  * Created by lukas on 05.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegmented
 {
     private WorldScriptMazeGenerator script;

@@ -15,12 +15,16 @@ import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
 /**
  * Created by lukas on 08.10.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceSelectionArea extends TableDataSourceSegmented
 {
     public static final String[] COORD_NAMES = {"x", "y", "z"};

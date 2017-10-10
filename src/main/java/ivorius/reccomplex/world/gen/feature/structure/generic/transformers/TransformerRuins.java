@@ -45,6 +45,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -355,12 +357,14 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
         throw new InternalError();
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public String getDisplayString()
     {
         return IvTranslations.get("reccomplex.transformer.ruins");
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {

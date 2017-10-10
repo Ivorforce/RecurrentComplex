@@ -5,18 +5,17 @@
 
 package ivorius.reccomplex.gui.table.cell;
 
-import ivorius.ivtoolkit.gui.GuiControlListener;
-import ivorius.ivtoolkit.gui.GuiSlider;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.utils.scale.Scale;
-import ivorius.reccomplex.utils.scale.Scales;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 02.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableCellFloatNullable extends TableCellPropertyDefault<Float>
 {
     protected TableCellFloat floatCell;
@@ -142,7 +141,7 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float>
     {
         super.setBounds(bounds);
 
-        int nullButtonIntWidth = (int)(bounds.getWidth() * nullButtonWidth);
+        int nullButtonIntWidth = (int) (bounds.getWidth() * nullButtonWidth);
         floatCell.setBounds(Bounds.fromSize(bounds.getMinX(), bounds.getMinY(), bounds.getWidth() - nullButtonIntWidth - 4, bounds.getHeight()));
         nullButton.setBounds(Bounds.fromSize(bounds.getMaxX() - nullButtonIntWidth, bounds.getMinY(), nullButtonIntWidth, bounds.getHeight()));
     }

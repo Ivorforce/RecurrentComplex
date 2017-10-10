@@ -10,8 +10,8 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.loading.LeveledRegistry;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableCells;
+import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
@@ -21,6 +21,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.utils.presets.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.stream.Collectors;
@@ -28,6 +30,8 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 20.09.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
 {
     public PresettedObject<T> object;

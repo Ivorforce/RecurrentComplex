@@ -11,10 +11,14 @@ import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.network.PacketSyncItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 17.01.15.
  */
+
+@SideOnly(Side.CLIENT)
 public class GuiEditItemStack<T extends TableDataSourceItem> extends GuiScreenEditTable<T>
 {
     protected int playerSlot;

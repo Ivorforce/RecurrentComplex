@@ -5,11 +5,13 @@
 
 package ivorius.reccomplex.gui;
 
-import ivorius.reccomplex.gui.table.*;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.cell.TableCellFloatNullable;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.utils.scale.Scales;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.function.Consumer;
 /**
  * Created by lukas on 13.04.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class RCGuiTables
 {
     public static TitledCell defaultWeightElement(Consumer<Float> consumer, Float value, String title, @Nullable List<String> tooltip)

@@ -21,6 +21,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Created by lukas on 10.10.16.
  */
+
 @SideOnly(Side.CLIENT)
 public class GuiHider
 {

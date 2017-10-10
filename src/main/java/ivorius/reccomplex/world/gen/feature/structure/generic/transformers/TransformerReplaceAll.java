@@ -37,6 +37,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
@@ -82,12 +84,14 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
         TransformerReplace.setBlock(context, areaSize, coord, instanceData.blockState, () -> instanceData.tileEntityInfo);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public String getDisplayString()
     {
         return "Replace All: " + sourceMatcher.getDisplayString(null);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {

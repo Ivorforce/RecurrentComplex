@@ -7,12 +7,16 @@ package ivorius.reccomplex.gui.worldscripts;
 
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.script.WorldScript;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
 /**
  * Created by lukas on 02.11.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceWorldScript extends TableDataSourceSegmented
 {
     WorldScript<?> script;

@@ -11,6 +11,8 @@ import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -18,6 +20,8 @@ import java.util.function.Consumer;
 /**
  * Created by lukas on 13.04.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceBlockPos extends TableDataSourceSegmented
 {
     private BlockPos coord;

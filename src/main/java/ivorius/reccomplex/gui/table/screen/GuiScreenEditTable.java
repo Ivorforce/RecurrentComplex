@@ -12,6 +12,8 @@ import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
@@ -20,6 +22,8 @@ import java.util.function.Consumer;
 /**
  * Created by lukas on 27.08.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModalTable
 {
     public static final int HEIGHT_INSET = 10;

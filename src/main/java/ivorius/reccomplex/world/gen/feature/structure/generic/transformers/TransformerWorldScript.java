@@ -31,6 +31,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
@@ -85,12 +87,14 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
         return instanceData;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public String getDisplayString()
     {
         return script.getDisplayString();
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {

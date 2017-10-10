@@ -12,6 +12,8 @@ import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceList;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.ConnectorStrategy;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -19,6 +21,8 @@ import java.util.List;
 /**
  * Created by lukas on 04.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceMazePathConditionalConnectorList extends TableDataSourceList<SavedMazePathConnection.ConditionalConnector, List<SavedMazePathConnection.ConditionalConnector>>
 {
     public TableDataSourceMazePathConditionalConnectorList(List<SavedMazePathConnection.ConditionalConnector> list, TableDelegate tableDelegate, TableNavigator navigator)

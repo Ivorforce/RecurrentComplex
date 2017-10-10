@@ -14,6 +14,8 @@ import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -25,6 +27,8 @@ import java.util.stream.IntStream;
 /**
  * Created by lukas on 17.01.17.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceNBTList extends TableDataSourceSegmented
 {
     protected TableDelegate delegate;

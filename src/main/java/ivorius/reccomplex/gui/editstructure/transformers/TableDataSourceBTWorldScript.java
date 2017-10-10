@@ -13,10 +13,14 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.multi.TableDataSourceWorldScriptMulti;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerWorldScript;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 05.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceBTWorldScript extends TableDataSourceSegmented
 {
     private TransformerWorldScript transformer;

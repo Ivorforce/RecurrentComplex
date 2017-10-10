@@ -6,12 +6,16 @@
 package ivorius.reccomplex.gui.editstructure.preset;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.utils.presets.PresetRegistry;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -20,6 +24,8 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 19.09.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
 {
     public TableDelegate delegate;

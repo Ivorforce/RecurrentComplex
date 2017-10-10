@@ -13,6 +13,8 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,6 +26,8 @@ import java.util.function.Supplier;
 /**
  * Created by lukas on 27.08.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableCellMultiBuilder
 {
     protected final List<Supplier<TableCellButton>> cells = new ArrayList<>();
@@ -92,10 +96,10 @@ public class TableCellMultiBuilder
     public TableCellMultiBuilder addNavigation(Supplier<TableDataSource> dataSource, Supplier<Object> title, @Nullable Supplier<List<String>> tooltip)
     {
         return addCell(() ->
-                {
-                    TableCellButton edit = TableCells.edit(true, navigator, delegate, dataSource);
-                    setVisuals(title.get(), tooltip, edit);
-                    return edit;
+        {
+            TableCellButton edit = TableCells.edit(true, navigator, delegate, dataSource);
+            setVisuals(title.get(), tooltip, edit);
+            return edit;
         });
     }
 

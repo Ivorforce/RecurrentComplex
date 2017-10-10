@@ -6,15 +6,19 @@
 package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellIntegerRange;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.item.ItemInventoryGenMultiTag;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 17.01.15.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceInvGenMultiTag extends TableDataSourceItem<ItemInventoryGenMultiTag>
 {
     @Override

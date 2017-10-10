@@ -19,12 +19,16 @@ import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePath
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.saved.MazeRuleConnect;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
 /**
  * Created by lukas on 21.03.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
 {
     private final MazeRuleConnect rule;

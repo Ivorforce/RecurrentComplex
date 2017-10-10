@@ -16,6 +16,8 @@ import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.GuiConfigEntries;
 import net.minecraftforge.fml.client.config.IConfigElement;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,8 @@ import static net.minecraftforge.fml.client.config.DummyConfigElement.DummyCateg
 /**
  * Created by lukas on 29.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class RCConfigGuiFactory implements IModGuiFactory
 {
     @Override

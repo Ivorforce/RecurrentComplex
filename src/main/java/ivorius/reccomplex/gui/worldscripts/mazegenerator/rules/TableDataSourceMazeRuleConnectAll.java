@@ -20,6 +20,8 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.saved.MazeRuleConnectAll;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -30,6 +32,8 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 21.03.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
 {
     private final MazeRuleConnectAll rule;

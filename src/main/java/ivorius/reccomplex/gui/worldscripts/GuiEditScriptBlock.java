@@ -11,10 +11,14 @@ import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.network.PacketEditTileEntity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 26.05.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class GuiEditScriptBlock extends GuiScreenEditTable<TableDataSourceScriptBlock>
 {
     public GuiEditScriptBlock(TileEntityBlockScript tileEntity)

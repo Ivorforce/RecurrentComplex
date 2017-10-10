@@ -26,6 +26,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
@@ -35,6 +37,8 @@ import java.util.List;
 /**
  * Created by lukas on 26.05.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class GuiEditInventoryGenItems extends GuiContainer implements InventoryWatcher
 {
     public static ResourceLocation textureBackground = new ResourceLocation(RecurrentComplex.MOD_ID, RecurrentComplex.filePathTextures + "gui_edit_inventory_gen.png");

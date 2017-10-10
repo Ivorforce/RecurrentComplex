@@ -5,17 +5,19 @@
 
 package ivorius.reccomplex.gui;
 
-import ivorius.reccomplex.gui.table.*;
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TableCellTitle;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.utils.RCStrings;
+import ivorius.reccomplex.utils.algebra.FunctionExpressionCache;
 import ivorius.reccomplex.utils.algebra.FunctionExpressionCaches;
 import ivorius.reccomplex.utils.expression.*;
-import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.utils.algebra.FunctionExpressionCache;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -24,6 +26,8 @@ import java.util.function.BooleanSupplier;
 /**
  * Created by lukas on 26.03.15.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T, ?, U>> implements TableDataSource
 {
     public String title;

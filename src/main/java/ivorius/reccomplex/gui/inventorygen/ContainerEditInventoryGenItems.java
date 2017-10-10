@@ -14,6 +14,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.List;
 /**
  * Created by lukas on 26.05.14.
  */
+
 public class ContainerEditInventoryGenItems extends Container implements PacketGuiAction.ActionHandler
 {
     public static final int ITEM_ROWS = 4;

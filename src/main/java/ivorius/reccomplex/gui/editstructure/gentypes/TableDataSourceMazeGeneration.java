@@ -18,10 +18,14 @@ import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazeComponent;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.MazeGeneration;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 07.10.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceMazeGeneration extends TableDataSourceSegmented
 {
     private TableNavigator navigator;

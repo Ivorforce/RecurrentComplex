@@ -11,10 +11,14 @@ import ivorius.reccomplex.network.PacketInspectBlock;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 27.08.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class GuiInspectBlock extends GuiScreenEditTable<TableDataSourceInspectBlock>
 {
     public GuiInspectBlock(BlockPos pos, IBlockState state, NBTTagCompound tileEntityData)

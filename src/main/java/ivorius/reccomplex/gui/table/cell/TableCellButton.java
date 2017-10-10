@@ -9,6 +9,8 @@ import ivorius.reccomplex.gui.GuiTexturedButton;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -17,6 +19,8 @@ import java.util.List;
 /**
  * Created by lukas on 02.06.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableCellButton extends TableCellDefault
 {
     protected final GuiTexturedButton button = new GuiTexturedButton(-1, 0, 0, 0, 0, "");

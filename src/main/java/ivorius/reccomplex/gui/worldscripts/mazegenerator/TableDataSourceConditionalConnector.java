@@ -9,12 +9,16 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePathConnection;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
 /**
  * Created by lukas on 15.04.17.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceConditionalConnector extends TableDataSourceSegmented
 {
     public SavedMazePathConnection.ConditionalConnector conditionalConnector;

@@ -6,7 +6,6 @@
 package ivorius.reccomplex.gui;
 
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.gui.table.Bounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -16,6 +15,8 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -23,6 +24,8 @@ import java.io.IOException;
 /**
  * Created by lukas on 02.11.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class GuiTexturedButton extends GuiButton
 {
     private ResourceLocation texture;
@@ -102,10 +105,10 @@ public class GuiTexturedButton extends GuiButton
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder vertexbuffer = tessellator.getBuffer();
         vertexbuffer.begin(7, DefaultVertexFormats.POSITION_TEX);
-        vertexbuffer.pos((double)(x + 0), (double)(y + height), (double)this.zLevel).tex((double)((float)(textureX + 0) / textureWidth), (double)((float)(textureY + height) / textureHeight)).endVertex();
-        vertexbuffer.pos((double)(x + width), (double)(y + height), (double)this.zLevel).tex((double)((float)(textureX + width) / textureWidth), (double)((float)(textureY + height) / textureHeight)).endVertex();
-        vertexbuffer.pos((double)(x + width), (double)(y + 0), (double)this.zLevel).tex((double)((float)(textureX + width) / textureWidth), (double)((float)(textureY + 0) / textureHeight)).endVertex();
-        vertexbuffer.pos((double)(x + 0), (double)(y + 0), (double)this.zLevel).tex((double)((float)(textureX + 0) / textureWidth), (double)((float)(textureY + 0) / textureHeight)).endVertex();
+        vertexbuffer.pos((double) (x + 0), (double) (y + height), (double) this.zLevel).tex((double) ((float) (textureX + 0) / textureWidth), (double) ((float) (textureY + height) / textureHeight)).endVertex();
+        vertexbuffer.pos((double) (x + width), (double) (y + height), (double) this.zLevel).tex((double) ((float) (textureX + width) / textureWidth), (double) ((float) (textureY + height) / textureHeight)).endVertex();
+        vertexbuffer.pos((double) (x + width), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (textureX + width) / textureWidth), (double) ((float) (textureY + 0) / textureHeight)).endVertex();
+        vertexbuffer.pos((double) (x + 0), (double) (y + 0), (double) this.zLevel).tex((double) ((float) (textureX + 0) / textureWidth), (double) ((float) (textureY + 0) / textureHeight)).endVertex();
         tessellator.draw();
     }
 }

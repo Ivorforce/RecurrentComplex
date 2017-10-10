@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.editstructure.pattern;
 
-import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -17,13 +16,14 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceSelection;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BlockPattern;
-import net.minecraft.util.math.BlockPos;
-
-import java.util.function.Function;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 22.02.15.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceBlockPattern extends TableDataSourceSegmented
 {
     protected BlockPattern pattern;

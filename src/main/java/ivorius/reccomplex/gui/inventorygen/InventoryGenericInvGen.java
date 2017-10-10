@@ -11,6 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +21,8 @@ import java.util.List;
 /**
  * Created by lukas on 27.05.14.
  */
+
+@SideOnly(Side.CLIENT)
 public class InventoryGenericInvGen implements IInventory
 {
     public List<WeightedRandomChestContent> chestContents;
@@ -251,7 +255,7 @@ public class InventoryGenericInvGen implements IInventory
     {
 
     }
-    
+
     @Override
     public boolean isItemValidForSlot(int var1, ItemStack var2)
     {

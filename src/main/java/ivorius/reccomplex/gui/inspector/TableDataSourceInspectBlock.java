@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.gui.inspector;
 
-import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDataSourceBlockState;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceWeightedBlockState;
@@ -15,12 +14,16 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
 /**
  * Created by lukas on 27.08.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceInspectBlock extends TableDataSourceSegmented
 {
     public BlockPos pos;

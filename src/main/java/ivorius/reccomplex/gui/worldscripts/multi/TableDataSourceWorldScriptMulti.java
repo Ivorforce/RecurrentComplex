@@ -13,10 +13,14 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptMulti;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 06.09.16.
  */
+
+@SideOnly(Side.CLIENT)
 public class TableDataSourceWorldScriptMulti extends TableDataSourceSegmented
 {
     public WorldScriptMulti script;

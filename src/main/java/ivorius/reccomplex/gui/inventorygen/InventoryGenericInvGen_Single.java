@@ -11,6 +11,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +21,7 @@ import java.util.List;
 /**
  * Created by lukas on 27.05.14.
  */
+
 public class InventoryGenericInvGen_Single implements IInventory
 {
     public List<GenericItemCollection.RandomizedItemStack> weightedRandomChestContents;

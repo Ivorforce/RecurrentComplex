@@ -24,7 +24,6 @@ public class TableCellButton extends TableCellDefault
     public String actionID;
     public String title;
     public List<String> tooltip;
-    public boolean enabled = true;
 
     public ResourceLocation texture;
 
@@ -84,14 +83,9 @@ public class TableCellButton extends TableCellDefault
         return Collections.unmodifiableList(listeners);
     }
 
-    public boolean isEnabled()
-    {
-        return enabled;
-    }
-
     public void setEnabled(boolean enabled)
     {
-        this.enabled = enabled;
+        super.setEnabled(enabled);
 
         if (button != null)
             button.enabled = enabled;

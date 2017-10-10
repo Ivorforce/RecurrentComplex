@@ -26,6 +26,8 @@ public abstract class TableCellDefault implements TableCell
 
     protected List<String> tooltip;
 
+    public boolean enabled = true;
+
     public TableCellDefault(String id)
     {
         this.id = id;
@@ -129,5 +131,15 @@ public abstract class TableCellDefault implements TableCell
     public void buttonClicked(int buttonID)
     {
 
+    }
+
+    public boolean isEnabled()
+    {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled)
+    {
+        this.enabled = enabled;
     }
 }

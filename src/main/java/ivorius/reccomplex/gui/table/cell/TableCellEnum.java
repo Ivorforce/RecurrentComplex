@@ -66,6 +66,15 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
     }
 
     @Override
+    public void setEnabled(boolean enabled)
+    {
+        super.setEnabled(enabled);
+
+        if (leftButton != null) leftButton.enabled = enabled;
+        if (rightButton != null) rightButton.enabled = enabled;
+    }
+
+    @Override
     public void initGui(GuiTable screen)
     {
         super.initGui(screen);
@@ -75,7 +84,8 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
         int buttonY = bounds.getMinY() + (bounds.getHeight() - 20) / 2;
         int presetButtonWidth = bounds.getWidth() - TableCellPresetAction.DIRECTION_BUTTON_WIDTH * 2;
 
-        boolean canChange = options.size() > 1 || (options.size() == 1 && !Objects.equals(getPropertyValue(), options.get(0).value));
+        boolean canChange = (options.size() > 1 || (options.size() == 1 && !Objects.equals(getPropertyValue(), options.get(0).value)))
+                && enabled;
 
         leftButton = new GuiButton(-1, bounds.getMinX(), buttonY, TableCellPresetAction.DIRECTION_BUTTON_WIDTH - 1, 20, "<");
         leftButton.visible = !isHidden();

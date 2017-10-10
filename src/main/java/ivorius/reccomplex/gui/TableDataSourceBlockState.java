@@ -155,14 +155,17 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
             return new TitledCell(name.getName(), new TableCellMulti(buttons));
         }
 
-        TableCellButton button = new TableCellButton(null, null, TextFormatting.GREEN + name.getName(currentProperty));
-        button.setEnabled(!extended);
-        button.addAction(() ->
-        {
-            setBlockStateAndNotify(state.cycleProperty(name));
+        List<T> sorted = Lists.newArrayList(name.getAllowedValues());
+        Collections.sort(sorted);
+
+        TableCellEnum<T> cell = new TableCellEnum<>(null, (T) state.getValue(name), sorted.stream()
+                .map(t1 -> new TableCellEnum.Option<>(t1, TextFormatting.GREEN + name.getName(currentProperty))).collect(Collectors.toList()));
+        cell.addPropertyConsumer(t -> {
+            setBlockStateAndNotify(state.withProperty(name, t));
             delegate.reloadData();
         });
-        return new TitledCell(name.getName(), button);
+        cell.setEnabled(!extended);
+        return new TitledCell(name.getName(), cell);
     }
 
     protected <T extends Comparable<T>> List<T> getSortedProperties(IProperty<T> name)

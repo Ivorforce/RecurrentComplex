@@ -35,6 +35,7 @@ public abstract class TableCellTextField<T> extends TableCellPropertyDefault<T>
         textField = new GuiTextField(-1, getFontRenderer(), 0, 0, 0, 0);
         stateIndicator = new GuiValidityStateIndicator(0, 0, GuiValidityStateIndicator.State.UNKNWON);
         setPropertyValue(value);
+        updateValidityStateIndicator();
     }
 
     public int getMaxStringLength()

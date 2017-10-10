@@ -58,6 +58,7 @@ public class Bounds
         textField.y = bounds.getMinY();
         textField.width = bounds.getWidth();
         textField.height = bounds.getHeight();
+        textField.setCursorPosition(textField.getCursorPosition()); // Update text field scroll
     }
 
     public int getMinX()

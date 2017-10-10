@@ -18,36 +18,33 @@ import javax.annotation.Nullable;
 public abstract class TableCellTextField<T> extends TableCellPropertyDefault<T>
 {
     @Nullable
-    protected GuiTextField textField;
+    protected final GuiTextField textField;
     @Nullable
-    protected GuiValidityStateIndicator stateIndicator;
+    protected final GuiValidityStateIndicator stateIndicator;
 
     protected boolean showsValidityState;
     protected boolean validDataType = true;
     protected GuiValidityStateIndicator.State validityState = GuiValidityStateIndicator.State.VALID;
 
-    protected int maxStringLength = 300;
-
     @Nullable
     protected Runnable changeListener;
-
-    protected boolean enabled = true;
 
     public TableCellTextField(String id, T value)
     {
         super(id, value);
+        textField = new GuiTextField(-1, getFontRenderer(), 0, 0, 0, 0);
+        stateIndicator = new GuiValidityStateIndicator(0, 0, GuiValidityStateIndicator.State.UNKNWON);
+        setPropertyValue(value);
     }
 
     public int getMaxStringLength()
     {
-        return maxStringLength;
+        return textField.getMaxStringLength();
     }
 
     public void setMaxStringLength(int maxStringLength)
     {
-        this.maxStringLength = maxStringLength;
-        if (textField != null)
-            textField.setMaxStringLength(maxStringLength);
+        textField.setMaxStringLength(maxStringLength);
     }
 
     @Nullable
@@ -73,43 +70,10 @@ public abstract class TableCellTextField<T> extends TableCellPropertyDefault<T>
         return stateIndicator;
     }
 
-    public boolean isEnabled()
-    {
-        return enabled;
-    }
-
     public void setEnabled(boolean enabled)
     {
-        this.enabled = enabled;
-        if (textField != null)
-            textField.setEnabled(enabled);
-    }
-
-    @Override
-    public void initGui(GuiTable screen)
-    {
-        super.initGui(screen);
-
-        Bounds bounds = bounds();
-        if (textField == null)
-            textField = new GuiTextField(0, getFontRenderer(), 0, 0, 0, 0);
-        updateTextFieldBounds(bounds);
-        textField.setMaxStringLength(maxStringLength);
-
-        textField.setText(serialize(getPropertyValue()));
-        textField.setVisible(!isHidden());
+        super.setEnabled(enabled);
         textField.setEnabled(enabled);
-
-        if (showsValidityState())
-        {
-            stateIndicator = new GuiValidityStateIndicator(bounds.getMaxX() - 12, bounds.getCenterY() - 5, GuiValidityStateIndicator.State.UNKNWON);
-            updateValidityStateIndicator();
-            stateIndicator.setVisible(!isHidden());
-        }
-        else
-        {
-            stateIndicator = null;
-        }
     }
 
     protected abstract String serialize(T t);
@@ -123,8 +87,7 @@ public abstract class TableCellTextField<T> extends TableCellPropertyDefault<T>
         super.draw(screen, mouseX, mouseY, partialTicks);
 
         textField.drawTextBox();
-
-        if (stateIndicator != null)
+        if (showsValidityState)
             stateIndicator.draw();
     }
 
@@ -178,11 +141,8 @@ public abstract class TableCellTextField<T> extends TableCellPropertyDefault<T>
     {
         super.setHidden(hidden);
 
-        if (textField != null)
-            textField.setVisible(!hidden);
-
-        if (stateIndicator != null)
-            stateIndicator.setVisible(!hidden);
+        textField.setVisible(!hidden);
+        stateIndicator.setVisible(!hidden && showsValidityState);
     }
 
     @Override
@@ -190,16 +150,9 @@ public abstract class TableCellTextField<T> extends TableCellPropertyDefault<T>
     {
         super.setPropertyValue(t);
 
-        if (textField != null)
-            textField.setText(serialize(t));
+        if (textField != null) textField.setText(serialize(t)); // super calls this in init
         if (changeListener != null)
             changeListener.run();
-    }
-
-    protected void updateTextFieldBounds(Bounds bounds)
-    {
-        if (textField != null)
-            Bounds.set(textField, Bounds.fromSize(bounds.getMinX() + 2, bounds.getCenterY() - 9, bounds.getWidth() - (showsValidityState() ? 14 : 0) - 4, 18));
     }
 
     @Override
@@ -207,13 +160,14 @@ public abstract class TableCellTextField<T> extends TableCellPropertyDefault<T>
     {
         super.setBounds(bounds);
 
-        updateTextFieldBounds(bounds);
+        Bounds.set(textField, Bounds.fromSize(bounds.getMinX() + 2, bounds.getCenterY() - 9, bounds.getWidth() - (showsValidityState() ? 14 : 0) - 4, 18));
+        stateIndicator.xPosition = bounds.getMaxX() - 12;
+        stateIndicator.yPosition = bounds.getCenterY() - 5;
     }
 
     protected void updateValidityStateIndicator()
     {
-        if (stateIndicator != null)
-            stateIndicator.setState(!validDataType ? GuiValidityStateIndicator.State.INVALID : validityState);
+        stateIndicator.setState(!validDataType ? GuiValidityStateIndicator.State.INVALID : validityState);
     }
 
     public GuiValidityStateIndicator.State getValidityState()
@@ -235,5 +189,7 @@ public abstract class TableCellTextField<T> extends TableCellPropertyDefault<T>
     public void setShowsValidityState(boolean showsValidityState)
     {
         this.showsValidityState = showsValidityState;
+        setBounds(bounds());
+        setHidden(isHidden());
     }
 }

@@ -51,14 +51,6 @@ public class GuiTexturedButton extends GuiButton
         super(buttonId, x, y, widthIn, heightIn, buttonText);
     }
 
-    public static void setBounds(Bounds bounds, GuiButton button)
-    {
-        button.x = bounds.getMinX();
-        button.width = bounds.getWidth();
-        button.y = bounds.getMinY();
-        button.height = bounds.getHeight();
-    }
-
     public ResourceLocation getTexture()
     {
         return texture;

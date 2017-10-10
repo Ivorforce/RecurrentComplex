@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class TableCellButton extends TableCellDefault
 {
-    protected GuiTexturedButton button = new GuiTexturedButton(-1, 0, 0, 0, 0, "");
+    protected final GuiTexturedButton button = new GuiTexturedButton(-1, 0, 0, 0, 0, "");
 
     public String actionID;
     public List<String> tooltip;
@@ -96,8 +96,7 @@ public class TableCellButton extends TableCellDefault
 
     public void setTexture(ResourceLocation texture)
     {
-        if (button != null)
-            button.setTexture(texture);
+        button.setTexture(texture);
     }
 
     @Override
@@ -127,7 +126,7 @@ public class TableCellButton extends TableCellDefault
     public void setBounds(Bounds bounds)
     {
         super.setBounds(bounds);
-        GuiTexturedButton.setBounds(bounds, button);
+        Bounds.set(button, bounds);
     }
 
     @Override
@@ -135,7 +134,7 @@ public class TableCellButton extends TableCellDefault
     {
         super.drawFloating(screen, mouseX, mouseY, partialTicks);
 
-        if (tooltip != null && button != null)
+        if (tooltip != null)
             screen.drawTooltipRect(tooltip, Bounds.fromButton(button), mouseX, mouseY, getFontRenderer());
     }
 }

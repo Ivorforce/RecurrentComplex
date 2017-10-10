@@ -17,18 +17,12 @@ import net.minecraft.util.math.MathHelper;
 /**
  * Created by lukas on 02.06.14.
  */
-public class TableCellFloatNullable extends TableCellPropertyDefault<Float> implements GuiControlListener<GuiSlider>
+public class TableCellFloatNullable extends TableCellPropertyDefault<Float>
 {
-    protected GuiSlider slider;
-    protected GuiButton nullButton;
+    protected TableCellFloat floatCell;
+    protected TableCellButton nullButton;
 
-    protected boolean enabled = true;
     protected float defaultValue;
-    protected float min;
-    protected float max;
-    protected Scale scale = Scales.none();
-
-    protected String titleFormat = "%.4f";
 
     protected String buttonTitleNull;
     protected String buttonTitleCustom;
@@ -39,63 +33,61 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
         super(id, value);
 
         this.defaultValue = defaultValue;
-        this.min = min;
-        this.max = max;
         this.buttonTitleNull = buttonTitleNull;
         this.buttonTitleCustom = buttonTitleCustom;
+
+        floatCell = new TableCellFloat(null, 0, 0, 0);
+        floatCell.addListener(value1 -> {
+            setPropertyValue(value1);
+            alertListenersOfChange();
+        });
+        nullButton = new TableCellButton(null, null, "");
+        nullButton.addAction(() -> {
+            setPropertyValue(getPropertyValue() == null ? defaultValue : null);
+            alertListenersOfChange();
+        });
+
+        setMin(min);
+        setMax(max);
+        setPropertyValue(value);
     }
 
-    public float getMin()
+    public Float getMin()
     {
-        return min;
+        return floatCell.getMin();
     }
 
-    public void setMin(float min)
+    public void setMin(Float min)
     {
-        this.min = min;
+        floatCell.setMin(min);
     }
 
-    public float getMax()
+    public Float getMax()
     {
-        return max;
+        return floatCell.getMax();
     }
 
-    public void setMax(float max)
+    public void setMax(Float max)
     {
-        this.max = max;
+        floatCell.setMax(max);
     }
 
     public Scale getScale()
     {
-        return scale;
+        return floatCell.getScale();
     }
 
     public void setScale(Scale scale)
     {
-        this.scale = scale;
-    }
-
-    public String getTitleFormat()
-    {
-        return titleFormat;
-    }
-
-    public void setTitleFormat(String titleFormat)
-    {
-        this.titleFormat = titleFormat;
-    }
-
-    public boolean isEnabled()
-    {
-        return enabled;
+        floatCell.setScale(scale);
     }
 
     public void setEnabled(boolean enabled)
     {
         this.enabled = enabled;
 
-        if (slider != null)
-            slider.enabled = enabled;
+        floatCell.setEnabled(enabled && property != null);
+        nullButton.setEnabled(enabled);
     }
 
     public float getNullButtonWidth()
@@ -106,43 +98,7 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
     public void setNullButtonWidth(float nullButtonWidth)
     {
         this.nullButtonWidth = nullButtonWidth;
-    }
-
-    @Override
-    public void initGui(GuiTable screen)
-    {
-        super.initGui(screen);
-
-        Bounds bounds = bounds();
-        if (slider == null)
-        {
-            slider = new GuiSlider(-1, 0, 0, 0, 0, "");
-            slider.addListener(this);
-        }
-        updateSliderBounds(bounds);
-        slider.setMinValue(scale.out(min));
-        slider.setMaxValue(scale.out(max));
-
-        updateSliderValue();
-        slider.visible = !isHidden();
-
-        screen.addButton(this, 0, slider);
-
-        int nullButtonWidth = MathHelper.floor(bounds.getWidth() * this.nullButtonWidth);
-        nullButton = new GuiButton(-1, bounds.getMinX() + slider.width + 2, bounds.getMinY() + (bounds.getHeight() - 20) / 2, nullButtonWidth, 20, property != null ? buttonTitleCustom : buttonTitleNull);
-
-        nullButton.enabled = enabled;
-        nullButton.visible = !isHidden();
-
-        screen.addButton(this, 1, nullButton);
-    }
-
-    protected void updateSliderValue()
-    {
-        slider.enabled = enabled && property != null;
-        float activeValue = getActiveValue();
-        slider.setValue(scale.out(activeValue));
-        slider.displayString = String.format(titleFormat, activeValue);
+        setBounds(bounds());
     }
 
     protected float getActiveValue()
@@ -151,53 +107,34 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
     }
 
     @Override
-    public void setHidden(boolean hidden)
-    {
-        super.setHidden(hidden);
-
-        if (slider != null)
-            slider.visible = !hidden;
-        if (nullButton != null)
-            nullButton.visible = !hidden;
-    }
-
-    @Override
-    public void buttonClicked(int buttonID)
-    {
-        super.buttonClicked(buttonID);
-
-        if (buttonID == 1)
-        {
-            property = property != null ? null : defaultValue;
-            nullButton.displayString = property != null ? buttonTitleCustom : buttonTitleNull;
-            updateSliderValue();
-
-            alertListenersOfChange();
-        }
-    }
-
-    @Override
-    public void valueChanged(GuiSlider gui)
-    {
-        property = scale.in(gui.getValue());
-        gui.displayString = String.format(titleFormat, getActiveValue());
-
-        alertListenersOfChange();
-    }
-
-    @Override
     public void setPropertyValue(Float value)
     {
         super.setPropertyValue(value);
 
-        if (slider != null)
-            updateSliderValue();
+        if (floatCell != null && nullButton != null)
+        {
+            floatCell.setPropertyValue(getActiveValue());
+            nullButton.setTitle(value != null ? buttonTitleCustom : buttonTitleNull);
+            setEnabled(enabled);
+        }
     }
 
-    protected void updateSliderBounds(Bounds bounds)
+    @Override
+    public void setHidden(boolean hidden)
     {
-        int sliderWidth = MathHelper.floor(bounds.getWidth() * (1.0f - nullButtonWidth)) - 2;
-        Bounds.set(slider, Bounds.fromSize(bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, sliderWidth, 20));
+        super.setHidden(hidden);
+
+        floatCell.setHidden(hidden);
+        nullButton.setHidden(hidden);
+    }
+
+    @Override
+    public void initGui(GuiTable screen)
+    {
+        super.initGui(screen);
+
+        floatCell.initGui(screen);
+        nullButton.initGui(screen);
     }
 
     @Override
@@ -205,7 +142,8 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float> impl
     {
         super.setBounds(bounds);
 
-        if (slider != null)
-            updateSliderBounds(bounds);
+        int nullButtonIntWidth = (int)(bounds.getWidth() * nullButtonWidth);
+        floatCell.setBounds(Bounds.fromSize(bounds.getMinX(), bounds.getMinY(), bounds.getWidth() - nullButtonIntWidth - 4, bounds.getHeight()));
+        nullButton.setBounds(Bounds.fromSize(bounds.getMaxX() - nullButtonIntWidth, bounds.getMinY(), nullButtonIntWidth, bounds.getHeight()));
     }
 }

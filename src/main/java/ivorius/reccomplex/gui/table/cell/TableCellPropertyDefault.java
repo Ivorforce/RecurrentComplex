@@ -17,7 +17,7 @@ public abstract class TableCellPropertyDefault<P> extends TableCellDefault imple
 {
     protected P property;
 
-    private List<TableCellPropertyListener> listeners = new ArrayList<>();
+    private List<Consumer<P>> listeners = new ArrayList<>();
 
     public TableCellPropertyDefault(String id, P value)
     {
@@ -25,34 +25,28 @@ public abstract class TableCellPropertyDefault<P> extends TableCellDefault imple
         setPropertyValue(value);
     }
 
-    public TableCellPropertyListener addPropertyConsumer(Consumer<P> consumer)
+    public Consumer<P> addPropertyConsumer(Consumer<P> consumer)
     {
-        TableCellPropertyListener listener = cell -> consumer.accept(property);
-        listeners.add(listener);
-        return listener;
+        listeners.add(consumer);
+        return consumer;
     }
 
-    public void addPropertyListener(TableCellPropertyListener listener)
-    {
-        listeners.add(listener);
-    }
-
-    public void removePropertyListener(TableCellPropertyListener listener)
+    public void removePropertyListener(Consumer<P> listener)
     {
         listeners.remove(listener);
     }
 
-    public List<TableCellPropertyListener> getListeners()
+    public List<Consumer<P>> getListeners()
     {
         return Collections.unmodifiableList(listeners);
     }
 
     protected void alertListenersOfChange()
     {
-        for (TableCellPropertyListener listener : listeners)
+        for (Consumer<P> listener : listeners)
         {
             //noinspection unchecked
-            listener.valueChanged(this);
+            listener.accept(getPropertyValue());
         }
     }
 

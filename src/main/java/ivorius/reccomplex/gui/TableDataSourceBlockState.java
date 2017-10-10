@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 06.05.16.
  */
-public class TableDataSourceBlockState extends TableDataSourceSegmented implements TableCellPropertyListener
+public class TableDataSourceBlockState extends TableDataSourceSegmented
 {
     private String block = "";
     private int meta;
@@ -109,13 +109,13 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
                 if (index == 0)
                 {
                     TableCellString cell = idCell = TableDataSourceBTNatural.cellForBlock("block", block);
-                    cell.addPropertyListener(this);
+                    cell.addPropertyConsumer(p -> valueChanged());
                     return new TitledCell("blockID", blockTitle, cell);
                 }
                 else if (index == 1)
                 {
                     TableCellInteger cell = metaCell = new TableCellInteger("metadata", meta, 0, 15);
-                    cell.addPropertyListener(this);
+                    cell.addPropertyConsumer(p -> valueChanged());
                     return new TitledCell("blockMeta", metadataTitle, cell);
                 }
                 break;
@@ -188,8 +188,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
         return names;
     }
 
-    @Override
-    public void valueChanged(TableCellPropertyDefault cell)
+    public void valueChanged()
     {
         IBlockState before = computeBlockState();
         IBlockState state;

@@ -46,8 +46,8 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
         addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms), () -> IvTranslations.get("reccomplex.worldscript.mazeGen.rules"))
                 .buildDataSource());
-        addManagedSegment(4, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, null, null, null,
-                IvTranslations.get("reccomplex.worldscript.mazeGen.shift.x"), IvTranslations.get("reccomplex.worldscript.mazeGen.shift.y"), IvTranslations.get("reccomplex.worldscript.mazeGen.shift.z")));
+        addManagedSegment(4, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift,
+                IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
     }
 
     public WorldScriptMazeGenerator getScript()

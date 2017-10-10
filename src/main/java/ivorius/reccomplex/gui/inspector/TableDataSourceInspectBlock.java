@@ -40,8 +40,7 @@ public class TableDataSourceInspectBlock extends TableDataSourceSegmented
 
         addManagedSegment(0, TableDataSourceWeightedBlockState.tileEntitySegment(navigator, delegate, () -> this.tileEntityData, val -> this.tileEntityData = val));
         addManagedSegment(1, new TableDataSourceBlockState(state, instate -> this.state = instate, navigator, delegate).setShowExtendedProperties(true));
-        addManagedSegment(2, new TableDataSourceBlockPos(pos, blockPos -> this.pos = blockPos, null, null, null,
-                IvTranslations.get("reccomplex.inspector.position.x"), IvTranslations.get("reccomplex.inspector.position.y"), IvTranslations.get("reccomplex.inspector.position.z")));
+        addManagedSegment(2, new TableDataSourceBlockPos(pos, blockPos -> this.pos = blockPos));
     }
 
     @Nonnull

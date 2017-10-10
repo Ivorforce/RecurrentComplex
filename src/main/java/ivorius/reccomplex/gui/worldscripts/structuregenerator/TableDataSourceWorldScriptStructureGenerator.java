@@ -40,8 +40,8 @@ public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourc
         this.tableDelegate = tableDelegate;
 
         addManagedSegment(0, new TableDataSourceWorldScript(script));
-        addManagedSegment(3, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift, null, null, null,
-                IvTranslations.get("reccomplex.worldscript.strucGen.shift.x"), IvTranslations.get("reccomplex.worldscript.strucGen.shift.y"), IvTranslations.get("reccomplex.worldscript.strucGen.shift.z")));
+        addManagedSegment(3, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift,
+                IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
     }
 
     private static boolean doAllStructuresExist(Iterable<String> structures)

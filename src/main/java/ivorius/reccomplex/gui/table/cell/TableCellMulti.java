@@ -94,7 +94,7 @@ public class TableCellMulti extends TableCellDefault
             boolean isLast = i == cells.size() - 1;
             boolean isFirst = i == 0;
 
-            int buttonWidth = Math.max(CELL_MIN_WIDTH, getScaledSize(spreadableWidth, total, i));
+            int buttonWidth = isLast ? bounds.getWidth() - curPos : Math.max(CELL_MIN_WIDTH, getScaledSize(spreadableWidth, total, i));
             TableCell cell = cells.get(i);
             cell.setBounds(Bounds.fromAxes(bounds.getMinX() + curPos + (isFirst ? 0 : 1), buttonWidth - (isLast || isFirst ? 1 : 2),
                     bounds.getMinY(), bounds.getHeight()));

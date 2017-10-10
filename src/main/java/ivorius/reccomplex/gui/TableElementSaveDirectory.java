@@ -42,9 +42,9 @@ public class TableElementSaveDirectory
                     TextFormatting.AQUA + ResourceDirectory.INACTIVE.subDirectoryName() + TextFormatting.RESET,
                     TextFormatting.AQUA + ResourceDirectory.ACTIVE.subDirectoryName() + TextFormatting.RESET));
 
-            return new TitledCell(new TableCellMulti(cellFolder, cellDelete));
+            return new TitledCell(IvTranslations.get("reccomplex.structure.directory"), new TableCellMulti(cellFolder, cellDelete));
         }
 
-        return new TitledCell(new TableCellMulti(cellFolder, new TableCellButton("", "", "-", false)));
+        return new TitledCell(IvTranslations.get("reccomplex.structure.directory"), new TableCellMulti(cellFolder, new TableCellButton("", "", "-", false)));
     }
 }

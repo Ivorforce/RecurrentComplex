@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.cell.TableCellPresetAction;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -72,10 +73,13 @@ public class TableCells
     public static List<TableCellButton> addManyWithBase(Collection<String> ids, String baseKey, boolean enabled)
     {
         return TableCellPresetAction.sorted(ids.stream().map(type ->
-        {
-            String key = baseKey + type;
-            return add(enabled, type, IvTranslations.get(key), IvTranslations.formatLines(key + ".tooltip"));
-        })).collect(Collectors.toList());
+                add(enabled, type, IvTranslations.get(baseKey + type), getTooltip(baseKey, type)))).collect(Collectors.toList());
+    }
+
+    @NotNull
+    public static List<String> getTooltip(String baseKey, String type)
+    {
+        return IvTranslations.formatLines(baseKey+ type + ".tooltip");
     }
 
     @Nonnull

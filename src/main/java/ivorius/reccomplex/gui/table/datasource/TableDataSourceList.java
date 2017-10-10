@@ -184,7 +184,8 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
 
             TableCellMulti multi = new TableCellMulti(entryCells(index));
             multi.setSize(0, 8);
-            return new TitledCell(getDisplayString(t), multi);
+            return new TitledCell(getDisplayString(t), multi)
+                    .withTitleTooltip(getTooltip(t));
         }
 
         int addIndex = getAddIndex(segment);
@@ -310,6 +311,11 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
     }
 
     public abstract String getDisplayString(T t);
+
+    public List<String> getTooltip(T t)
+    {
+        return null;
+    }
 
     public abstract T newEntry(String actionID);
 

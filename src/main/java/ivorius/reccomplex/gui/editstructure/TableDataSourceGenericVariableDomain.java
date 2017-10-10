@@ -35,7 +35,7 @@ public class TableDataSourceGenericVariableDomain extends TableDataSourceList<Ge
     @Override
     public String title()
     {
-        return "Variables";
+        return "Local Toggles";
     }
 
     @Nonnull

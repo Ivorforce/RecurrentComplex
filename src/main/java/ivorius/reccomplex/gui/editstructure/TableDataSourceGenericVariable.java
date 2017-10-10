@@ -37,7 +37,7 @@ public class TableDataSourceGenericVariable extends TableDataSourceSegmented
     @Override
     public String title()
     {
-        return "Variable";
+        return "Local Toggle";
     }
 
     @Override

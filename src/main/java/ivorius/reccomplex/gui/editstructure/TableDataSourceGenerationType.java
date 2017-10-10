@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
+import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -42,6 +43,12 @@ public class TableDataSourceGenerationType extends TableDataSourceList<Generatio
     public String getDisplayString(GenerationType generationType)
     {
         return generationType.displayString();
+    }
+
+    @Override
+    public List<String> getTooltip(GenerationType generationType)
+    {
+        return TableCells.getTooltip("reccomplex.generationInfo.", StructureRegistry.GENERATION_TYPES.iDForType(generationType.getClass()));
     }
 
     @Override

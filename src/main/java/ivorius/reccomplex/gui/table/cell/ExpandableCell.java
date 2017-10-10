@@ -23,11 +23,11 @@ public class ExpandableCell extends TableCellDefault
     @Nonnull
     protected TableCellButton camo = new TableCellButton(null, null, "");
 
-    protected TableCell cell;
+    protected TableCellDefault cell;
 
     protected boolean expanded;
 
-    public ExpandableCell(String id, String camoTitle, TableCell cell)
+    public ExpandableCell(String id, String camoTitle, TableCellDefault cell)
     {
         super(id);
         setCamoTitle(camoTitle);
@@ -36,9 +36,15 @@ public class ExpandableCell extends TableCellDefault
         camo.addAction(() -> setExpanded(true));
     }
 
-    public ExpandableCell(String camoTitle, TableCell cell)
+    public ExpandableCell(String camoTitle, TableCellDefault cell)
     {
         this(null, camoTitle, cell);
+    }
+
+    public ExpandableCell(String camoTitle, TableCellDefault cell, boolean enabled)
+    {
+        this(null, camoTitle, cell);
+        setEnabled(enabled);
     }
 
     public String getCamoTitle()
@@ -56,7 +62,7 @@ public class ExpandableCell extends TableCellDefault
         return cell;
     }
 
-    public void setCell(TableCell cell)
+    public void setCell(TableCellDefault cell)
     {
         this.cell = cell;
     }
@@ -86,6 +92,15 @@ public class ExpandableCell extends TableCellDefault
         super.setHidden(hidden);
         cell.setHidden(hidden || !expanded);
         camo.setHidden(hidden || expanded);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled)
+    {
+        super.setEnabled(enabled);
+
+        cell.setEnabled(enabled);
+        camo.setEnabled(enabled);
     }
 
     @Override

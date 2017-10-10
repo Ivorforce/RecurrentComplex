@@ -195,7 +195,7 @@ public abstract class TableDataSourceList<T, L extends List<T>> extends TableDat
             {
                 TableCellPresetAction cell = new TableCellPresetAction("add" + addIndex, getAddActions());
                 cell.addAction(actionID -> createAddAction(addIndex, actionID).run());
-                return new TitledCell(new ExpandableCell(addTitle, cell));
+                return new TitledCell(new ExpandableCell(addTitle, cell, canEditList()));
             }
             else
             {

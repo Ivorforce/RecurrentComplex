@@ -44,7 +44,7 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
             {
                 if (entry.state == null)
                     return String.format("None (%.2f)", entry.getWeight());
-                return String.format("%s$%d (%.2f)", RCStrings.abbreviateFormatted(entry.state.getBlock().getLocalizedName(), 16), BlockStates.toMetadata(entry.state), entry.getWeight());
+                return String.format("%s$%d (%.2f)", entry.state.getBlock().getLocalizedName(), BlockStates.toMetadata(entry.state), entry.getWeight());
             }
 
             @Override

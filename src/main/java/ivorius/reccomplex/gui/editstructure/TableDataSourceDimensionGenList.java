@@ -40,7 +40,7 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
             @Override
             public String getDisplayString(WeightedDimensionMatcher generationInfo)
             {
-                return String.format("%s%s: %.1f", RCStrings.abbreviateFormatted(generationInfo.getDisplayString(), 20), TextFormatting.RESET, generationInfo.getActiveGenerationWeight());
+                return String.format("%s%s: %.1f", generationInfo.getDisplayString(), TextFormatting.RESET, generationInfo.getActiveGenerationWeight());
             }
 
             @Override

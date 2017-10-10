@@ -36,7 +36,7 @@ public class TableDataSourceWorldScriptList extends TableDataSourceList<WorldScr
     @Override
     public String getDisplayString(WorldScript script)
     {
-        return RCStrings.abbreviateFormatted(script.getDisplayString(), 24);
+        return script.getDisplayString();
     }
 
     @Override

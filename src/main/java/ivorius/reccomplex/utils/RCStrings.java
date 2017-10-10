@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils;
 
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -117,5 +118,22 @@ public class RCStrings
         }
 
         return null;
+    }
+
+    public static String shorten(String string, FontRenderer renderer, int width)
+    {
+        boolean shortened = false;
+        int stringWidth;
+        while ((stringWidth = renderer.getStringWidth(string)) > width)
+        {
+            if (!shortened)
+            {
+                shortened = true;
+                string = "..." + string;
+            }
+
+            string = string.substring(0, string.length() - 1);
+        }
+        return shortened ? string.substring(3) + TextFormatting.RESET + "..." : string;
     }
 }

@@ -29,7 +29,7 @@ public class TableDataSourceWorldScriptCommand extends TableDataSourceSegmented
             @Override
             public String getDisplayString(WorldScriptCommand.Entry entry)
             {
-                return RCStrings.abbreviateFormatted(entry.command, 20);
+                return entry.command;
             }
 
             @Override

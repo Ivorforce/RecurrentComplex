@@ -40,7 +40,7 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented
             @Override
             public String getDisplayString(WeightedBiomeMatcher weightedBiomeMatcher)
             {
-                return String.format("%s%s: %.2f", RCStrings.abbreviateFormatted(weightedBiomeMatcher.getDisplayString(), 20), TextFormatting.RESET, weightedBiomeMatcher.getActiveGenerationWeight());
+                return String.format("%s%s: %.2f", weightedBiomeMatcher.getDisplayString(), TextFormatting.RESET, weightedBiomeMatcher.getActiveGenerationWeight());
             }
 
             @Override

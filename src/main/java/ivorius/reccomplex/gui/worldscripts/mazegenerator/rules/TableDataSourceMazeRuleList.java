@@ -39,7 +39,7 @@ public class TableDataSourceMazeRuleList extends TableDataSourceList<MazeRule, L
     @Override
     public String getDisplayString(MazeRule mazeRule)
     {
-        return RCStrings.abbreviateFormatted(mazeRule.displayString(), 24);
+        return mazeRule.displayString();
     }
 
     @Override

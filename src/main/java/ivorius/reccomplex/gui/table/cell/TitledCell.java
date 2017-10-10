@@ -7,6 +7,7 @@ package ivorius.reccomplex.gui.table.cell;
 
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
+import ivorius.reccomplex.utils.RCStrings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 
@@ -114,10 +115,7 @@ public class TitledCell extends TableCellDefault
 
         String title = getTitle();
         if (title != null)
-        {
-            int stringWidth = fontRenderer.getStringWidth(title);
-            screen.drawString(fontRenderer, title, bounds.getMinX() + TITLE_WIDTH - stringWidth - 10, bounds.getCenterY() - 4, 0xffffffff);
-        }
+            screen.drawString(fontRenderer, RCStrings.shorten(title, fontRenderer, TITLE_WIDTH - 5), bounds.getMinX(), bounds.getCenterY() - 4, 0xffffffff);
 
         cell.draw(screen, mouseX, mouseY, partialTicks);
     }

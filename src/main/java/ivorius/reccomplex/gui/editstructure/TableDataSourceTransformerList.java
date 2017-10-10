@@ -30,7 +30,7 @@ public class TableDataSourceTransformerList extends TableDataSourceList<Transfor
     @Override
     public String getDisplayString(Transformer transformer)
     {
-        return RCStrings.abbreviateFormatted(transformer.getDisplayString(), 24);
+        return transformer.getDisplayString();
     }
 
     @Override

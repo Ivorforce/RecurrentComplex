@@ -6,6 +6,7 @@
 package ivorius.reccomplex.gui;
 
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.gui.table.Bounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -48,6 +49,14 @@ public class GuiTexturedButton extends GuiButton
     public GuiTexturedButton(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText)
     {
         super(buttonId, x, y, widthIn, heightIn, buttonText);
+    }
+
+    public static void setBounds(Bounds bounds, GuiButton button)
+    {
+        button.x = bounds.getMinX();
+        button.width = bounds.getWidth();
+        button.y = bounds.getMinY();
+        button.height = bounds.getHeight();
     }
 
     public ResourceLocation getTexture()

@@ -56,13 +56,13 @@ public class TableCellMultiBuilder
 
     private static void setVisuals(Object title, Supplier<List<String>> tooltip, TableCellButton cell)
     {
-        cell.title = "";
+        cell.setTitle("");
         cell.setTexture(null);
 
         if (title instanceof ResourceLocation)
             cell.setTexture((ResourceLocation) title);
         else if (title instanceof String)
-            cell.title = (String) title;
+            cell.setTitle((String) title);
 
         cell.setTooltip(tooltip != null ? tooltip.get() : null);
     }

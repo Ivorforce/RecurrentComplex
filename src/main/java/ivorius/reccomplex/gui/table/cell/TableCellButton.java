@@ -19,13 +19,10 @@ import java.util.List;
  */
 public class TableCellButton extends TableCellDefault
 {
-    protected GuiTexturedButton button = null;
+    protected GuiTexturedButton button = new GuiTexturedButton(-1, 0, 0, 0, 0, "");
 
     public String actionID;
-    public String title;
     public List<String> tooltip;
-
-    public ResourceLocation texture;
 
     private List<TableCellActionListener> listeners = new ArrayList<>();
 
@@ -33,7 +30,7 @@ public class TableCellButton extends TableCellDefault
     {
         super(id);
         this.actionID = actionID;
-        this.title = title;
+        setTitle(title);
         this.tooltip = tooltip;
         this.enabled = enabled;
     }
@@ -42,7 +39,7 @@ public class TableCellButton extends TableCellDefault
     {
         super(id);
         this.actionID = actionID;
-        this.title = title;
+        setTitle(title);
         this.tooltip = tooltip;
     }
 
@@ -50,7 +47,7 @@ public class TableCellButton extends TableCellDefault
     {
         super(id);
         this.actionID = actionID;
-        this.title = title;
+        setTitle(title);
         this.enabled = enabled;
     }
 
@@ -58,7 +55,7 @@ public class TableCellButton extends TableCellDefault
     {
         super(id);
         this.actionID = actionID;
-        this.title = title;
+        setTitle(title);
     }
 
     public void addListener(TableCellActionListener listener)
@@ -83,22 +80,29 @@ public class TableCellButton extends TableCellDefault
         return Collections.unmodifiableList(listeners);
     }
 
+    public String getTitle()
+    {
+        return button.displayString;
+    }
+
+    public void setTitle(String title)
+    {
+        button.displayString = title;
+    }
+
     public void setEnabled(boolean enabled)
     {
         super.setEnabled(enabled);
-
-        if (button != null)
-            button.enabled = enabled;
+        button.enabled = enabled;
     }
 
     public ResourceLocation getTexture()
     {
-        return texture;
+        return button.getTexture();
     }
 
     public void setTexture(ResourceLocation texture)
     {
-        this.texture = texture;
         if (button != null)
             button.setTexture(texture);
     }
@@ -108,12 +112,6 @@ public class TableCellButton extends TableCellDefault
     {
         super.initGui(screen);
 
-        Bounds bounds = bounds();
-
-        button = new GuiTexturedButton(-1, bounds.getMinX(), bounds.getMinY() + (bounds.getHeight() - 20) / 2, bounds.getWidth(), 20, title);
-        button.setTexture(texture);
-        button.visible = !isHidden();
-        button.enabled = enabled;
         screen.addButton(this, 0, button);
     }
 
@@ -121,9 +119,7 @@ public class TableCellButton extends TableCellDefault
     public void setHidden(boolean hidden)
     {
         super.setHidden(hidden);
-
-        if (button != null)
-            button.visible = !hidden;
+        button.visible = !hidden;
     }
 
     @Override
@@ -132,6 +128,13 @@ public class TableCellButton extends TableCellDefault
         super.buttonClicked(buttonID);
         for (TableCellActionListener listener : listeners)
             listener.actionPerformed(this, actionID);
+    }
+
+    @Override
+    public void setBounds(Bounds bounds)
+    {
+        super.setBounds(bounds);
+        GuiTexturedButton.setBounds(bounds, button);
     }
 
     @Override

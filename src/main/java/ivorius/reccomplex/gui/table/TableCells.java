@@ -46,7 +46,7 @@ public class TableCells
     @Nonnull
     public static TableCellButton edit(boolean enabled, TableNavigator navigator, TableDelegate tableDelegate, Supplier<TableDataSource> table)
     {
-        TableCellButton edit = new TableCellButton("", "edit", IvTranslations.get("reccomplex.gui.edit"), enabled)
+        TableCellButton edit = new TableCellButton(null, "edit", IvTranslations.get("reccomplex.gui.edit"), enabled)
         {
             @Override
             public void draw(GuiTable screen, int mouseX, int mouseY, float partialTicks)

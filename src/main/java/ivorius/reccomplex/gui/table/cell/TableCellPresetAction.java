@@ -37,7 +37,7 @@ public class TableCellPresetAction extends TableCellPropertyDefault<String>
 
     public static Stream<TableCellButton> sorted(Stream<TableCellButton> actions)
     {
-        return actions.sorted(Comparator.comparing(o -> o.title));
+        return actions.sorted(Comparator.comparing(TableCellButton::getTitle));
     }
 
     public void addListener(TableCellActionListener listener)

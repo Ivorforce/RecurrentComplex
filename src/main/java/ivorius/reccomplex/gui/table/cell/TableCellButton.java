@@ -24,7 +24,7 @@ public class TableCellButton extends TableCellDefault
     public String actionID;
     public List<String> tooltip;
 
-    private List<TableCellActionListener> listeners = new ArrayList<>();
+    private List<Runnable> listeners = new ArrayList<>();
 
     public TableCellButton(String id, String actionID, String title, List<String> tooltip, boolean enabled)
     {
@@ -58,24 +58,17 @@ public class TableCellButton extends TableCellDefault
         setTitle(title);
     }
 
-    public void addListener(TableCellActionListener listener)
+    public void addAction(Runnable action)
     {
-        listeners.add(listener);
+        listeners.add(action);
     }
 
-    public TableCellActionListener addAction(Runnable runnable)
+    public void removeAction(Runnable action)
     {
-        TableCellActionListener listener = (cell, action) -> runnable.run();
-        listeners.add(listener);
-        return listener;
+        listeners.remove(action);
     }
 
-    public void removeListener(TableCellActionListener listener)
-    {
-        listeners.remove(listener);
-    }
-
-    public List<TableCellActionListener> listeners()
+    public List<Runnable> actions()
     {
         return Collections.unmodifiableList(listeners);
     }
@@ -126,8 +119,8 @@ public class TableCellButton extends TableCellDefault
     public void buttonClicked(int buttonID)
     {
         super.buttonClicked(buttonID);
-        for (TableCellActionListener listener : listeners)
-            listener.actionPerformed(this, actionID);
+        for (Runnable listener : listeners)
+            listener.run();
     }
 
     @Override

@@ -40,21 +40,9 @@ public class TableCellPresetAction extends TableCellPropertyDefault<String>
         return actions.sorted(Comparator.comparing(TableCellButton::getTitle));
     }
 
-    public void addListener(TableCellActionListener listener)
+    public void addAction(Consumer<String> consumer)
     {
-        actions.forEach(a -> a.addListener(listener));
-    }
-
-    public TableCellActionListener addAction(Consumer<String> consumer)
-    {
-        TableCellActionListener listener = (cell, action) -> consumer.accept(action);
-        actions.forEach(a -> a.addListener(listener));
-        return listener;
-    }
-
-    public void removeListener(TableCellActionListener listener)
-    {
-        actions.forEach(a -> a.removeListener(listener));
+        actions.forEach(a -> a.addAction(() -> consumer.accept(a.actionID)));
     }
 
     public List<TableCellButton> getActions()

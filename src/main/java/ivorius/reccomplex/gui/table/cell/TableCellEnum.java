@@ -12,6 +12,7 @@ import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,6 +26,9 @@ import java.util.stream.Collectors;
  */
 public class TableCellEnum<T> extends TableCellPropertyDefault<T>
 {
+    public static final String LEFT_ARROW = TextFormatting.BOLD + "←";
+    public static final String RIGHT_ARROW = TextFormatting.BOLD + "→";
+
     protected GuiButton leftButton;
     protected GuiButton rightButton;
 
@@ -87,12 +91,12 @@ public class TableCellEnum<T> extends TableCellPropertyDefault<T>
         boolean canChange = (options.size() > 1 || (options.size() == 1 && !Objects.equals(getPropertyValue(), options.get(0).value)))
                 && enabled;
 
-        leftButton = new GuiButton(-1, bounds.getMinX(), buttonY, TableCellPresetAction.DIRECTION_BUTTON_WIDTH - 1, 20, "<");
+        leftButton = new GuiButton(-1, bounds.getMinX(), buttonY, TableCellPresetAction.DIRECTION_BUTTON_WIDTH - 1, 20, LEFT_ARROW);
         leftButton.visible = !isHidden();
         leftButton.enabled = canChange;
         screen.addButton(this, 0, leftButton);
 
-        rightButton = new GuiButton(-1, bounds.getMinX() + TableCellPresetAction.DIRECTION_BUTTON_WIDTH + presetButtonWidth + 1, buttonY, TableCellPresetAction.DIRECTION_BUTTON_WIDTH - 1, 20, ">");
+        rightButton = new GuiButton(-1, bounds.getMinX() + TableCellPresetAction.DIRECTION_BUTTON_WIDTH + presetButtonWidth + 1, buttonY, TableCellPresetAction.DIRECTION_BUTTON_WIDTH - 1, 20, RIGHT_ARROW);
         rightButton.visible = !isHidden();
         rightButton.enabled = canChange;
         screen.addButton(this, 1, rightButton);

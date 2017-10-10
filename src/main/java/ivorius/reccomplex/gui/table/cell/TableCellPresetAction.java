@@ -74,12 +74,12 @@ public class TableCellPresetAction extends TableCellPropertyDefault<String>
 
         boolean canChange = actions.size() > 1 || (actions.size() == 1 && !Objects.equals(getPropertyValue(), actions.get(0).actionID));
 
-        leftButton = new GuiButton(-1, bounds.getMinX(), buttonY, DIRECTION_BUTTON_WIDTH - 1, 20, "<");
+        leftButton = new GuiButton(-1, bounds.getMinX(), buttonY, DIRECTION_BUTTON_WIDTH - 1, 20, TableCellEnum.LEFT_ARROW);
         leftButton.visible = !isHidden();
         leftButton.enabled = canChange;
         screen.addButton(this, 0, leftButton);
 
-        rightButton = new GuiButton(-1, bounds.getMinX() + DIRECTION_BUTTON_WIDTH + presetButtonWidth + 1, buttonY, DIRECTION_BUTTON_WIDTH - 1, 20, ">");
+        rightButton = new GuiButton(-1, bounds.getMinX() + DIRECTION_BUTTON_WIDTH + presetButtonWidth + 1, buttonY, DIRECTION_BUTTON_WIDTH - 1, 20, TableCellEnum.RIGHT_ARROW);
         rightButton.visible = !isHidden();
         rightButton.enabled = canChange;
         screen.addButton(this, 1, rightButton);

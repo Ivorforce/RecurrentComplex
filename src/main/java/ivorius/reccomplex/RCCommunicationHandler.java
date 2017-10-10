@@ -39,8 +39,8 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
         {
             // Note that this is not required for default loading, using the correct directories.
             // Only use this if you want to load it conditionally.
-
             NBTTagCompound cmp = message.getNBTValue();
+
             String genPath = cmp.getString("genPath");
             String genID = cmp.hasKey("genID", Constants.NBT.TAG_STRING) ? cmp.getString("genID") : null;
             boolean generates = cmp.getBoolean("generates");
@@ -50,24 +50,10 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
 
             return true;
         }
-        else if (isMessage("loadStructure", message, NBTTagCompound.class))
-        {
-            // Note that this is not required for default loading, using the correct directories.
-            // Only use this if you want to load it conditionally.
-
-            NBTTagCompound cmp = message.getNBTValue();
-            String structurePath = cmp.getString("structurePath");
-            String structureID = cmp.getString("structureID");
-            boolean generates = cmp.getBoolean("generates");
-
-            ResourceLocation resourceLocation = new ResourceLocation(structurePath);
-            RecurrentComplex.loader.tryLoad(resourceLocation, structureID, new FileLoadContext(resourceLocation.getResourceDomain(), generates, LeveledRegistry.Level.INTERNAL));
-
-            return true;
-        }
         else if (isMessage("registerDimension", message, NBTTagCompound.class))
         {
             NBTTagCompound cmp = message.getNBTValue();
+
             int dimensionID = cmp.getInteger("dimensionID");
             String[] types = IvNBTHelper.readNBTStrings("types", cmp); // NBTTagList of NBTTagString
 
@@ -81,6 +67,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
         else if (isMessage("unregisterDimension", message, NBTTagCompound.class))
         {
             NBTTagCompound cmp = message.getNBTValue();
+
             int dimensionID = cmp.getInteger("dimensionID");
             String[] types = IvNBTHelper.readNBTStrings("types", cmp); // NBTTagList of NBTTagString
 
@@ -99,6 +86,7 @@ public class RCCommunicationHandler extends IvFMLIntercommHandler
         else if (isMessage("registerDimensionSubtypes", message, NBTTagCompound.class))
         {
             NBTTagCompound cmp = message.getNBTValue();
+
             String type = cmp.getString("type");
             String[] subtypes = IvNBTHelper.readNBTStrings("subtypes", cmp); // NBTTagList of NBTTagString
 

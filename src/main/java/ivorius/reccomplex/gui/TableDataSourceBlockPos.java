@@ -85,13 +85,13 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
         if (range != null)
         {
             TableCellInteger cell = new TableCellInteger(null, val, range.min, range.max);
-            cell.addPropertyConsumer(createConsumer(index));
+            cell.addListener(createConsumer(index));
             return new TitledCell(title, cell);
         }
         else
         {
             TableCellStringInt cell = new TableCellStringInt(null, val);
-            cell.addPropertyConsumer(createConsumer(index));
+            cell.addListener(createConsumer(index));
             return new TitledCell(title, cell);
         }
     }

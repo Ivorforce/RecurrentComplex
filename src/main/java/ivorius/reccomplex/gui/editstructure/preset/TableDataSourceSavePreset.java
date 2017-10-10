@@ -52,7 +52,7 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
             TableCellString cell = new TableCellString(null, id);
             cell.setShowsValidityState(true);
             cell.setValidityState(currentIDState());
-            cell.addPropertyConsumer(s ->
+            cell.addListener(s ->
             {
                 id = s;
                 cell.setValidityState(currentIDState());
@@ -70,13 +70,13 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
         }, () ->
         {
             TableCellString cell = new TableCellString(null, title);
-            cell.addPropertyConsumer(s -> title = s);
+            cell.addListener(s -> title = s);
             return new TitledCell(IvTranslations.get("reccomplex.preset.title"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.preset.title.tooltip"));
         }, () ->
         {
             TableCellString cell = new TableCellString(null, description);
-            cell.addPropertyConsumer(s -> description = s);
+            cell.addListener(s -> description = s);
             return new TitledCell(IvTranslations.get("reccomplex.preset.description"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.preset.description.tooltip").stream()
                             .map(s -> s.replaceAll("<BR>", "<br>")).collect(Collectors.toList()));

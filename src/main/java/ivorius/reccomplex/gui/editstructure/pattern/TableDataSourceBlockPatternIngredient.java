@@ -59,13 +59,13 @@ public class TableDataSourceBlockPatternIngredient extends TableDataSourceSegmen
         if (segment == 0)
         {
             TableCellString cell = new TableCellString("", ingredient.identifier);
-            cell.addPropertyConsumer(s -> ingredient.identifier = s);
+            cell.addListener(s -> ingredient.identifier = s);
             return new TitledCell(IvTranslations.get("reccomplex.blockpattern.ingredient.identifier"), cell);
         }
         else if (segment == 2)
         {
             TableCellBoolean cell = new TableCellBoolean("", ingredient.delete);
-            cell.addPropertyConsumer(d -> ingredient.delete = d);
+            cell.addListener(d -> ingredient.delete = d);
             return new TitledCell(IvTranslations.get("reccomplex.blockpattern.ingredient.delete"), cell);
         }
 

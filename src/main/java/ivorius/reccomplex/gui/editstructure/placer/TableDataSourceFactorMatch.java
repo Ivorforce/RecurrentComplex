@@ -30,7 +30,7 @@ public class TableDataSourceFactorMatch extends TableDataSourceSegmented
         addManagedSegment(2, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.placer.factors.match.dest"), factor.destMatcher, null));
         addManagedSegment(3, new TableDataSourceSupplied(() -> {
             TableCellFloat cell = new TableCellFloat(null, factor.requiredConformity, 0, 1);
-            cell.addPropertyConsumer(v -> factor.requiredConformity = v);
+            cell.addListener(v -> factor.requiredConformity = v);
             return new TitledCell(IvTranslations.get("reccomplex.placer.factors.match.conformity"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.placer.factors.match.conformity.tooltip"));
         }));

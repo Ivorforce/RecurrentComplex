@@ -31,12 +31,12 @@ public class TableDataSourceScriptBlock extends TableDataSourceSegmented
         addManagedSegment(0, new TableDataSourceSupplied(() ->
         {
             TableCellBoolean spawn = new TableCellBoolean(null, script.spawnTriggerable);
-            spawn.addPropertyConsumer(b -> script.spawnTriggerable = b);
+            spawn.addListener(b -> script.spawnTriggerable = b);
             spawn.setTrueTitle(TextFormatting.GREEN + "Spawn");
             spawn.setFalseTitle(TextFormatting.GRAY + "Spawn");
 
             TableCellBoolean redstone = new TableCellBoolean(null, script.redstoneTriggerable);
-            redstone.addPropertyConsumer(b -> script.redstoneTriggerable = b);
+            redstone.addListener(b -> script.redstoneTriggerable = b);
             redstone.setTrueTitle(TextFormatting.GREEN + "Redstone");
             redstone.setFalseTitle(TextFormatting.GRAY + "Redstone");
             return new TitledCell("Triggerable", new TableCellMulti(spawn, redstone));

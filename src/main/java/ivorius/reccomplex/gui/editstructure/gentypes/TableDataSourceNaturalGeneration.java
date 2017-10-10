@@ -100,7 +100,7 @@ public class TableDataSourceNaturalGeneration extends TableDataSourceSegmented
             case 1:
             {
                 TableCellEnum<String> cell = new TableCellEnum<>("category", generationInfo.generationCategory, allGenerationCategories());
-                cell.addPropertyConsumer(val -> generationInfo.generationCategory = val);
+                cell.addListener(val -> generationInfo.generationCategory = val);
                 return new TitledCell(IvTranslations.get("reccomplex.generationInfo.natural.category"), cell);
             }
             case 2:

@@ -63,19 +63,19 @@ public class TableDataSourceMetadata extends TableDataSourceSegmented
             case 0:
             {
                 TableCellString cell = new TableCellString("authors", metadata.authors);
-                cell.addPropertyConsumer(val -> metadata.authors = val);
+                cell.addListener(val -> metadata.authors = val);
                 return new TitledCell("Authors", cell);
             }
             case 1:
             {
                 TableCellString cell = new TableCellString("weblink", metadata.weblink);
-                cell.addPropertyConsumer(val -> metadata.weblink = val);
+                cell.addListener(val -> metadata.weblink = val);
                 return new TitledCell("Weblink", cell);
             }
             case 2:
             {
                 TableCellString cell = new TableCellString("comment", metadata.comment);
-                cell.addPropertyConsumer(val -> metadata.comment = val);
+                cell.addListener(val -> metadata.comment = val);
                 return new TitledCell("Comment", cell);
             }
         }

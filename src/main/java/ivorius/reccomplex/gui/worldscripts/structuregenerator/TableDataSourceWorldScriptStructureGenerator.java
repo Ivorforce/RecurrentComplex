@@ -80,7 +80,7 @@ public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourc
         if (segment == 1)
         {
             TableCellBoolean cell = new TableCellBoolean("simpleMode", script.isSimpleMode());
-            cell.addPropertyConsumer(val -> {
+            cell.addListener(val -> {
                 script.setSimpleMode(val);
                 tableDelegate.reloadData();
             });
@@ -93,7 +93,7 @@ public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourc
                 TableCellString cell = new TableCellString("generators", String.join(",", script.getStructureNames()));
                 cell.setShowsValidityState(true);
                 cell.setValidityState(doAllStructuresExist(script.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
-                cell.addPropertyConsumer(val -> {
+                cell.addListener(val -> {
                     script.setStructureNames(Arrays.asList(val.split(",")));
                     cell.setValidityState(doAllStructuresExist(script.getStructureNames()) ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID);
                 });
@@ -103,7 +103,7 @@ public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourc
             else
             {
                 TableCellString cell = new TableCellString("listID", script.getStructureListID());
-                cell.addPropertyConsumer(script::setStructureListID);
+                cell.addListener(script::setStructureListID);
                 return new TitledCell(IvTranslations.get("reccomplex.worldscript.strucGen.mode.list.id"), cell);
             }
         }
@@ -119,7 +119,7 @@ public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourc
                             new Option<>(2, IvTranslations.get("reccomplex.rotation.clockwise.2")),
                             new Option<>(3, IvTranslations.get("reccomplex.rotation.clockwise.3")),
                             new Option<>(null, IvTranslations.get("reccomplex.worldscript.strucGen.rotation.random")));
-                    cell.addPropertyConsumer(script::setStructureRotation);
+                    cell.addListener(script::setStructureRotation);
                     return new TitledCell(IvTranslations.get("reccomplex.rotation"), cell);
                 }
                 else if (index == 1)
@@ -128,14 +128,14 @@ public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourc
                             new Option<>(false, IvTranslations.get("reccomplex.gui.false")),
                             new Option<>(true, IvTranslations.get("reccomplex.gui.true")),
                             new Option<>(null, IvTranslations.get("reccomplex.worldscript.strucGen.mirror.random")));
-                    cell.addPropertyConsumer(script::setStructureMirror);
+                    cell.addListener(script::setStructureMirror);
                     return new TitledCell(IvTranslations.get("reccomplex.mirror"), cell);
                 }
             }
             else
             {
                 TableCellEnum<EnumFacing> cell = new TableCellEnum<>("front", script.getFront(), TableDirections.getDirectionOptions(ArrayUtils.add(Directions.HORIZONTAL, null), "random"));
-                cell.addPropertyConsumer(script::setFront);
+                cell.addListener(script::setFront);
                 return new TitledCell(IvTranslations.get("reccomplex.worldscript.strucGen.mode.list.front"), cell);
             }
         }

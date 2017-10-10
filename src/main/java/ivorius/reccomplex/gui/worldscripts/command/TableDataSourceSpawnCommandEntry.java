@@ -73,7 +73,7 @@ public class TableDataSourceSpawnCommandEntry extends TableDataSourceSegmented
         {
             TableCellString cell = new TableCellString("command", entry.command);
             cell.setMaxStringLength(32767); // Same as GuiCommandBlock.
-            cell.addPropertyConsumer(val -> entry.command = val);
+            cell.addListener(val -> entry.command = val);
             return new TitledCell(IvTranslations.get("reccomplex.gui.command"), cell);
         }
         else if (index == 2)

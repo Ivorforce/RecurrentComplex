@@ -43,7 +43,7 @@ public class TableDataSourceBTProperty extends TableDataSourceSegmented
             propertyIDCell = new TableCellString(null, transformer.propertyName);
             propertyIDCell.setShowsValidityState(true);
             propertyIDCell.setValidityState(currentIDState());
-            propertyIDCell.addPropertyConsumer(v -> {
+            propertyIDCell.addListener(v -> {
                 transformer.propertyName = v;
                 propertyIDCell.setValidityState(currentIDState());
                 if (propertyValueCell != null)
@@ -56,7 +56,7 @@ public class TableDataSourceBTProperty extends TableDataSourceSegmented
             propertyValueCell = new TableCellString(null, transformer.propertyValue);
             propertyValueCell.setShowsValidityState(true);
             propertyValueCell.setValidityState(currentValueState());
-            propertyValueCell.addPropertyConsumer(v -> {
+            propertyValueCell.addListener(v -> {
                 transformer.propertyValue = v;
                 propertyValueCell.setValidityState(currentValueState());
             });

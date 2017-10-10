@@ -25,7 +25,7 @@ public class TableElementSaveDirectory
 
         TableCellEnum<ResourceDirectory> cellFolder = new TableCellEnum<>("activeFolder", data.getDirectory(),
                 TableCellEnum.options(ResourceDirectory.values(), d -> TextFormatting.GREEN + d.readableName(), null));
-        cellFolder.addPropertyConsumer(cell ->
+        cellFolder.addListener(cell ->
         {
             data.setDirectory(cellFolder.getPropertyValue());
             delegate.reloadData(); // Delete other cell might get added
@@ -37,7 +37,7 @@ public class TableElementSaveDirectory
             TableCellBoolean cellDelete = new TableCellBoolean("deleteOther", data.isDeleteOther(),
                     IvTranslations.format("reccomplex.structure.deleteOther.true", TextFormatting.RED, TextFormatting.RESET, String.format("%s/%s%s", TextFormatting.AQUA, path, TextFormatting.RESET)),
                     IvTranslations.format("reccomplex.structure.deleteOther.false", TextFormatting.YELLOW, TextFormatting.RESET));
-            cellDelete.addPropertyConsumer(cell -> data.setDeleteOther(cellDelete.getPropertyValue()));
+            cellDelete.addListener(cell -> data.setDeleteOther(cellDelete.getPropertyValue()));
             cellDelete.setTooltip(IvTranslations.formatLines("reccomplex.structure.deleteOther.tooltip",
                     TextFormatting.AQUA + ResourceDirectory.INACTIVE.subDirectoryName() + TextFormatting.RESET,
                     TextFormatting.AQUA + ResourceDirectory.ACTIVE.subDirectoryName() + TextFormatting.RESET));

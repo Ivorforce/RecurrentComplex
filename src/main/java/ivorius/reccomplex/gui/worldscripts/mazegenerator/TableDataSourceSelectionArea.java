@@ -82,7 +82,7 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented
             TableCellBoolean cell = new TableCellBoolean("additive", area.isAdditive(),
                     TextFormatting.GREEN + IvTranslations.get("reccomplex.selection.area.additive"),
                     TextFormatting.GOLD + IvTranslations.get("reccomplex.selection.area.subtractive"));
-            cell.addPropertyConsumer(area::setAdditive);
+            cell.addListener(area::setAdditive);
             return new TitledCell(cell);
         }
         else if (segment == 1)
@@ -90,13 +90,13 @@ public class TableDataSourceSelectionArea extends TableDataSourceSegmented
             String title = IvTranslations.get("reccomplex.selection.area.range." + COORD_NAMES[index]);
             IntegerRange intRange = new IntegerRange(area.getMinCoord()[index], area.getMaxCoord()[index]);
             TableCellIntegerRange cell = new TableCellIntegerRange("area" + index, intRange, 0, dimensions[index] - 1);
-            cell.addPropertyConsumer(val -> area.setCoord(index, val.getMin(), val.getMax()));
+            cell.addListener(val -> area.setCoord(index, val.getMin(), val.getMax()));
             return new TitledCell(title, cell).withTitleTooltip(IvTranslations.getLines("reccomplex.selection.area.range." + COORD_NAMES[index] + ".tooltip"));
         }
         else if (segment == 2)
         {
             TableCellString cell = new TableCellString("", area.getIdentifier() != null ? area.getIdentifier() : "");
-            cell.addPropertyConsumer(area::setIdentifier);
+            cell.addListener(area::setIdentifier);
             return new TitledCell(IvTranslations.get("reccomplex.selection.area.identifier"), cell);
         }
 

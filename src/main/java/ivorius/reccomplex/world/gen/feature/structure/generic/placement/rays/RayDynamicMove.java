@@ -67,12 +67,12 @@ public class RayDynamicMove extends FactorLimit.Ray
         return new TableDataSourceSegmented(rayTableDataSource(navigator, delegate), new TableDataSourceSupplied(() ->
         {
             TableCellEnum<Type> cell = new TableCellEnum<>(null, type, TableCellEnum.options(Type.values(), "reccomplex.placer.factors.limit.rays.dynmove.type.", true));
-            cell.addPropertyConsumer(v -> type = v);
+            cell.addListener(v -> type = v);
             return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.dynmove.type"), cell);
         }, () ->
         {
             TableCellBoolean cell = new TableCellBoolean(null, up, IvTranslations.get("reccomplex.direction.up"), IvTranslations.get("reccomplex.direction.down"));
-            cell.addPropertyConsumer(v -> up = v);
+            cell.addListener(v -> up = v);
             return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.matcher.direction"), cell);
         }));
     }

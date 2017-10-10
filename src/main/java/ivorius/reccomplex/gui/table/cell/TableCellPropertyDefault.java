@@ -25,13 +25,13 @@ public abstract class TableCellPropertyDefault<P> extends TableCellDefault imple
         setPropertyValue(value);
     }
 
-    public Consumer<P> addPropertyConsumer(Consumer<P> consumer)
+    public Consumer<P> addListener(Consumer<P> consumer)
     {
         listeners.add(consumer);
         return consumer;
     }
 
-    public void removePropertyListener(Consumer<P> listener)
+    public void removeListener(Consumer<P> listener)
     {
         listeners.remove(listener);
     }

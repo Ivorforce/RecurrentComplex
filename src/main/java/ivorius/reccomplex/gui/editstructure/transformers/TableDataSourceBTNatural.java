@@ -86,7 +86,7 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented
                 {
                     TableCellFloat cell = new TableCellFloat("naturalExpansionDistance", TableCells.toFloat(transformer.naturalExpansionDistance), 0, 40);
                     cell.setScale(Scales.pow(5));
-                    cell.addPropertyConsumer(val -> transformer.naturalExpansionDistance = TableCells.toDouble(val));
+                    cell.addListener(val -> transformer.naturalExpansionDistance = TableCells.toDouble(val));
                     return new TitledCell(IvTranslations.get("reccomplex.transformer.natural.naturalExpansionDistance"), cell)
                             .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.natural.naturalExpansionDistance.tooltip"));
                 }
@@ -94,7 +94,7 @@ public class TableDataSourceBTNatural extends TableDataSourceSegmented
                 {
                     TableCellFloat cell = new TableCellFloat("naturalExpansionRandomization", TableCells.toFloat(transformer.naturalExpansionRandomization), 0, 40);
                     cell.setScale(Scales.pow(5));
-                    cell.addPropertyConsumer(val -> transformer.naturalExpansionRandomization = TableCells.toDouble(val));
+                    cell.addListener(val -> transformer.naturalExpansionRandomization = TableCells.toDouble(val));
                     return new TitledCell(IvTranslations.get("reccomplex.transformer.natural.naturalExpansionRandomization"), cell)
                             .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.natural.naturalExpansionRandomization.tooltip"));
                 }

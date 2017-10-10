@@ -63,7 +63,7 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
             TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection,
                     TextFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connect.prevent"),
                     TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.prevent"));
-            preventCell.addPropertyConsumer(val -> rule.preventConnection = val);
+            preventCell.addListener(val -> rule.preventConnection = val);
             return new TitledCell(preventCell);
         }
 

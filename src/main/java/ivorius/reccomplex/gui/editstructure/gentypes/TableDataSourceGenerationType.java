@@ -57,7 +57,7 @@ public class TableDataSourceGenerationType extends TableDataSourceSegmented
             TableCellString idCell = new TableCellString("genInfoID", genInfo.id());
             idCell.setShowsValidityState(true);
             idCell.setValidityState(currentIDState());
-            idCell.addPropertyConsumer(val ->
+            idCell.addListener(val ->
             {
                 genInfo.setID(val);
                 idCell.setValidityState(currentIDState());

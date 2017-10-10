@@ -153,7 +153,7 @@ public class RayAverageMatcher extends FactorLimit.Ray
                 new TableDataSourceSupplied(() ->
                 {
                     TableCellBoolean cell = new TableCellBoolean(null, up, IvTranslations.get("reccomplex.direction.up"), IvTranslations.get("reccomplex.direction.down"));
-                    cell.addPropertyConsumer(v -> up = v);
+                    cell.addListener(v -> up = v);
                     return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.matcher.direction"), cell);
                 }));
     }

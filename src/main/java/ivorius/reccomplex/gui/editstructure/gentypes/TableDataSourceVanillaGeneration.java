@@ -85,7 +85,7 @@ public class TableDataSourceVanillaGeneration extends TableDataSourceSegmented
                     case 1:
                     {
                         TableCellEnum<EnumFacing> cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(ArrayUtils.add(Directions.HORIZONTAL, null), "all"));
-                        cell.addPropertyConsumer(val -> generationInfo.front = val);
+                        cell.addListener(val -> generationInfo.front = val);
                         return new TitledCell(IvTranslations.get("reccomplex.generationInfo.vanilla.front"), cell);
                     }
                 }
@@ -97,7 +97,7 @@ public class TableDataSourceVanillaGeneration extends TableDataSourceSegmented
                     {
                         TableCellFloatRange cell = new TableCellFloatRange("baseLimit", new FloatRange((float) generationInfo.minBaseLimit, (float) generationInfo.maxBaseLimit), 0, 1000, "%.2f");
                         cell.setScale(Scales.pow(5));
-                        cell.addPropertyConsumer(val -> {
+                        cell.addListener(val -> {
                             generationInfo.minBaseLimit = val.getMin();
                             generationInfo.maxBaseLimit = val.getMax();
                         });
@@ -108,7 +108,7 @@ public class TableDataSourceVanillaGeneration extends TableDataSourceSegmented
                     {
                         TableCellFloatRange cell = new TableCellFloatRange("scaledLimit", new FloatRange((float) generationInfo.minScaledLimit, (float) generationInfo.maxScaledLimit), 0, 1000, "%.2f");
                         cell.setScale(Scales.pow(5));
-                        cell.addPropertyConsumer(val -> {
+                        cell.addListener(val -> {
                             generationInfo.minScaledLimit = val.getMin();
                             generationInfo.maxScaledLimit = val.getMax();
                         });

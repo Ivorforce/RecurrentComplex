@@ -153,7 +153,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
             TableCellEnum.Option<EnumFacing>[] optionList = TableDirections.getDirectionOptions(EnumFacing.VALUES);
 
             TableCellEnum<EnumFacing> cell = new TableCellEnum<>("side", directionFromPath(mazePath), optionList);
-            cell.addPropertyConsumer(val ->
+            cell.addListener(val ->
             {
                 SavedMazePathConnection path = pathFromDirection(val, mazePath.sourceRoom.getCoordinates());
                 mazePath.pathDimension = path.path.pathDimension;

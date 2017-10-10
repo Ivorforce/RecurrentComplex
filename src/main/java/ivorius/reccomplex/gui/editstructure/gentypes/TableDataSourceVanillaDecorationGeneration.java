@@ -76,7 +76,7 @@ public class TableDataSourceVanillaDecorationGeneration extends TableDataSourceS
             case 1:
             {
                 TableCellEnum<RCBiomeDecorator.DecorationType> cell = new TableCellEnum<>("type", generationInfo.type, TableCellEnum.options(RCBiomeDecorator.DecorationType.values(), "reccomplex.generationInfo.decoration.types.", true));
-                cell.addPropertyConsumer(v -> generationInfo.type = v);
+                cell.addListener(v -> generationInfo.type = v);
                 return new TitledCell(IvTranslations.get("reccomplex.generationInfo.vanilla.type"), cell);
             }
             case 2:

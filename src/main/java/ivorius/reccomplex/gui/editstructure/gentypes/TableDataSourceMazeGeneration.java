@@ -68,7 +68,7 @@ public class TableDataSourceMazeGeneration extends TableDataSourceSegmented
             {
                 TableCellString cell = new TableCellString("mazeID", generationInfo.mazeID);
                 cell.setValidityState(MazeGeneration.idValidity(cell.getPropertyValue()));
-                cell.addPropertyConsumer((mazeID) ->
+                cell.addListener((mazeID) ->
                 {
                     generationInfo.setMazeID(mazeID);
                     cell.setValidityState(MazeGeneration.idValidity(cell.getPropertyValue()));

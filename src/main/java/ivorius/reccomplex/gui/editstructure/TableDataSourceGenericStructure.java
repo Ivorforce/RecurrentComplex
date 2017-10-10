@@ -153,7 +153,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                 if (index == 0)
                 {
                     TableCellString cell = new TableCellString(null, structureKey);
-                    cell.addPropertyConsumer(cell1 ->
+                    cell.addListener(cell1 ->
                     {
                         structureKey = cell.getPropertyValue();
                         cell.setValidityState(currentNameState());
@@ -170,12 +170,12 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                     TableCellBoolean cellRotatable = new TableCellBoolean("rotatable", structureInfo.rotatable,
                             IvTranslations.get("reccomplex.structure.rotatable.true"),
                             IvTranslations.get("reccomplex.structure.rotatable.false"));
-                    cellRotatable.addPropertyConsumer(cell -> structureInfo.rotatable = cellRotatable.getPropertyValue());
+                    cellRotatable.addListener(cell -> structureInfo.rotatable = cellRotatable.getPropertyValue());
 
                     TableCellBoolean cellMirrorable = new TableCellBoolean("mirrorable", structureInfo.mirrorable,
                             IvTranslations.format("reccomplex.structure.mirrorable.true"),
                             IvTranslations.format("reccomplex.structure.mirrorable.false"));
-                    cellMirrorable.addPropertyConsumer(cell -> structureInfo.mirrorable = cellMirrorable.getPropertyValue());
+                    cellMirrorable.addListener(cell -> structureInfo.mirrorable = cellMirrorable.getPropertyValue());
 
                     return new TitledCell(IvTranslations.get("reccomplex.structure.orientation"), new TableCellMulti(cellRotatable, cellMirrorable))
                             .withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.orientation.tooltip"));
@@ -185,7 +185,7 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                     TableCellBoolean cellBlocking = new TableCellBoolean("blocking", structureInfo.blocking,
                             IvTranslations.format("reccomplex.structure.blocking.true"),
                             IvTranslations.format("reccomplex.structure.blocking.false"));
-                    cellBlocking.addPropertyConsumer(cell -> structureInfo.blocking = cellBlocking.getPropertyValue());
+                    cellBlocking.addListener(cell -> structureInfo.blocking = cellBlocking.getPropertyValue());
 
                     return new TitledCell(IvTranslations.get("reccomplex.structure.blocking"), cellBlocking)
                             .withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.blocking.tooltip"));

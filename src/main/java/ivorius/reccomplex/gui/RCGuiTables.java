@@ -24,7 +24,7 @@ public class RCGuiTables
     {
         TableCellFloatNullable cell = new TableCellFloatNullable("value", value, 1.0f, 0, 1000, IvTranslations.get("reccomplex.gui.random.weight.default.short"), IvTranslations.get("reccomplex.gui.random.weight.custom.short"));
         cell.setScale(Scales.pow(5));
-        cell.addPropertyConsumer(consumer);
+        cell.addListener(consumer);
         return new TitledCell(title, cell).withTitleTooltip(tooltip);
     }
 

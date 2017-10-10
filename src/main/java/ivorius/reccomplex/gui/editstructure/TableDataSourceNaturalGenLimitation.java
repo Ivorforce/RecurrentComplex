@@ -60,7 +60,7 @@ public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmente
                 {
 
                     TableCellEnum<NaturalGeneration.SpawnLimitation.Context> cell = new TableCellEnum<>("context", limitation.context, TableCellEnum.options(NaturalGeneration.SpawnLimitation.Context.values(), "reccomplex.generationInfo.natural.limitation.context.", false));
-                    cell.addPropertyConsumer(val -> {
+                    cell.addListener(val -> {
                         limitation.context = val;
                         tableDelegate.reloadData();
                     });
@@ -69,7 +69,7 @@ public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmente
                 case 1:
                 {
                     TableCellInteger cell = new TableCellInteger("max", limitation.maxCount, 1, 50);
-                    cell.addPropertyConsumer(val -> limitation.maxCount = val);
+                    cell.addListener(val -> limitation.maxCount = val);
                     return new TitledCell("Max Occurrences", cell);
                 }
             }

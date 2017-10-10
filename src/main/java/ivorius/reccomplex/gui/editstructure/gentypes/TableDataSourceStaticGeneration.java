@@ -72,7 +72,7 @@ public class TableDataSourceStaticGeneration extends TableDataSourceSegmented
             case 1:
             {
                 TableCellBoolean cell = new TableCellBoolean("relativeToSpawn", generationInfo.relativeToSpawn);
-                cell.addPropertyConsumer(val -> generationInfo.relativeToSpawn = val);
+                cell.addListener(val -> generationInfo.relativeToSpawn = val);
                 return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.spawn"), cell);
             }
         }

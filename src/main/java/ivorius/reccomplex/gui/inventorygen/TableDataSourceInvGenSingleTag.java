@@ -39,7 +39,7 @@ public class TableDataSourceInvGenSingleTag extends TableDataSourceItem<ItemInve
             {
                 TableCellFloat cell = new TableCellFloat("itemCount", item.getItemChance(stack), 0, 1);
                 cell.setScale(Scales.pow(5));
-                cell.addPropertyConsumer(range -> item.setItemChance(stack, range));
+                cell.addListener(range -> item.setItemChance(stack, range));
                 return new TitledCell(IvTranslations.get("reccomplex.gui.inventorygen.single.chance"), cell);
             }
         }

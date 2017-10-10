@@ -66,7 +66,7 @@ public class RayDynamicPosition extends FactorLimit.Ray
         return new TableDataSourceSegmented(rayTableDataSource(navigator, delegate), new TableDataSourceSupplied(() ->
         {
             TableCellEnum<Type> cell = new TableCellEnum<>(null, type, TableCellEnum.options(Type.values(), "reccomplex.placer.factors.limit.rays.dynpos.type.", true));
-            cell.addPropertyConsumer(v -> type = v);
+            cell.addListener(v -> type = v);
             return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.dynpos.type"), cell);
         }));
     }

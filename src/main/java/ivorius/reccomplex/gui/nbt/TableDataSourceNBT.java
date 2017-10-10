@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * Created by lukas on 17.01.17.
@@ -67,7 +66,7 @@ public class TableDataSourceNBT
         {
             NBTTagByte cNBT = (NBTTagByte) nbt;
             TableCellStringInt cell = new TableCellStringInt(null, cNBT.getInt());
-            cell.addPropertyConsumer(value ->
+            cell.addListener(value ->
             {
                 if (value >= Byte.MIN_VALUE && value <= Byte.MAX_VALUE)
                 {
@@ -83,7 +82,7 @@ public class TableDataSourceNBT
         {
             NBTTagShort cNBT = (NBTTagShort) nbt;
             TableCellStringInt cell = new TableCellStringInt(null, cNBT.getInt());
-            cell.addPropertyConsumer(value ->
+            cell.addListener(value ->
             {
                 if (value >= Short.MIN_VALUE && value <= Short.MAX_VALUE)
                 {
@@ -99,14 +98,14 @@ public class TableDataSourceNBT
         {
             NBTTagInt cNBT = (NBTTagInt) nbt;
             TableCellStringInt cell = new TableCellStringInt(null, cNBT.getInt());
-            cell.addPropertyConsumer(value -> ReflectionHelper.setPrivateValue(NBTTagInt.class, cNBT, value, "field_74748_a", "data"));
+            cell.addListener(value -> ReflectionHelper.setPrivateValue(NBTTagInt.class, cNBT, value, "field_74748_a", "data"));
             return cell;
         }
         else if (nbt instanceof NBTTagLong)
         {
             NBTTagLong cNBT = (NBTTagLong) nbt;
             TableCellStringLong cell = new TableCellStringLong(null, cNBT.getLong());
-            cell.addPropertyConsumer(value ->
+            cell.addListener(value ->
                     ReflectionHelper.setPrivateValue(NBTTagLong.class, cNBT, value, "field_74753_a", "data"));
             return cell;
         }
@@ -114,7 +113,7 @@ public class TableDataSourceNBT
         {
             NBTTagFloat cNBT = (NBTTagFloat) nbt;
             TableCellStringDouble cell = new TableCellStringDouble(null, cNBT.getDouble());
-            cell.addPropertyConsumer(value ->
+            cell.addListener(value ->
                     ReflectionHelper.setPrivateValue(NBTTagFloat.class, cNBT, (float) (double) value, "field_74750_a", "data"));
             return cell;
         }
@@ -122,7 +121,7 @@ public class TableDataSourceNBT
         {
             NBTTagDouble cNBT = (NBTTagDouble) nbt;
             TableCellStringDouble cell = new TableCellStringDouble(null, cNBT.getDouble());
-            cell.addPropertyConsumer(value ->
+            cell.addListener(value ->
                     ReflectionHelper.setPrivateValue(NBTTagDouble.class, cNBT, value, "field_74755_a", "data"));
             return cell;
         }
@@ -133,7 +132,7 @@ public class TableDataSourceNBT
                     String.join(",", (Iterable<String>) Arrays.stream(ArrayUtils.toObject(cNBT.getByteArray())).map(String::valueOf)::iterator)
             );
             cell.setShowsValidityState(true);
-            cell.addPropertyConsumer(value ->
+            cell.addListener(value ->
             {
                 byte[] bytes = parseBytes(value);
                 if (bytes == null)
@@ -151,7 +150,7 @@ public class TableDataSourceNBT
         {
             NBTTagString cNBT = (NBTTagString) nbt;
             TableCellString cell = new TableCellString(null, cNBT.getString());
-            cell.addPropertyConsumer(value ->
+            cell.addListener(value ->
                     ReflectionHelper.setPrivateValue(NBTTagString.class, cNBT, value, "field_74751_a", "data"));
             return cell;
         }
@@ -174,7 +173,7 @@ public class TableDataSourceNBT
                     String.join(",", (Iterable<String>) Arrays.stream(ArrayUtils.toObject(cNBT.getIntArray())).map(String::valueOf)::iterator)
             );
             cell.setShowsValidityState(true);
-            cell.addPropertyConsumer(value ->
+            cell.addListener(value ->
             {
                 int[] ints = parseInts(value);
                 if (ints == null)

@@ -110,7 +110,7 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
                 TableCellString cell = new TableCellString("mazeID", script.getMazeID());
                 cell.setShowsValidityState(true);
                 cell.setValidityState(MazeGeneration.idValidity(cell.getPropertyValue()));
-                cell.addPropertyConsumer((mazeID) -> {
+                cell.addListener((mazeID) -> {
                     script.setMazeID(mazeID);
                     cell.setValidityState(MazeGeneration.idValidity(mazeID));
                 });
@@ -122,19 +122,19 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
                     case 0:
                     {
                         TableCellInteger cell = new TableCellInteger("roomSizeX", script.getRoomSize()[0], 1, 64);
-                        cell.addPropertyConsumer(roomSizeConsumer(0));
+                        cell.addListener(roomSizeConsumer(0));
                         return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.x"), cell);
                     }
                     case 1:
                     {
                         TableCellInteger cell = new TableCellInteger("roomSizeY", script.getRoomSize()[1], 1, 64);
-                        cell.addPropertyConsumer(roomSizeConsumer(1));
+                        cell.addListener(roomSizeConsumer(1));
                         return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.y"), cell);
                     }
                     case 2:
                     {
                         TableCellInteger cell = new TableCellInteger("roomSizeZ", script.getRoomSize()[2], 1, 64);
-                        cell.addPropertyConsumer(roomSizeConsumer(2));
+                        cell.addListener(roomSizeConsumer(2));
                         return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.z"), cell);
                     }
                 }

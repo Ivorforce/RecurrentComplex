@@ -75,7 +75,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                     {
                         TableCellFloatRange cell = new TableCellFloatRange("decay", new FloatRange(transformer.minDecay, transformer.maxDecay), 0.0f, 1.0f, "%.4f");
                         cell.setScale(Scales.pow(5));
-                        cell.addPropertyConsumer(val ->
+                        cell.addListener(val ->
                         {
                             transformer.minDecay = val.getMin();
                             transformer.maxDecay = val.getMax();
@@ -87,7 +87,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                     {
                         TableCellFloat cell = new TableCellFloat("decayChaos", transformer.decayChaos, 0.0f, 1.0f);
                         cell.setScale(Scales.pow(3));
-                        cell.addPropertyConsumer(val -> transformer.decayChaos = val);
+                        cell.addListener(val -> transformer.decayChaos = val);
                         return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.decay.chaos"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.chaos.tooltip"));
                     }
@@ -95,14 +95,14 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                     {
                         TableCellFloat cell = new TableCellFloat("decayValueDensity", transformer.decayValueDensity, 0.0f, 1.0f);
                         cell.setScale(Scales.pow(3));
-                        cell.addPropertyConsumer(val -> transformer.decayValueDensity = val);
+                        cell.addListener(val -> transformer.decayValueDensity = val);
                         return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.decay.density"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.density.tooltip"));
                     }
                     case 4:
                     {
                         TableCellEnum<EnumFacing> cell = new TableCellEnum<>("decaySide", transformer.decayDirection, TableDirections.getDirectionOptions(EnumFacing.VALUES));
-                        cell.addPropertyConsumer(val -> transformer.decayDirection = val);
+                        cell.addListener(val -> transformer.decayDirection = val);
                         return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.decay.direction"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.direction.tooltip"));
                     }
@@ -117,7 +117,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                     {
                         TableCellFloat cell = new TableCellFloat("erosion", transformer.blockErosion, 0.0f, 1.0f);
                         cell.setScale(Scales.pow(3));
-                        cell.addPropertyConsumer(val -> transformer.blockErosion = val);
+                        cell.addListener(val -> transformer.blockErosion = val);
                         return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.erosion"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.erosion.tooltip"));
                     }
@@ -125,7 +125,7 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                     {
                         TableCellFloat cell = new TableCellFloat("vines", transformer.vineGrowth, 0.0f, 1.0f);
                         cell.setScale(Scales.pow(3));
-                        cell.addPropertyConsumer(val -> transformer.vineGrowth = val);
+                        cell.addListener(val -> transformer.vineGrowth = val);
                         return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.vines"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.vines.tooltip"));
                     }
@@ -133,14 +133,14 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
                     {
                         TableCellFloat cell = new TableCellFloat("cobwebs", transformer.cobwebGrowth, 0.0f, 1.0f);
                         cell.setScale(Scales.pow(3));
-                        cell.addPropertyConsumer(val -> transformer.cobwebGrowth = val);
+                        cell.addListener(val -> transformer.cobwebGrowth = val);
                         return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.cobwebs"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.cobwebs.tooltip"));
                     }
                     case 4:
                     {
                         TableCellBoolean cell = new TableCellBoolean("gravity", transformer.gravity);
-                        cell.addPropertyConsumer(val -> transformer.gravity = val);
+                        cell.addListener(val -> transformer.gravity = val);
                         return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.gravity"), cell)
                                 .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.gravity.tooltip"));
                     }

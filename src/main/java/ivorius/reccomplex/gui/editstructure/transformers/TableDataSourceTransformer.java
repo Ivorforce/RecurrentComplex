@@ -51,7 +51,7 @@ public class TableDataSourceTransformer extends TableDataSourceSegmented
             TableCellString idCell = new TableCellString("transformerID", transformer.id());
             idCell.setShowsValidityState(true);
             idCell.setValidityState(currentIDState());
-            idCell.addPropertyConsumer(val ->
+            idCell.addListener(val ->
             {
                 transformer.setID(val);
                 idCell.setValidityState(currentIDState());

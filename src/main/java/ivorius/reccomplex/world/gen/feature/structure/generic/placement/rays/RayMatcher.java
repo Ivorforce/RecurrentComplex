@@ -104,12 +104,12 @@ public class RayMatcher extends FactorLimit.Ray
                 new TableDataSourceSupplied(() ->
                 {
                     TableCellBoolean cell = new TableCellBoolean(null, up, IvTranslations.get("reccomplex.direction.up"), IvTranslations.get("reccomplex.direction.down"));
-                    cell.addPropertyConsumer(v -> up = v);
+                    cell.addListener(v -> up = v);
                     return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.matcher.direction"), cell);
                 }, () ->
                 {
                     TableCellFloat cell = new TableCellFloat(null, requiredRatio, 0, 1);
-                    cell.addPropertyConsumer(v -> requiredRatio = v);
+                    cell.addListener(v -> requiredRatio = v);
                     return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.matcher.ratio"), cell)
                             .withTitleTooltip(IvTranslations.getLines("reccomplex.placer.factors.limit.rays.matcher.ratio.tooltip"));
                 }));

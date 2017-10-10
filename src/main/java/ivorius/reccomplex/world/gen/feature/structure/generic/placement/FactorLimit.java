@@ -139,7 +139,7 @@ public class FactorLimit extends GenericPlacer.Factor
             {
                 TableCellFloatNullable cell = new TableCellFloatNullable("value", weight, 0, 0, 1000, "I", "A");
                 cell.setScale(Scales.pow(5));
-                cell.addPropertyConsumer(v -> weight = v);
+                cell.addListener(v -> weight = v);
                 return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.ray.weight"), cell)
                         .withTitleTooltip(IvTranslations.formatLines("reccomplex.placer.factors.limit.ray.weight.tooltip"));
             })

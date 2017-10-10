@@ -61,7 +61,7 @@ public class TableDataSourceGenericVariable extends TableDataSourceSegmented
             {
                 TableCellString cell = new TableCellString(null, variable.id);
                 cell.setShowsValidityState(true);
-                cell.addPropertyConsumer(s ->
+                cell.addListener(s ->
                 {
                     if (Structures.isSimpleID(s))
                     {
@@ -78,14 +78,14 @@ public class TableDataSourceGenericVariable extends TableDataSourceSegmented
             {
                 TableCellFloat cell = new TableCellFloat(null, variable.chance, 0, 1);
                 cell.setScale(Scales.pow(5));
-                cell.addPropertyConsumer(f -> variable.chance = f);
+                cell.addListener(f -> variable.chance = f);
                 return new TitledCell(IvTranslations.get("reccomplex.structure.variables.chance"), cell)
                         .withTitleTooltip(IvTranslations.getLines("reccomplex.structure.variables.chance.tooltip"));
             }
             else if (index == 2)
             {
                 TableCellBoolean cell = new TableCellBoolean(null, variable.affectsLogic);
-                cell.addPropertyConsumer(b -> variable.affectsLogic = b);
+                cell.addListener(b -> variable.affectsLogic = b);
                 return new TitledCell(IvTranslations.get("reccomplex.structure.variables.logical"), cell)
                         .withTitleTooltip(IvTranslations.getLines("reccomplex.structure.variables.logical.tooltip"));
             }

@@ -57,7 +57,7 @@ public class RayMove extends FactorLimit.Ray
         return new TableDataSourceSegmented(rayTableDataSource(navigator, delegate), new TableDataSourceSupplied(() ->
         {
             TableCellStringInt cell = new TableCellStringInt(null, distance);
-            cell.addPropertyConsumer(v -> distance = v);
+            cell.addListener(v -> distance = v);
             return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.move.distance"), cell);
         }));
     }

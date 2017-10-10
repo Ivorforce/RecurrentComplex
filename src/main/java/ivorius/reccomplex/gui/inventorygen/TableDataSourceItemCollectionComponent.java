@@ -104,7 +104,7 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
             TableCellString cell = new TableCellString(null, key);
             cell.setShowsValidityState(true);
             cell.setValidityState(currentKeyState());
-            cell.addPropertyConsumer(val ->
+            cell.addListener(val ->
             {
                 key = val;
                 cell.setValidityState(currentKeyState());
@@ -117,7 +117,7 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
             TableCellString cell = new TableCellString(null, component.inventoryGeneratorID);
             cell.setShowsValidityState(true);
             cell.setValidityState(currentGroupIDState());
-            cell.addPropertyConsumer(val ->
+            cell.addListener(val ->
             {
                 component.inventoryGeneratorID = val;
                 cell.setValidityState(currentGroupIDState());

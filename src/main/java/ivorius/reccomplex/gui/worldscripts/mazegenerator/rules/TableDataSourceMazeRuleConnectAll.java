@@ -85,7 +85,7 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
             TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection,
                     TextFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connect.prevent"),
                     TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.prevent"));
-            preventCell.addPropertyConsumer(val -> rule.preventConnection = val);
+            preventCell.addListener(val -> rule.preventConnection = val);
             return new TitledCell(preventCell);
         }
         else if (segment == 2)
@@ -93,7 +93,7 @@ public class TableDataSourceMazeRuleConnectAll extends TableDataSourceSegmented
             TableCellBoolean cell = new TableCellBoolean("additive", rule.additive,
                     TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connectall.additive"),
                     TextFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connectall.subtractive"));
-            cell.addPropertyConsumer(val ->
+            cell.addListener(val ->
             {
                 rule.additive = val;
                 tableDelegate.reloadData();

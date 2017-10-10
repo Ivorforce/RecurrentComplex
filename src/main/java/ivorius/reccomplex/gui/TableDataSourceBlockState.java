@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import ivorius.ivtoolkit.blocks.BlockStates;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
-import net.minecraft.util.text.TextFormatting;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTNatural;
@@ -109,13 +108,13 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented
                 if (index == 0)
                 {
                     TableCellString cell = idCell = TableDataSourceBTNatural.cellForBlock("block", block);
-                    cell.addPropertyConsumer(p -> valueChanged());
+                    cell.addListener(p -> valueChanged());
                     return new TitledCell("blockID", blockTitle, cell);
                 }
                 else if (index == 1)
                 {
                     TableCellInteger cell = metaCell = new TableCellInteger("metadata", meta, 0, 15);
-                    cell.addPropertyConsumer(p -> valueChanged());
+                    cell.addListener(p -> valueChanged());
                     return new TitledCell("blockMeta", metadataTitle, cell);
                 }
                 break;
@@ -160,7 +159,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented
 
         TableCellEnum<T> cell = new TableCellEnum<>(null, (T) state.getValue(name), sorted.stream()
                 .map(t1 -> new TableCellEnum.Option<>(t1, name.getName(currentProperty))).collect(Collectors.toList()));
-        cell.addPropertyConsumer(t -> {
+        cell.addListener(t -> {
             setBlockStateAndNotify(state.withProperty(name, t));
             delegate.reloadData();
         });

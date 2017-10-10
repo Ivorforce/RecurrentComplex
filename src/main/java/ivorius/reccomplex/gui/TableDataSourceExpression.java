@@ -114,7 +114,7 @@ public class TableDataSourceExpression<T, U, E extends FunctionExpressionCache<T
             expressionCell.setEnabled(canEdit());
             expressionCell.setShowsValidityState(true);
             expressionCell.setValidityState(getValidityState(e, u));
-            expressionCell.addPropertyConsumer(val -> {
+            expressionCell.addListener(val -> {
                 e.setExpression(val);
                 expressionCell.setValidityState(getValidityState(e, u));
             });

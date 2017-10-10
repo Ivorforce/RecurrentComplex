@@ -37,7 +37,7 @@ public class TableDataSourceConnector implements TableDataSource
     public TableCell cellForIndex(GuiTable table, int index)
     {
         TableCellString cell = new TableCellString("connectorID", connector.id);
-        cell.addPropertyConsumer(val -> connector.id = val);
+        cell.addListener(val -> connector.id = val);
         return new TitledCell(title, cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.maze.connector.tooltip"));
     }
 }

@@ -37,7 +37,7 @@ public class TableDataSourceInvGenMultiTag extends TableDataSourceItem<ItemInven
             if (index == 0)
             {
                 TableCellIntegerRange cell = new TableCellIntegerRange("itemCount", item.getGenerationCount(stack), 0, 64);
-                cell.addPropertyConsumer(range -> item.setGenerationCount(stack, range));
+                cell.addListener(range -> item.setGenerationCount(stack, range));
                 return new TitledCell(IvTranslations.get("reccomplex.gui.inventorygen.multi.count"), cell);
             }
         }

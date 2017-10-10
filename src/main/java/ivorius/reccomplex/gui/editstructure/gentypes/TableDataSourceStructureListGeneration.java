@@ -76,7 +76,7 @@ public class TableDataSourceStructureListGeneration extends TableDataSourceSegme
                 TableCellString cell = new TableCellString("listID", generationInfo.listID);
                 cell.setShowsValidityState(true);
                 cell.setValidityState(currentStructureListIDState());
-                cell.addPropertyConsumer(cell1 ->
+                cell.addListener(cell1 ->
                 {
                     generationInfo.listID = cell.getPropertyValue();
                     cell.setValidityState(currentStructureListIDState());
@@ -88,7 +88,7 @@ public class TableDataSourceStructureListGeneration extends TableDataSourceSegme
             case 4:
             {
                 TableCellEnum<EnumFacing> cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
-                cell.addPropertyConsumer(cell1 -> generationInfo.front = (EnumFacing) cell.getPropertyValue());
+                cell.addListener(cell1 -> generationInfo.front = (EnumFacing) cell.getPropertyValue());
                 return new TitledCell(IvTranslations.get("reccomplex.generationInfo.structureList.front"), cell);
             }
         }

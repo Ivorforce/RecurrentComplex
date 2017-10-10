@@ -31,8 +31,8 @@ public class TableCellButton extends TableCellDefault
         super(id);
         this.actionID = actionID;
         setTitle(title);
-        this.tooltip = tooltip;
-        this.enabled = enabled;
+        setTooltip(tooltip);
+        setEnabled(enabled);
     }
 
     public TableCellButton(String id, String actionID, String title, List<String> tooltip)
@@ -40,7 +40,7 @@ public class TableCellButton extends TableCellDefault
         super(id);
         this.actionID = actionID;
         setTitle(title);
-        this.tooltip = tooltip;
+        setTooltip(tooltip);
     }
 
     public TableCellButton(String id, String actionID, String title, boolean enabled)
@@ -48,7 +48,7 @@ public class TableCellButton extends TableCellDefault
         super(id);
         this.actionID = actionID;
         setTitle(title);
-        this.enabled = enabled;
+        setEnabled(enabled);
     }
 
     public TableCellButton(String id, String actionID, String title)

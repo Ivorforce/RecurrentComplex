@@ -141,7 +141,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
         {
             List<TableCellButton> buttons = properties.stream().map(property ->
             {
-                TableCellButton button = new TableCellButton(null, null, (property == currentProperty ? TextFormatting.GREEN : "") + name.getName(property));
+                TableCellButton button = new TableCellButton(null, null, name.getName(property));
                 button.setEnabled(!extended);
                 button.addAction(() ->
                 {
@@ -159,7 +159,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented implemen
         Collections.sort(sorted);
 
         TableCellEnum<T> cell = new TableCellEnum<>(null, (T) state.getValue(name), sorted.stream()
-                .map(t1 -> new TableCellEnum.Option<>(t1, TextFormatting.GREEN + name.getName(currentProperty))).collect(Collectors.toList()));
+                .map(t1 -> new TableCellEnum.Option<>(t1, name.getName(currentProperty))).collect(Collectors.toList()));
         cell.addPropertyConsumer(t -> {
             setBlockStateAndNotify(state.withProperty(name, t));
             delegate.reloadData();

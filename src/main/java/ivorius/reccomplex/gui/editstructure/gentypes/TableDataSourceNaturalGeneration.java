@@ -48,12 +48,12 @@ public class TableDataSourceNaturalGeneration extends TableDataSourceSegmented
                 .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
 
         addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator), () -> IvTranslations.get("reccomplex.gui.biomes"))
-                .buildDataSource());
+                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator))
+                .buildDataSource(IvTranslations.get("reccomplex.gui.biomes")));
 
         addManagedSegment(5, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator), () -> IvTranslations.get("reccomplex.gui.dimensions"))
-                .buildDataSource());
+                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator))
+                .buildDataSource(IvTranslations.get("reccomplex.gui.dimensions")));
 
         addManagedSegment(6, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, delegate), () -> IvTranslations.get("reccomplex.generationInfo.natural.limitations"))

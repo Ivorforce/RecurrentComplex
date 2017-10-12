@@ -10,7 +10,7 @@ import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCellFloat;
+import ivorius.reccomplex.gui.table.cell.TableCellFloatSlider;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.utils.scale.Scales;
@@ -36,13 +36,13 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented
         addSegment(2, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.destinations"), IvTranslations.getLines("reccomplex.transformer.block.dest.tooltip"), transformer.destMatcher, null));
 
         addSegment(3, () -> {
-                    TableCellFloat cell = new TableCellFloat("naturalExpansionDistance", TableCells.toFloat(transformer.naturalExpansionDistance), 0, 40);
+                    TableCellFloatSlider cell = new TableCellFloatSlider("naturalExpansionDistance", TableCells.toFloat(transformer.naturalExpansionDistance), 0, 40);
                     cell.setScale(Scales.pow(5));
                     cell.addListener(val -> transformer.naturalExpansionDistance = TableCells.toDouble(val));
                     return new TitledCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionDistance"), cell)
                             .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionDistance.tooltip"));
                 }, () -> {
-                    TableCellFloat cell = new TableCellFloat("naturalExpansionRandomization", TableCells.toFloat(transformer.naturalExpansionRandomization), 0, 40);
+                    TableCellFloatSlider cell = new TableCellFloatSlider("naturalExpansionRandomization", TableCells.toFloat(transformer.naturalExpansionRandomization), 0, 40);
                     cell.setScale(Scales.pow(5));
                     cell.addListener(val -> transformer.naturalExpansionRandomization = TableCells.toDouble(val));
                     return new TitledCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionRandomization"), cell)

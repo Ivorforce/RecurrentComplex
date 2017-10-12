@@ -46,7 +46,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented
     private String metadataTitle;
 
     private TableCellString idCell;
-    private TableCellInteger metaCell;
+    private TableCellIntSlider metaCell;
 
     private TableNavigator navigator;
     private TableDelegate delegate;
@@ -67,7 +67,7 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented
             cell.addListener(p -> valueChanged());
             return new TitledCell("blockID", blockTitle, cell);
         }, () -> {
-            TableCellInteger cell = metaCell = new TableCellInteger("metadata", meta, 0, 15);
+            TableCellIntSlider cell = metaCell = new TableCellIntSlider("metadata", meta, 0, 15);
             cell.addListener(p -> valueChanged());
             return new TitledCell("blockMeta", metadataTitle, cell);
         });

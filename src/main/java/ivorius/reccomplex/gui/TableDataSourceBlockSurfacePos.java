@@ -6,10 +6,10 @@
 package ivorius.reccomplex.gui;
 
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.cell.TableCellMulti;
 import ivorius.reccomplex.gui.table.cell.TableCellPropertyDefault;
+import ivorius.reccomplex.gui.table.cell.TableCellIntTextField;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraftforge.fml.relauncher.Side;
@@ -28,30 +28,24 @@ public class TableDataSourceBlockSurfacePos extends TableDataSourceSegmented
     private BlockSurfacePos coord;
     private Consumer<BlockSurfacePos> consumer;
 
-    private IntegerRange rangeX;
-    private IntegerRange rangeZ;
-
     private String title;
     private List<String> tooltip;
 
-    public TableDataSourceBlockSurfacePos(BlockSurfacePos coord, Consumer<BlockSurfacePos> consumer, IntegerRange rangeX, IntegerRange rangeZ, String title, List<String> tooltip)
+    public TableDataSourceBlockSurfacePos(BlockSurfacePos coord, Consumer<BlockSurfacePos> consumer, String title)
     {
         this.coord = coord;
         this.consumer = consumer;
-        this.rangeX = rangeX;
-        this.rangeZ = rangeZ;
         this.title = title;
-        this.tooltip = tooltip;
 
         addSegment(0, () -> {
-            TableCellPropertyDefault<Integer> x = TableDataSourceBlockPos.createRangeCell(rangeX, this.coord.getX());
+            TableCellPropertyDefault<Integer> x = new TableCellIntTextField(null, this.coord.getX());
             x.setTooltip(IvTranslations.getLines("reccomplex.gui.surfacepos.x"));
             x.addListener(i -> {
                 this.coord = new BlockSurfacePos(i, this.coord.getZ());
                 consumer.accept(this.coord);
             });
 
-            TableCellPropertyDefault<Integer> z = TableDataSourceBlockPos.createRangeCell(rangeZ, this.coord.getZ());
+            TableCellPropertyDefault<Integer> z = new TableCellIntTextField(null, this.coord.getZ());
             z.setTooltip(IvTranslations.getLines("reccomplex.gui.surfacepos.z"));
             z.addListener(i -> {
                 this.coord = new BlockSurfacePos(this.coord.getX(), i);
@@ -65,7 +59,7 @@ public class TableDataSourceBlockSurfacePos extends TableDataSourceSegmented
 
     public TableDataSourceBlockSurfacePos(BlockSurfacePos coord, Consumer<BlockSurfacePos> consumer, String title, List<String> tooltip)
     {
-        this(coord, consumer, null, null, title, tooltip);
+        this(coord, consumer, title);
         setTooltip(tooltip);
     }
 

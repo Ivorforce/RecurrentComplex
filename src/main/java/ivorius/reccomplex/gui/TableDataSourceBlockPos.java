@@ -5,9 +5,11 @@
 
 package ivorius.reccomplex.gui;
 
-import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.cell.*;
+import ivorius.reccomplex.gui.table.cell.TableCellMulti;
+import ivorius.reccomplex.gui.table.cell.TableCellPropertyDefault;
+import ivorius.reccomplex.gui.table.cell.TableCellIntTextField;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
@@ -26,38 +28,31 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
     private BlockPos coord;
     private Consumer<BlockPos> consumer;
 
-    private IntegerRange rangeX;
-    private IntegerRange rangeY;
-    private IntegerRange rangeZ;
-
     private String title;
     private List<String> tooltip;
 
-    public TableDataSourceBlockPos(BlockPos coord, Consumer<BlockPos> consumer, IntegerRange rangeX, IntegerRange rangeY, IntegerRange rangeZ, String title)
+    public TableDataSourceBlockPos(BlockPos coord, Consumer<BlockPos> consumer, String title)
     {
         this.coord = coord;
         this.consumer = consumer;
-        this.rangeX = rangeX;
-        this.rangeY = rangeY;
-        this.rangeZ = rangeZ;
         this.title = title;
 
         addSegment(0, () -> {
-            TableCellPropertyDefault<Integer> x = createRangeCell(rangeX, this.coord.getX());
+            TableCellPropertyDefault<Integer> x = new TableCellIntTextField(null, this.coord.getX());
             x.setTooltip(IvTranslations.getLines("reccomplex.gui.blockpos.x"));
             x.addListener(i -> {
                 this.coord = new BlockPos(i, this.coord.getY(), this.coord.getZ());
                 consumer.accept(this.coord);
             });
 
-            TableCellPropertyDefault<Integer> y = createRangeCell(rangeY, this.coord.getY());
+            TableCellPropertyDefault<Integer> y = new TableCellIntTextField(null, this.coord.getY());
             y.setTooltip(IvTranslations.getLines("reccomplex.gui.blockpos.y"));
             y.addListener(i -> {
                 this.coord = new BlockPos(this.coord.getX(), i, this.coord.getZ());
                 consumer.accept(this.coord);
             });
 
-            TableCellPropertyDefault<Integer> z = createRangeCell(rangeZ, this.coord.getZ());
+            TableCellPropertyDefault<Integer> z = new TableCellIntTextField(null, this.coord.getZ());
             z.setTooltip(IvTranslations.getLines("reccomplex.gui.blockpos.z"));
             z.addListener(i -> {
                 this.coord = new BlockPos(this.coord.getX(), this.coord.getY(), i);
@@ -71,7 +66,7 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
 
     public TableDataSourceBlockPos(BlockPos coord, Consumer<BlockPos> consumer, String title, List<String> tooltip)
     {
-        this(coord, consumer, null, null, null, title);
+        this(coord, consumer, title);
         setTooltip(tooltip);
     }
 
@@ -88,13 +83,5 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
     public void setTooltip(List<String> tooltip)
     {
         this.tooltip = tooltip;
-    }
-
-    public static TableCellPropertyDefault<Integer> createRangeCell(IntegerRange range, int val)
-    {
-        if (range != null)
-            return new TableCellInteger(null, val, range.min, range.max);
-        else
-            return new TableCellStringInt(null, val);
     }
 }

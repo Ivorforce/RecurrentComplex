@@ -12,7 +12,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
-import ivorius.reccomplex.gui.table.cell.TableCellFloat;
+import ivorius.reccomplex.gui.table.cell.TableCellFloatSlider;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
@@ -111,7 +111,7 @@ public class RayMatcher extends FactorLimit.Ray
                     return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.matcher.direction"), cell);
                 }, () ->
                 {
-                    TableCellFloat cell = new TableCellFloat(null, requiredRatio, 0, 1);
+                    TableCellFloatSlider cell = new TableCellFloatSlider(null, requiredRatio, 0, 1);
                     cell.addListener(v -> requiredRatio = v);
                     return new TitledCell(IvTranslations.get("reccomplex.placer.factors.limit.rays.matcher.ratio"), cell)
                             .withTitleTooltip(IvTranslations.getLines("reccomplex.placer.factors.limit.rays.matcher.ratio.tooltip"));

@@ -15,11 +15,11 @@ import javax.annotation.Nullable;
  */
 
 @SideOnly(Side.CLIENT)
-public class TableCellFloat extends TableCellSlider<Float>
+public class TableCellFloatSlider extends TableCellSlider<Float>
 {
     protected String titleFormat;
 
-    public TableCellFloat(String id, float value, float min, float max)
+    public TableCellFloatSlider(String id, float value, float min, float max)
     {
         super(id, value, min, max);
         setTitleFormat("%.4f");

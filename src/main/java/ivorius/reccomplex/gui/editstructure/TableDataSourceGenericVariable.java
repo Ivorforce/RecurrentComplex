@@ -10,7 +10,7 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
-import ivorius.reccomplex.gui.table.cell.TableCellFloat;
+import ivorius.reccomplex.gui.table.cell.TableCellFloatSlider;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
@@ -53,7 +53,7 @@ public class TableDataSourceGenericVariable extends TableDataSourceSegmented
             return new TitledCell(IvTranslations.get("reccomplex.structure.variables.id"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.structure.variables.id.tooltip"));
         }, () -> {
-            TableCellFloat cell = new TableCellFloat(null, variable.chance, 0, 1);
+            TableCellFloatSlider cell = new TableCellFloatSlider(null, variable.chance, 0, 1);
             cell.setScale(Scales.pow(5));
             cell.addListener(f -> variable.chance = f);
             return new TitledCell(IvTranslations.get("reccomplex.structure.variables.chance"), cell)

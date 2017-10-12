@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.editstructure.placer;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCellFloat;
+import ivorius.reccomplex.gui.table.cell.TableCellFloatSlider;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
@@ -32,7 +32,7 @@ public class TableDataSourcePlacerFactor extends TableDataSourceSegmented
         this.placer = factor;
 
         addSegment(0, new TableDataSourceSupplied(() -> {
-            TableCellFloat priority = new TableCellFloat(null, factor.priority, 0, 10);
+            TableCellFloatSlider priority = new TableCellFloatSlider(null, factor.priority, 0, 10);
             priority.addListener(v -> factor.priority = v);
             return new TitledCell(IvTranslations.get("reccomplex.placer.factor.priority"), priority)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.placer.factor.priority.tooltip"));

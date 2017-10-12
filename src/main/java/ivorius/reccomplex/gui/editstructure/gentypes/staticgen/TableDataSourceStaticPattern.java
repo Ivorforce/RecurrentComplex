@@ -7,8 +7,8 @@ package ivorius.reccomplex.gui.editstructure.gentypes.staticgen;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.TableDelegate;
-import ivorius.reccomplex.gui.table.cell.TableCellInteger;
-import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
+import ivorius.reccomplex.gui.table.cell.TableCellIntSlider;
+import ivorius.reccomplex.gui.table.cell.TableCellIntTextField;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.StaticGeneration;
@@ -34,24 +34,24 @@ public class TableDataSourceStaticPattern extends TableDataSourceSegmented
         this.tableDelegate = tableDelegate;
 
         addSegment(0, () -> {
-            TableCellStringInt cell = new TableCellStringInt("repeatX", pattern.repeatX);
+            TableCellIntTextField cell = new TableCellIntTextField("repeatX", pattern.repeatX);
             cell.addListener(val -> pattern.repeatX = val);
             return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.repeat.x"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.repeat.tooltip"));
         }, () -> {
-            TableCellStringInt cell = new TableCellStringInt("repeatZ", pattern.repeatZ);
+            TableCellIntTextField cell = new TableCellIntTextField("repeatZ", pattern.repeatZ);
             cell.addListener(val -> pattern.repeatZ = val);
             return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.repeat.z"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.repeat.tooltip"));
         });
 
         addSegment(1, () -> {
-            TableCellInteger cell = new TableCellInteger("shiftX", pattern.randomShiftX, 0, 10);
+            TableCellIntSlider cell = new TableCellIntSlider("shiftX", pattern.randomShiftX, 0, 10);
             cell.addListener(val -> pattern.randomShiftX = val);
             return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.x"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift.tooltip"));
         }, () -> {
-            TableCellInteger cell = new TableCellInteger("shiftZ", pattern.randomShiftZ, 0, 10);
+            TableCellIntSlider cell = new TableCellIntSlider("shiftZ", pattern.randomShiftZ, 0, 10);
             cell.addListener(val -> pattern.randomShiftZ = val);
             return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.z"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift.tooltip"));

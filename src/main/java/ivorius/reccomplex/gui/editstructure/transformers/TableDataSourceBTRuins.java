@@ -46,13 +46,13 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
             return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.decay.base"), cell)
                     .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.base.tooltip"));
         }, () -> {
-            TableCellFloat cell = new TableCellFloat("decayChaos", transformer.decayChaos, 0.0f, 1.0f);
+            TableCellFloatSlider cell = new TableCellFloatSlider("decayChaos", transformer.decayChaos, 0.0f, 1.0f);
             cell.setScale(Scales.pow(3));
             cell.addListener(val -> transformer.decayChaos = val);
             return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.decay.chaos"), cell)
                     .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.decay.chaos.tooltip"));
         }, () -> {
-            TableCellFloat cell = new TableCellFloat("decayValueDensity", transformer.decayValueDensity, 0.0f, 1.0f);
+            TableCellFloatSlider cell = new TableCellFloatSlider("decayValueDensity", transformer.decayValueDensity, 0.0f, 1.0f);
             cell.setScale(Scales.pow(3));
             cell.addListener(val -> transformer.decayValueDensity = val);
             return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.decay.density"), cell)
@@ -67,19 +67,19 @@ public class TableDataSourceBTRuins extends TableDataSourceSegmented
         addSegment(2, () -> {
             return new TitledCell(new TableCellTitle("otherTitle", IvTranslations.get("reccomplex.transformer.ruins.other.title")));
         }, () -> {
-            TableCellFloat cell = new TableCellFloat("erosion", transformer.blockErosion, 0.0f, 1.0f);
+            TableCellFloatSlider cell = new TableCellFloatSlider("erosion", transformer.blockErosion, 0.0f, 1.0f);
             cell.setScale(Scales.pow(3));
             cell.addListener(val -> transformer.blockErosion = val);
             return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.erosion"), cell)
                     .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.erosion.tooltip"));
         }, () -> {
-            TableCellFloat cell = new TableCellFloat("vines", transformer.vineGrowth, 0.0f, 1.0f);
+            TableCellFloatSlider cell = new TableCellFloatSlider("vines", transformer.vineGrowth, 0.0f, 1.0f);
             cell.setScale(Scales.pow(3));
             cell.addListener(val -> transformer.vineGrowth = val);
             return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.vines"), cell)
                     .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.ruins.vines.tooltip"));
         }, () -> {
-            TableCellFloat cell = new TableCellFloat("cobwebs", transformer.cobwebGrowth, 0.0f, 1.0f);
+            TableCellFloatSlider cell = new TableCellFloatSlider("cobwebs", transformer.cobwebGrowth, 0.0f, 1.0f);
             cell.setScale(Scales.pow(3));
             cell.addListener(val -> transformer.cobwebGrowth = val);
             return new TitledCell(IvTranslations.get("reccomplex.transformer.ruins.cobwebs"), cell)

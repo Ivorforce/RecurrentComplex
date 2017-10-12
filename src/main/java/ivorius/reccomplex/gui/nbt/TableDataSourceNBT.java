@@ -69,7 +69,7 @@ public class TableDataSourceNBT
         else if (nbt instanceof NBTTagByte)
         {
             NBTTagByte cNBT = (NBTTagByte) nbt;
-            TableCellStringInt cell = new TableCellStringInt(null, cNBT.getInt());
+            TableCellIntTextField cell = new TableCellIntTextField(null, cNBT.getInt());
             cell.addListener(value ->
             {
                 if (value >= Byte.MIN_VALUE && value <= Byte.MAX_VALUE)
@@ -85,7 +85,7 @@ public class TableDataSourceNBT
         else if (nbt instanceof NBTTagShort)
         {
             NBTTagShort cNBT = (NBTTagShort) nbt;
-            TableCellStringInt cell = new TableCellStringInt(null, cNBT.getInt());
+            TableCellIntTextField cell = new TableCellIntTextField(null, cNBT.getInt());
             cell.addListener(value ->
             {
                 if (value >= Short.MIN_VALUE && value <= Short.MAX_VALUE)
@@ -101,7 +101,7 @@ public class TableDataSourceNBT
         else if (nbt instanceof NBTTagInt)
         {
             NBTTagInt cNBT = (NBTTagInt) nbt;
-            TableCellStringInt cell = new TableCellStringInt(null, cNBT.getInt());
+            TableCellIntTextField cell = new TableCellIntTextField(null, cNBT.getInt());
             cell.addListener(value -> ReflectionHelper.setPrivateValue(NBTTagInt.class, cNBT, value, "field_74748_a", "data"));
             return cell;
         }

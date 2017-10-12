@@ -18,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class TableCellFloatNullable extends TableCellPropertyDefault<Float>
 {
-    protected TableCellFloat floatCell;
+    protected TableCellFloatSlider floatCell;
     protected TableCellButton nullButton;
 
     protected float defaultValue;
@@ -35,7 +35,7 @@ public class TableCellFloatNullable extends TableCellPropertyDefault<Float>
         this.buttonTitleNull = buttonTitleNull;
         this.buttonTitleCustom = buttonTitleCustom;
 
-        floatCell = new TableCellFloat(null, 0, 0, 0);
+        floatCell = new TableCellFloatSlider(null, 0, 0, 0);
         floatCell.addListener(value1 -> {
             setPropertyValue(value1);
             alertListenersOfChange();

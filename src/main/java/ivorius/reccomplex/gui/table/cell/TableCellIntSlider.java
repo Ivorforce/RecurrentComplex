@@ -15,9 +15,9 @@ import javax.annotation.Nullable;
  */
 
 @SideOnly(Side.CLIENT)
-public class TableCellInteger extends TableCellSlider<Integer>
+public class TableCellIntSlider extends TableCellSlider<Integer>
 {
-    public TableCellInteger(String id, int value, int min, int max)
+    public TableCellIntSlider(String id, int value, int min, int max)
     {
         super(id, value, min, max);
     }

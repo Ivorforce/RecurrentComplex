@@ -8,7 +8,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCellInteger;
+import ivorius.reccomplex.gui.table.cell.TableCellIntTextField;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.script.WorldScriptMazeGenerator;
@@ -30,15 +30,15 @@ public class TableDataSourceMazeInfo extends TableDataSourceSegmented
         this.navigator = navigator;
 
         addSegment(0, () -> {
-            TableCellInteger cell = new TableCellInteger("roomSizeX", script.getRoomSize()[0], 1, 64);
+            TableCellIntTextField cell = new TableCellIntTextField("roomSizeX", script.getRoomSize()[0], i -> i > 0);
             cell.addListener(roomSizeConsumer(0));
             return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.x"), cell);
         }, () -> {
-            TableCellInteger cell = new TableCellInteger("roomSizeY", script.getRoomSize()[1], 1, 64);
+            TableCellIntTextField cell = new TableCellIntTextField("roomSizeY", script.getRoomSize()[1], i -> i > 0);
             cell.addListener(roomSizeConsumer(1));
             return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.y"), cell);
         }, () -> {
-            TableCellInteger cell = new TableCellInteger("roomSizeZ", script.getRoomSize()[2], 1, 64);
+            TableCellIntTextField cell = new TableCellIntTextField("roomSizeZ", script.getRoomSize()[2], i -> i > 0);
             cell.addListener(roomSizeConsumer(2));
             return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.z"), cell);
         });

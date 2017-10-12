@@ -9,8 +9,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.editstructure.placer.TableDataSourcePlacer;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
-import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
+import ivorius.reccomplex.gui.table.cell.TableCellIntTextField;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.SelectivePlacer;
@@ -29,7 +28,7 @@ public class TableDataSourceSelectivePlacer extends TableDataSourceSegmented
         this.placer = placer;
 
         addSegment(0, () -> {
-            TableCellStringInt cell = new TableCellStringInt(null, placer.baseline);
+            TableCellIntTextField cell = new TableCellIntTextField(null, placer.baseline);
             cell.addListener(i -> placer.baseline = i);
             return new TitledCell(IvTranslations.get("reccomplex.placer.baseline"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.placer.baseline.tooltip"));

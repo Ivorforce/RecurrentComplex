@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.editstructure;
 
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
-import ivorius.reccomplex.gui.table.cell.TableCellInteger;
+import ivorius.reccomplex.gui.table.cell.TableCellIntTextField;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
@@ -38,7 +38,7 @@ public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmente
             });
             return new TitledCell("Context", cell);
         }, () -> {
-            TableCellInteger cell = new TableCellInteger("max", limitation.maxCount, 1, 50);
+            TableCellIntTextField cell = new TableCellIntTextField("max", limitation.maxCount, i -> i > 0);
             cell.addListener(val -> limitation.maxCount = val);
             return new TitledCell("Max Occurrences", cell);
         });

@@ -9,7 +9,7 @@ import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCellFloat;
+import ivorius.reccomplex.gui.table.cell.TableCellFloatSlider;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
@@ -34,7 +34,7 @@ public class TableDataSourceFactorMatch extends TableDataSourceSegmented
         addSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), factor.sourceMatcher, null));
         addSegment(2, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.placer.factors.match.dest"), factor.destMatcher, null));
         addSegment(3, new TableDataSourceSupplied(() -> {
-            TableCellFloat cell = new TableCellFloat(null, factor.requiredConformity, 0, 1);
+            TableCellFloatSlider cell = new TableCellFloatSlider(null, factor.requiredConformity, 0, 1);
             cell.addListener(v -> factor.requiredConformity = v);
             return new TitledCell(IvTranslations.get("reccomplex.placer.factors.match.conformity"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.placer.factors.match.conformity.tooltip"));

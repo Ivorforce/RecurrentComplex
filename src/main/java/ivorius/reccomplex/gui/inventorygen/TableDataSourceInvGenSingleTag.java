@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.inventorygen;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.cell.TableCellFloat;
+import ivorius.reccomplex.gui.table.cell.TableCellFloatSlider;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.item.ItemInventoryGenSingleTag;
 import ivorius.reccomplex.utils.scale.Scales;
@@ -23,7 +23,7 @@ public class TableDataSourceInvGenSingleTag extends TableDataSourceItem<ItemInve
     public TableDataSourceInvGenSingleTag()
     {
         addSegment(0, () -> {
-            TableCellFloat cell = new TableCellFloat("itemCount", item.getItemChance(stack), 0, 1);
+            TableCellFloatSlider cell = new TableCellFloatSlider("itemCount", item.getItemChance(stack), 0, 1);
             cell.setScale(Scales.pow(5));
             cell.addListener(range -> item.setItemChance(stack, range));
             return new TitledCell(IvTranslations.get("reccomplex.gui.inventorygen.single.chance"), cell);

@@ -25,6 +25,8 @@ import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -74,6 +76,7 @@ public class FactorMatch extends GenericPlacer.Factor
         return failChances >= 0 ? (float) matched / sources.size() : 0;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
@@ -81,7 +84,7 @@ public class FactorMatch extends GenericPlacer.Factor
     }
 
     @Override
-    public List<Pair<LineSelection, Float>> consider(WorldCache cache, LineSelection considerable, @Nullable IvBlockCollection blockCollection, StructurePlaceContext context)
+    public List<Pair<LineSelection, Float>> consider(WorldCache cache, LineSelection considerable, @Nullable IvBlockCollection blockCollection, int baseline, StructurePlaceContext context)
     {
         if (blockCollection == null)
             throw new IllegalArgumentException("Missing a block collection!");
@@ -92,7 +95,7 @@ public class FactorMatch extends GenericPlacer.Factor
         BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
         Set<BlockPos.MutableBlockPos> sources = BlockAreas.streamMutablePositions(blockCollection.area())
                 .filter(p -> sourceMatcher.evaluate(() -> blockCollection.getBlockState(p)))
-                .map(p -> new BlockPos.MutableBlockPos(context.transform.apply(p, size).add(lowerCoord.getX(), 0, lowerCoord.getZ())))
+                .map(p -> new BlockPos.MutableBlockPos(context.transform.apply(p, size).add(lowerCoord.getX(), -baseline, lowerCoord.getZ())))
                 .collect(Collectors.toSet());
 
         for (IntegerRange range : (Iterable<IntegerRange>) considerable.streamSections(null, true)::iterator)

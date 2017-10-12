@@ -23,7 +23,7 @@ import ivorius.reccomplex.utils.expression.BiomeExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
+import ivorius.reccomplex.world.gen.feature.structure.generic.placement.SelectivePlacer;
 import ivorius.reccomplex.world.gen.feature.villages.GenericVillageCreationHandler;
 import ivorius.reccomplex.world.gen.feature.villages.GenericVillagePiece;
 import ivorius.reccomplex.world.gen.feature.villages.TemporaryVillagerRegistry;
@@ -32,6 +32,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.structure.MapGenStructureIO;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -104,9 +106,10 @@ public class VanillaGeneration extends GenerationType
     @Override
     public Placer placer()
     {
-        return GenericPlacer.surfacePlacer();
+        return SelectivePlacer.surfacePlacer(0);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {

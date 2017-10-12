@@ -20,7 +20,10 @@ import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.BlockPattern;
 import ivorius.reccomplex.utils.expression.EnvironmentExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
+import ivorius.reccomplex.world.gen.feature.structure.generic.placement.SelectivePlacer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -83,9 +86,10 @@ public class SaplingGeneration extends GenerationType
     @Override
     public Placer placer()
     {
-        return GenericPlacer.surfacePlacer();
+        return SelectivePlacer.surfacePlacer(0);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {

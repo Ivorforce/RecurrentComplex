@@ -10,7 +10,6 @@ import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceNaturalGenLimitation;
-import ivorius.reccomplex.gui.editstructure.placer.TableDataSourcePlacer;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
@@ -50,9 +49,7 @@ public class TableDataSourceNaturalGeneration extends TableDataSourceSegmented
 
         addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, delegate));
 
-        addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourcePlacer(generationInfo.placer, delegate, navigator))
-                .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
+        addManagedSegment(3, new TableDataSourceSelectivePlacer(navigator, delegate, generationInfo.placer));
 
         addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator))

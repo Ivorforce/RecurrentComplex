@@ -25,12 +25,14 @@ import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBiomeMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
-import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
+import ivorius.reccomplex.world.gen.feature.structure.generic.placement.SelectivePlacer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.DimensionMatcherPresets;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -117,9 +119,10 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
     @Override
     public Placer placer()
     {
-        return GenericPlacer.surfacePlacer();
+        return SelectivePlacer.surfacePlacer(0);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {

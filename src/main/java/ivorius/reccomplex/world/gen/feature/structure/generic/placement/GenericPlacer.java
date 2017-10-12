@@ -28,6 +28,8 @@ import ivorius.ivtoolkit.util.LineSelections;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -39,7 +41,7 @@ import java.util.stream.Collectors;
 /**
  * Created by lukas on 25.05.14.
  */
-public class GenericPlacer implements Placer
+public class GenericPlacer
 {
     public final List<Factor> factors = new ArrayList<>();
 
@@ -52,17 +54,10 @@ public class GenericPlacer implements Placer
         this.factors.addAll(factors);
     }
 
-    @Nonnull
-    public static GenericPlacer surfacePlacer()
-    {
-        return GenericPlacerPresets.instance().preset("surface").get();
-    }
-
-    @Override
-    public int place(StructurePlaceContext context, @Nullable IvBlockCollection blockCollection)
+    public int place(StructurePlaceContext context, @Nullable IvBlockCollection blockCollection, int baseline)
     {
         if (factors.isEmpty())
-            return DONT_GENERATE;
+            return Placer.DONT_GENERATE;
 
         WorldServer world = context.environment.world;
 
@@ -74,7 +69,7 @@ public class GenericPlacer implements Placer
 
         factors.forEach(factor ->
         {
-            List<Pair<LineSelection, Float>> consideration = factor.consider(cache, considerable, blockCollection, context);
+            List<Pair<LineSelection, Float>> consideration = factor.consider(cache, considerable, blockCollection, baseline, context);
 
             // Quick remove null considerations
             consideration.stream().filter(p -> p.getRight() <= 0).forEach(p -> considerable.set(p.getLeft(), true, false));
@@ -92,7 +87,7 @@ public class GenericPlacer implements Placer
                         .reduce(1f, (left, right) -> left * right)))
                 .filter(p -> p.getRight() > 0).collect(Collectors.toSet());
 
-        return applicable.size() > 0 ? WeightedSelector.select(context.random, applicable, Pair::getRight).getLeft() : DONT_GENERATE;
+        return applicable.size() > 0 ? WeightedSelector.select(context.random, applicable, Pair::getRight).getLeft() - baseline : Placer.DONT_GENERATE;
     }
 
     public static abstract class Factor
@@ -114,68 +109,14 @@ public class GenericPlacer implements Placer
             return IvTranslations.get("reccomplex.placer.factors." + FactorRegistry.INSTANCE.getTypeRegistry().iDForType(getClass()));
         }
 
+        @SideOnly(Side.CLIENT)
         public abstract TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate);
 
-        public abstract List<Pair<LineSelection, Float>> consider(WorldCache cache, LineSelection considerable, @Nullable IvBlockCollection blockCollection, StructurePlaceContext context);
+        public abstract List<Pair<LineSelection, Float>> consider(WorldCache cache, LineSelection considerable, @Nullable IvBlockCollection blockCollection, int baseline, StructurePlaceContext context);
     }
 
     public static class Serializer implements JsonSerializer<GenericPlacer>, JsonDeserializer<GenericPlacer>
     {
-        @Nonnull
-        public static void readLegacyPlacer(PresettedObject<GenericPlacer> placer, JsonDeserializationContext context, JsonObject jsonObject)
-        {
-            // Legacy
-            SelectionMode selectionMode = jsonObject.has("selectionMode")
-                    ? (SelectionMode) context.deserialize(jsonObject.get("selectionMode"), SelectionMode.class)
-                    : SelectionMode.SURFACE;
-
-            int minYShift = JsonUtils.getInt(jsonObject, "minY", 0);
-            int maxYShift = JsonUtils.getInt(jsonObject, "maxY", 0);
-
-            RayDynamicPosition.Type dynType = null;
-            switch (selectionMode)
-            {
-                case SURFACE:
-                default:
-                    placer.setContents(new GenericPlacer(Collections.singletonList(new FactorLimit(1, Arrays.asList(
-                            new RayDynamicPosition(null, RayDynamicPosition.Type.WORLD_HEIGHT),
-                            new RayAverageMatcher(null, false, "(blocks:movement & !is:foliage) | is:liquid"),
-                            new RayMove(null, minYShift),
-                            new RayMove(1f, maxYShift - minYShift)
-                    )))));
-                    break;
-                case UNDERWATER:
-                    placer.setContents(new GenericPlacer(Collections.singletonList(new FactorLimit(1, Arrays.asList(
-                            new RayDynamicPosition(null, RayDynamicPosition.Type.WORLD_HEIGHT),
-                            new RayAverageMatcher(null, false, "blocks:movement & !is:foliage"),
-                            new RayMove(null, minYShift),
-                            new RayMove(1f, maxYShift - minYShift)
-                    )))));
-                    break;
-                case LOWEST_EDGE:
-                    placer.setContents(new GenericPlacer(Collections.singletonList(new FactorLimit(1, Arrays.asList(
-                            new RayDynamicPosition(null, RayDynamicPosition.Type.WORLD_HEIGHT),
-                            new RayMatcher(null, false, .9f, "!(is:air | is:foliage | is:replaceable) & !is:liquid"),
-                            new RayMove(null, minYShift),
-                            new RayMove(1f, maxYShift - minYShift)
-                    )))));
-                    break;
-                case BEDROCK:
-                    dynType = RayDynamicPosition.Type.BEDROCK;
-                case SEALEVEL:
-                    if (dynType == null) dynType = RayDynamicPosition.Type.SEALEVEL;
-                case TOP:
-                    if (dynType == null) dynType = RayDynamicPosition.Type.WORLD_HEIGHT;
-
-                    placer.setContents(new GenericPlacer(Collections.singletonList(new FactorLimit(1, Arrays.asList(
-                            new RayDynamicPosition(null, dynType),
-                            new RayMove(null, minYShift),
-                            new RayMove(1f, maxYShift - minYShift)
-                    )))));
-                    break;
-            }
-        }
-
         @Override
         public GenericPlacer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {

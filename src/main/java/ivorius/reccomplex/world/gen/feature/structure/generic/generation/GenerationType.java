@@ -15,6 +15,8 @@ import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -77,5 +79,6 @@ public abstract class GenerationType
     @Nullable
     public abstract Placer placer();
 
+    @SideOnly(Side.CLIENT)
     public abstract TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate);
 }

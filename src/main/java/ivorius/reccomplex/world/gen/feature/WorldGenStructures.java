@@ -51,7 +51,7 @@ public class WorldGenStructures
                 return;
 
             new StructureGenerator<>(structure).world(world).generationInfo(staticGenInfo)
-                    .seed(random.nextLong()).randomPosition(pos, staticGenInfo.placer.getContents()).fromCenter(true)
+                    .seed(random.nextLong()).randomPosition(pos, staticGenInfo.placer).fromCenter(true)
                     .partially(RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES, chunkPos)
                     .generate();
         });
@@ -108,7 +108,7 @@ public class WorldGenStructures
         {
             StructureGenerator<?> generator = new StructureGenerator<>(structure).world(world).generationInfo(naturalGenInfo)
                     .seed(seed).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
-                    .randomPosition(genPos, naturalGenInfo.placer.getContents()).fromCenter(true)
+                    .randomPosition(genPos, naturalGenInfo.placer).fromCenter(true)
                     .partially(RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES, chunkPos);
 
             if (naturalGenInfo.getGenerationWeight(world.provider, generator.environment().biome) <= 0)

@@ -21,6 +21,8 @@ import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -100,6 +102,7 @@ public class ListGeneration extends GenerationType implements WeightedSelector.I
         return null;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {

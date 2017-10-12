@@ -7,7 +7,6 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 
 import com.google.gson.*;
 import com.google.gson.annotations.SerializedName;
-import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.ivtoolkit.world.chunk.Chunks;
@@ -19,16 +18,16 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;
 import ivorius.reccomplex.utils.expression.DimensionExpression;
-import ivorius.reccomplex.utils.presets.PresettedObject;
-import ivorius.reccomplex.utils.presets.PresettedObjects;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
-import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPlacerPresets;
+import ivorius.reccomplex.world.gen.feature.structure.generic.placement.SelectivePlacer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -45,7 +44,7 @@ public class StaticGeneration extends GenerationType
 {
     private static Gson gson = createGson();
 
-    public final PresettedObject<GenericPlacer> placer = new PresettedObject<>(GenericPlacerPresets.instance(), null);
+    public SelectivePlacer placer;
     public DimensionExpression dimensionExpression;
 
     public boolean relativeToSpawn;
@@ -67,7 +66,7 @@ public class StaticGeneration extends GenerationType
         this.position = position;
         this.pattern = pattern;
 
-        this.placer.setPreset("surface");
+        this.placer = new SelectivePlacer();
     }
 
     public static Gson createGson()
@@ -144,9 +143,10 @@ public class StaticGeneration extends GenerationType
     @Override
     public Placer placer()
     {
-        return placer.getContents();
+        return placer;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {
@@ -195,12 +195,7 @@ public class StaticGeneration extends GenerationType
 
             StaticGeneration staticGenInfo = new StaticGeneration(id, ExpressionCache.of(new DimensionExpression(), dimension), relativeToSpawn, new BlockSurfacePos(positionX, positionZ), pattern);
 
-            if (!PresettedObjects.read(jsonObject, gson, staticGenInfo.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>() {}.getType())
-                    && jsonObject.has("generationY"))
-            {
-                // Legacy
-                GenericPlacer.Serializer.readLegacyPlacer(staticGenInfo.placer, context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
-            }
+            staticGenInfo.placer = SelectivePlacer.gson.fromJson(json, SelectivePlacer.class);
 
             return staticGenInfo;
         }
@@ -208,11 +203,10 @@ public class StaticGeneration extends GenerationType
         @Override
         public JsonElement serialize(StaticGeneration src, Type typeOfSrc, JsonSerializationContext context)
         {
-            JsonObject jsonObject = new JsonObject();
+            JsonObject jsonObject = (JsonObject) SelectivePlacer.gson.toJsonTree(src.placer);
 
             jsonObject.addProperty("id", src.id);
 
-            PresettedObjects.write(jsonObject, gson, src.placer, "placerPreset", "placer");
             jsonObject.addProperty("dimensions", src.dimensionExpression.getExpression());
 
             jsonObject.addProperty("relativeToSpawn", src.relativeToSpawn);

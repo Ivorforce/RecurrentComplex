@@ -549,6 +549,8 @@ reccomplex.tileentity.nbt=Tile Entity NBT
 
 reccomplex.placer=Placer
 reccomplex.placer.tooltip=Determines the height to<br>spawn at.
+reccomplex.placer.baseline=Baseline
+reccomplex.placer.baseline.tooltip=The height of the surface in the structure.<br>'0' would mean the first row of<br>blocks are at surface height.
 
 reccomplex.placer.factor.priority=Priority
 reccomplex.placer.factor.priority.tooltip=Priority that this factor<br>will be considered at.<br>This value is fed into a pow scale:<br>weight ^ priority

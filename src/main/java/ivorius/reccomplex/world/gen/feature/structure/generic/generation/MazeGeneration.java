@@ -133,6 +133,7 @@ public class MazeGeneration extends GenerationType implements WeightedSelector.I
         return null;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {

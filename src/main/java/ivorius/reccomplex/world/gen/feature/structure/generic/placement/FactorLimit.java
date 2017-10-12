@@ -22,6 +22,8 @@ import ivorius.reccomplex.utils.IntegerRanges;
 import ivorius.ivtoolkit.util.LineSelection;
 import ivorius.reccomplex.utils.scale.Scales;
 import ivorius.ivtoolkit.world.WorldCache;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -63,6 +65,7 @@ public class FactorLimit extends GenericPlacer.Factor
         return rayRegistry;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {
@@ -70,7 +73,7 @@ public class FactorLimit extends GenericPlacer.Factor
     }
 
     @Override
-    public List<Pair<LineSelection, Float>> consider(WorldCache cache, LineSelection considerable, @Nullable IvBlockCollection blockCollection, StructurePlaceContext context)
+    public List<Pair<LineSelection, Float>> consider(WorldCache cache, LineSelection considerable, @Nullable IvBlockCollection blockCollection, int baseline, StructurePlaceContext context)
     {
         List<Pair<LineSelection, Float>> consideration = new ArrayList<>();
         int height = cache.world.getHeight();

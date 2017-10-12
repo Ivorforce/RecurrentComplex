@@ -17,7 +17,6 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.presets.PresettedList;
-import ivorius.reccomplex.utils.presets.PresettedObject;
 import ivorius.reccomplex.utils.presets.PresettedObjects;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
 import ivorius.reccomplex.world.gen.feature.selector.*;
@@ -25,13 +24,14 @@ import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBiomeMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedDimensionMatcher;
-import ivorius.reccomplex.world.gen.feature.structure.generic.placement.GenericPlacer;
+import ivorius.reccomplex.world.gen.feature.structure.generic.placement.SelectivePlacer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.BiomeMatcherPresets;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.DimensionMatcherPresets;
-import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPlacerPresets;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,7 +53,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
 
     public String generationCategory;
 
-    public PresettedObject<GenericPlacer> placer = new PresettedObject<>(GenericPlacerPresets.instance(), null);
+    public SelectivePlacer placer;
 
     public SpawnLimitation spawnLimitation;
 
@@ -63,7 +63,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
 
         biomeWeights.setPreset("overworld");
         dimensionWeights.setPreset("overworld");
-        placer.setPreset("surface");
+        placer =  new SelectivePlacer();
     }
 
     public NaturalGeneration(@Nullable String id, String generationCategory)
@@ -79,7 +79,6 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
         builder.registerTypeAdapter(NaturalGeneration.class, new NaturalGeneration.Serializer());
         builder.registerTypeAdapter(WeightedBiomeMatcher.class, new WeightedBiomeMatcher.Serializer());
         builder.registerTypeAdapter(WeightedDimensionMatcher.class, new WeightedDimensionMatcher.Serializer());
-        builder.registerTypeAdapter(GenericPlacer.class, new GenericPlacer.Serializer());
 
         return builder.create();
     }
@@ -104,7 +103,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
 
         naturalGeneration.dimensionWeights.setPreset("overworld");
 
-        GenericPlacer.Serializer.readLegacyPlacer(naturalGeneration.placer, context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
+        naturalGeneration.placer = SelectivePlacer.Serializer.readLegacyPlacer(context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
 
         return naturalGeneration;
     }
@@ -179,9 +178,10 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
     @Override
     public Placer placer()
     {
-        return placer.getContents();
+        return placer;
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(MazeVisualizationContext mazeVisualizationContext, TableNavigator navigator, TableDelegate delegate)
     {
@@ -218,12 +218,7 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
 
             NaturalGeneration naturalGeneration = new NaturalGeneration(id, generationCategory);
 
-            if (!PresettedObjects.read(jsonObject, gson, naturalGeneration.placer, "placerPreset", "placer", new TypeToken<GenericPlacer>() {}.getType())
-                    && jsonObject.has("generationY"))
-            {
-                // Legacy
-                GenericPlacer.Serializer.readLegacyPlacer(naturalGeneration.placer, context, JsonUtils.getJsonObject(jsonObject, "generationY", new JsonObject()));
-            }
+            naturalGeneration.placer = SelectivePlacer.gson.fromJson(json, SelectivePlacer.class);
 
             if (jsonObject.has("generationWeight"))
                 naturalGeneration.generationWeight = JsonUtils.getDouble(jsonObject, "generationWeight");
@@ -240,15 +235,13 @@ public class NaturalGeneration extends GenerationType implements EnvironmentalSe
         @Override
         public JsonElement serialize(NaturalGeneration src, Type typeOfSrc, JsonSerializationContext context)
         {
-            JsonObject jsonObject = new JsonObject();
+            JsonObject jsonObject = (JsonObject) SelectivePlacer.gson.toJsonTree(src.placer);
 
             jsonObject.addProperty("id", src.id);
 
             jsonObject.addProperty("generationCategory", src.generationCategory);
             if (src.generationWeight != null)
                 jsonObject.addProperty("generationWeight", src.generationWeight);
-
-            PresettedObjects.write(jsonObject, gson, src.placer, "placerPreset", "placer");
 
             PresettedObjects.write(jsonObject, gson, src.biomeWeights, "biomeWeightsPreset", "generationBiomes");
             PresettedObjects.write(jsonObject, gson, src.dimensionWeights, "dimensionWeightsPreset", "generationDimensions");

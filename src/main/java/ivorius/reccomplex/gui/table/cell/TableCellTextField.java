@@ -9,12 +9,15 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
 /**
  * Created by lukas on 02.06.14.
  */
+@SideOnly(Side.CLIENT)
 public abstract class TableCellTextField<T> extends TableCellPropertyDefault<T>
 {
     @Nullable
@@ -33,6 +36,7 @@ public abstract class TableCellTextField<T> extends TableCellPropertyDefault<T>
     {
         super(id, value);
         textField = new GuiTextField(-1, getFontRenderer(), 0, 0, 0, 0);
+        textField.setMaxStringLength(32500); // From command blocks
         stateIndicator = new GuiValidityStateIndicator(0, 0, GuiValidityStateIndicator.State.UNKNWON);
         setPropertyValue(value);
         updateValidityStateIndicator();

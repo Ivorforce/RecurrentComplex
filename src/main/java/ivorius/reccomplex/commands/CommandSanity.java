@@ -131,6 +131,9 @@ public class CommandSanity extends CommandExpecting
                     !structure.generationTypes(GenerationType.class).isEmpty(), "Missing generation type");
 
             sane &= addGenericStructureLog(commandSender, (s, structure) ->
+                    !structure.metadata.authors.isEmpty(), "No author");
+
+            sane &= addGenericStructureLog(commandSender, (s, structure) ->
                             structure.transformer.getTransformers().stream().allMatch(t -> t.id().length() > 0)
                     , "Transformer has empty ID");
 

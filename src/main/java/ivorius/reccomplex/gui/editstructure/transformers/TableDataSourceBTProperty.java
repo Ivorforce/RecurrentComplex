@@ -41,10 +41,10 @@ public class TableDataSourceBTProperty extends TableDataSourceSegmented
         this.navigator = navigator;
         this.tableDelegate = delegate;
 
-        addManagedSegment(0, new TableDataSourceTransformer(transformer, delegate, navigator));
-        addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), IvTranslations.getLines("reccomplex.transformer.block.source.tooltip"), transformer.sourceMatcher, null));
+        addSegment(0, new TableDataSourceTransformer(transformer, delegate, navigator));
+        addSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), IvTranslations.getLines("reccomplex.transformer.block.source.tooltip"), transformer.sourceMatcher, null));
 
-        addManagedSegment(2, new TableDataSourceSupplied(() -> {
+        addSegment(2, new TableDataSourceSupplied(() -> {
             propertyIDCell = new TableCellString(null, transformer.propertyName);
             propertyIDCell.setShowsValidityState(true);
             propertyIDCell.setValidityState(currentIDState());
@@ -57,7 +57,7 @@ public class TableDataSourceBTProperty extends TableDataSourceSegmented
             return new TitledCell(IvTranslations.get("reccomplex.transformer.propertyReplace.id"), propertyIDCell);
         }));
 
-        addManagedSegment(3, new TableDataSourceSupplied(() -> {
+        addSegment(3, new TableDataSourceSupplied(() -> {
             propertyValueCell = new TableCellString(null, transformer.propertyValue);
             propertyValueCell.setShowsValidityState(true);
             propertyValueCell.setValidityState(currentValueState());

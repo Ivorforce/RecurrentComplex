@@ -6,9 +6,7 @@
 package ivorius.reccomplex.gui.editstructure.gentypes.staticgen;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
-import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellInteger;
 import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
@@ -34,6 +32,30 @@ public class TableDataSourceStaticPattern extends TableDataSourceSegmented
     {
         this.pattern = pattern;
         this.tableDelegate = tableDelegate;
+
+        addSegment(0, () -> {
+            TableCellStringInt cell = new TableCellStringInt("repeatX", pattern.repeatX);
+            cell.addListener(val -> pattern.repeatX = val);
+            return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.repeat.x"), cell)
+                    .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.repeat.tooltip"));
+        }, () -> {
+            TableCellStringInt cell = new TableCellStringInt("repeatZ", pattern.repeatZ);
+            cell.addListener(val -> pattern.repeatZ = val);
+            return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.repeat.z"), cell)
+                    .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.repeat.tooltip"));
+        });
+
+        addSegment(1, () -> {
+            TableCellInteger cell = new TableCellInteger("shiftX", pattern.randomShiftX, 0, 10);
+            cell.addListener(val -> pattern.randomShiftX = val);
+            return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.x"), cell)
+                    .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift.tooltip"));
+        }, () -> {
+            TableCellInteger cell = new TableCellInteger("shiftZ", pattern.randomShiftZ, 0, 10);
+            cell.addListener(val -> pattern.randomShiftZ = val);
+            return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.z"), cell)
+                    .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift.tooltip"));
+        });
     }
 
     @Nonnull
@@ -41,68 +63,5 @@ public class TableDataSourceStaticPattern extends TableDataSourceSegmented
     public String title()
     {
         return "Static Pattern";
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 2;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        switch (segment)
-        {
-            case 0:
-            case 1:
-                return 2;
-            default:
-                return super.sizeOfSegment(segment);
-        }
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        switch (segment)
-        {
-            case 0:
-            {
-                if (index == 0)
-                {
-                    TableCellStringInt cell = new TableCellStringInt("repeatX", pattern.repeatX);
-                    cell.addListener(val -> pattern.repeatX = val);
-                    return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.repeat.x"), cell)
-                            .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.repeat.tooltip"));
-                }
-                else if (index == 1)
-                {
-                    TableCellStringInt cell = new TableCellStringInt("repeatZ", pattern.repeatZ);
-                    cell.addListener(val -> pattern.repeatZ = val);
-                    return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.repeat.z"), cell)
-                            .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.repeat.tooltip"));
-                }
-            }
-            case 1:
-            {
-                if (index == 0)
-                {
-                    TableCellInteger cell = new TableCellInteger("shiftX", pattern.randomShiftX, 0, 10);
-                    cell.addListener(val -> pattern.randomShiftX = val);
-                    return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.x"), cell)
-                            .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift.tooltip"));
-                }
-                else if (index == 1)
-                {
-                    TableCellInteger cell = new TableCellInteger("shiftZ", pattern.randomShiftZ, 0, 10);
-                    cell.addListener(val -> pattern.randomShiftZ = val);
-                    return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.z"), cell)
-                            .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift.tooltip"));
-                }
-            }
-        }
-
-        return super.cellForIndexInSegment(table, index, segment);
     }
 }

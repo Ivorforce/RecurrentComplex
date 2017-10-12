@@ -30,7 +30,7 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented
 {
     public TableDataSourceBiomeGenList(PresettedList<WeightedBiomeMatcher> list, TableDelegate tableDelegate, TableNavigator navigator)
     {
-        addManagedSegment(0, new TableDataSourcePresettedObject<>(list, RCFileSaver.BIOME_PRESET, tableDelegate, navigator)
+        addSegment(0, new TableDataSourcePresettedObject<>(list, RCFileSaver.BIOME_PRESET, tableDelegate, navigator)
                 .withApplyPresetAction(() -> addPresetSegments(list, tableDelegate, navigator)));
 
         addPresetSegments(list, tableDelegate, navigator);
@@ -38,7 +38,7 @@ public class TableDataSourceBiomeGenList extends TableDataSourceSegmented
 
     public void addPresetSegments(final PresettedList<WeightedBiomeMatcher> list, final TableDelegate tableDelegate, final TableNavigator navigator)
     {
-        addManagedSegment(1, new TableDataSourcePresettedList<WeightedBiomeMatcher>(list, tableDelegate, navigator)
+        addSegment(1, new TableDataSourcePresettedList<WeightedBiomeMatcher>(list, tableDelegate, navigator)
         {
             @Override
             public String getDisplayString(WeightedBiomeMatcher weightedBiomeMatcher)

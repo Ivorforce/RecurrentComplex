@@ -8,10 +8,8 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
-import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBiomeMatcher;
 import net.minecraftforge.fml.relauncher.Side;
@@ -35,7 +33,11 @@ public class TableDataSourceBiomeGen extends TableDataSourceSegmented
         this.generationInfo = generationInfo;
         this.tableDelegate = tableDelegate;
 
-        addManagedSegment(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.getBiomeExpression(), null));
+        addSegment(0, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.biomes"), generationInfo.getBiomeExpression(), null));
+
+        addSegment(1, () -> {
+            return RCGuiTables.defaultWeightElement(val -> generationInfo.setGenerationWeight(TableCells.toDouble(val)), generationInfo.getGenerationWeight());
+        });
     }
 
     @Nonnull
@@ -43,28 +45,5 @@ public class TableDataSourceBiomeGen extends TableDataSourceSegmented
     public String title()
     {
         return "Biome";
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 2;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        return segment == 1 ? 1 : super.sizeOfSegment(segment);
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        if (segment == 1)
-        {
-            return RCGuiTables.defaultWeightElement(val -> generationInfo.setGenerationWeight(TableCells.toDouble(val)), generationInfo.getGenerationWeight());
-        }
-
-        return super.cellForIndexInSegment(table, index, segment);
     }
 }

@@ -8,11 +8,9 @@ package ivorius.reccomplex.gui.editstructure.gentypes;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.RCGuiTables;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
@@ -39,52 +37,23 @@ public class TableDataSourceMazeGeneration extends TableDataSourceSegmented
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
 
-        addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, tableDelegate));
-        addManagedSegment(3, new TableDataSourceMazeComponent(generationInfo.mazeComponent, navigator, tableDelegate).visualizing(visualizationContext));
-    }
+        addSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, tableDelegate));
 
-    @Override
-    public int numberOfSegments()
-    {
-        return 4;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        switch (segment)
-        {
-            case 1:
-            case 2:
-                return 1;
-            default:
-                return super.sizeOfSegment(segment);
-        }
-
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        switch (segment)
-        {
-            case 1:
+        addSegment(1, () -> {
+            TableCellString cell = new TableCellString("mazeID", generationInfo.mazeID);
+            cell.setValidityState(MazeGeneration.idValidity(cell.getPropertyValue()));
+            cell.addListener((mazeID) ->
             {
-                TableCellString cell = new TableCellString("mazeID", generationInfo.mazeID);
+                generationInfo.setMazeID(mazeID);
                 cell.setValidityState(MazeGeneration.idValidity(cell.getPropertyValue()));
-                cell.addListener((mazeID) ->
-                {
-                    generationInfo.setMazeID(mazeID);
-                    cell.setValidityState(MazeGeneration.idValidity(cell.getPropertyValue()));
-                });
-                return new TitledCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.mazeid"), cell);
-            }
-            case 2:
-            {
-                return RCGuiTables.defaultWeightElement(val -> generationInfo.weight = TableCells.toDouble(val), generationInfo.weight);
-            }
-        }
+            });
+            return new TitledCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.mazeid"), cell);
+        });
 
-        return super.cellForIndexInSegment(table, index, segment);
+        addSegment(2, () -> {
+            return RCGuiTables.defaultWeightElement(val -> generationInfo.weight = TableCells.toDouble(val), generationInfo.weight);
+        });
+
+        addSegment(3, new TableDataSourceMazeComponent(generationInfo.mazeComponent, navigator, tableDelegate).visualizing(visualizationContext));
     }
 }

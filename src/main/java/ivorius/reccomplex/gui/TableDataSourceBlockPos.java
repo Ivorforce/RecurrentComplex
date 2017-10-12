@@ -7,7 +7,6 @@ package ivorius.reccomplex.gui;
 
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraft.util.math.BlockPos;
@@ -42,6 +41,32 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
         this.rangeY = rangeY;
         this.rangeZ = rangeZ;
         this.title = title;
+
+        addSegment(0, () -> {
+            TableCellPropertyDefault<Integer> x = createRangeCell(rangeX, this.coord.getX());
+            x.setTooltip(IvTranslations.getLines("reccomplex.gui.blockpos.x"));
+            x.addListener(i -> {
+                this.coord = new BlockPos(i, this.coord.getY(), this.coord.getZ());
+                consumer.accept(this.coord);
+            });
+
+            TableCellPropertyDefault<Integer> y = createRangeCell(rangeY, this.coord.getY());
+            y.setTooltip(IvTranslations.getLines("reccomplex.gui.blockpos.y"));
+            y.addListener(i -> {
+                this.coord = new BlockPos(this.coord.getX(), i, this.coord.getZ());
+                consumer.accept(this.coord);
+            });
+
+            TableCellPropertyDefault<Integer> z = createRangeCell(rangeZ, this.coord.getZ());
+            z.setTooltip(IvTranslations.getLines("reccomplex.gui.blockpos.z"));
+            z.addListener(i -> {
+                this.coord = new BlockPos(this.coord.getX(), this.coord.getY(), i);
+                consumer.accept(this.coord);
+            });
+
+            return new TitledCell(title, new TableCellMulti(x, y, z))
+                    .withTitleTooltip(tooltip);
+        });
     }
 
     public TableDataSourceBlockPos(BlockPos coord, Consumer<BlockPos> consumer, String title, List<String> tooltip)
@@ -65,47 +90,7 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
         this.tooltip = tooltip;
     }
 
-    @Override
-    public int numberOfSegments()
-    {
-        return 1;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        return 1;
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        TableCellPropertyDefault<Integer> x = create(rangeX, coord.getX());
-        x.setTooltip(IvTranslations.getLines("reccomplex.gui.blockpos.x"));
-        x.addListener(i -> {
-            coord = new BlockPos(i, coord.getY(), coord.getZ());
-            consumer.accept(coord);
-        });
-
-        TableCellPropertyDefault<Integer> y = create(rangeY, coord.getY());
-        y.setTooltip(IvTranslations.getLines("reccomplex.gui.blockpos.y"));
-        y.addListener(i -> {
-            coord = new BlockPos(coord.getX(), i, coord.getZ());
-            consumer.accept(coord);
-        });
-
-        TableCellPropertyDefault<Integer> z = create(rangeZ, coord.getZ());
-        z.setTooltip(IvTranslations.getLines("reccomplex.gui.blockpos.z"));
-        z.addListener(i -> {
-            coord = new BlockPos(coord.getX(), coord.getY(), i);
-            consumer.accept(coord);
-        });
-
-        return new TitledCell(title, new TableCellMulti(x, y, z))
-                .withTitleTooltip(tooltip);
-    }
-
-    protected TableCellPropertyDefault<Integer> create(IntegerRange range, int val)
+    public static TableCellPropertyDefault<Integer> createRangeCell(IntegerRange range, int val)
     {
         if (range != null)
             return new TableCellInteger(null, val, range.min, range.max);

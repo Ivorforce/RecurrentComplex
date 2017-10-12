@@ -32,8 +32,8 @@ public class TableDataSourceBTBiomeSpecific extends TableDataSourceSegmented
         this.navigator = navigator;
         this.tableDelegate = delegate;
 
-        addManagedSegment(0, new TableDataSourceTransformer(transformer, delegate, navigator));
-        addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), IvTranslations.getLines("reccomplex.transformer.block.source.tooltip"), transformer.sourceMatcher, null));
+        addSegment(0, new TableDataSourceTransformer(transformer, delegate, navigator));
+        addSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), IvTranslations.getLines("reccomplex.transformer.block.source.tooltip"), transformer.sourceMatcher, null));
     }
 
     public TransformerVillageSpecific getTransformer()

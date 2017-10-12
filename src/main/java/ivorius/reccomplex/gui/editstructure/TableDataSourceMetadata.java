@@ -5,8 +5,6 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.reccomplex.gui.table.GuiTable;
-import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
@@ -28,6 +26,20 @@ public class TableDataSourceMetadata extends TableDataSourceSegmented
     public TableDataSourceMetadata(Metadata metadata)
     {
         this.metadata = metadata;
+
+        addSegment(0, () -> {
+            TableCellString cell = new TableCellString("authors", metadata.authors);
+            cell.addListener(val -> metadata.authors = val);
+            return new TitledCell("Authors", cell);
+        }, () -> {
+            TableCellString cell = new TableCellString("weblink", metadata.weblink);
+            cell.addListener(val -> metadata.weblink = val);
+            return new TitledCell("Weblink", cell);
+        }, () -> {
+            TableCellString cell = new TableCellString("comment", metadata.comment);
+            cell.addListener(val -> metadata.comment = val);
+            return new TitledCell("Comment", cell);
+        });
     }
 
     public Metadata getMetadata()
@@ -45,45 +57,5 @@ public class TableDataSourceMetadata extends TableDataSourceSegmented
     public String title()
     {
         return "Metadata";
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 1;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        return 3;
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        switch (index)
-        {
-            case 0:
-            {
-                TableCellString cell = new TableCellString("authors", metadata.authors);
-                cell.addListener(val -> metadata.authors = val);
-                return new TitledCell("Authors", cell);
-            }
-            case 1:
-            {
-                TableCellString cell = new TableCellString("weblink", metadata.weblink);
-                cell.addListener(val -> metadata.weblink = val);
-                return new TitledCell("Weblink", cell);
-            }
-            case 2:
-            {
-                TableCellString cell = new TableCellString("comment", metadata.comment);
-                cell.addListener(val -> metadata.comment = val);
-                return new TitledCell("Comment", cell);
-            }
-        }
-
-        return null;
     }
 }

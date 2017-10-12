@@ -32,7 +32,7 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
 {
     public TableDataSourceWeightedBlockStateList(PresettedList<WeightedBlockState> list, TableDelegate delegate, TableNavigator navigator)
     {
-        addManagedSegment(0, new TableDataSourcePresettedObject<>(list, RCFileSaver.BLOCK_PRESET, delegate, navigator)
+        addSegment(0, new TableDataSourcePresettedObject<>(list, RCFileSaver.BLOCK_PRESET, delegate, navigator)
                 .withApplyPresetAction(() -> addPresetSegments(list, delegate, navigator)));
 
         addPresetSegments(list, delegate, navigator);
@@ -70,7 +70,7 @@ public class TableDataSourceWeightedBlockStateList extends TableDataSourceSegmen
             }
         };
         listSource.setDuplicateTitle(TextFormatting.GREEN + "D");
-        addManagedSegment(1, listSource);
+        addSegment(1, listSource);
     }
 
     @Nonnull

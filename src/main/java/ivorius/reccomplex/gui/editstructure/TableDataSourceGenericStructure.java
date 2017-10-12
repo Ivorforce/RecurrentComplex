@@ -11,7 +11,6 @@ import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
 import ivorius.reccomplex.gui.TableElementSaveDirectory;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
@@ -50,25 +49,61 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
         this.tableDelegate = delegate;
         this.navigator = navigator;
 
-        addManagedSegment(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> structureKey, delegate)));
+        addSegment(0, () -> {
+            TableCellString cell = new TableCellString(null, this.structureKey);
+            cell.addListener(cell1 ->
+            {
+                this.structureKey = cell.getPropertyValue();
+                cell.setValidityState(currentNameState());
+                TableCells.reloadExcept(tableDelegate, "structureID");
+            });
+            cell.setShowsValidityState(true);
+            cell.setValidityState(currentNameState());
+            return new TitledCell("structureID", IvTranslations.get("reccomplex.structure.id"), cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.id.tooltip"));
+        });
 
-        addManagedSegment(2, TableCellMultiBuilder.create(navigator, delegate)
+        addSegment(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> structureKey, delegate)));
+
+        addSegment(2, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceMetadata(structureInfo.metadata))
                 .buildDataSource(IvTranslations.get("reccomplex.structure.metadata"), IvTranslations.getLines("reccomplex.structure.metadata.tooltip")));
 
-        addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
+        addSegment(3, () -> {
+            TableCellBoolean cellRotatable = new TableCellBoolean("rotatable", structureInfo.rotatable,
+                    IvTranslations.get("reccomplex.structure.rotatable.true"),
+                    IvTranslations.get("reccomplex.structure.rotatable.false"));
+            cellRotatable.addListener(cell -> structureInfo.rotatable = cellRotatable.getPropertyValue());
+
+            TableCellBoolean cellMirrorable = new TableCellBoolean("mirrorable", structureInfo.mirrorable,
+                    IvTranslations.format("reccomplex.structure.mirrorable.true"),
+                    IvTranslations.format("reccomplex.structure.mirrorable.false"));
+            cellMirrorable.addListener(cell -> structureInfo.mirrorable = cellMirrorable.getPropertyValue());
+
+            return new TitledCell(IvTranslations.get("reccomplex.structure.orientation"), new TableCellMulti(cellRotatable, cellMirrorable))
+                    .withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.orientation.tooltip"));
+        }, () -> {
+            TableCellBoolean cellBlocking = new TableCellBoolean("blocking", structureInfo.blocking,
+                    IvTranslations.format("reccomplex.structure.blocking.true"),
+                    IvTranslations.format("reccomplex.structure.blocking.false"));
+            cellBlocking.addListener(cell -> structureInfo.blocking = cellBlocking.getPropertyValue());
+
+            return new TitledCell(IvTranslations.get("reccomplex.structure.blocking"), cellBlocking)
+                    .withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.blocking.tooltip"));
+        });
+
+        addSegment(4, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceGenerationType(structureInfo.generationTypes, visualizationContext, delegate, navigator))
                 .buildDataSource(IvTranslations.get("reccomplex.structure.generation"), IvTranslations.getLines("reccomplex.structure.generation.tooltip")));
 
-        addManagedSegment(5, TableCellMultiBuilder.create(navigator, delegate)
+        addSegment(5, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate))
                 .buildDataSource(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")));
 
-        addManagedSegment(6, TableCellMultiBuilder.create(navigator, delegate)
+        addSegment(6, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceGenericVariableDomain(delegate, navigator, structureInfo.variableDomain))
                 .buildDataSource(IvTranslations.get("reccomplex.structure.variables"), IvTranslations.getLines("reccomplex.structure.variables.tooltip")));
 
-        addManagedSegment(7, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), IvTranslations.getLines("reccomplex.structure.dependencies.tooltip"), structureInfo.dependencies, RecurrentComplex.saver));
+        addSegment(7, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), IvTranslations.getLines("reccomplex.structure.dependencies.tooltip"), structureInfo.dependencies, RecurrentComplex.saver));
     }
 
     public GenericStructure getStructureInfo()
@@ -126,78 +161,6 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
     public String title()
     {
         return "Generic Structure";
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 8;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        switch (segment)
-        {
-            case 0:
-                return 1;
-            case 3:
-                return 2;
-        }
-
-        return super.sizeOfSegment(segment);
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        switch (segment)
-        {
-            case 0:
-                if (index == 0)
-                {
-                    TableCellString cell = new TableCellString(null, structureKey);
-                    cell.addListener(cell1 ->
-                    {
-                        structureKey = cell.getPropertyValue();
-                        cell.setValidityState(currentNameState());
-                        TableCells.reloadExcept(tableDelegate, "structureID");
-                    });
-                    cell.setShowsValidityState(true);
-                    cell.setValidityState(currentNameState());
-                    return new TitledCell("structureID", IvTranslations.get("reccomplex.structure.id"), cell).withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.id.tooltip"));
-                }
-            case 3:
-            {
-                if (index == 0)
-                {
-                    TableCellBoolean cellRotatable = new TableCellBoolean("rotatable", structureInfo.rotatable,
-                            IvTranslations.get("reccomplex.structure.rotatable.true"),
-                            IvTranslations.get("reccomplex.structure.rotatable.false"));
-                    cellRotatable.addListener(cell -> structureInfo.rotatable = cellRotatable.getPropertyValue());
-
-                    TableCellBoolean cellMirrorable = new TableCellBoolean("mirrorable", structureInfo.mirrorable,
-                            IvTranslations.format("reccomplex.structure.mirrorable.true"),
-                            IvTranslations.format("reccomplex.structure.mirrorable.false"));
-                    cellMirrorable.addListener(cell -> structureInfo.mirrorable = cellMirrorable.getPropertyValue());
-
-                    return new TitledCell(IvTranslations.get("reccomplex.structure.orientation"), new TableCellMulti(cellRotatable, cellMirrorable))
-                            .withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.orientation.tooltip"));
-                }
-                else if (index == 1)
-                {
-                    TableCellBoolean cellBlocking = new TableCellBoolean("blocking", structureInfo.blocking,
-                            IvTranslations.format("reccomplex.structure.blocking.true"),
-                            IvTranslations.format("reccomplex.structure.blocking.false"));
-                    cellBlocking.addListener(cell -> structureInfo.blocking = cellBlocking.getPropertyValue());
-
-                    return new TitledCell(IvTranslations.get("reccomplex.structure.blocking"), cellBlocking)
-                            .withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.blocking.tooltip"));
-                }
-            }
-        }
-
-        return super.cellForIndexInSegment(table, index, segment);
     }
 
     private GuiValidityStateIndicator.State currentNameState()

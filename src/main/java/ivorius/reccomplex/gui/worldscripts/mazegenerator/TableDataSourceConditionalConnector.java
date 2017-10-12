@@ -27,8 +27,8 @@ public class TableDataSourceConditionalConnector extends TableDataSourceSegmente
     {
         this.conditionalConnector = conditionalConnector;
 
-        addManagedSegment(0, new TableDataSourceConnector(conditionalConnector.connector, IvTranslations.get("reccomplex.maze.connector")));
-        addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.maze.conditional_connector.condition"), conditionalConnector.expression, null));
+        addSegment(0, new TableDataSourceConnector(conditionalConnector.connector, IvTranslations.get("reccomplex.maze.connector")));
+        addSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.maze.conditional_connector.condition"), conditionalConnector.expression, null));
     }
 
     @Nonnull
@@ -36,11 +36,5 @@ public class TableDataSourceConditionalConnector extends TableDataSourceSegmente
     public String title()
     {
         return "Conditional Connector";
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 2;
     }
 }

@@ -41,9 +41,9 @@ public class TableDataSourceInspectBlock extends TableDataSourceSegmented
         this.delegate = delegate;
         this.tileEntityData = tileEntityData;
 
-        addManagedSegment(0, TableDataSourceWeightedBlockState.tileEntitySegment(navigator, delegate, () -> this.tileEntityData, val -> this.tileEntityData = val));
-        addManagedSegment(1, new TableDataSourceBlockState(state, instate -> this.state = instate, navigator, delegate).setShowExtendedProperties(true));
-        addManagedSegment(2, new TableDataSourceBlockPos(pos, blockPos -> this.pos = blockPos));
+        addSegment(0, TableDataSourceWeightedBlockState.tileEntitySegment(navigator, delegate, () -> this.tileEntityData, val -> this.tileEntityData = val));
+        addSegment(1, new TableDataSourceBlockState(state, instate -> this.state = instate, navigator, delegate).setShowExtendedProperties(true));
+        addSegment(2, new TableDataSourceBlockPos(pos, blockPos -> this.pos = blockPos));
     }
 
     @Nonnull

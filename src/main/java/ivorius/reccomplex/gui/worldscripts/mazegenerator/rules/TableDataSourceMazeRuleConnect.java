@@ -38,12 +38,12 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
         this.rule = rule;
 
         TableCellTitle startTitle = new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connect.expect"));
-        addManagedSegment(1, new TableDataSourcePreloaded(new TitledCell(startTitle).withTitleTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.expect.tooltip"))));
-        addManagedSegment(2, new TableDataSourceMazePathList(rule.start, tableDelegate, navigator, bounds));
+        addSegment(1, new TableDataSourcePreloaded(new TitledCell(startTitle).withTitleTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.expect.tooltip"))));
+        addSegment(2, new TableDataSourceMazePathList(rule.start, tableDelegate, navigator, bounds));
 
         TableCellTitle endTitle = new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connect.end"));
-        addManagedSegment(3, new TableDataSourcePreloaded(new TitledCell(endTitle).withTitleTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.end.tooltip"))));
-        addManagedSegment(4, new TableDataSourceMazePathList(rule.end, tableDelegate, navigator, bounds));
+        addSegment(3, new TableDataSourcePreloaded(new TitledCell(endTitle).withTitleTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.end.tooltip"))));
+        addSegment(4, new TableDataSourceMazePathList(rule.end, tableDelegate, navigator, bounds));
     }
 
     @Nonnull

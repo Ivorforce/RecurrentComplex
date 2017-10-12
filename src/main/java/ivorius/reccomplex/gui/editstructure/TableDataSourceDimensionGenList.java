@@ -30,7 +30,7 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
 {
     public TableDataSourceDimensionGenList(PresettedList<WeightedDimensionMatcher> list, TableDelegate delegate, TableNavigator navigator)
     {
-        addManagedSegment(0, new TableDataSourcePresettedObject<>(list, RCFileSaver.DIMENSION_PRESET, delegate, navigator)
+        addSegment(0, new TableDataSourcePresettedObject<>(list, RCFileSaver.DIMENSION_PRESET, delegate, navigator)
                 .withApplyPresetAction(() -> addPresetSegments(list, delegate, navigator)));
 
         addPresetSegments(list, delegate, navigator);
@@ -38,7 +38,7 @@ public class TableDataSourceDimensionGenList extends TableDataSourceSegmented
 
     public void addPresetSegments(final PresettedList<WeightedDimensionMatcher> list, final TableDelegate delegate, final TableNavigator navigator)
     {
-        addManagedSegment(1, new TableDataSourcePresettedList<WeightedDimensionMatcher>(list, delegate, navigator)
+        addSegment(1, new TableDataSourcePresettedList<WeightedDimensionMatcher>(list, delegate, navigator)
         {
             @Override
             public String getDisplayString(WeightedDimensionMatcher generationInfo)

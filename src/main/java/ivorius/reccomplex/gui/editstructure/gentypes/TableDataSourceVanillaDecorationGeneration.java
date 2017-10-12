@@ -10,11 +10,9 @@ import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceBiomeGenList;
 import ivorius.reccomplex.gui.editstructure.TableDataSourceDimensionGenList;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
@@ -42,56 +40,27 @@ public class TableDataSourceVanillaDecorationGeneration extends TableDataSourceS
         this.tableDelegate = delegate;
         this.generationInfo = generationInfo;
 
-        addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, delegate));
+        addSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, delegate));
 
-        addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
+        addSegment(1, () -> {
+            TableCellEnum<RCBiomeDecorator.DecorationType> cell = new TableCellEnum<>("type", generationInfo.type, TableCellEnum.options(RCBiomeDecorator.DecorationType.values(), "reccomplex.generationInfo.decoration.types.", true));
+            cell.addListener(v -> generationInfo.type = v);
+            return new TitledCell(IvTranslations.get("reccomplex.generationInfo.vanilla.type"), cell);
+        });
+
+        addSegment(2, () -> {
+            return RCGuiTables.defaultWeightElement(val -> generationInfo.generationWeight = TableCells.toDouble(val), generationInfo.generationWeight);
+        });
+
+        addSegment(3, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator))
                 .buildDataSource(IvTranslations.get("reccomplex.gui.biomes")));
 
-        addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
+        addSegment(4, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator))
                 .buildDataSource(IvTranslations.get("reccomplex.gui.dimensions")));
 
-        addManagedSegment(5, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift,
+        addSegment(5, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift,
                 IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 6;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        switch (segment)
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 1;
-        }
-        return super.sizeOfSegment(segment);
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        switch (segment)
-        {
-            case 1:
-            {
-                TableCellEnum<RCBiomeDecorator.DecorationType> cell = new TableCellEnum<>("type", generationInfo.type, TableCellEnum.options(RCBiomeDecorator.DecorationType.values(), "reccomplex.generationInfo.decoration.types.", true));
-                cell.addListener(v -> generationInfo.type = v);
-                return new TitledCell(IvTranslations.get("reccomplex.generationInfo.vanilla.type"), cell);
-            }
-            case 2:
-            {
-                return RCGuiTables.defaultWeightElement(val -> generationInfo.generationWeight = TableCells.toDouble(val), generationInfo.generationWeight);
-            }
-        }
-
-        return super.cellForIndexInSegment(table, index, segment);
     }
 }

@@ -38,11 +38,11 @@ public class TableDataSourceSaplingGeneration extends TableDataSourceSegmented
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
 
-        addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, tableDelegate));
-        addManagedSegment(1, new TableDataSourceSupplied(() -> RCGuiTables.defaultWeightElement(val -> generationInfo.generationWeight = TableCells.toDouble(val), generationInfo.generationWeight)));
-        addManagedSegment(2, new TableDataSourceBlockPattern(generationInfo.pattern, visualizationContext, tableDelegate, navigator));
-        addManagedSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.environment"), generationInfo.environmentExpression, null));
-        addManagedSegment(4, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift,
+        addSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, tableDelegate));
+        addSegment(1, new TableDataSourceSupplied(() -> RCGuiTables.defaultWeightElement(val -> generationInfo.generationWeight = TableCells.toDouble(val), generationInfo.generationWeight)));
+        addSegment(2, new TableDataSourceBlockPattern(generationInfo.pattern, visualizationContext, tableDelegate, navigator));
+        addSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.environment"), generationInfo.environmentExpression, null));
+        addSegment(4, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift,
                 IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
     }
 }

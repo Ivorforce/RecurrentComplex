@@ -21,7 +21,7 @@ public class TableDataSourceMulti extends TableDataSourceSegmented
     public TableDataSourceMulti(List<TableDataSource> sources)
     {
         for (int i = 0; i < sources.size(); i++)
-            addManagedSegment(i, sources.get(i));
+            addSegment(i, sources.get(i));
     }
 
     public TableDataSourceMulti(TableDataSource... sources)

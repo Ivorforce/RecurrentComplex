@@ -32,12 +32,12 @@ public class TableDataSourceBlockPattern extends TableDataSourceSegmented
     {
         this.pattern = pattern;
 
-        addManagedSegment(0, TableCellMultiBuilder.create(navigator, delegate)
+        addSegment(0, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceSelection(pattern.pattern, new int[]{50, 50, 50}, delegate, navigator, true)
                         .visualizing(visualizationContext))
                 .buildDataSource(IvTranslations.get("reccomplex.blockpattern.pattern"), IvTranslations.getLines("reccomplex.blockpattern.pattern.tooltip")));
-        addManagedSegment(1, new TableDataSourceSupplied(() -> new TitledCell(
+        addSegment(1, new TableDataSourceSupplied(() -> new TitledCell(
                 new TableCellTitle(null, IvTranslations.get("reccomplex.blockpattern.ingredients")).withTooltip(IvTranslations.formatLines("reccomplex.blockpattern.ingredients.tooltip")))));
-        addManagedSegment(2, new TableDataSourceBlockPatternIngredientList(pattern.ingredients, delegate, navigator));
+        addSegment(2, new TableDataSourceBlockPatternIngredientList(pattern.ingredients, delegate, navigator));
     }
 }

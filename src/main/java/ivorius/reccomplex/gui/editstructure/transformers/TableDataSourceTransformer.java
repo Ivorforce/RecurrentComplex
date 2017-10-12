@@ -7,10 +7,12 @@ package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.*;
+import ivorius.reccomplex.gui.table.cell.TableCellButton;
+import ivorius.reccomplex.gui.table.cell.TableCellMulti;
+import ivorius.reccomplex.gui.table.cell.TableCellString;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
@@ -35,25 +37,8 @@ public class TableDataSourceTransformer extends TableDataSourceSegmented
         this.transformer = transformer;
 
         this.delegate = delegate;
-    }
 
-    @Override
-    public int numberOfSegments()
-    {
-        return 1;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        return segment == 0 ? 1 : super.sizeOfSegment(segment);
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        if (segment == 0)
-        {
+        addSegment(0, () -> {
             TableCellString idCell = new TableCellString("transformerID", transformer.id());
             idCell.setShowsValidityState(true);
             idCell.setValidityState(currentIDState());
@@ -73,9 +58,7 @@ public class TableDataSourceTransformer extends TableDataSourceSegmented
             cell.setSize(1, 0.1f);
             return new TitledCell(IvTranslations.get("reccomplex.transformer.id"), cell)
                     .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.id.tooltip"));
-        }
-
-        return super.cellForIndexInSegment(table, index, segment);
+        });
     }
 
     protected GuiValidityStateIndicator.State currentIDState()

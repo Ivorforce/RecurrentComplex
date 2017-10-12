@@ -25,7 +25,7 @@ public class TableDataSourceFactorLimit extends TableDataSourceSegmented
     {
         this.placer = factor;
 
-        addManagedSegment(0, new TableDataSourcePlacerFactor(factor, delegate, navigator));
-        addManagedSegment(1, new TableDataSourceLimitRayList(factor.rays, delegate, navigator));
+        addSegment(0, new TableDataSourcePlacerFactor(factor, delegate, navigator));
+        addSegment(1, new TableDataSourceLimitRayList(factor.rays, delegate, navigator));
     }
 }

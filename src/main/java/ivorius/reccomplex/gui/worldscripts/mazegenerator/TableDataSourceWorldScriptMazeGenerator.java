@@ -8,10 +8,12 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.*;
+import ivorius.reccomplex.gui.table.cell.TableCellInteger;
+import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
+import ivorius.reccomplex.gui.table.cell.TableCellString;
+import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.worldscripts.TableDataSourceWorldScript;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.rules.TableDataSourceMazeRuleList;
@@ -41,17 +43,45 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
         this.delegate = delegate;
         this.navigator = navigator;
 
-        addManagedSegment(0, new TableDataSourceWorldScript(script));
-        addManagedSegment(2, TableCellMultiBuilder.create(navigator, delegate)
+        addSegment(0, new TableDataSourceWorldScript(script));
+
+        addSegment(1, () -> {
+            TableCellString cell = new TableCellString("mazeID", script.getMazeID());
+            cell.setShowsValidityState(true);
+            cell.setValidityState(MazeGeneration.idValidity(cell.getPropertyValue()));
+            cell.addListener((mazeID) -> {
+                script.setMazeID(mazeID);
+                cell.setValidityState(MazeGeneration.idValidity(mazeID));
+            });
+            return new TitledCell(IvTranslations.get("reccomplex.maze.id"), cell);
+        });
+
+        addSegment(2, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceMazeComponent(script.mazeComponent, navigator, delegate)
                         .visualizing(new MazeVisualizationContext(script.structureShift.add(realWorldPos), script.roomSize))
                 )
                 .buildDataSource(IvTranslations.get("reccomplex.maze")));
-        addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
+
+        addSegment(3, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms))
                 .buildDataSource(IvTranslations.get("reccomplex.worldscript.mazeGen.rules")));
-        addManagedSegment(4, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift,
+
+        addSegment(4, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift,
                 IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
+
+        addSegment(5, () -> {
+            TableCellInteger cell = new TableCellInteger("roomSizeX", script.getRoomSize()[0], 1, 64);
+            cell.addListener(roomSizeConsumer(0));
+            return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.x"), cell);
+        }, () -> {
+            TableCellInteger cell = new TableCellInteger("roomSizeY", script.getRoomSize()[1], 1, 64);
+            cell.addListener(roomSizeConsumer(1));
+            return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.y"), cell);
+        }, () -> {
+            TableCellInteger cell = new TableCellInteger("roomSizeZ", script.getRoomSize()[2], 1, 64);
+            cell.addListener(roomSizeConsumer(2));
+            return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.z"), cell);
+        });
     }
 
     public WorldScriptMazeGenerator getScript()
@@ -82,70 +112,6 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
     public void setNavigator(TableNavigator navigator)
     {
         this.navigator = navigator;
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 6;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        switch (segment)
-        {
-            case 1:
-                return 1;
-            case 5:
-                return 3;
-            default:
-                return super.sizeOfSegment(segment);
-        }
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        switch (segment)
-        {
-            case 1:
-            {
-                TableCellString cell = new TableCellString("mazeID", script.getMazeID());
-                cell.setShowsValidityState(true);
-                cell.setValidityState(MazeGeneration.idValidity(cell.getPropertyValue()));
-                cell.addListener((mazeID) -> {
-                    script.setMazeID(mazeID);
-                    cell.setValidityState(MazeGeneration.idValidity(mazeID));
-                });
-                return new TitledCell(IvTranslations.get("reccomplex.maze.id"), cell);
-            }
-            case 5:
-                switch (index)
-                {
-                    case 0:
-                    {
-                        TableCellInteger cell = new TableCellInteger("roomSizeX", script.getRoomSize()[0], 1, 64);
-                        cell.addListener(roomSizeConsumer(0));
-                        return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.x"), cell);
-                    }
-                    case 1:
-                    {
-                        TableCellInteger cell = new TableCellInteger("roomSizeY", script.getRoomSize()[1], 1, 64);
-                        cell.addListener(roomSizeConsumer(1));
-                        return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.y"), cell);
-                    }
-                    case 2:
-                    {
-                        TableCellInteger cell = new TableCellInteger("roomSizeZ", script.getRoomSize()[2], 1, 64);
-                        cell.addListener(roomSizeConsumer(2));
-                        return new TitledCell(IvTranslations.get("reccomplex.maze.rooms.size.z"), cell);
-                    }
-                }
-                break;
-        }
-
-        return super.cellForIndexInSegment(table, index, segment);
     }
 
     private Consumer<Integer> roomSizeConsumer(int index)

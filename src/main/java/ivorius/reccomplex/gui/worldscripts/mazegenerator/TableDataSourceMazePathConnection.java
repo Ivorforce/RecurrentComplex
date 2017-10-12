@@ -27,13 +27,13 @@ public class TableDataSourceMazePathConnection extends TableDataSourceSegmented
 {
     public TableDataSourceMazePathConnection(SavedMazePathConnection mazePath, Selection bounds, MazeVisualizationContext visualizationContext, TableDelegate tableDelegate, TableNavigator navigator)
     {
-        addManagedSegment(0, new TableDataSourceConnector(mazePath.connector, IvTranslations.get("reccomplex.maze.connector")));
+        addSegment(0, new TableDataSourceConnector(mazePath.connector, IvTranslations.get("reccomplex.maze.connector")));
 
-        addManagedSegment(1, TableCellMultiBuilder.create(navigator, tableDelegate)
+        addSegment(1, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> new TableDataSourceMazePathConditionalConnectorList(mazePath.conditionalConnectors, tableDelegate, navigator))
                 .buildDataSource(IvTranslations.get("reccomplex.maze.conditional_connectors"), IvTranslations.getLines("reccomplex.maze.conditional_connectors.tooltip")));
 
-        addManagedSegment(2, new TableDataSourceMazePath(mazePath.path, bounds, tableDelegate, navigator)
+        addSegment(2, new TableDataSourceMazePath(mazePath.path, bounds, tableDelegate, navigator)
                 .visualizing(visualizationContext));
     }
 

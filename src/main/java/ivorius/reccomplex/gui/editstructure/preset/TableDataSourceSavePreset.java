@@ -51,7 +51,7 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
         this.delegate = delegate;
         this.navigator = navigator;
 
-        addManagedSegment(0, new TableDataSourceSupplied(() ->
+        addSegment(0, new TableDataSourceSupplied(() ->
         {
             TableCellString cell = new TableCellString(null, id);
             cell.setShowsValidityState(true);
@@ -85,7 +85,7 @@ public class TableDataSourceSavePreset<T> extends TableDataSourceSegmented
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.preset.description.tooltip").stream()
                             .map(s -> s.replaceAll("<BR>", "<br>")).collect(Collectors.toList()));
         }));
-        addManagedSegment(1, TableCellMultiBuilder.create(navigator, delegate)
+        addSegment(1, TableCellMultiBuilder.create(navigator, delegate)
                 .addAction(this::save, () -> IvTranslations.get("reccomplex.gui.save"), null).buildDataSource());
     }
 

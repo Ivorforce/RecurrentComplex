@@ -5,9 +5,7 @@
 
 package ivorius.reccomplex.gui.editstructure;
 
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
-import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellInteger;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
@@ -31,61 +29,27 @@ public class TableDataSourceNaturalGenLimitation extends TableDataSourceSegmente
     {
         this.limitation = limitation;
         this.tableDelegate = tableDelegate;
-    }
 
-    @Override
-    public int numberOfSegments()
-    {
-        return 1;
-    }
+        addSegment(0, () -> {
+            TableCellEnum<NaturalGeneration.SpawnLimitation.Context> cell = new TableCellEnum<>("context", limitation.context, TableCellEnum.options(NaturalGeneration.SpawnLimitation.Context.values(), "reccomplex.generationInfo.natural.limitation.context.", false));
+            cell.addListener(val -> {
+                limitation.context = val;
+                tableDelegate.reloadData();
+            });
+            return new TitledCell("Context", cell);
+        }, () -> {
+            TableCellInteger cell = new TableCellInteger("max", limitation.maxCount, 1, 50);
+            cell.addListener(val -> limitation.maxCount = val);
+            return new TitledCell("Max Occurrences", cell);
+        });
 
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        switch (segment)
-        {
-            case 0:
-                return 2;
-            case 1:
-                return 0;
-//                return limitation.context == NaturalGenerationInfo.SpawnLimitation.Context.X_CHUNKS ? 1 : 0;
-            default:
-                return super.sizeOfSegment(segment);
-        }
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        if (segment == 0)
-        {
-            switch (index)
-            {
-                case 0:
-                {
-
-                    TableCellEnum<NaturalGeneration.SpawnLimitation.Context> cell = new TableCellEnum<>("context", limitation.context, TableCellEnum.options(NaturalGeneration.SpawnLimitation.Context.values(), "reccomplex.generationInfo.natural.limitation.context.", false));
-                    cell.addListener(val -> {
-                        limitation.context = val;
-                        tableDelegate.reloadData();
-                    });
-                    return new TitledCell("Context", cell);
-                }
-                case 1:
-                {
-                    TableCellInteger cell = new TableCellInteger("max", limitation.maxCount, 1, 50);
-                    cell.addListener(val -> limitation.maxCount = val);
-                    return new TitledCell("Max Occurrences", cell);
-                }
-            }
-        }
-//        else if (segment == 1)
+//        if (limitation.context == NaturalGenerationInfo.SpawnLimitation.Context.X_CHUNKS)
 //        {
-//            TableCellInteger cell = new TableCellInteger("chunks", limitation.chunkCount, 1, 100);
-//            cell.addPropertyConsumer(this);
-//            return new TableElementCell("Chunk Range", cell);
+//            addSegment(1, () -> {
+//                TableCellInteger cell = new TableCellInteger("chunks", limitation.chunkCount, 1, 100);
+//                cell.addPropertyConsumer(this);
+//                return new TableElementCell("Chunk Range", cell);
+//            });
 //        }
-
-        return super.cellForIndexInSegment(table, index, segment);
     }
 }

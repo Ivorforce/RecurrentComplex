@@ -56,9 +56,36 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
         this.navigator = navigator;
         this.delegate = delegate;
 
-        addManagedSegment(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> key, delegate)));
-        addManagedSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.inventorygen.dependencies"), IvTranslations.getLines("reccomplex.inventorygen.dependencies.tooltip"), this.component.dependencies, RecurrentComplex.saver));
-        addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
+        addSegment(0, () -> {
+            TableCellString cell = new TableCellString(null, this.key);
+            cell.setShowsValidityState(true);
+            cell.setValidityState(currentKeyState());
+            cell.addListener(val ->
+            {
+                this.key = val;
+                cell.setValidityState(currentKeyState());
+            });
+            return new TitledCell(IvTranslations.get("reccomplex.gui.inventorygen.componentid"), cell)
+                    .withTitleTooltip(IvTranslations.formatLines("reccomplex.gui.inventorygen.componentid.tooltip"));
+        });
+
+        addSegment(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> key, delegate)));
+
+        addSegment(2, () -> {
+            TableCellString cell = new TableCellString(null, component.inventoryGeneratorID);
+            cell.setShowsValidityState(true);
+            cell.setValidityState(currentGroupIDState());
+            cell.addListener(val ->
+            {
+                component.inventoryGeneratorID = val;
+                cell.setValidityState(currentGroupIDState());
+            });
+            return new TitledCell(IvTranslations.get("reccomplex.gui.inventorygen.groupid"), cell)
+                    .withTitleTooltip(IvTranslations.formatLines("reccomplex.gui.inventorygen.groupid.tooltip"));
+        });
+
+        addSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.inventorygen.dependencies"), IvTranslations.getLines("reccomplex.inventorygen.dependencies.tooltip"), this.component.dependencies, RecurrentComplex.saver));
+        addSegment(4, TableCellMultiBuilder.create(navigator, delegate)
                 .addAction(() -> RCGuiHandler.editInventoryGenComponentItems(this.player, this.key, this.component, this.saveDirectoryData), () -> IvTranslations.get("reccomplex.gui.edit"), null
                 )
                 .buildDataSource(IvTranslations.format("reccomplex.gui.inventorygen.items.summary", String.valueOf(this.component.items.size()))));
@@ -79,58 +106,6 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
     public String title()
     {
         return "Item Generation Component";
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 5;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        switch (segment)
-        {
-            case 0:
-            case 2:
-                return 1;
-            default:
-                return super.sizeOfSegment(segment);
-        }
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        if (segment == 0)
-        {
-            TableCellString cell = new TableCellString(null, key);
-            cell.setShowsValidityState(true);
-            cell.setValidityState(currentKeyState());
-            cell.addListener(val ->
-            {
-                key = val;
-                cell.setValidityState(currentKeyState());
-            });
-            return new TitledCell(IvTranslations.get("reccomplex.gui.inventorygen.componentid"), cell)
-                    .withTitleTooltip(IvTranslations.formatLines("reccomplex.gui.inventorygen.componentid.tooltip"));
-        }
-        else if (segment == 2)
-        {
-            TableCellString cell = new TableCellString(null, component.inventoryGeneratorID);
-            cell.setShowsValidityState(true);
-            cell.setValidityState(currentGroupIDState());
-            cell.addListener(val ->
-            {
-                component.inventoryGeneratorID = val;
-                cell.setValidityState(currentGroupIDState());
-            });
-            return new TitledCell(IvTranslations.get("reccomplex.gui.inventorygen.groupid"), cell)
-                    .withTitleTooltip(IvTranslations.formatLines("reccomplex.gui.inventorygen.groupid.tooltip"));
-        }
-
-        return super.cellForIndexInSegment(table, index, segment);
     }
 
     private GuiValidityStateIndicator.State currentKeyState()

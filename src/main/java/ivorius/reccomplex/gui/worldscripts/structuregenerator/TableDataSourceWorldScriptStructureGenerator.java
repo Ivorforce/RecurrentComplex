@@ -45,8 +45,8 @@ public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourc
         this.tableNavigator = tableNavigator;
         this.tableDelegate = tableDelegate;
 
-        addManagedSegment(0, new TableDataSourceWorldScript(script));
-        addManagedSegment(3, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift,
+        addSegment(0, new TableDataSourceWorldScript(script));
+        addSegment(3, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift,
                 IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
     }
 

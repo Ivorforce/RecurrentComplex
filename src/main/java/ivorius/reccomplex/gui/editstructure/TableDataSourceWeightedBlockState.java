@@ -8,11 +8,9 @@ package ivorius.reccomplex.gui.editstructure;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockState;
 import ivorius.reccomplex.gui.nbt.TableDataSourceNBTTagCompound;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellMultiBuilder;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
@@ -38,8 +36,11 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented
     {
         this.weightedBlockState = weightedBlockState;
 
-        addManagedSegment(1, new TableDataSourceBlockState(weightedBlockState.state, state -> weightedBlockState.state = state, navigator, delegate, "Block", "Metadata"));
-        addManagedSegment(2, tileEntitySegment(navigator, delegate, () -> weightedBlockState.tileEntityInfo, val -> weightedBlockState.tileEntityInfo = val));
+        addSegment(0, () -> {
+            return RCGuiTables.defaultWeightElement(val -> weightedBlockState.weight = TableCells.toDouble(val), weightedBlockState.weight);
+        });
+        addSegment(1, new TableDataSourceBlockState(weightedBlockState.state, state -> weightedBlockState.state = state, navigator, delegate, "Block", "Metadata"));
+        addSegment(2, tileEntitySegment(navigator, delegate, () -> weightedBlockState.tileEntityInfo, val -> weightedBlockState.tileEntityInfo = val));
     }
 
     @Nonnull
@@ -69,34 +70,5 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented
     public String title()
     {
         return weightedBlockState.state.getBlock().getLocalizedName();
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 3;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        switch (segment)
-        {
-            case 0:
-                return 1;
-            default:
-                return super.sizeOfSegment(segment);
-        }
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        if (segment == 0)
-        {
-            return RCGuiTables.defaultWeightElement(val -> weightedBlockState.weight = TableCells.toDouble(val), weightedBlockState.weight);
-        }
-
-        return super.cellForIndexInSegment(table, index, segment);
     }
 }

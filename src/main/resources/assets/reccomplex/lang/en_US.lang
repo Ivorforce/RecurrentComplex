@@ -542,6 +542,11 @@ reccomplex.gui.blockpos.x=x
 reccomplex.gui.blockpos.y=y
 reccomplex.gui.blockpos.z=z
 
+reccomplex.gui.surfacepos=Position
+reccomplex.gui.surfacepos.tooltip=The coordinates x and z.
+reccomplex.gui.surfacepos.x=x
+reccomplex.gui.surfacepos.z=z
+
 reccomplex.gui.blockpos.shift=Shift
 reccomplex.gui.blockpos.shift.tooltip=The positional movement x, y, z.
 

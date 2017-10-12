@@ -122,7 +122,6 @@ public class TableDataSourceNBTTagCompound extends TableDataSourceSegmented
         }
         else if (segment == 1 || segment == 3)
         {
-
             return new TableCellPresetAction(null,
                     IntStream.range(0, 12)
                             .mapToObj((id) -> TableDataSourceNBT.addButton(id, n ->

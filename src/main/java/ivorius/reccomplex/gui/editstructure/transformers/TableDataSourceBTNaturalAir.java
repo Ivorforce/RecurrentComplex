@@ -7,11 +7,9 @@ package ivorius.reccomplex.gui.editstructure.transformers;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellFloat;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
@@ -33,9 +31,24 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented
     {
         this.transformer = transformer;
 
-        addManagedSegment(0, new TableDataSourceTransformer(transformer, delegate, navigator));
-        addManagedSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), IvTranslations.getLines("reccomplex.transformer.block.source.tooltip"), transformer.sourceMatcher, null));
-        addManagedSegment(2, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.destinations"), IvTranslations.getLines("reccomplex.transformer.block.dest.tooltip"), transformer.destMatcher, null));
+        addSegment(0, new TableDataSourceTransformer(transformer, delegate, navigator));
+        addSegment(1, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.sources"), IvTranslations.getLines("reccomplex.transformer.block.source.tooltip"), transformer.sourceMatcher, null));
+        addSegment(2, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.destinations"), IvTranslations.getLines("reccomplex.transformer.block.dest.tooltip"), transformer.destMatcher, null));
+
+        addSegment(3, () -> {
+                    TableCellFloat cell = new TableCellFloat("naturalExpansionDistance", TableCells.toFloat(transformer.naturalExpansionDistance), 0, 40);
+                    cell.setScale(Scales.pow(5));
+                    cell.addListener(val -> transformer.naturalExpansionDistance = TableCells.toDouble(val));
+                    return new TitledCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionDistance"), cell)
+                            .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionDistance.tooltip"));
+                }, () -> {
+                    TableCellFloat cell = new TableCellFloat("naturalExpansionRandomization", TableCells.toFloat(transformer.naturalExpansionRandomization), 0, 40);
+                    cell.setScale(Scales.pow(5));
+                    cell.addListener(val -> transformer.naturalExpansionRandomization = TableCells.toDouble(val));
+                    return new TitledCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionRandomization"), cell)
+                            .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionRandomization.tooltip"));
+                }
+        );
     }
 
     public TransformerNaturalAir getTransformer()
@@ -46,46 +59,5 @@ public class TableDataSourceBTNaturalAir extends TableDataSourceSegmented
     public void setTransformer(TransformerNaturalAir transformer)
     {
         this.transformer = transformer;
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 4;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        return segment == 3 ? 2 : super.sizeOfSegment(segment);
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        if (segment == 3)
-        {
-            switch (index)
-            {
-                case 0:
-                {
-                    TableCellFloat cell = new TableCellFloat("naturalExpansionDistance", TableCells.toFloat(transformer.naturalExpansionDistance), 0, 40);
-                    cell.setScale(Scales.pow(5));
-                    cell.addListener(val -> transformer.naturalExpansionDistance = TableCells.toDouble(val));
-                    return new TitledCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionDistance"), cell)
-                            .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionDistance.tooltip"));
-                }
-                case 1:
-                {
-                    TableCellFloat cell = new TableCellFloat("naturalExpansionRandomization", TableCells.toFloat(transformer.naturalExpansionRandomization), 0, 40);
-                    cell.setScale(Scales.pow(5));
-                    cell.addListener(val -> transformer.naturalExpansionRandomization = TableCells.toDouble(val));
-                    return new TitledCell(IvTranslations.get("reccomplex.transformer.naturalAir.naturalExpansionRandomization"), cell)
-                            .withTitleTooltip(IvTranslations.formatLines("reccomplex.transformer.naturalAir.naturalExpansionRandomization.tooltip"));
-                }
-            }
-        }
-
-        return super.cellForIndexInSegment(table, index, segment);
     }
 }

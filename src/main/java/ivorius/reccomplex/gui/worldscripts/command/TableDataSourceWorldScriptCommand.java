@@ -28,9 +28,9 @@ public class TableDataSourceWorldScriptCommand extends TableDataSourceSegmented
 {
     public TableDataSourceWorldScriptCommand(WorldScriptCommand script, TableDelegate tableDelegate, TableNavigator navigator)
     {
-        addManagedSegment(0, new TableDataSourceWorldScript(script));
+        addSegment(0, new TableDataSourceWorldScript(script));
 
-        addManagedSegment(1, new TableDataSourceList<WorldScriptCommand.Entry, List<WorldScriptCommand.Entry>>(script.entries, tableDelegate, navigator)
+        addSegment(1, new TableDataSourceList<WorldScriptCommand.Entry, List<WorldScriptCommand.Entry>>(script.entries, tableDelegate, navigator)
         {
             @Override
             public String getDisplayString(WorldScriptCommand.Entry entry)

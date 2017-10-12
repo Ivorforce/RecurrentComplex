@@ -12,10 +12,8 @@ import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.client.rendering.SelectionQuadCache;
 import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.TableDirections;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellButton;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
@@ -59,8 +57,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
         this.bounds = bounds;
         this.tableDelegate = tableDelegate;
 
-
-        addManagedSegment(0, source =
+        addSegment(0, source =
                 new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> {
                     this.mazePath.sourceRoom = mazeRoom;
                     if (invertableButton != null) invertableButton.setEnabled(isInvertable());
@@ -68,6 +65,31 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
                         Arrays.stream(COORD_NAMES).map(s -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.position." + s)).collect(Collectors.toList()),
                         Arrays.stream(COORD_NAMES).map(s -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.position." + s + ".tooltip")).collect(Collectors.toList()))
         );
+
+        addSegment(1, () -> {
+            TableCellEnum.Option<EnumFacing>[] optionList = TableDirections.getDirectionOptions(EnumFacing.VALUES);
+
+            TableCellEnum<EnumFacing> cell = new TableCellEnum<>("side", directionFromPath(mazePath), optionList);
+            cell.addListener(val ->
+            {
+                SavedMazePathConnection path = pathFromDirection(val, mazePath.sourceRoom.getCoordinates());
+                mazePath.pathDimension = path.path.pathDimension;
+                mazePath.pathGoesUp = path.path.pathGoesUp;
+                tableDelegate.reloadData();
+            });
+            return new TitledCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.path.side"), cell);
+        });
+
+        addSegment(2, () -> {
+            invertableButton = new TableCellButton("actions", "inverse", IvTranslations.get("reccomplex.generationInfo.mazeComponent.path.invert"), isInvertable());
+            invertableButton.addAction(() ->
+            {
+                mazePath.set(mazePath.inverse());
+                source.room = mazePath.sourceRoom;
+                tableDelegate.reloadData();
+            });
+            return new TitledCell(invertableButton);
+        });
     }
 
     public static boolean contains(int[] array, Selection bounds)
@@ -127,58 +149,6 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
     public String title()
     {
         return "Path";
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 3;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        switch (segment)
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 1;
-            default:
-                return super.sizeOfSegment(segment);
-        }
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        if (segment == 1)
-        {
-            TableCellEnum.Option<EnumFacing>[] optionList = TableDirections.getDirectionOptions(EnumFacing.VALUES);
-
-            TableCellEnum<EnumFacing> cell = new TableCellEnum<>("side", directionFromPath(mazePath), optionList);
-            cell.addListener(val ->
-            {
-                SavedMazePathConnection path = pathFromDirection(val, mazePath.sourceRoom.getCoordinates());
-                mazePath.pathDimension = path.path.pathDimension;
-                mazePath.pathGoesUp = path.path.pathGoesUp;
-                tableDelegate.reloadData();
-            });
-            return new TitledCell(IvTranslations.get("reccomplex.generationInfo.mazeComponent.path.side"), cell);
-        }
-        else if (segment == 2)
-        {
-            invertableButton = new TableCellButton("actions", "inverse", IvTranslations.get("reccomplex.generationInfo.mazeComponent.path.invert"), isInvertable());
-            invertableButton.addAction(() ->
-            {
-                mazePath.set(mazePath.inverse());
-                source.room = mazePath.sourceRoom;
-                tableDelegate.reloadData();
-            });
-            return new TitledCell(invertableButton);
-        }
-
-        return super.cellForIndexInSegment(table, index, segment);
     }
 
     protected boolean isInvertable()

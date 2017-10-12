@@ -6,10 +6,8 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
@@ -32,7 +30,15 @@ public class TableDataSourceMazeReachabilityGrouping extends TableDataSourceSegm
     public TableDataSourceMazeReachabilityGrouping(SavedMazeReachability reachability, Set<SavedMazePath> expected, TableDelegate tableDelegate, TableNavigator tableNavigator)
     {
         this.reachability = reachability;
-        addManagedSegment(1, new TableDataSourceMazeReachabilityGroups(reachability, expected, tableDelegate, tableNavigator));
+
+        addSegment(0, () -> {
+            TableCellBoolean cell = new TableCellBoolean(null, reachability.groupByDefault, "Group", "Don't Group");
+            cell.addListener(b -> reachability.groupByDefault = b);
+            return new TitledCell(IvTranslations.get("reccomplex.reachability.groups.default.behavior"), cell)
+                    .withTitleTooltip(IvTranslations.getLines("reccomplex.reachability.groups.default.behavior.tooltip"));
+        });
+
+        addSegment(1, new TableDataSourceMazeReachabilityGroups(reachability, expected, tableDelegate, tableNavigator));
     }
 
     public SavedMazeReachability getReachability()
@@ -43,31 +49,5 @@ public class TableDataSourceMazeReachabilityGrouping extends TableDataSourceSegm
     public void setReachability(SavedMazeReachability reachability)
     {
         this.reachability = reachability;
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 2;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        return segment == 0 ? 1 : super.sizeOfSegment(segment);
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        if (segment == 0)
-        {
-            TableCellBoolean cell = new TableCellBoolean(null, reachability.groupByDefault, "Group", "Don't Group");
-            cell.addListener(b -> reachability.groupByDefault = b);
-            return new TitledCell(IvTranslations.get("reccomplex.reachability.groups.default.behavior"), cell)
-                    .withTitleTooltip(IvTranslations.getLines("reccomplex.reachability.groups.default.behavior.tooltip"));
-        }
-
-        return super.cellForIndexInSegment(table, index, segment);
     }
 }

@@ -11,11 +11,9 @@ import ivorius.reccomplex.gui.GuiValidityStateIndicator;
 import ivorius.reccomplex.gui.RCGuiTables;
 import ivorius.reccomplex.gui.TableDataSourceBlockPos;
 import ivorius.reccomplex.gui.TableDirections;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.cell.TableCell;
 import ivorius.reccomplex.gui.table.cell.TableCellEnum;
 import ivorius.reccomplex.gui.table.cell.TableCellString;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
@@ -47,60 +45,32 @@ public class TableDataSourceStructureListGeneration extends TableDataSourceSegme
         this.tableDelegate = tableDelegate;
         this.generationInfo = generationInfo;
 
-        addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, tableDelegate));
-        addManagedSegment(3, new TableDataSourceBlockPos(generationInfo.shift, generationInfo::setShift,
-                IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
-    }
+        addSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, tableDelegate));
 
-    @Override
-    public int numberOfSegments()
-    {
-        return 5;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        switch (segment)
-        {
-            case 1:
-                return 1;
-            case 2:
-                return 1;
-            case 4:
-                return 1;
-        }
-        return super.sizeOfSegment(segment);
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        switch (segment)
-        {
-            case 1:
+        addSegment(1, () -> {
+            TableCellString cell = new TableCellString("listID", generationInfo.listID);
+            cell.setShowsValidityState(true);
+            cell.setValidityState(currentStructureListIDState());
+            cell.addListener(cell1 ->
             {
-                TableCellString cell = new TableCellString("listID", generationInfo.listID);
-                cell.setShowsValidityState(true);
+                generationInfo.listID = cell.getPropertyValue();
                 cell.setValidityState(currentStructureListIDState());
-                cell.addListener(cell1 ->
-                {
-                    generationInfo.listID = cell.getPropertyValue();
-                    cell.setValidityState(currentStructureListIDState());
-                });
-                return new TitledCell(IvTranslations.get("reccomplex.generationInfo.structureList.id"), cell);
-            }
-            case 2:
-                return RCGuiTables.defaultWeightElement(val -> generationInfo.weight = TableCells.toDouble(val), generationInfo.weight);
-            case 4:
-            {
-                TableCellEnum<EnumFacing> cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
-                cell.addListener(cell1 -> generationInfo.front = (EnumFacing) cell.getPropertyValue());
-                return new TitledCell(IvTranslations.get("reccomplex.generationInfo.structureList.front"), cell);
-            }
-        }
+            });
+            return new TitledCell(IvTranslations.get("reccomplex.generationInfo.structureList.id"), cell);
+        });
 
-        return super.cellForIndexInSegment(table, index, segment);
+        addSegment(2, () -> {
+            return RCGuiTables.defaultWeightElement(val -> generationInfo.weight = TableCells.toDouble(val), generationInfo.weight);
+        });
+
+        addSegment(3, new TableDataSourceBlockPos(generationInfo.shift, generationInfo::setShift,
+                IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
+
+        addSegment(4, () -> {
+            TableCellEnum<EnumFacing> cell = new TableCellEnum<>("front", generationInfo.front, TableDirections.getDirectionOptions(Directions.HORIZONTAL));
+            cell.addListener(cell1 -> generationInfo.front = (EnumFacing) cell.getPropertyValue());
+            return new TitledCell(IvTranslations.get("reccomplex.generationInfo.structureList.front"), cell);
+        });
     }
 
     @Nonnull

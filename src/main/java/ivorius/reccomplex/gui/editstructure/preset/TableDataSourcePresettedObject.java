@@ -6,7 +6,6 @@
 package ivorius.reccomplex.gui.editstructure.preset;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
-import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.*;
@@ -43,6 +42,13 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
 
         this.delegate = delegate;
         this.navigator = navigator;
+
+        addSegment(0, () -> {
+            TableCellMulti multi = new TableCellMulti(getSetElement(object, delegate, getActions(), applyPresetAction),
+                    getCustomizeElement(object, saverID, delegate, navigator, applyPresetAction));
+            multi.setSize(0, 7);
+            return new TitledCell(IvTranslations.get("reccomplex.presets"), multi);
+        });
     }
 
     @Nonnull
@@ -115,32 +121,6 @@ public class TableDataSourcePresettedObject<T> extends TableDataSourceSegmented
     public TableDataSourcePresettedObject<T> withCurrentOnTop(boolean currentOnTop)
     {
         return this;
-    }
-
-    @Override
-    public int numberOfSegments()
-    {
-        return 1;
-    }
-
-    @Override
-    public int sizeOfSegment(int segment)
-    {
-        return segment == 0 ? 1 : super.sizeOfSegment(segment);
-    }
-
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
-    {
-        if (segment == 0)
-        {
-            TableCellMulti multi = new TableCellMulti(getSetElement(object, delegate, getActions(), applyPresetAction),
-                    getCustomizeElement(object, saverID, delegate, navigator, applyPresetAction));
-            multi.setSize(0, 7);
-            return new TitledCell(IvTranslations.get("reccomplex.presets"), multi);
-        }
-
-        return super.cellForIndexInSegment(table, index, segment);
     }
 
     public List<TableCellButton> getActions()

@@ -18,6 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Created by lukas on 22.06.14.
@@ -26,7 +27,7 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public class TableDataSourceSegmented implements TableDataSource
 {
-    protected final TIntObjectMap<TableDataSource> managedSections = new TIntObjectHashMap<>();
+    protected final TIntObjectMap<TableDataSource> managedSegments = new TIntObjectHashMap<>();
 
     public TableDataSourceSegmented()
     {
@@ -35,7 +36,7 @@ public class TableDataSourceSegmented implements TableDataSource
     public TableDataSourceSegmented(List<TableDataSource> segments)
     {
         for (int i = 0; i < segments.size(); i++)
-            managedSections.put(i, segments.get(i));
+            managedSegments.put(i, segments.get(i));
     }
 
     public TableDataSourceSegmented(TableDataSource... segments)
@@ -43,28 +44,34 @@ public class TableDataSourceSegmented implements TableDataSource
         this(Arrays.asList(segments));
     }
 
-    public void addManagedSegment(int section, TableDataSource source)
+    public void addSegment(int segment, TableDataSource source)
     {
-        managedSections.put(section, source);
+        managedSegments.put(segment, source);
+    }
+
+    @SafeVarargs
+    public final void addSegment(int segment, Supplier<TableCell>... suppliers)
+    {
+        managedSegments.put(segment, new TableDataSourceSupplied(suppliers));
     }
 
     public void removeManagedSection(int section)
     {
-        managedSections.remove(section);
+        managedSegments.remove(section);
     }
 
     public TIntSet managedSections()
     {
-        return managedSections.keySet();
+        return managedSegments.keySet();
     }
 
     @Nonnull
     @Override
     public String title()
     {
-        for (int i : managedSections.keys())
+        for (int i : managedSegments.keys())
         {
-            String title = managedSections.get(i).title();
+            String title = managedSegments.get(i).title();
             if (!title.trim().isEmpty())
                 return title;
         }
@@ -100,25 +107,25 @@ public class TableDataSourceSegmented implements TableDataSource
 
     public int numberOfSegments()
     {
-        return managedSections.isEmpty() ? 0 : Ints.max(managedSections.keys()) + 1;
+        return managedSegments.isEmpty() ? 0 : Ints.max(managedSegments.keys()) + 1;
     }
 
     public int sizeOfSegment(int segment)
     {
-        TableDataSource managed = managedSections.get(segment);
+        TableDataSource managed = managedSegments.get(segment);
         return managed != null ? managed.numberOfCells() : 0;
     }
 
     public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
-        TableDataSource managed = managedSections.get(segment);
+        TableDataSource managed = managedSegments.get(segment);
         return managed != null ? managed.cellForIndex(table, index) : null;
     }
 
     @Override
     public boolean canVisualize()
     {
-        return managedSections.valueCollection().stream()
+        return managedSegments.valueCollection().stream()
                 .filter(s -> s.canVisualize())
                 .count() == 1;
     }
@@ -126,7 +133,7 @@ public class TableDataSourceSegmented implements TableDataSource
     @Override
     public GuiHider.Visualizer visualizer()
     {
-        return managedSections.valueCollection().stream()
+        return managedSegments.valueCollection().stream()
                 .filter(s -> s.canVisualize())
                 .findFirst().orElseThrow(InternalError::new)
                 .visualizer();

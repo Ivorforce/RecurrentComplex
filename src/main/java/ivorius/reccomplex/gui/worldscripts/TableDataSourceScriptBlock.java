@@ -32,7 +32,7 @@ public class TableDataSourceScriptBlock extends TableDataSourceSegmented
     public TableDataSourceScriptBlock(TileEntityBlockScript script, TableDelegate delegate, TableNavigator navigator)
     {
         this.script = script;
-        addManagedSegment(0, new TableDataSourceSupplied(() ->
+        addSegment(0, new TableDataSourceSupplied(() ->
         {
             TableCellBoolean spawn = new TableCellBoolean(null, script.spawnTriggerable);
             spawn.addListener(b -> script.spawnTriggerable = b);
@@ -45,7 +45,7 @@ public class TableDataSourceScriptBlock extends TableDataSourceSegmented
             redstone.setFalseTitle(TextFormatting.GRAY + "Redstone");
             return new TitledCell("Triggerable", new TableCellMulti(spawn, redstone));
         }));
-        addManagedSegment(1, new TableDataSourceWorldScriptMulti(script.script, script.getPos(), delegate, navigator));
+        addSegment(1, new TableDataSourceWorldScriptMulti(script.script, script.getPos(), delegate, navigator));
     }
 
     @Nonnull

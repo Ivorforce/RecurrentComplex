@@ -7,16 +7,15 @@ package ivorius.reccomplex.gui;
 
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.reccomplex.gui.table.GuiTable;
-import ivorius.reccomplex.gui.table.cell.TableCell;
-import ivorius.reccomplex.gui.table.cell.TableCellInteger;
-import ivorius.reccomplex.gui.table.cell.TableCellStringInt;
+import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.reccomplex.gui.table.cell.TableCellMulti;
+import ivorius.reccomplex.gui.table.cell.TableCellPropertyDefault;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -31,82 +30,57 @@ public class TableDataSourceBlockSurfacePos extends TableDataSourceSegmented
 
     private IntegerRange rangeX;
     private IntegerRange rangeZ;
-    private String titleX;
-    private String titleZ;
 
-    public TableDataSourceBlockSurfacePos(BlockSurfacePos coord, Consumer<BlockSurfacePos> consumer, IntegerRange rangeX, IntegerRange rangeZ, String titleX, String titleZ)
+    private String title;
+    private List<String> tooltip;
+
+    public TableDataSourceBlockSurfacePos(BlockSurfacePos coord, Consumer<BlockSurfacePos> consumer, IntegerRange rangeX, IntegerRange rangeZ, String title, List<String> tooltip)
     {
         this.coord = coord;
         this.consumer = consumer;
         this.rangeX = rangeX;
         this.rangeZ = rangeZ;
-        this.titleX = titleX;
-        this.titleZ = titleZ;
+        this.title = title;
+        this.tooltip = tooltip;
+
+        addSegment(0, () -> {
+            TableCellPropertyDefault<Integer> x = TableDataSourceBlockPos.createRangeCell(rangeX, this.coord.getX());
+            x.setTooltip(IvTranslations.getLines("reccomplex.gui.surfacepos.x"));
+            x.addListener(i -> {
+                this.coord = new BlockSurfacePos(i, this.coord.getZ());
+                consumer.accept(this.coord);
+            });
+
+            TableCellPropertyDefault<Integer> z = TableDataSourceBlockPos.createRangeCell(rangeZ, this.coord.getZ());
+            z.setTooltip(IvTranslations.getLines("reccomplex.gui.surfacepos.z"));
+            z.addListener(i -> {
+                this.coord = new BlockSurfacePos(this.coord.getX(), i);
+                consumer.accept(this.coord);
+            });
+
+            return new TitledCell(this.title, new TableCellMulti(x, z))
+                    .withTitleTooltip(tooltip);
+        });
     }
 
-    public TableDataSourceBlockSurfacePos(BlockSurfacePos coord, Consumer<BlockSurfacePos> consumer, IntegerRange range, String titleFormat)
+    public TableDataSourceBlockSurfacePos(BlockSurfacePos coord, Consumer<BlockSurfacePos> consumer, String title, List<String> tooltip)
     {
-        this.coord = coord;
-        this.consumer = consumer;
-        this.rangeX = range;
-        this.rangeZ = range;
-        this.titleX = String.format(titleFormat, "X");
-        this.titleZ = String.format(titleFormat, "Z");
+        this(coord, consumer, null, null, title, tooltip);
+        setTooltip(tooltip);
     }
 
-    @Override
-    public int numberOfSegments()
+    public TableDataSourceBlockSurfacePos(BlockSurfacePos coord, Consumer<BlockSurfacePos> consumer)
     {
-        return 1;
+        this(coord, consumer, IvTranslations.get("reccomplex.gui.surfacepos"), IvTranslations.getLines("reccomplex.gui.surfacepos.tooltip"));
     }
 
-    @Override
-    public int sizeOfSegment(int segment)
+    public List<String> getTooltip()
     {
-        return 2;
+        return tooltip;
     }
 
-    @Override
-    public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
+    public void setTooltip(List<String> tooltip)
     {
-        IntegerRange range;
-        int val;
-        String title;
-
-        switch (index)
-        {
-            case 0:
-                range = rangeX;
-                val = coord.getX();
-                title = titleX;
-                break;
-            default:
-                range = rangeZ;
-                val = coord.getZ();
-                title = titleZ;
-                break;
-        }
-
-        if (range != null)
-        {
-            TableCellInteger cell = new TableCellInteger(null, val, range.min, range.max);
-            cell.addListener(createConsumer(index));
-            return new TitledCell(title, cell);
-        }
-        else
-        {
-            TableCellStringInt cell = new TableCellStringInt(null, val);
-            cell.addListener(createConsumer(index));
-            return new TitledCell(title, cell);
-        }
-    }
-
-    @Nonnull
-    protected Consumer<Integer> createConsumer(int idx)
-    {
-        return val -> consumer.accept(coord = new BlockSurfacePos(
-                idx == 0 ? val : coord.getX(),
-                idx == 1 ? val : coord.getZ()
-        ));
+        this.tooltip = tooltip;
     }
 }

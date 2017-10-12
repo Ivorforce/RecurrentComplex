@@ -35,9 +35,9 @@ public class TableDataSourceBTMulti extends TableDataSourceSegmented
         this.navigator = navigator;
         this.delegate = delegate;
 
-        addManagedSegment(0, new TableDataSourceTransformer(transformer, delegate, navigator));
+        addSegment(0, new TableDataSourceTransformer(transformer, delegate, navigator));
 
-        addManagedSegment(1, new TableDataSourcePresettedObject<>(transformer.getData(), RCFileSaver.TRANSFORMER_PRESET, delegate, navigator)
+        addSegment(1, new TableDataSourcePresettedObject<>(transformer.getData(), RCFileSaver.TRANSFORMER_PRESET, delegate, navigator)
                 .withApplyPresetAction(() -> addPresetSections(transformer, navigator, delegate)).withCurrentOnTop(true));
 
         addPresetSections(transformer, navigator, delegate);
@@ -45,7 +45,7 @@ public class TableDataSourceBTMulti extends TableDataSourceSegmented
 
     public void addPresetSections(final TransformerMulti transformer, final TableNavigator navigator, final TableDelegate delegate)
     {
-        addManagedSegment(2, new TableDataSourceTransformerList(transformer.getTransformers(), delegate, navigator)
+        addSegment(2, new TableDataSourceTransformerList(transformer.getTransformers(), delegate, navigator)
         {
             @Override
             public boolean canEditList()
@@ -54,7 +54,7 @@ public class TableDataSourceBTMulti extends TableDataSourceSegmented
             }
         });
 
-        addManagedSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.transformer.multi.condition"), transformer.getEnvironmentMatcher(), null)
+        addSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.transformer.multi.condition"), transformer.getEnvironmentMatcher(), null)
                 .enabled(() -> transformer.getData().isCustom()));
     }
 

@@ -61,6 +61,15 @@ public class SelectivePlacer implements Placer
         return surface;
     }
 
+    @Nonnull
+    public static SelectivePlacer underwaterPlacer(int baseline)
+    {
+        SelectivePlacer surface = new SelectivePlacer();
+        surface.placer.setPreset("underwater");
+        surface.baseline = baseline;
+        return surface;
+    }
+
     @Override
     public int place(StructurePlaceContext context, IvBlockCollection blockCollection)
     {
@@ -91,12 +100,7 @@ public class SelectivePlacer implements Placer
                     placer = SelectivePlacer.surfacePlacer(-(minYShift + maxYShift) / 2);
                     break;
                 case UNDERWATER:
-                    placer = new SelectivePlacer(new GenericPlacer(Collections.singletonList(new FactorLimit(1, Arrays.asList(
-                            new RayDynamicPosition(null, RayDynamicPosition.Type.WORLD_HEIGHT),
-                            new RayAverageMatcher(null, false, "blocks:movement & !is:foliage"),
-                            new RayMove(null, minYShift),
-                            new RayMove(1f, maxYShift - minYShift)
-                    )))), 0);
+                    placer = SelectivePlacer.underwaterPlacer(-(minYShift + maxYShift) / 2);
                     break;
                 case LOWEST_EDGE:
                     placer = new SelectivePlacer(new GenericPlacer(Collections.singletonList(new FactorLimit(1, Arrays.asList(

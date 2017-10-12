@@ -21,6 +21,7 @@ import java.util.List;
 /**
  * @ Mod Authors
  * Feel free to copy this class to your code to be able to use @{@link RCCommunicationHandler}'s functionality easily.
+ * When copying, please make sure to move this to your own package so there are no clashes with other mods.
  */
 public class RCCommunicationAdapter
 {

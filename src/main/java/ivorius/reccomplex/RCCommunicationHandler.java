@@ -22,7 +22,9 @@ import org.apache.logging.log4j.Logger;
 import java.util.Arrays;
 
 /**
- * Created by lukas on 07.06.14.
+ * @ Mod Authors
+ * This is the FML Intercomm Message handler for Recurrent Complex.
+ * @see RCCommunicationAdapter for a copyable sample implementation.
  */
 public class RCCommunicationHandler extends IvFMLIntercommHandler
 {

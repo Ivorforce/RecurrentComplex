@@ -15,6 +15,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.OptionalInt;
 
@@ -51,6 +53,7 @@ public class RayMove extends FactorLimit.Ray
         return IvTranslations.format(String.format("reccomplex.placer.factors.limit.rays.%s.title%s", getRayRegistry().iDForType(getClass()), weight != null ? ".mark" : ""), String.valueOf(distance));
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {

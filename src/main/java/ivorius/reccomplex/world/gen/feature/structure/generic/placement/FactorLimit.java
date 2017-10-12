@@ -136,6 +136,8 @@ public class FactorLimit extends GenericPlacer.Factor
 
         public abstract OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y);
 
+        @SuppressWarnings("NewExpressionSideOnly")
+        @SideOnly(Side.CLIENT)
         public TableDataSource rayTableDataSource(TableNavigator navigator, TableDelegate delegate)
         {
             return new TableDataSourceSupplied(() ->
@@ -156,6 +158,7 @@ public class FactorLimit extends GenericPlacer.Factor
             };
         }
 
+        @SideOnly(Side.CLIENT)
         public abstract TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate);
 
         public String displayString()

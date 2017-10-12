@@ -26,6 +26,8 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.placement.Structur
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.reflect.Type;
 import java.util.OptionalInt;
@@ -145,6 +147,7 @@ public class RayAverageMatcher extends FactorLimit.Ray
         return IvTranslations.get("reccomplex.placer.factors.limit.rays." + getRayRegistry().iDForType(getClass()) + (up ? ".title.up" : ".title.down"));
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {

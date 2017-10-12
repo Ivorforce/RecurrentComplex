@@ -17,6 +17,8 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.OptionalInt;
 
@@ -60,6 +62,7 @@ public class RayDynamicPosition extends FactorLimit.Ray
         return IvTranslations.get("reccomplex.placer.factors.limit.rays.dynpos.type." + IvGsonHelper.serializedName(type));
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {

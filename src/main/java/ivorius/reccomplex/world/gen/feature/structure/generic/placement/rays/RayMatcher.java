@@ -23,6 +23,8 @@ import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
 import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.reflect.Type;
 import java.util.OptionalInt;
@@ -96,6 +98,7 @@ public class RayMatcher extends FactorLimit.Ray
         return IvTranslations.get("reccomplex.placer.factors.limit.rays." + getRayRegistry().iDForType(getClass()) + (up ? ".title.up" : ".title.down"));
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate)
     {

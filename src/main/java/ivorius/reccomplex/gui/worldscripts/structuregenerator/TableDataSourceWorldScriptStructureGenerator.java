@@ -46,6 +46,16 @@ public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourc
         this.tableDelegate = tableDelegate;
 
         addSegment(0, new TableDataSourceWorldScript(script));
+
+        addSegment(1, () -> {
+            TableCellBoolean cell = new TableCellBoolean("simpleMode", script.isSimpleMode());
+            cell.addListener(val -> {
+                script.setSimpleMode(val);
+                tableDelegate.reloadData();
+            });
+            return new TitledCell(IvTranslations.get("reccomplex.worldscript.strucGen.mode.simple"), cell);
+        });
+
         addSegment(3, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift,
                 IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
     }
@@ -70,9 +80,7 @@ public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourc
     @Override
     public int sizeOfSegment(int segment)
     {
-        if (segment == 1)
-            return 1;
-        else if (segment == 2)
+        if (segment == 2)
             return 1;
         else if (segment == 4)
             return script.isSimpleMode() ? 2 : 1;
@@ -83,16 +91,7 @@ public class TableDataSourceWorldScriptStructureGenerator extends TableDataSourc
     @Override
     public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 1)
-        {
-            TableCellBoolean cell = new TableCellBoolean("simpleMode", script.isSimpleMode());
-            cell.addListener(val -> {
-                script.setSimpleMode(val);
-                tableDelegate.reloadData();
-            });
-            return new TitledCell(IvTranslations.get("reccomplex.worldscript.strucGen.mode.simple"), cell);
-        }
-        else if (segment == 2)
+        if (segment == 2)
         {
             if (script.isSimpleMode())
             {

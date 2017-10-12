@@ -61,6 +61,16 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented
         this.metadataTitle = metadataTitle;
         this.navigator = navigator;
         this.delegate = delegate;
+
+        addSegment(0, () -> {
+            TableCellString cell = idCell = TableDataSourceBTNatural.cellForBlock("block", block);
+            cell.addListener(p -> valueChanged());
+            return new TitledCell("blockID", blockTitle, cell);
+        }, () -> {
+            TableCellInteger cell = metaCell = new TableCellInteger("metadata", meta, 0, 15);
+            cell.addListener(p -> valueChanged());
+            return new TitledCell("blockMeta", metadataTitle, cell);
+        });
     }
 
     public TableDataSourceBlockState(IBlockState state, Consumer<IBlockState> consumer, TableNavigator navigator, TableDelegate delegate)
@@ -68,15 +78,15 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented
         this(state, consumer, navigator, delegate, IvTranslations.get("reccomplex.gui.block"), IvTranslations.get("reccomplex.gui.metadata"));
     }
 
+    public boolean isShowExtendedProperties()
+    {
+        return showExtendedProperties;
+    }
+
     public TableDataSourceBlockState setShowExtendedProperties(boolean showExtendedProperties)
     {
         this.showExtendedProperties = showExtendedProperties;
         return this;
-    }
-
-    public boolean isShowExtendedProperties()
-    {
-        return showExtendedProperties;
     }
 
     @Override
@@ -90,8 +100,6 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented
     {
         switch (segment)
         {
-            case 0:
-                return 2;
             case 1:
             {
                 IBlockState state = computeBlockState();
@@ -111,20 +119,6 @@ public class TableDataSourceBlockState extends TableDataSourceSegmented
     {
         switch (segment)
         {
-            case 0:
-                if (index == 0)
-                {
-                    TableCellString cell = idCell = TableDataSourceBTNatural.cellForBlock("block", block);
-                    cell.addListener(p -> valueChanged());
-                    return new TitledCell("blockID", blockTitle, cell);
-                }
-                else if (index == 1)
-                {
-                    TableCellInteger cell = metaCell = new TableCellInteger("metadata", meta, 0, 15);
-                    cell.addListener(p -> valueChanged());
-                    return new TitledCell("blockMeta", metadataTitle, cell);
-                }
-                break;
             case 1:
                 return getPropertyElement(index, false);
             case 2:

@@ -24,13 +24,6 @@
             {
               "type": "move",
               "ray": {
-                "distance": -1,
-                "weight": 1.0
-              }
-            },
-            {
-              "type": "move",
-              "ray": {
                 "distance": 0,
                 "weight": 1.0
               }

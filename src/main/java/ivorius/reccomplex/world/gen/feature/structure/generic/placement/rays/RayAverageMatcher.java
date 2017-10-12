@@ -61,11 +61,10 @@ public class RayAverageMatcher extends FactorLimit.Ray
         for (; pos.getY() >= 0 && pos.getY() < wHeight; IvMutableBlockPos.offset(pos, pos, up ? EnumFacing.UP : EnumFacing.DOWN))
         {
             if (predicate.test(pos))
-                break;
+                return pos;
         }
 
-        // Return one earlier, since it is expected (legacy? mostly because world height did this)
-        return IvMutableBlockPos.offset(pos, pos, !up ? EnumFacing.UP : EnumFacing.DOWN);
+        return null;
     }
 
     // From StructureVillagePieces
@@ -85,7 +84,10 @@ public class RayAverageMatcher extends FactorLimit.Ray
 
 //                if (structurebb.isVecInside(pos))
                     {
-                        list.add(findFirstBlock(pos, predicate, up, wHeight).getY());
+                        // Ignore voiding rays
+                        BlockPos found = findFirstBlock(pos, predicate, up, wHeight);
+                        if (found != null)
+                            list.add(found.getY());
                     }
                 }
             }

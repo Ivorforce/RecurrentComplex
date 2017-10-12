@@ -6,11 +6,10 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import com.google.common.collect.ImmutableList;
+import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.reccomplex.gui.table.GuiTable;
-import ivorius.reccomplex.gui.table.cell.TableCell;
-import ivorius.reccomplex.gui.table.cell.TableCellIntTextField;
-import ivorius.reccomplex.gui.table.cell.TitledCell;
+import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -29,16 +28,19 @@ public class TableDataSourceMazeRoom extends TableDataSourceSegmented
     public MazeRoom room;
     protected Consumer<MazeRoom> consumer;
 
+    protected List<IntegerRange> bounds;
+
     protected final List<String> titles;
     protected final List<List<String>> tooltips;
 
-    public TableDataSourceMazeRoom(MazeRoom room, Consumer<MazeRoom> consumer, List<String> titles, List<List<String>> tooltips)
+    public TableDataSourceMazeRoom(MazeRoom room, Consumer<MazeRoom> consumer, List<IntegerRange> bounds, List<String> titles, List<List<String>> tooltips)
     {
         if (titles.size() != room.getDimensions())
             throw new IllegalArgumentException(String.format("titles: %d, dimensions: %d", titles.size(), room.getDimensions()));
 
         this.room = room;
         this.consumer = consumer;
+        this.bounds = bounds;
         this.titles = ImmutableList.copyOf(titles);
         this.tooltips = ImmutableList.copyOf(tooltips);
     }
@@ -69,7 +71,9 @@ public class TableDataSourceMazeRoom extends TableDataSourceSegmented
         String title = titles.get(index);
         List<String> tooltip = tooltips.get(index);
 
-        TableCellIntTextField cell = new TableCellIntTextField(null, val, i -> i > 0);
+        TableCellPropertyDefault<Integer> cell = bounds != null
+                ? new TableCellIntSlider(null, val, bounds.get(index).min, bounds.get(index).max)
+                : new TableCellIntTextField(null, val, i -> i > 0);
         cell.addListener(createConsumer(index));
         return new TitledCell(title, cell).withTitleTooltip(tooltip);
     }

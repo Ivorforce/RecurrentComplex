@@ -61,7 +61,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
                 new TableDataSourceMazeRoom(mazePath.sourceRoom, mazeRoom -> {
                     this.mazePath.sourceRoom = mazeRoom;
                     if (invertableButton != null) invertableButton.setEnabled(isInvertable());
-                },
+                }, bounds.bounds(),
                         Arrays.stream(COORD_NAMES).map(s -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.position." + s)).collect(Collectors.toList()),
                         Arrays.stream(COORD_NAMES).map(s -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.position." + s + ".tooltip")).collect(Collectors.toList()))
         );

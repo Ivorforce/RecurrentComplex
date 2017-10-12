@@ -35,8 +35,6 @@ public class TableDataSourceSelectivePlacer extends TableDataSourceSegmented
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.placer.baseline.tooltip"));
         });
 
-        addSegment(1, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourcePlacer(placer.placer, delegate, navigator))
-                .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
+        addSegment(1, new TableDataSourcePlacer(placer.placer, delegate, navigator));
     }
 }

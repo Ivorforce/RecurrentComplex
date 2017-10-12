@@ -21,6 +21,7 @@ import net.minecraft.world.biome.Biome;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -106,6 +107,13 @@ public class StructureSearch
         return structure.generationTypes(MazeGeneration.class).stream()
                 .mapToDouble(g -> g.mazeID.equals(mazeID) ? 1 : 0)
                 .sum();
+    }
+
+    public static double author(Structure<?> structure, String author)
+    {
+        return structure instanceof GenericStructure
+                ? searchRank(Collections.singletonList(author), Collections.singleton(((GenericStructure) structure).metadata.authors))
+                : 0;
     }
 
     public static long containedBlocks(Structure structure, BlockExpression matcher)

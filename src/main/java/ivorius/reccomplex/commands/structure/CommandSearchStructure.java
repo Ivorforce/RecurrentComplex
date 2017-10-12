@@ -111,6 +111,7 @@ public class CommandSearchStructure extends CommandExpecting
                 .named("dimension", "d").then(MCE::dimension).descriptionU("dimension id")
                 .named("maze").skip().descriptionU("maze id")
                 .named("list").skip().descriptionU("structure list id")
+                .named("author").skip().descriptionU("author")
                 .flag("all", "a")
         ;
     }
@@ -132,6 +133,7 @@ public class CommandSearchStructure extends CommandExpecting
         consider(ranks, parameters.get("dimension"), MCP.dimension(server, sender), StructureSearch::dimension);
         consider(ranks, parameters.get("maze"), p -> p, StructureSearch::maze);
         consider(ranks, parameters.get("list"), p -> p, StructureSearch::list);
+        consider(ranks, parameters.get("author"), p -> p, StructureSearch::author);
 
         boolean all = parameters.has("all");
 

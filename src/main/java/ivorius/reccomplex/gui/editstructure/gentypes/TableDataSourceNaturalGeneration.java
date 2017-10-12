@@ -49,7 +49,9 @@ public class TableDataSourceNaturalGeneration extends TableDataSourceSegmented
 
         addManagedSegment(0, new TableDataSourceGenerationType(generationInfo, navigator, delegate));
 
-        addManagedSegment(3, new TableDataSourceSelectivePlacer(navigator, delegate, generationInfo.placer));
+        addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceSelectivePlacer(generationInfo.placer, navigator, delegate))
+                .buildDataSource(IvTranslations.get("reccomplex.placer")));
 
         addManagedSegment(4, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator))

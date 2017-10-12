@@ -44,7 +44,9 @@ public class TableDataSourceStaticGeneration extends TableDataSourceSegmented
         addManagedSegment(2, new TableDataSourceBlockSurfacePos(generationInfo.position, generationInfo::setPosition, null, null,
                 IvTranslations.get("reccomplex.generationInfo.static.position.x"), IvTranslations.get("reccomplex.generationInfo.static.position.z")));
 
-        addManagedSegment(3, new TableDataSourceSelectivePlacer(navigator, delegate, generationInfo.placer));
+        addManagedSegment(3, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceSelectivePlacer(generationInfo.placer, navigator, delegate))
+                .buildDataSource(IvTranslations.get("reccomplex.placer")));
 
         addManagedSegment(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.dimensions"), generationInfo.dimensionExpression, null));
 

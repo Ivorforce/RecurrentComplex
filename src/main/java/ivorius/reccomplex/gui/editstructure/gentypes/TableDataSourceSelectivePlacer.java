@@ -24,13 +24,13 @@ public class TableDataSourceSelectivePlacer extends TableDataSourceSegmented
 
     protected SelectivePlacer placer;
 
-    public TableDataSourceSelectivePlacer(TableNavigator navigator, TableDelegate delegate, SelectivePlacer placer)
+    public TableDataSourceSelectivePlacer(SelectivePlacer placer, TableNavigator navigator, TableDelegate delegate)
     {
         this.navigator = navigator;
         this.tableDelegate = delegate;
         this.placer = placer;
 
-        addManagedSegment(0, TableCellMultiBuilder.create(navigator, delegate)
+        addManagedSegment(1, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourcePlacer(placer.placer, delegate, navigator))
                 .buildDataSource(IvTranslations.get("reccomplex.placer"), IvTranslations.getLines("reccomplex.placer.tooltip")));
     }
@@ -44,13 +44,13 @@ public class TableDataSourceSelectivePlacer extends TableDataSourceSegmented
     @Override
     public int sizeOfSegment(int segment)
     {
-        return segment == 1 ? 1 : super.sizeOfSegment(segment);
+        return segment == 0 ? 1 : super.sizeOfSegment(segment);
     }
 
     @Override
     public TableCell cellForIndexInSegment(GuiTable table, int index, int segment)
     {
-        if (segment == 1)
+        if (segment == 0)
         {
             TableCellStringInt cell = new TableCellStringInt(null, placer.baseline);
             cell.addListener(i -> placer.baseline = i);

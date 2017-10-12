@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 @SideOnly(Side.CLIENT)
 public class TableCellMultiBuilder
 {
-    protected final List<Supplier<TableCellButton>> cells = new ArrayList<>();
+    protected final List<Supplier<TableCellDefault>> cells = new ArrayList<>();
     protected final List<BooleanSupplier> enabledSuppliers = new ArrayList<>();
 
     public TableNavigator navigator;
@@ -72,7 +72,7 @@ public class TableCellMultiBuilder
     }
 
     @Nonnull
-    public TableCellMultiBuilder addCell(Supplier<TableCellButton> cell)
+    public TableCellMultiBuilder addCell(Supplier<TableCellDefault> cell)
     {
         cells.add(cell);
         enabledSuppliers.add(null);
@@ -153,14 +153,14 @@ public class TableCellMultiBuilder
     @Nonnull
     public TableCellDefault build()
     {
-        List<TableCellButton> cells = new ArrayList<>();
+        List<TableCellDefault> cells = new ArrayList<>();
 
         for (int i = 0; i < this.cells.size(); i++)
         {
-            TableCellButton cell = this.cells.get(i).get();
+            TableCellDefault cell = this.cells.get(i).get();
 
-            cell.setId("action." + i);
-            cell.actionID = "action." + i;
+//            cell.setId("action." + i);
+//            cell.actionID = "action." + i;
 
             BooleanSupplier enabled = enabledSuppliers.get(i);
             if (enabled != null)

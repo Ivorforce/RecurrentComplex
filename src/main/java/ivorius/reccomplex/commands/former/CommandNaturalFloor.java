@@ -54,7 +54,8 @@ public class CommandNaturalFloor extends CommandExpecting implements CommandVirt
                 {
                     stopping.add(surfaceCoord);
 
-                    if (block != floorBlock)
+                    // Check for ifOpaque to not consider leaves and similar 'floor' blocks
+                    if (block != floorBlock && block.getMaterial().isOpaque())
                     {
                         setBlockIfAirInArea(world, surfaceCoord.blockPos(y - 1), floorBlock, area);
 
@@ -106,7 +107,8 @@ public class CommandNaturalFloor extends CommandExpecting implements CommandVirt
     public void expect(Expect expect)
     {
         expect
-                .named("expansion", "e").any("0", "1", "2");
+                .named("expansion", "e").any("0", "1", "2")
+        ;
     }
 
     public int getRequiredPermissionLevel()

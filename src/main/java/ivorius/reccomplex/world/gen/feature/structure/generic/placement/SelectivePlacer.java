@@ -34,6 +34,7 @@ public class SelectivePlacer implements Placer
     public SelectivePlacer()
     {
         placer.setPreset("surface");
+        baseline = 1;
     }
 
     public SelectivePlacer(GenericPlacer placer, int baseline)

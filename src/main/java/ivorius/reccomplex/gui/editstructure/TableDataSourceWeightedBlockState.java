@@ -57,10 +57,12 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented
                     }
                 })
                 .enabled(() -> supplier.get() != null)
-                .addAction(() ->{
+                .addAction(() -> {
                     consumer.accept(supplier.get() != null ? null : new NBTTagCompound());
                     delegate.reloadData();
-                }, () -> supplier.get() != null ? "Remove" : "Add", null).withTitle("Tile Entity").buildDataSource();
+                }, () -> supplier.get() != null ? "Remove" : "Add", null)
+                .withTitle("Tile Entity")
+                .buildDataSource();
     }
 
     @Nonnull

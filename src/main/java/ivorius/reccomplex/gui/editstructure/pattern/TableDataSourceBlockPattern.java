@@ -34,7 +34,9 @@ public class TableDataSourceBlockPattern extends TableDataSourceSegmented
 
         addSegment(0, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceSelection(pattern.pattern, new int[]{50, 50, 50}, delegate, navigator, true)
-                        .visualizing(visualizationContext)).withTitle(IvTranslations.get("reccomplex.blockpattern.pattern"), IvTranslations.getLines("reccomplex.blockpattern.pattern.tooltip")).buildDataSource());
+                        .visualizing(visualizationContext), () -> IvTranslations.get("reccomplex.blockpattern.pattern"), () -> IvTranslations.getLines("reccomplex.blockpattern.pattern.tooltip"))
+                .withTitle("")
+                .buildDataSource());
         addSegment(1, new TableDataSourceSupplied(() -> new TitledCell(
                 new TableCellTitle(null, IvTranslations.get("reccomplex.blockpattern.ingredients")).withTooltip(IvTranslations.formatLines("reccomplex.blockpattern.ingredients.tooltip")))));
         addSegment(2, new TableDataSourceBlockPatternIngredientList(pattern.ingredients, delegate, navigator));

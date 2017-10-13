@@ -48,14 +48,17 @@ public class TableDataSourceStaticGeneration extends TableDataSourceSegmented
         addSegment(2, new TableDataSourceBlockSurfacePos(generationInfo.position, generationInfo::setPosition));
 
         addSegment(3, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceSelectivePlacer(generationInfo.placer, navigator, delegate)).withTitle(IvTranslations.get("reccomplex.placer")).buildDataSource());
+                .addNavigation(() -> new TableDataSourceSelectivePlacer(generationInfo.placer, navigator, delegate), () -> IvTranslations.get("reccomplex.placer"), () -> IvTranslations.getLines("reccomplex.placer.tooltip"))
+                .withTitle("")
+                .buildDataSource());
 
         addSegment(4, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.gui.dimensions"), generationInfo.dimensionExpression, null));
 
         addSegment(5, TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceStaticPattern(generationInfo.pattern, delegate))
                 .enabled(generationInfo::hasPattern)
-                .addAction(() -> generationInfo.pattern = generationInfo.hasPattern() ? null : new StaticGeneration.Pattern(), () -> generationInfo.hasPattern() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null
-                ).withTitle(IvTranslations.get("reccomplex.generationInfo.static.pattern")).buildDataSource());
+                .addAction(() -> generationInfo.pattern = generationInfo.hasPattern() ? null : new StaticGeneration.Pattern(), () -> generationInfo.hasPattern() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null)
+                .withTitle(IvTranslations.get("reccomplex.generationInfo.static.pattern"))
+                .buildDataSource());
     }
 }

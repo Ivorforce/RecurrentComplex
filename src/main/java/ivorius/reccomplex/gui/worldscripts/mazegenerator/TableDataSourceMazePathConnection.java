@@ -30,8 +30,10 @@ public class TableDataSourceMazePathConnection extends TableDataSourceSegmented
         addSegment(0, new TableDataSourceConnector(mazePath.connector, IvTranslations.get("reccomplex.maze.connector")));
 
         addSegment(1, TableCellMultiBuilder.create(navigator, tableDelegate)
-                .addNavigation(() -> new TableDataSourceMazePathConditionalConnectorList(mazePath.conditionalConnectors, tableDelegate, navigator))
-                .withTitle(IvTranslations.get("reccomplex.maze.conditional_connectors"), IvTranslations.getLines("reccomplex.maze.conditional_connectors.tooltip")).buildDataSource());
+                .addNavigation(() -> new TableDataSourceMazePathConditionalConnectorList(mazePath.conditionalConnectors, tableDelegate, navigator),
+                        () -> IvTranslations.get("reccomplex.maze.conditional_connectors"), () -> IvTranslations.getLines("reccomplex.maze.conditional_connectors.tooltip"))
+                .withTitle("")
+                .buildDataSource());
 
         addSegment(2, new TableDataSourceMazePath(mazePath.path, bounds, tableDelegate, navigator)
                 .visualizing(visualizationContext));

@@ -53,12 +53,12 @@ public class TableDataSourceVanillaDecorationGeneration extends TableDataSourceS
         });
 
         addSegment(3, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator)).withTitle(IvTranslations.get("reccomplex.gui.biomes")).buildDataSource());
+                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator), () -> IvTranslations.get("reccomplex.gui.biomes"))
+                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator), () -> IvTranslations.get("reccomplex.gui.dimensions"))
+                .withTitle("")
+                .buildDataSource());
 
-        addSegment(4, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator)).withTitle(IvTranslations.get("reccomplex.gui.dimensions")).buildDataSource());
-
-        addSegment(5, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift,
+        addSegment(4, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift,
                 IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
     }
 }

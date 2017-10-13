@@ -164,6 +164,6 @@ public class TableCellMultiBuilder
         }
 
         TableCellMulti multi = new TableCellMulti(cells);
-        return title != null ? new TitledCell(multi) : multi;
+        return title != null ? new TitledCell(title, multi).withTitleTooltip(titleTooltip) : multi;
     }
 }

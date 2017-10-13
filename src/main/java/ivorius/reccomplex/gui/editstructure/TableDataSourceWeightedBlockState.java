@@ -46,7 +46,7 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented
     @Nonnull
     public static TableDataSource tileEntitySegment(final TableNavigator navigator, final TableDelegate delegate, Supplier<NBTTagCompound> supplier, Consumer<NBTTagCompound> consumer)
     {
-        TableCellMultiBuilder tableCellMultiBuilder = TableCellMultiBuilder.create(navigator, delegate)
+        return TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceNBTTagCompound(delegate, navigator, supplier.get())
                 {
                     @Nonnull
@@ -57,12 +57,10 @@ public class TableDataSourceWeightedBlockState extends TableDataSourceSegmented
                     }
                 })
                 .enabled(() -> supplier.get() != null)
-                .addAction(() ->
-                {
+                .addAction(() ->{
                     consumer.accept(supplier.get() != null ? null : new NBTTagCompound());
                     delegate.reloadData();
-                }, () -> supplier.get() != null ? "Remove" : "Add", null);
-        return tableCellMultiBuilder.withTitle("Tile Entity").buildDataSource();
+                }, () -> supplier.get() != null ? "Remove" : "Add", null).withTitle("Tile Entity").buildDataSource();
     }
 
     @Nonnull

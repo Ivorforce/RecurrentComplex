@@ -83,10 +83,9 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
         });
 
         addSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.inventorygen.dependencies"), IvTranslations.getLines("reccomplex.inventorygen.dependencies.tooltip"), this.component.dependencies, RecurrentComplex.saver));
-        TableCellMultiBuilder tableCellMultiBuilder = TableCellMultiBuilder.create(navigator, delegate)
+        addSegment(4, TableCellMultiBuilder.create(navigator, delegate)
                 .addAction(() -> RCGuiHandler.editInventoryGenComponentItems(this.player, this.key, this.component, this.saveDirectoryData), () -> IvTranslations.get("reccomplex.gui.edit"), null
-                );
-        addSegment(4, tableCellMultiBuilder.withTitle(IvTranslations.format("reccomplex.gui.inventorygen.items.summary", String.valueOf(this.component.items.size()))).buildDataSource());
+                ).withTitle(IvTranslations.format("reccomplex.gui.inventorygen.items.summary", String.valueOf(this.component.items.size()))).buildDataSource());
     }
 
     public SaveDirectoryData getSaveDirectoryData()

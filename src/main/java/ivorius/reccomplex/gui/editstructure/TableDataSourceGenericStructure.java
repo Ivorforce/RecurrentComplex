@@ -64,9 +64,8 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
 
         addSegment(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> structureKey, delegate)));
 
-        TableCellMultiBuilder tableCellMultiBuilder3 = TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceMetadata(structureInfo.metadata));
-        addSegment(2, tableCellMultiBuilder3.withTitle(IvTranslations.get("reccomplex.structure.metadata"), IvTranslations.getLines("reccomplex.structure.metadata.tooltip")).buildDataSource());
+        addSegment(2, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceMetadata(structureInfo.metadata)).withTitle(IvTranslations.get("reccomplex.structure.metadata"), IvTranslations.getLines("reccomplex.structure.metadata.tooltip")).buildDataSource());
 
         addSegment(3, () -> {
             TableCellBoolean cellRotatable = new TableCellBoolean("rotatable", structureInfo.rotatable,
@@ -91,17 +90,14 @@ public class TableDataSourceGenericStructure extends TableDataSourceSegmented
                     .withTitleTooltip(IvTranslations.formatLines("reccomplex.structure.blocking.tooltip"));
         });
 
-        TableCellMultiBuilder tableCellMultiBuilder2 = TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceGenerationType(structureInfo.generationTypes, visualizationContext, delegate, navigator));
-        addSegment(4, tableCellMultiBuilder2.withTitle(IvTranslations.get("reccomplex.structure.generation"), IvTranslations.getLines("reccomplex.structure.generation.tooltip")).buildDataSource());
+        addSegment(4, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceGenerationType(structureInfo.generationTypes, visualizationContext, delegate, navigator)).withTitle(IvTranslations.get("reccomplex.structure.generation"), IvTranslations.getLines("reccomplex.structure.generation.tooltip")).buildDataSource());
 
-        TableCellMultiBuilder tableCellMultiBuilder1 = TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate));
-        addSegment(5, tableCellMultiBuilder1.withTitle(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")).buildDataSource());
+        addSegment(5, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> structureInfo.transformer.tableDataSource(navigator, delegate)).withTitle(IvTranslations.get("reccomplex.structure.transformers"), IvTranslations.getLines("reccomplex.structure.transformers.tooltip")).buildDataSource());
 
-        TableCellMultiBuilder tableCellMultiBuilder = TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceGenericVariableDomain(delegate, navigator, structureInfo.variableDomain));
-        addSegment(6, tableCellMultiBuilder.withTitle(IvTranslations.get("reccomplex.structure.variables"), IvTranslations.getLines("reccomplex.structure.variables.tooltip")).buildDataSource());
+        addSegment(6, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceGenericVariableDomain(delegate, navigator, structureInfo.variableDomain)).withTitle(IvTranslations.get("reccomplex.structure.variables"), IvTranslations.getLines("reccomplex.structure.variables.tooltip")).buildDataSource());
 
         addSegment(7, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.structure.dependencies"), IvTranslations.getLines("reccomplex.structure.dependencies.tooltip"), structureInfo.dependencies, RecurrentComplex.saver));
     }

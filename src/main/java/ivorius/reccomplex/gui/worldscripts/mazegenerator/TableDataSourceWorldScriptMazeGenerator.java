@@ -53,18 +53,19 @@ public class TableDataSourceWorldScriptMazeGenerator extends TableDataSourceSegm
                     return cell;
                 })
                 .addNavigation(() -> new TableDataSourceMazeInfo(script, delegate, navigator))
-                .buildTitled(IvTranslations.get("reccomplex.maze.id"))
+                .withTitle(IvTranslations.get("reccomplex.maze.id"))
+                .build()
         );
 
-        addSegment(2, TableCellMultiBuilder.create(navigator, delegate)
+        TableCellMultiBuilder tableCellMultiBuilder1 = TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceMazeComponent(script.mazeComponent, navigator, delegate)
                         .visualizing(new MazeVisualizationContext(script.structureShift.add(realWorldPos), script.roomSize))
-                )
-                .buildDataSource(IvTranslations.get("reccomplex.maze")));
+                );
+        addSegment(2, tableCellMultiBuilder1.withTitle(IvTranslations.get("reccomplex.maze")).buildDataSource());
 
-        addSegment(3, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms))
-                .buildDataSource(IvTranslations.get("reccomplex.worldscript.mazeGen.rules")));
+        TableCellMultiBuilder tableCellMultiBuilder = TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceMazeRuleList(script.rules, delegate, navigator, script.mazeComponent.exitPaths, script.mazeComponent.rooms));
+        addSegment(3, tableCellMultiBuilder.withTitle(IvTranslations.get("reccomplex.worldscript.mazeGen.rules")).buildDataSource());
 
         addSegment(4, new TableDataSourceBlockPos(script.getStructureShift(), script::setStructureShift,
                 IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));

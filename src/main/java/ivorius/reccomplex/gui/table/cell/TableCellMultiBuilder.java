@@ -36,6 +36,9 @@ public class TableCellMultiBuilder
     public TableNavigator navigator;
     public TableDelegate delegate;
 
+    public String title;
+    public List<String> titleTooltip;
+
     private TableCellMultiBuilder(TableNavigator navigator, TableDelegate delegate)
     {
         this.navigator = navigator;
@@ -121,33 +124,24 @@ public class TableCellMultiBuilder
     }
 
     @Nonnull
-    public TableDataSource buildDataSource(@Nullable String title)
-    {
-        return new TableDataSourceSupplied((Supplier<TableCell>) () -> buildTitled(title));
-    }
-
-    @Nonnull
-    public TableDataSource buildDataSource(@Nullable String title, List<String> tooltip)
-    {
-        return new TableDataSourceSupplied((Supplier<TableCell>) () -> buildTitled(title).withTitleTooltip(tooltip));
-    }
-
-    @Nonnull
     public TableDataSource buildDataSource()
     {
-        return new TableDataSourceSupplied(this::buildTitled);
+        return new TableDataSourceSupplied(this::build);
     }
 
     @Nonnull
-    public TitledCell buildTitled(@Nullable String title)
+    public TableCellMultiBuilder withTitle(@Nullable String title)
     {
-        return new TitledCell(title, build());
+        this.title = title;
+        return this;
     }
 
     @Nonnull
-    public TitledCell buildTitled()
+    public TableCellMultiBuilder withTitle(@Nullable String title, List<String> tooltip)
     {
-        return new TitledCell(build());
+        this.title = title;
+        this.titleTooltip = tooltip;
+        return this;
     }
 
     @Nonnull
@@ -169,6 +163,7 @@ public class TableCellMultiBuilder
             cells.add(cell);
         }
 
-        return new TableCellMulti(cells);
+        TableCellMulti multi = new TableCellMulti(cells);
+        return title != null ? new TitledCell(multi) : multi;
     }
 }

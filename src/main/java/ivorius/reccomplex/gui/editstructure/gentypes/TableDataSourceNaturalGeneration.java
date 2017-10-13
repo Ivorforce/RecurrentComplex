@@ -57,23 +57,24 @@ public class TableDataSourceNaturalGeneration extends TableDataSourceSegmented
             return RCGuiTables.defaultWeightElement(val -> generationInfo.setGenerationWeight(TableCells.toDouble(val)), generationInfo.getGenerationWeight());
         });
 
-        addSegment(3, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceSelectivePlacer(generationInfo.placer, navigator, delegate))
-                .buildDataSource(IvTranslations.get("reccomplex.placer")));
+        TableCellMultiBuilder tableCellMultiBuilder3 = TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceSelectivePlacer(generationInfo.placer, navigator, delegate));
+        addSegment(3, tableCellMultiBuilder3.withTitle(IvTranslations.get("reccomplex.placer")).buildDataSource());
 
-        addSegment(4, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator))
-                .buildDataSource(IvTranslations.get("reccomplex.gui.biomes")));
+        TableCellMultiBuilder tableCellMultiBuilder2 = TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator));
+        addSegment(4, tableCellMultiBuilder2.withTitle(IvTranslations.get("reccomplex.gui.biomes")).buildDataSource());
 
-        addSegment(5, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator))
-                .buildDataSource(IvTranslations.get("reccomplex.gui.dimensions")));
+        TableCellMultiBuilder tableCellMultiBuilder1 = TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator));
+        addSegment(5, tableCellMultiBuilder1.withTitle(IvTranslations.get("reccomplex.gui.dimensions")).buildDataSource());
 
-        addSegment(6, TableCellMultiBuilder.create(navigator, delegate)
+        TableCellMultiBuilder tableCellMultiBuilder = TableCellMultiBuilder.create(navigator, delegate)
                 .addNavigation(() -> new TableDataSourceNaturalGenLimitation(generationInfo.spawnLimitation, delegate))
                 .enabled(generationInfo::hasLimitations)
                 .addAction(() -> generationInfo.spawnLimitation = generationInfo.hasLimitations() ? null : new NaturalGeneration.SpawnLimitation(), () -> generationInfo.hasLimitations() ? IvTranslations.get("reccomplex.gui.remove") : IvTranslations.get("reccomplex.gui.add"), null
-                ).buildDataSource(IvTranslations.get("reccomplex.generationInfo.natural.limitations")));
+                );
+        addSegment(6, tableCellMultiBuilder.withTitle(IvTranslations.get("reccomplex.generationInfo.natural.limitations")).buildDataSource());
     }
 
     public static List<TableCellEnum.Option<String>> allGenerationCategories()

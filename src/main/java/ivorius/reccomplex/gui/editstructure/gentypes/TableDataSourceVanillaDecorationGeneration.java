@@ -52,13 +52,13 @@ public class TableDataSourceVanillaDecorationGeneration extends TableDataSourceS
             return RCGuiTables.defaultWeightElement(val -> generationInfo.generationWeight = TableCells.toDouble(val), generationInfo.generationWeight);
         });
 
-        addSegment(3, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator))
-                .buildDataSource(IvTranslations.get("reccomplex.gui.biomes")));
+        TableCellMultiBuilder tableCellMultiBuilder1 = TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceBiomeGenList(generationInfo.biomeWeights, delegate, navigator));
+        addSegment(3, tableCellMultiBuilder1.withTitle(IvTranslations.get("reccomplex.gui.biomes")).buildDataSource());
 
-        addSegment(4, TableCellMultiBuilder.create(navigator, delegate)
-                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator))
-                .buildDataSource(IvTranslations.get("reccomplex.gui.dimensions")));
+        TableCellMultiBuilder tableCellMultiBuilder = TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceDimensionGenList(generationInfo.dimensionWeights, delegate, navigator));
+        addSegment(4, tableCellMultiBuilder.withTitle(IvTranslations.get("reccomplex.gui.dimensions")).buildDataSource());
 
         addSegment(5, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift,
                 IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));

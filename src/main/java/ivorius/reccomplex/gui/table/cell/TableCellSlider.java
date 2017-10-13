@@ -11,9 +11,12 @@ import ivorius.reccomplex.gui.table.Bounds;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.utils.scale.Scale;
 import ivorius.reccomplex.utils.scale.Scales;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
+@SideOnly(Side.CLIENT)
 public abstract class TableCellSlider<T> extends TableCellPropertyDefault<T> implements GuiControlListener<GuiSlider>
 {
     protected GuiSlider slider;

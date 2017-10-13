@@ -46,17 +46,13 @@ public class TableDataSourceMazeComponent extends TableDataSourceSegmented
         addSegment(1, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> new TableDataSourceSelection(component.rooms, DEFAULT_MAX_COMPONENT_SIZE, tableDelegate, navigator, false)
                         .visualizing(visualizationContext), () -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.rooms"), () -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.rooms.tooltip"))
-                .withTitle("")
-                .buildDataSource());
-
-        addSegment(2, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> new TableDataSourceMazePathConnectionList(component.exitPaths, tableDelegate, navigator, component.rooms)
                         .visualizing(visualizationContext), () -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.exits"), () -> IvTranslations.getLines("reccomplex.generationInfo.mazeComponent.exits.tooltip"))
                 .enabled(() -> component.rooms.size() > 0)
                 .withTitle("")
                 .buildDataSource());
 
-        addSegment(3, TableCellMultiBuilder.create(navigator, tableDelegate)
+        addSegment(2, TableCellMultiBuilder.create(navigator, tableDelegate)
                 .addNavigation(() -> new TableDataSourceMazeReachability(component.reachability, visualizationContext, tableDelegate, navigator, SavedMazeReachability.buildExpected(component), component.rooms),
                         () -> IvTranslations.get("reccomplex.generationInfo.mazeComponent.reachability"), () -> IvTranslations.formatLines("reccomplex.reachability.tooltip"))
                 .enabled(() -> component.rooms.size() > 0)

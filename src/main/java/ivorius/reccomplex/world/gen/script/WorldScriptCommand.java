@@ -171,6 +171,7 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
         return IvTranslations.get("reccomplex.worldscript.command");
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public TableDataSource tableDataSource(BlockPos realWorldPos, TableNavigator navigator, TableDelegate tableDelegate)
     {

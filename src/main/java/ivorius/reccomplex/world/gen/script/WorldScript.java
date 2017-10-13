@@ -15,6 +15,8 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareCo
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.nbt.NBTStorable;
 import net.minecraft.nbt.NBTBase;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 13.09.15.
@@ -29,5 +31,6 @@ public interface WorldScript<S extends NBTStorable> extends NBTCompoundObject
 
     String getDisplayString();
 
+    @SideOnly(Side.CLIENT)
     TableDataSource tableDataSource(BlockPos realWorldPos, TableNavigator navigator, TableDelegate tableDelegate);
 }

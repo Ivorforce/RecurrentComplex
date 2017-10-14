@@ -82,7 +82,8 @@ public class WorldStructureGenerationData extends WorldSavedData
 
     public Stream<Entry> entriesAt(final BlockPos coords)
     {
-        return entriesAt(new ChunkPos(coords.getX() >> 4, coords.getZ() >> 4))
+        // Add 8 for both since the chunk map is rasterized for decoration where every chunk is +8
+        return entriesAt(new ChunkPos((coords.getX() - 8) >> 4, (coords.getZ() - 8) >> 4))
                 .filter(input ->
                 {
                     StructureBoundingBox bb = input.getBoundingBox();

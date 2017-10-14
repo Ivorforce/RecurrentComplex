@@ -46,7 +46,7 @@ public class WorldGenMaze
             return false;
         }
 
-        StructureGenerator<?> generator = new StructureGenerator<>(structure).asChild(context, placedComponent.variableDomain).generationInfo(placedComponent.generationInfoID)
+        StructureGenerator<?> generator = new StructureGenerator<>(structure).asChild(context).generationInfo(placedComponent.generationInfoID)
                 .transform(Transforms.apply(placedComponent.transform, context.transform))
                 .lowerCoord(lowerCoord(structure, placedComponent.lowerCoord, placedComponent.transform, pos, context.transform))
                 .structureID(placedComponent.structureID)
@@ -77,9 +77,13 @@ public class WorldGenMaze
             return null;
         }
 
+        // Copy the environment and then fill it with the components' info.
+        environment = environment.copy(environment.variables);
+        componentInfo.variableDomain.fill(environment.variables);
+
         BlockPos compLowerPos = getBoundingBox(roomSize, placedComponent, structure, componentInfo.transform).add(shift);
 
-        NBTStorable instanceData = new StructureGenerator<>(structure).seed(random.nextLong()).environment(environment.copy(componentInfo.variableDomain))
+        NBTStorable instanceData = new StructureGenerator<>(structure).seed(random.nextLong()).environment(environment)
                 .transform(Transforms.apply(componentInfo.transform, transform))
                 .lowerCoord(lowerCoord(structure, compLowerPos, componentInfo.transform, pos, transform))
                 .structureID(componentInfo.structureID)

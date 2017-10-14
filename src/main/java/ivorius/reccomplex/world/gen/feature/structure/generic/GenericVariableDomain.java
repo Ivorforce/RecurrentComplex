@@ -36,9 +36,23 @@ public class GenericVariableDomain
     {
         for (Variable variable : variables)
         {
-            if (!domain.isSet(variable.id))
-                domain.set(variable.id, random.nextFloat() < variable.chance
-                        && variable.condition.test(environment));
+            if (environment.variables.isSet(variable.id))
+            {
+                domain.set(variable.id, environment.variables.get(variable.id));
+                return;
+            }
+
+            if (domain.isSet(variable.id))
+            {
+                environment.variables.set(variable.id, domain.get(variable.id));
+                return;
+            }
+
+            boolean value = random.nextFloat() < variable.chance
+                    && variable.condition.test(environment);
+
+            domain.set(variable.id, value);
+            environment.variables.set(variable.id, value);
         }
     }
 

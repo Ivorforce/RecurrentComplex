@@ -28,6 +28,7 @@ import ivorius.reccomplex.utils.accessor.RCAccessorWorldServer;
 import ivorius.reccomplex.utils.expression.DependencyExpression;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.Structures;
 import ivorius.reccomplex.world.gen.feature.structure.VariableDomain;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
@@ -166,11 +167,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
     @Override
     public int[] size()
     {
-        if (worldDataCompound == null)
-            return new int[]{0, 0, 0};
-
-        NBTTagCompound compound = worldDataCompound.getCompoundTag("blockCollection");
-        return new int[]{compound.getInteger("width"), compound.getInteger("height"), compound.getInteger("length")};
+        return Structures.size(worldDataCompound, new int[]{0, 0, 0});
     }
 
     @Override
@@ -336,7 +333,6 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
             BlockPos origin = StructureBoundingBoxes.min(context.boundingBox);
 
             variableDomain.fill(instanceData.variableDomain, context.environment, context.random);
-            instanceData.variableDomain.fill(context.environment.variables);
 
             instanceData.transformerData = this.transformer.prepareInstanceData(context, worldData);
             instanceData.foreignTransformerData = foreignTransformer.prepareInstanceData(context, worldData);

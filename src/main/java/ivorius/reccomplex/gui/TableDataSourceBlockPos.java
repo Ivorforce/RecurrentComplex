@@ -16,6 +16,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
 /**
@@ -31,6 +32,8 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
     private String title;
     private List<String> tooltip;
 
+    protected BooleanSupplier enabled = () -> true;
+
     public TableDataSourceBlockPos(BlockPos coord, Consumer<BlockPos> consumer, String title)
     {
         this.coord = coord;
@@ -38,12 +41,15 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
         this.title = title;
 
         addSegment(0, () -> {
+            boolean enabled = this.enabled.getAsBoolean();
+
             TableCellPropertyDefault<Integer> x = new TableCellIntTextField(null, this.coord.getX());
             x.setTooltip(IvTranslations.getLines("reccomplex.gui.blockpos.x"));
             x.addListener(i -> {
                 this.coord = new BlockPos(i, this.coord.getY(), this.coord.getZ());
                 consumer.accept(this.coord);
             });
+            x.setEnabled(enabled);
 
             TableCellPropertyDefault<Integer> y = new TableCellIntTextField(null, this.coord.getY());
             y.setTooltip(IvTranslations.getLines("reccomplex.gui.blockpos.y"));
@@ -51,6 +57,7 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
                 this.coord = new BlockPos(this.coord.getX(), i, this.coord.getZ());
                 consumer.accept(this.coord);
             });
+            y.setEnabled(enabled);
 
             TableCellPropertyDefault<Integer> z = new TableCellIntTextField(null, this.coord.getZ());
             z.setTooltip(IvTranslations.getLines("reccomplex.gui.blockpos.z"));
@@ -58,6 +65,7 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
                 this.coord = new BlockPos(this.coord.getX(), this.coord.getY(), i);
                 consumer.accept(this.coord);
             });
+            z.setEnabled(enabled);
 
             return new TitledCell(title, new TableCellMulti(x, y, z))
                     .withTitleTooltip(tooltip);
@@ -83,5 +91,10 @@ public class TableDataSourceBlockPos extends TableDataSourceSegmented
     public void setTooltip(List<String> tooltip)
     {
         this.tooltip = tooltip;
+    }
+
+    public void setEnabled(BooleanSupplier enabled)
+    {
+        this.enabled = enabled;
     }
 }

@@ -61,14 +61,14 @@ public class Environment
         return new Environment(world, biome, villageType, generation);
     }
 
-    public Environment copy()
+    public Environment child()
     {
         return new Environment(world, biome, villageType, generationType);
     }
 
     public Environment copy(VariableDomain domain)
     {
-        Environment copy = copy();
+        Environment copy = child();
         if (domain != null)
             domain.fill(copy.variables);
         return copy;

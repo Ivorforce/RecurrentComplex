@@ -6,6 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.structure;
 
 import ivorius.reccomplex.gui.GuiValidityStateIndicator;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -59,5 +60,14 @@ public class Structures
     public static boolean isSimpleID(String id)
     {
         return !id.trim().isEmpty() && id.chars().allMatch(Character::isJavaIdentifierPart);
+    }
+
+    public static int[] size(NBTTagCompound worldDataCompound, int[] def)
+    {
+        if (worldDataCompound == null)
+            return def;
+
+        NBTTagCompound compound = worldDataCompound.getCompoundTag("blockCollection");
+        return new int[]{compound.getInteger("width"), compound.getInteger("height"), compound.getInteger("length")};
     }
 }

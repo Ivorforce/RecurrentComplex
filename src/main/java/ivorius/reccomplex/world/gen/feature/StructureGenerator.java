@@ -22,6 +22,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareCo
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -78,6 +79,8 @@ public class StructureGenerator<S extends NBTStorable>
     private StructureBoundingBox generationBB;
     @Nullable
     private Predicate<Vec3i> generationPredicate;
+
+    private RunTransformer transformer;
 
     private String generationInfoID;
     private GenerationType generationType;
@@ -153,7 +156,7 @@ public class StructureGenerator<S extends NBTStorable>
 
         try
         {
-            structure.generate(spawn, instanceData, RCConfig.getUniversalTransformer());
+            structure.generate(spawn, instanceData, transformer != null ? transformer.transformer : RCConfig.getUniversalTransformer());
         }
         catch (Exception e)
         {
@@ -417,6 +420,17 @@ public class StructureGenerator<S extends NBTStorable>
     public StructureGenerator<S> generationPredicate(@Nullable Predicate<Vec3i> generationPredicate)
     {
         this.generationPredicate = generationPredicate;
+        return this;
+    }
+
+    public RunTransformer transformer()
+    {
+        return transformer;
+    }
+
+    public StructureGenerator<S> transformer(RunTransformer transformer)
+    {
+        this.transformer = transformer;
         return this;
     }
 

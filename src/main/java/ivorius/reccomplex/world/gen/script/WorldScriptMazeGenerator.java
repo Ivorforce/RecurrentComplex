@@ -35,6 +35,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.Blocked
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.LimitAABBStrategy;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRule;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.MazeRuleRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -98,7 +99,7 @@ public class WorldScriptMazeGenerator implements WorldScript<WorldScriptMazeGene
     }
 
     @Override
-    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos pos)
+    public void generate(StructureSpawnContext context, RunTransformer transformer, InstanceData instanceData, BlockPos pos)
     {
         for (PlacedStructure placedComponent : instanceData.placedStructures)
             WorldGenMaze.generate(context, placedComponent, pos);

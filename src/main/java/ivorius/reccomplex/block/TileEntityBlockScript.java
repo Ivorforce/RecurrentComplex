@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.block;
 
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -66,9 +67,9 @@ public class TileEntityBlockScript extends TileEntity implements GeneratingTileE
     }
 
     @Override
-    public void generate(StructureSpawnContext context, WorldScriptMulti.InstanceData instanceData)
+    public void generate(StructureSpawnContext context, RunTransformer transformer, WorldScriptMulti.InstanceData instanceData)
     {
-        script.generate(context, instanceData, pos);
+        script.generate(context, transformer, instanceData, pos);
     }
 
     @Override

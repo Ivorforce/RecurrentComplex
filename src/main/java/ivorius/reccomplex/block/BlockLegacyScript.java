@@ -9,6 +9,7 @@ import ivorius.reccomplex.nbt.NBTStorable;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
 import ivorius.reccomplex.world.gen.script.WorldScript;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -102,9 +103,9 @@ public class BlockLegacyScript extends Block
         }
 
         @Override
-        public void generate(StructureSpawnContext context, I instanceData)
+        public void generate(StructureSpawnContext context, RunTransformer transformer, I instanceData)
         {
-            script.generate(context, instanceData, pos);
+            script.generate(context, transformer, instanceData, pos);
         }
 
         @Override

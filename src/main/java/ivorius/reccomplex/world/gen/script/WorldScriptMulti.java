@@ -16,6 +16,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareCo
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.utils.expression.EnvironmentExpression;
 import ivorius.reccomplex.nbt.NBTStorable;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -57,13 +58,13 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     }
 
     @Override
-    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos pos)
+    public void generate(StructureSpawnContext context, RunTransformer transformer, InstanceData instanceData, BlockPos pos)
     {
         if (!instanceData.deactivated)
         {
             for (Pair<WorldScript, NBTStorable> paired : instanceData.pairedScripts)
                 //noinspection unchecked
-                paired.getLeft().generate(context, paired.getRight(), pos);
+                paired.getLeft().generate(context, transformer, paired.getRight(), pos);
         }
     }
 

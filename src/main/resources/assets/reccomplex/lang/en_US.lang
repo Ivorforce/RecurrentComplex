@@ -467,6 +467,18 @@ reccomplex.worldscript.strucGen.mode.list.front=Front
 reccomplex.worldscript.strucGen.rotation.random=Random (if rotatable)
 reccomplex.worldscript.strucGen.mirror.random=Random (if mirrorable)
 
+reccomplex.worldscript.holder=Holder
+reccomplex.worldscript.holder.capture=§aCopy area
+reccomplex.worldscript.holder.delete=§cDelete held area
+reccomplex.worldscript.holder.switch=§bSwap Areas
+reccomplex.worldscript.holder.holder.tooltip=Switches an area of blocks between two setups.
+reccomplex.worldscript.holder.point.1=Position 1
+reccomplex.worldscript.holder.point.1.tooltip=The first point of the area.
+reccomplex.worldscript.holder.point.2=Position 2
+reccomplex.worldscript.holder.point.2.tooltip=The second point of the area.
+reccomplex.worldscript.holder.self=Self Block
+reccomplex.worldscript.holder.self.tooltip=The block placed at the position<br>of this script.
+
 reccomplex.gui.list.noelements=No Elements
 reccomplex.gui.true=True
 reccomplex.gui.false=False

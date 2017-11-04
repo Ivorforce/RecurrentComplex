@@ -64,13 +64,13 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
     }
 
     @Override
-    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, int[] areaSize, BlockPos coord, IBlockState sourceState)
+    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, RunTransformer transformer, int[] areaSize, BlockPos coord, IBlockState sourceState)
     {
         StructureGenerator<NBTStorable> generator = new StructureGenerator<>().asChild(context)
                 .maturity(StructureSpawnContext.GenerateMaturity.FIRST);
 
         WorldScriptMulti.InstanceData scriptInstanceData = script.prepareInstanceData(generator.prepare().get(), coord);
-        script.generate(generator.spawn().get(), scriptInstanceData, coord);
+        script.generate(generator.spawn().get(), transformer, scriptInstanceData, coord);
     }
 
     @Override

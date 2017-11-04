@@ -290,7 +290,7 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
                             NBTStorable teData = instanceData.tileEntities.get(entry.getKey());
                             if (teData != null) // Otherwise it was added after prepare, or doesn't want to generate
                                 //noinspection unchecked
-                                ((GeneratingTileEntity) entry.getValue()).generate(context, teData);
+                                ((GeneratingTileEntity) entry.getValue()).generate(context, transformer, teData);
                         });
             }
             else

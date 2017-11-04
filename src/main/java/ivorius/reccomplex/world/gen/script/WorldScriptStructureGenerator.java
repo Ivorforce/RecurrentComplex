@@ -26,6 +26,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnCont
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.ListGeneration;
 import ivorius.reccomplex.nbt.NBTStorable;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -252,7 +253,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     }
 
     @Override
-    public void generate(StructureSpawnContext context, InstanceData instanceData, BlockPos pos)
+    public void generate(StructureSpawnContext context, RunTransformer transformer, InstanceData instanceData, BlockPos pos)
     {
         generate_(context, instanceData);
     }

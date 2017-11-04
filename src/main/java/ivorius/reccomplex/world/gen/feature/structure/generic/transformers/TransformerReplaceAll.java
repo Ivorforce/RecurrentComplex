@@ -79,7 +79,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     }
 
     @Override
-    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, int[] areaSize, BlockPos coord, IBlockState sourceState)
+    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, RunTransformer transformer, int[] areaSize, BlockPos coord, IBlockState sourceState)
     {
         TransformerReplace.setBlock(context, areaSize, coord, instanceData.blockState, () -> instanceData.tileEntityInfo);
     }

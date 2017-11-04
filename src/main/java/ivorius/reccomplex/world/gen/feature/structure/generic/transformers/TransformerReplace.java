@@ -84,7 +84,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, int[] areaSize, BlockPos coord, IBlockState sourceState)
+    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, RunTransformer transformer, int[] areaSize, BlockPos coord, IBlockState sourceState)
     {
         WeightedBlockState blockState;
         if (destination.getContents().size() > 0)

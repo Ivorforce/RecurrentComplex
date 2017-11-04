@@ -7,9 +7,11 @@ package ivorius.reccomplex.block;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.network.PacketEditTileEntity;
 import ivorius.reccomplex.nbt.NBTStorable;
+import ivorius.reccomplex.network.PacketEditTileEntity;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.world.gen.script.WorldScriptMulti;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -21,9 +23,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -73,7 +75,7 @@ public class BlockScript extends Block
 
             WorldScriptMulti.InstanceData instanceData = tileEntity.doPrepareInstanceData(generator.prepare().get());
             if (instanceData != null)
-                tileEntity.generate(generator.spawn().get(), instanceData);
+                tileEntity.generate(generator.spawn().get(), new RunTransformer(new TransformerMulti(), new TransformerMulti.InstanceData()), instanceData);
         }
     }
 

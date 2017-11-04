@@ -19,6 +19,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadConte
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.nbt.NBTNone;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTBase;
@@ -84,7 +85,7 @@ public class WorldScriptCommand implements WorldScript<NBTNone>
     }
 
     @Override
-    public void generate(StructureSpawnContext context, NBTNone instanceData, BlockPos pos)
+    public void generate(StructureSpawnContext context, RunTransformer transformer, NBTNone instanceData, BlockPos pos)
     {
         // TODO Fix for partial generation (if areas are affected?)
         if (context.includes(pos))

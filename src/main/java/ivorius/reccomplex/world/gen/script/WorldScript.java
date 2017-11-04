@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.world.gen.script;
 
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
 import net.minecraft.util.math.BlockPos;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
@@ -27,7 +28,7 @@ public interface WorldScript<S extends NBTStorable> extends NBTCompoundObject
 
     S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 
-    void generate(StructureSpawnContext context, S instanceData, BlockPos pos);
+    void generate(StructureSpawnContext context, RunTransformer transformer, S instanceData, BlockPos pos);
 
     String getDisplayString();
 

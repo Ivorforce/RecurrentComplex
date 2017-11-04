@@ -8,6 +8,7 @@ package ivorius.reccomplex.block;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
 import net.minecraft.nbt.NBTBase;
 
 /**
@@ -19,7 +20,7 @@ public interface GeneratingTileEntity<S>
 
     S loadInstanceData(StructureLoadContext context, NBTBase nbt);
 
-    void generate(StructureSpawnContext context, S instanceData);
+    void generate(StructureSpawnContext context, RunTransformer transformer, S instanceData);
 
     boolean shouldPlaceInWorld(StructureSpawnContext context, S instanceData);
 }

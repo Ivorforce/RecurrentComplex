@@ -22,9 +22,11 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeDecorator;
+import net.minecraftforge.event.terraingen.DecorateBiomeEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
@@ -179,6 +181,26 @@ public class RCBiomeDecorator
         public static DecorationType byID(String id)
         {
             return IvGsonHelper.enumForName(id, values());
+        }
+
+        @Nullable
+        public static DecorationType getDecorationType(DecorateBiomeEvent.Decorate event)
+        {
+            switch (event.getType())
+            {
+                case BIG_SHROOM:
+                    return BIG_SHROOM;
+                case TREE:
+                    return TREE;
+                case CACTUS:
+                    return CACTUS;
+                case FOSSIL:
+                    return FOSSIL;
+                case DESERT_WELL:
+                    return DESERT_WELL;
+                default:
+                    return null;
+            }
         }
 
         public String id()

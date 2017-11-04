@@ -79,27 +79,7 @@ public class RCTerrainGenEventHandler
     {
         if (event.getWorld() instanceof WorldServer)
         {
-            RCBiomeDecorator.DecorationType type;
-            switch (event.getType())
-            {
-                case BIG_SHROOM:
-                    type = RCBiomeDecorator.DecorationType.BIG_SHROOM;
-                    break;
-                case TREE:
-                    type = RCBiomeDecorator.DecorationType.TREE;
-                    break;
-                case CACTUS:
-                    type = RCBiomeDecorator.DecorationType.CACTUS;
-                    break;
-                case FOSSIL:
-                    type = RCBiomeDecorator.DecorationType.FOSSIL;
-                    break;
-                case DESERT_WELL:
-                    type = RCBiomeDecorator.DecorationType.DESERT_WELL;
-                    break;
-                default:
-                    type = null;
-            }
+            RCBiomeDecorator.DecorationType type = RCBiomeDecorator.DecorationType.getDecorationType(event);
 
             if (type != null)
             {
@@ -115,4 +95,5 @@ public class RCTerrainGenEventHandler
             }
         }
     }
+
 }

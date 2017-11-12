@@ -5,18 +5,25 @@
 
 package ivorius.reccomplex.commands.structure.sight;
 
+import ivorius.mcopts.commands.SimpleCommand;
+import ivorius.mcopts.commands.parameters.Parameters;
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCTextStyle;
-import ivorius.mcopts.commands.SimpleCommand;
-import ivorius.mcopts.commands.parameters.*;
+import ivorius.reccomplex.nbt.NBTStorable;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.world.gen.feature.WorldStructureGenerationData;
+import ivorius.reccomplex.world.gen.feature.structure.Structure;
+import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
+import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.util.text.TextComponentTranslation;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -49,6 +56,15 @@ public class CommandSightInfo extends SimpleCommand
             {
                 WorldStructureGenerationData.StructureEntry structureEntry = (WorldStructureGenerationData.StructureEntry) entry;
                 sender.sendMessage(new TextComponentTranslation("commands.rcsightinfo.structure", RCTextStyle.structure(structureEntry.getStructureID()), area, RCTextStyle.copy(String.valueOf(structureEntry.getSeed())), sight));
+
+                Structure structure = StructureRegistry.INSTANCE.get(structureEntry.getStructureID());
+                if (structure != null)
+                {
+                    // TODO generateAsSource not accurate
+                    NBTStorable instanceData = structure.loadInstanceData(new StructureLoadContext(structureEntry.getTransform(), entry.getBoundingBox(), false), structureEntry.getInstanceData(), RCConfig.getUniversalTransformer());
+                    List<TextComponentBase> list = structure.instanceDataInfo(instanceData);
+                    for (TextComponentBase s : list) sender.sendMessage(s);
+                }
             }
             else
                 sender.sendMessage(new TextComponentTranslation("commands.rcsightinfo.get", entry.description(), area, sight));

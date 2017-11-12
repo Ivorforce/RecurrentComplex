@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.world.gen.feature.structure;
 
+import gnu.trove.impl.unmodifiable.TUnmodifiableObjectByteMap;
 import gnu.trove.map.TObjectByteMap;
 import gnu.trove.map.hash.TObjectByteHashMap;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
@@ -63,6 +64,11 @@ public class VariableDomain implements NBTCompoundObject
                     copy.set(variable, i != 0);
                     return copy;
                 });
+    }
+
+    public TObjectByteMap<String> all()
+    {
+        return new TUnmodifiableObjectByteMap<>(variables);
     }
 
     public VariableDomain copy()

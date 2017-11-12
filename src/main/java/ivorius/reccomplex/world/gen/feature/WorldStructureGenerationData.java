@@ -329,6 +329,11 @@ public class WorldStructureGenerationData extends WorldSavedData
             this.preventComplementation = preventComplementation;
         }
 
+        public NBTBase getInstanceData()
+        {
+            return instanceData;
+        }
+
         @Override
         public void readFromNBT(NBTTagCompound compound)
         {

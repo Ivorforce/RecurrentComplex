@@ -15,9 +15,11 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.Generat
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
 import ivorius.reccomplex.nbt.NBTStorable;
 import net.minecraft.nbt.NBTBase;
+import net.minecraft.util.text.TextComponentBase;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -57,4 +59,9 @@ public interface Structure<S extends NBTStorable>
 
     @Nonnull
     GenericVariableDomain declaredVariables();
+
+    default List<TextComponentBase> instanceDataInfo(S s)
+    {
+        return Collections.emptyList();
+    }
 }

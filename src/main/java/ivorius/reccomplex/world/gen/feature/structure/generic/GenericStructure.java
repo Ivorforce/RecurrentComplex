@@ -22,7 +22,7 @@ import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.nbt.NBTStorable;
 import ivorius.reccomplex.temp.RCMover;
 import ivorius.reccomplex.temp.RCPosTransformer;
-import ivorius.reccomplex.utils.*;
+import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
 import ivorius.reccomplex.utils.accessor.RCAccessorEntity;
 import ivorius.reccomplex.utils.accessor.RCAccessorWorldServer;
 import ivorius.reccomplex.utils.expression.DependencyExpression;
@@ -53,6 +53,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.text.TextComponentBase;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
@@ -432,6 +434,14 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
     {
         String s = StructureRegistry.INSTANCE.id(this);
         return s != null ? s : "Generic Structure";
+    }
+
+    @Override
+    public List<TextComponentBase> instanceDataInfo(InstanceData instanceData)
+    {
+        if (!instanceData.variableDomain.all().isEmpty())
+            return Collections.singletonList(new TextComponentString(instanceData.variableDomain.all().toString()));
+        return Collections.emptyList();
     }
 
     public GenericStructure copy()

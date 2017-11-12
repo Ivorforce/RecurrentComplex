@@ -21,6 +21,7 @@ import ivorius.reccomplex.commands.parameters.expect.IvE;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.operation.OperationGenerateStructure;
 import ivorius.reccomplex.operation.OperationRegistry;
+import ivorius.reccomplex.random.Person;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
@@ -32,9 +33,11 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
+import java.util.Random;
 
 import static ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext.GenerateMaturity.FIRST;
 import static ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext.GenerateMaturity.SUGGEST;
@@ -78,7 +81,7 @@ public class CommandGenerateStructure extends SimpleCommand
         AxisAlignedTransform2D transform = parameters.get(IvP.transform("rotation", "mirror")).optional().orElse(null);
         GenerationType generationType = parameters.get("gen").to(RCP::generationType, structure).require();
         BlockSurfacePos pos = parameters.get(IvP.surfacePos("x", "z", sender.getPosition(), false)).require();
-        String seed = parameters.get("seed").optional().orElse(null);
+        String seed = parameters.get("seed").optional().orElseGet(() -> RandomStringUtils.randomAlphanumeric(20).toUpperCase());
         boolean suggest = parameters.has("suggest");
 
         Placer placer = generationType.placer();

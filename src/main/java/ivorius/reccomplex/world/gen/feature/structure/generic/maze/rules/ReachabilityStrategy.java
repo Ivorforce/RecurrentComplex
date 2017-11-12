@@ -600,7 +600,7 @@ public class ReachabilityStrategy<C> implements MazePredicate<C>
 
         public boolean intersectsRoute(ShiftedMazeComponent<?, C> component)
         {
-            return route == null || component.getComponent().rooms().stream().anyMatch(r -> route.contains(r));
+            return route == null || component.rooms().stream().anyMatch(r -> route.contains(r));
         }
     }
 }

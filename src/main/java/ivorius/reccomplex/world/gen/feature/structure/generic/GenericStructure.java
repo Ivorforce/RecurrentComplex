@@ -332,7 +332,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
             int[] areaSize = new int[]{blockCollection.width, blockCollection.height, blockCollection.length};
             BlockPos origin = StructureBoundingBoxes.min(context.boundingBox);
 
-            variableDomain.fill(instanceData.variableDomain, context.environment, context.random);
+            context.environment.variables.fill(instanceData.variableDomain); // Fill with already set vars
+            variableDomain.fill(instanceData.variableDomain, context.environment, context.random); // Determine the rest
 
             instanceData.transformerData = this.transformer.prepareInstanceData(context, worldData);
             instanceData.foreignTransformerData = foreignTransformer.prepareInstanceData(context, worldData);

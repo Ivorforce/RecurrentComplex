@@ -24,7 +24,6 @@ public class PlacedStructure implements NBTCompoundObject
     public String structureID;
     public String generationInfoID;
     public AxisAlignedTransform2D transform;
-    public VariableDomain variableDomain;
     public BlockPos lowerCoord;
 
     public NBTBase instanceData;
@@ -33,12 +32,11 @@ public class PlacedStructure implements NBTCompoundObject
     {
     }
 
-    public PlacedStructure(String structureID, String generationInfoID, AxisAlignedTransform2D transform, VariableDomain variableDomain, BlockPos lowerCoord, NBTBase instanceData)
+    public PlacedStructure(String structureID, String generationInfoID, AxisAlignedTransform2D transform, BlockPos lowerCoord, NBTBase instanceData)
     {
         this.structureID = structureID;
         this.generationInfoID = generationInfoID;
         this.transform = transform;
-        this.variableDomain = variableDomain;
         this.lowerCoord = lowerCoord;
         this.instanceData = instanceData;
     }
@@ -49,7 +47,6 @@ public class PlacedStructure implements NBTCompoundObject
         structureID = compound.getString("structureID");
         generationInfoID = compound.hasKey(generationInfoID, Constants.NBT.TAG_STRING) ? compound.getString("generationInfoID") : null;
         transform = RCAxisAlignedTransform.read(compound, "rotation", "mirrorX");
-        variableDomain = NBTCompoundObjects.readFrom(compound, "variableDomain", VariableDomain::new);
         lowerCoord = BlockPositions.readFromNBT("lowerCoord", compound);
         instanceData = compound.hasKey("instanceData", Constants.NBT.TAG_COMPOUND) ? compound.getTag("instanceData") : null;
     }
@@ -60,7 +57,6 @@ public class PlacedStructure implements NBTCompoundObject
         compound.setString("structureID", structureID);
         if (generationInfoID != null) compound.setString("generationInfoID", generationInfoID);
         RCAxisAlignedTransform.write(compound, transform, "rotation", "mirrorX");
-        NBTCompoundObjects.writeTo(compound, "variableDomain", variableDomain);
         BlockPositions.writeToNBT("lowerCoord", lowerCoord, compound);
         if (instanceData != null)
             compound.setTag("instanceData", instanceData);

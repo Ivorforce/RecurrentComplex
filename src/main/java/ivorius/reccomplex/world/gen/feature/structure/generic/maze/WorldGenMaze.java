@@ -77,18 +77,18 @@ public class WorldGenMaze
             return null;
         }
 
-        // Copy the environment and then fill it with the components' info.
-        environment = environment.copy(environment.variables);
-        componentInfo.variableDomain.fill(environment.variables);
+        // Add the component's variables first (precedence, these were set already!) and then add the environment's vars
+        Environment childEnvironment = environment.copy(componentInfo.variableDomain);
+        environment.variables.fill(childEnvironment.variables);
 
         BlockPos compLowerPos = getBoundingBox(roomSize, placedComponent, structure, componentInfo.transform).add(shift);
 
-        NBTStorable instanceData = new StructureGenerator<>(structure).seed(random.nextLong()).environment(environment)
+        NBTStorable instanceData = new StructureGenerator<>(structure).seed(random.nextLong()).environment(childEnvironment)
                 .transform(Transforms.apply(componentInfo.transform, transform))
                 .lowerCoord(lowerCoord(structure, compLowerPos, componentInfo.transform, pos, transform))
                 .structureID(componentInfo.structureID)
                 .instanceData().orElse(null);
-        return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentInfo.transform, componentInfo.variableDomain, compLowerPos, instanceData.writeToNBT());
+        return new PlacedStructure(componentInfo.structureID, componentInfo.structureID, componentInfo.transform, compLowerPos, instanceData.writeToNBT());
     }
 
     protected static BlockPos getBoundingBox(int[] roomSize, PlacedMazeComponent<MazeComponentStructure<Connector>, Connector> placedComponent, Structure structure, AxisAlignedTransform2D transform)

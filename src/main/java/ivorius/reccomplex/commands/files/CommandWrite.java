@@ -62,7 +62,7 @@ public class CommandWrite extends CommandExpecting
         String adapterID = parameters.get(0).require();
 
         if (!RecurrentComplex.saver.has(adapterID))
-            throw RecurrentComplex.translations.commandException("commands.rcsaveall.noregistry");
+            throw RecurrentComplex.translations.commandException("commands.rcsave.noregistry");
 
         ResourceDirectory directory = parameters.get("directory").to(RCP::resourceDirectory).optional().orElse(ResourceDirectory.ACTIVE);
         Optional<FileSaverAdapter<?>> adapterOptional = Optional.ofNullable(RecurrentComplex.saver.get(adapterID));

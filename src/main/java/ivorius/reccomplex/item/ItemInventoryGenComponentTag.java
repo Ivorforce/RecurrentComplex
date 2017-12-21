@@ -12,7 +12,6 @@ import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,6 +23,9 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -72,12 +74,12 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     }
 
     @Override
-    public void generateInInventory(WorldServer server, IInventory inventory, Random random, ItemStack stack, int fromSlot)
+    public void generateInInventory(WorldServer server, IItemHandlerModifiable inventory, Random random, ItemStack stack, int fromSlot)
     {
         Component component = component(stack);
 
         if (component != null)
-            inventory.setInventorySlotContents(fromSlot, component.getRandomItemStack(random));
+            inventory.setStackInSlot(fromSlot, component.getRandomItemStack(random));
     }
 
     @Nonnull
@@ -91,6 +93,7 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
         super.addInformation(stack, worldIn, tooltip, flagIn);

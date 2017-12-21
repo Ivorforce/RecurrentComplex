@@ -7,13 +7,13 @@ package ivorius.reccomplex.item;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.utils.ItemHandlers;
 import ivorius.reccomplex.world.storage.loot.InventoryGenerationHandler;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollectionRegistry;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,6 +27,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,12 +44,13 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     {
         TileEntity rightClicked = world.getTileEntity(pos);
 
-        if (rightClicked instanceof IInventory)
+        if (ItemHandlers.hasModifiable(rightClicked))
         {
             if (!world.isRemote)
             {
-                generatingItem.generateInInventory(world, (IInventory) rightClicked, world.rand, stack, world.rand.nextInt(((IInventory) rightClicked).getSizeInventory()));
-                InventoryGenerationHandler.generateAllTags(world, (IInventory) rightClicked, RecurrentComplex.specialRegistry.itemHidingMode(), world.rand);
+                IItemHandlerModifiable itemHandler = ItemHandlers.getModifiable(rightClicked);
+                generatingItem.generateInInventory(world, itemHandler, world.rand, stack, world.rand.nextInt(itemHandler.getSlots()));
+                InventoryGenerationHandler.generateAllTags(world, itemHandler, RecurrentComplex.specialRegistry.itemHidingMode(), world.rand);
             }
 
             return true;

@@ -15,7 +15,6 @@ import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.ActionResult;
@@ -25,6 +24,8 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -34,12 +35,12 @@ import java.util.Random;
 
 public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag implements ItemSyncableTags
 {
-    public static TIntList emptySlots(IInventory inv)
+    public static TIntList emptySlots(IItemHandler inv)
     {
         TIntList list = new TIntArrayList();
-        for (int i = 0; i < inv.getSizeInventory(); i++)
+        for (int i = 0; i < inv.getSlots(); i++)
         {
-            if (inv.getStackInSlot(i) == null)
+            if (inv.getStackInSlot(i) == ItemStack.EMPTY)
                 list.add(i);
         }
         return list;
@@ -49,6 +50,7 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
         if (worldIn.isRemote)
+            //noinspection MethodCallSideOnly
             openGui(playerIn, playerIn.inventory.currentItem);
 
         return super.onItemRightClick(worldIn, playerIn, handIn);
@@ -61,11 +63,11 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
     }
 
     @Override
-    public void generateInInventory(WorldServer server, IInventory inventory, Random random, ItemStack stack, int fromSlot)
+    public void generateInInventory(WorldServer server, IItemHandlerModifiable inventory, Random random, ItemStack stack, int fromSlot)
     {
         WeightedItemCollection weightedItemCollection = inventoryGenerator(stack);
 
-        inventory.setInventorySlotContents(fromSlot, ItemStack.EMPTY);
+        inventory.setStackInSlot(fromSlot, ItemStack.EMPTY);
 
         if (weightedItemCollection != null)
         {
@@ -77,13 +79,13 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
             for (int i = 0; i < amount; i++)
             {
                 int slot = emptySlots.isEmpty()
-                        ? random.nextInt(inventory.getSizeInventory())
+                        ? random.nextInt(inventory.getSlots())
                         : emptySlots.removeAt(random.nextInt(emptySlots.size()));
 
                 ItemStack generated = weightedItemCollection.getRandomItemStack(server, random);
 
                 if (generated != null)
-                    inventory.setInventorySlotContents(slot, generated);
+                    inventory.setStackInSlot(slot, generated);
             }
         }
     }

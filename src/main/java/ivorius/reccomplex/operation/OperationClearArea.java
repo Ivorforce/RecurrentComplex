@@ -9,12 +9,11 @@ import ivorius.ivtoolkit.blocks.BlockArea;
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.rendering.grid.AreaRenderer;
 import ivorius.reccomplex.client.rendering.SelectionRenderer;
-import ivorius.reccomplex.operation.Operation;
+import ivorius.reccomplex.utils.ItemHandlers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -24,6 +23,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -51,8 +51,8 @@ public class OperationClearArea implements Operation
     public static void emptyOut(World world, BlockPos pos)
     {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (tileEntity instanceof IInventory)
-            ((IInventory) tileEntity).clear();
+        if (ItemHandlers.hasModifiable(tileEntity))
+            ItemHandlers.clear(ItemHandlers.getModifiable(tileEntity));
     }
 
     @Override

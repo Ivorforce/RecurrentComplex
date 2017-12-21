@@ -12,7 +12,6 @@ import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagFloat;
 import net.minecraft.util.ActionResult;
@@ -22,6 +21,7 @@ import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -32,7 +32,7 @@ import java.util.Random;
 public class ItemInventoryGenSingleTag extends ItemInventoryGenerationTag implements ItemSyncableTags
 {
     @Override
-    public void generateInInventory(WorldServer server, IInventory inventory, Random random, ItemStack stack, int fromSlot)
+    public void generateInInventory(WorldServer server, IItemHandlerModifiable inventory, Random random, ItemStack stack, int fromSlot)
     {
         WeightedItemCollection weightedItemCollection = inventoryGenerator(stack);
 
@@ -41,7 +41,7 @@ public class ItemInventoryGenSingleTag extends ItemInventoryGenerationTag implem
             ItemStack generated = random.nextFloat() < getItemChance(stack) ? weightedItemCollection.getRandomItemStack(server, random) : null;
 
             if (generated != null)
-                inventory.setInventorySlotContents(fromSlot, generated);
+                inventory.setStackInSlot(fromSlot, generated);
         }
     }
 
@@ -49,6 +49,7 @@ public class ItemInventoryGenSingleTag extends ItemInventoryGenerationTag implem
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand hand)
     {
         if (worldIn.isRemote)
+            //noinspection MethodCallSideOnly
             openGui(playerIn, playerIn.inventory.currentItem);
 
         return super.onItemRightClick(worldIn, playerIn, hand);

@@ -22,6 +22,7 @@ import ivorius.reccomplex.json.NBTToJson;
 import ivorius.reccomplex.nbt.NBTStorable;
 import ivorius.reccomplex.temp.RCMover;
 import ivorius.reccomplex.temp.RCPosTransformer;
+import ivorius.reccomplex.utils.ItemHandlers;
 import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
 import ivorius.reccomplex.utils.accessor.RCAccessorEntity;
 import ivorius.reccomplex.utils.accessor.RCAccessorWorldServer;
@@ -46,7 +47,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -155,14 +155,14 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
 
     public static void generateEntityContents(@Nonnull StructureSpawnContext context, Entity entity)
     {
-        if (!context.generateAsSource && entity instanceof IInventory)
-            InventoryGenerationHandler.generateAllTags(context, (IInventory) entity);
+        if (!context.generateAsSource && ItemHandlers.hasModifiable(entity, null))
+            InventoryGenerationHandler.generateAllTags(context, ItemHandlers.getModifiable(entity, null));
     }
 
     public static void generateTileEntityContents(@Nonnull StructureSpawnContext context, TileEntity tileEntity)
     {
-        if (!context.generateAsSource && tileEntity instanceof IInventory)
-            InventoryGenerationHandler.generateAllTags(context, (IInventory) tileEntity);
+        if (!context.generateAsSource && ItemHandlers.hasModifiable(tileEntity, null))
+            InventoryGenerationHandler.generateAllTags(context, ItemHandlers.getModifiable(tileEntity, null));
     }
 
     @Nonnull

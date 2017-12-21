@@ -159,7 +159,7 @@ public class RCForgeEventHandler
         {
             WeightedItemCollection weightedItemCollection = WeightedItemCollectionRegistry.INSTANCE.get(pair.getLeft());
             if (weightedItemCollection != null)
-                event.inventory.setInventorySlotContents(event.fromSlot, weightedItemCollection.getRandomItemStack(event.server, event.random));
+                event.inventory.setStackInSlot(event.fromSlot, weightedItemCollection.getRandomItemStack(event.server, event.random));
 
             event.setCanceled(true);
         }

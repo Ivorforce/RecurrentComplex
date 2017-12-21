@@ -7,6 +7,7 @@ package ivorius.reccomplex.commands.parameters;
 
 import ivorius.mcopts.commands.parameters.MCP;
 import ivorius.mcopts.commands.parameters.Parameter;
+import ivorius.mcopts.commands.parameters.Parameters;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.CommandVirtual;
 import ivorius.reccomplex.commands.RCCommands;
@@ -19,12 +20,16 @@ import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.NaturalGeneration;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.command.NumberInvalidException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -146,6 +151,25 @@ public class RCP
     public static Parameter<Shape> shape(Parameter<String> parameter)
     {
         return parameter.map(Shape::valueOf, s -> new CommandException("Invalid Shape!"));
+    }
+
+    public static BlockPos parseBlockPos(BlockPos blockpos, String[] args, int startIndex, boolean centerBlock) throws NumberInvalidException
+    {
+        return new BlockPos(CommandBase.parseDouble((double) blockpos.getX(), args[startIndex], -30000000, 30000000, centerBlock), CommandBase.parseDouble((double) blockpos.getY(), args[startIndex + 1], -30000000, 30000000, false), CommandBase.parseDouble((double) blockpos.getZ(), args[startIndex + 2], -30000000, 30000000, centerBlock));
+    }
+
+    public static Function<Parameter<String>, Parameter<BlockPos>> pos(Parameter<String> yp, Parameter<String> zp, BlockPos ref, boolean centerBlock)
+    {
+        return xp -> xp.orElse("~").flatMap(x ->
+                yp.orElse("~").flatMap(y ->
+                        zp.orElse("~").map(z ->
+                                parseBlockPos(ref, new String[]{x, y, z}, 0, centerBlock)
+                        )));
+    }
+
+    public static Function<Parameters, Parameter<BlockPos>> pos(String x, String y, String z, BlockPos ref, boolean centerBlock)
+    {
+        return p -> p.get(x).to(pos(p.get(y), p.get(z), ref, centerBlock));
     }
 
     public enum Shape

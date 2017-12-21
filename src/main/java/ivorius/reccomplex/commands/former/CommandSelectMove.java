@@ -18,6 +18,7 @@ import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.capability.SelectionOwner;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.commands.parameters.IvP;
+import ivorius.reccomplex.commands.parameters.RCP;
 import ivorius.reccomplex.operation.OperationClearArea;
 import ivorius.reccomplex.operation.OperationGenerateStructure;
 import ivorius.reccomplex.operation.OperationMulti;
@@ -69,7 +70,7 @@ public class CommandSelectMove extends CommandExpecting
         SelectionOwner selectionOwner = RCCommands.getSelectionOwner(commandSender, null, true);
         RCCommands.assertSize(commandSender, selectionOwner);
 
-        BlockPos move = parameters.get(MCP.pos("x", "y", "z", BlockPos.ORIGIN, false)).require();
+        BlockPos move = parameters.get(RCP.pos("x", "y", "z", BlockPos.ORIGIN, false)).require();
         AxisAlignedTransform2D transform = parameters.get(IvP.transform("rotation", "mirror")).optional().orElse(AxisAlignedTransform2D.ORIGINAL);
         boolean noselect = parameters.has("noselect");
         boolean duplicate = parameters.has("duplicate");

@@ -23,11 +23,11 @@ import java.util.Random;
 /**
  * Created by lukas on 05.01.15.
  */
-public class InventoryGenerationHandler
+public class LootGenerationHandler
 {
     public static void generateAllTags(WorldServer server, IItemHandlerModifiable inventory, MCRegistrySpecial.ItemHidingRegistry registry, Random random)
     {
-        List<Triple<ItemStack, GeneratingItem, Integer>> foundGenerators = new ArrayList<>();
+        List<Triple<ItemStack, GeneratingItem, Integer>> foundTags = new ArrayList<>();
         boolean didChange = true;
         int cycles = 0;
 
@@ -44,7 +44,7 @@ public class InventoryGenerationHandler
                         Item item = registry.containedItem(stack);
                         if (item instanceof GeneratingItem)
                         {
-                            foundGenerators.add(Triple.of(stack, (GeneratingItem) item, i));
+                            foundTags.add(Triple.of(stack, (GeneratingItem) item, i));
                             inventory.setStackInSlot(i, ItemStack.EMPTY);
                         }
                     }
@@ -53,18 +53,18 @@ public class InventoryGenerationHandler
                 didChange = false;
             }
 
-            if (foundGenerators.size() > 0)
+            if (foundTags.size() > 0)
             {
-                Triple<ItemStack, GeneratingItem, Integer> pair = foundGenerators.get(0);
+                Triple<ItemStack, GeneratingItem, Integer> pair = foundTags.get(0);
                 pair.getMiddle().generateInInventory(server, inventory, random, pair.getLeft(), pair.getRight());
 
-                foundGenerators.remove(0);
+                foundTags.remove(0);
                 didChange = true;
             }
 
             cycles++;
         }
-        while ((foundGenerators.size() > 0 || didChange) && cycles < 1000);
+        while ((foundTags.size() > 0 || didChange) && cycles < 1000);
     }
 
     public static void generateAllTags(@Nonnull StructureSpawnContext context, IItemHandlerModifiable inventory)

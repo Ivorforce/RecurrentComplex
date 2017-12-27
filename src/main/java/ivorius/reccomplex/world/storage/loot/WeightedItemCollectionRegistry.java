@@ -10,7 +10,7 @@ import ivorius.reccomplex.files.SimpleLeveledRegistry;
 /**
  * Created by lukas on 25.05.14.
  */
-public class WeightedItemCollectionRegistry extends SimpleLeveledRegistry<WeightedItemCollection>
+public class WeightedItemCollectionRegistry extends SimpleLeveledRegistry<LootTable>
 {
     public static WeightedItemCollectionRegistry INSTANCE = new WeightedItemCollectionRegistry();
 

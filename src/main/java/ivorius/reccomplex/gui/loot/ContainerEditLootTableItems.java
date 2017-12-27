@@ -3,19 +3,17 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.inventorygen;
+package ivorius.reccomplex.gui.loot;
 
 import io.netty.buffer.ByteBuf;
 import ivorius.ivtoolkit.network.PacketGuiAction;
 import ivorius.reccomplex.gui.SlotDynamicIndex;
-import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
+import ivorius.reccomplex.world.storage.loot.GenericLootTable.Component;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +22,7 @@ import java.util.List;
  * Created by lukas on 26.05.14.
  */
 
-public class ContainerEditInventoryGenItems extends Container implements PacketGuiAction.ActionHandler
+public class ContainerEditLootTableItems extends Container implements PacketGuiAction.ActionHandler
 {
     public static final int ITEM_ROWS = 4;
     public static final int ITEM_COLUMNS = 1;
@@ -34,13 +32,13 @@ public class ContainerEditInventoryGenItems extends Container implements PacketG
     private final String key;
     private final Component component;
 
-    public InventoryGenericInvGen_Single inventory;
+    public InventoryGenericLootTable_Single inventory;
 
     private List<SlotDynamicIndex> scrollableSlots = new ArrayList<>();
 
-    public ContainerEditInventoryGenItems(EntityPlayer player, String key, Component component)
+    public ContainerEditLootTableItems(EntityPlayer player, String key, Component component)
     {
-        inventory = new InventoryGenericInvGen_Single(component.items);
+        inventory = new InventoryGenericLootTable_Single(component.items);
 
         this.key = key;
         this.component = component;
@@ -86,7 +84,7 @@ public class ContainerEditInventoryGenItems extends Container implements PacketG
 
     public void scrollTo(int colShift)
     {
-//        List<WeightedRandomChestContent> items = inventoryGenerator.weightedRandomChestContents;
+//        List<WeightedRandomChestContent> items = lootTable.weightedRandomChestContents;
 
         for (int col = 0; col < ITEM_COLUMNS; ++col)
         {

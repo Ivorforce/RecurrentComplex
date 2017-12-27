@@ -20,7 +20,7 @@ import ivorius.reccomplex.item.ItemInputHandler;
 import ivorius.reccomplex.world.gen.feature.WorldGenStructures;
 import ivorius.reccomplex.world.gen.feature.WorldRandomData;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
-import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
+import ivorius.reccomplex.world.storage.loot.LootTable;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollectionRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -157,9 +157,9 @@ public class RCForgeEventHandler
 
         if (pair != null && pair.getRight() > 0.0f && event.random.nextFloat() < pair.getRight())
         {
-            WeightedItemCollection weightedItemCollection = WeightedItemCollectionRegistry.INSTANCE.get(pair.getLeft());
-            if (weightedItemCollection != null)
-                event.inventory.setStackInSlot(event.fromSlot, weightedItemCollection.getRandomItemStack(event.server, event.random));
+            LootTable lootTable = WeightedItemCollectionRegistry.INSTANCE.get(pair.getLeft());
+            if (lootTable != null)
+                event.inventory.setStackInSlot(event.fromSlot, lootTable.getRandomItemStack(event.server, event.random));
 
             event.setCanceled(true);
         }

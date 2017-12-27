@@ -11,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootTable;
 
 import java.util.List;
 import java.util.Random;
@@ -19,11 +18,11 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class VanillaItemCollection implements WeightedItemCollection
+public class VanillaLootTable implements LootTable
 {
     public ResourceLocation vanillaKey;
 
-    public VanillaItemCollection(ResourceLocation lootTableKey)
+    public VanillaLootTable(ResourceLocation lootTableKey)
     {
         this.vanillaKey = lootTableKey;
     }
@@ -35,7 +34,7 @@ public class VanillaItemCollection implements WeightedItemCollection
 
         try
         {
-            LootTable loottable = server.getLootTableManager().getLootTableFromLocation(this.vanillaKey);
+            net.minecraft.world.storage.loot.LootTable loottable = server.getLootTableManager().getLootTableFromLocation(this.vanillaKey);
             loot = loottable.generateLootForPools(random, new LootContext.Builder(server).build());
             return loot.size() > 0 ? loot.get(0) : null; // TODO generate tile entities with loot? TileEntityLockedLoot
         }

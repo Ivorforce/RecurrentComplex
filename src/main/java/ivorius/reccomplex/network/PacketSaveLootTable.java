@@ -7,7 +7,7 @@ package ivorius.reccomplex.network;
 
 import io.netty.buffer.ByteBuf;
 import ivorius.reccomplex.utils.SaveDirectoryData;
-import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
+import ivorius.reccomplex.world.storage.loot.GenericLootTable.Component;
 import ivorius.reccomplex.world.storage.loot.ItemCollectionSaveHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -15,21 +15,21 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 /**
  * Created by lukas on 03.08.14.
  */
-public class PacketSaveInvGenComponent implements IMessage
+public class PacketSaveLootTable implements IMessage
 {
     private String key;
-    private Component inventoryGenerator;
+    private Component component;
 
     private SaveDirectoryData.Result saveDirectoryDataResult;
 
-    public PacketSaveInvGenComponent()
+    public PacketSaveLootTable()
     {
     }
 
-    public PacketSaveInvGenComponent(String key, Component inventoryGenerator, SaveDirectoryData.Result saveDirectoryDataResult)
+    public PacketSaveLootTable(String key, Component component, SaveDirectoryData.Result saveDirectoryDataResult)
     {
         this.key = key;
-        this.inventoryGenerator = inventoryGenerator;
+        this.component = component;
         this.saveDirectoryDataResult = saveDirectoryDataResult;
     }
 
@@ -43,14 +43,14 @@ public class PacketSaveInvGenComponent implements IMessage
         this.key = key;
     }
 
-    public Component getInventoryGenerator()
+    public Component getComponent()
     {
-        return inventoryGenerator;
+        return component;
     }
 
-    public void setInventoryGenerator(Component inventoryGenerator)
+    public void setComponent(Component component)
     {
-        this.inventoryGenerator = inventoryGenerator;
+        this.component = component;
     }
 
     public SaveDirectoryData.Result getSaveDirectoryDataResult()
@@ -67,7 +67,7 @@ public class PacketSaveInvGenComponent implements IMessage
     public void fromBytes(ByteBuf buf)
     {
         key = ByteBufUtils.readUTF8String(buf);
-        inventoryGenerator = ItemCollectionSaveHandler.INSTANCE.read(buf);
+        component = ItemCollectionSaveHandler.INSTANCE.read(buf);
         saveDirectoryDataResult = SaveDirectoryData.Result.readFrom(buf);
     }
 
@@ -75,7 +75,7 @@ public class PacketSaveInvGenComponent implements IMessage
     public void toBytes(ByteBuf buf)
     {
         ByteBufUtils.writeUTF8String(buf, key);
-        ItemCollectionSaveHandler.INSTANCE.write(buf, inventoryGenerator);
+        ItemCollectionSaveHandler.INSTANCE.write(buf, component);
         saveDirectoryDataResult.writeTo(buf);
     }
 }

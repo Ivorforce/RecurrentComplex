@@ -15,7 +15,7 @@ import java.util.Collection;
 /**
  * Created by lukas on 05.01.15.
  */
-public class GenericItemCollectionRegistry extends SimpleLeveledRegistry<GenericItemCollection.Component>
+public class GenericItemCollectionRegistry extends SimpleLeveledRegistry<GenericLootTable.Component>
 {
     public static final GenericItemCollectionRegistry INSTANCE = new GenericItemCollectionRegistry();
 
@@ -34,27 +34,27 @@ public class GenericItemCollectionRegistry extends SimpleLeveledRegistry<Generic
     public GenericItemCollectionRegistry() {super("generic item collection component");}
 
     @Override
-    public GenericItemCollection.Component register(String id, String domain, GenericItemCollection.Component component, boolean active, ILevel level)
+    public GenericLootTable.Component register(String id, String domain, GenericLootTable.Component component, boolean active, ILevel level)
     {
-        if (component.inventoryGeneratorID == null || component.inventoryGeneratorID.length() == 0) // Legacy support
-            component.inventoryGeneratorID = id;
+        if (component.tableID == null || component.tableID.length() == 0) // Legacy support
+            component.tableID = id;
 
-        if (active && !RCConfig.shouldInventoryGeneratorGenerate(id, domain))
+        if (active && !RCConfig.shouldLootGenerate(id, domain))
             active = false;
 
-        GenericItemCollection.Component prev = super.register(id, domain, component, active, level);
+        GenericLootTable.Component prev = super.register(id, domain, component, active, level);
 
-        invalidateCache(component.inventoryGeneratorID);
+        invalidateCache(component.tableID);
 
         return prev;
     }
 
     @Override
-    public GenericItemCollection.Component unregister(String id, ILevel level)
+    public GenericLootTable.Component unregister(String id, ILevel level)
     {
-        GenericItemCollection.Component rt = super.unregister(id, level);
+        GenericLootTable.Component rt = super.unregister(id, level);
 
-        invalidateCache(rt.inventoryGeneratorID);
+        invalidateCache(rt.tableID);
 
         return rt;
     }
@@ -62,12 +62,12 @@ public class GenericItemCollectionRegistry extends SimpleLeveledRegistry<Generic
     @Override
     public void clear(ILevel level)
     {
-        Collection<GenericItemCollection.Component> removed = Lists.newArrayList(map(level).values());
+        Collection<GenericLootTable.Component> removed = Lists.newArrayList(map(level).values());
 
         super.clear(level);
 
-        for (GenericItemCollection.Component component : removed)
-            invalidateCache(component.inventoryGeneratorID);
+        for (GenericLootTable.Component component : removed)
+            invalidateCache(component.tableID);
     }
 
     private void invalidateCache(String generatorID)
@@ -76,24 +76,24 @@ public class GenericItemCollectionRegistry extends SimpleLeveledRegistry<Generic
 
         for (String key : activeIDs())
         {
-            GenericItemCollection.Component component = get(key);
+            GenericLootTable.Component component = get(key);
 
-            if (component.inventoryGeneratorID.equals(generatorID))
+            if (component.tableID.equals(generatorID))
             {
-                GenericItemCollection collection = registerGetGenericItemCollection(component.inventoryGeneratorID, status(key).getDomain());
+                GenericLootTable collection = registerGetGenericItemCollection(component.tableID, status(key).getDomain());
                 collection.components.add(component);
             }
         }
     }
 
-    private GenericItemCollection registerGetGenericItemCollection(String key, String domain)
+    private GenericLootTable registerGetGenericItemCollection(String key, String domain)
     {
-        WeightedItemCollection collection = WeightedItemCollectionRegistry.INSTANCE.get(key);
-        if (collection == null || !(collection instanceof GenericItemCollection))
+        LootTable collection = WeightedItemCollectionRegistry.INSTANCE.get(key);
+        if (collection == null || !(collection instanceof GenericLootTable))
         {
-            collection = new GenericItemCollection();
+            collection = new GenericLootTable();
             WeightedItemCollectionRegistry.INSTANCE.register(key, domain, collection, true, LeveledRegistry.Level.CUSTOM);
         }
-        return (GenericItemCollection) collection;
+        return (GenericLootTable) collection;
     }
 }

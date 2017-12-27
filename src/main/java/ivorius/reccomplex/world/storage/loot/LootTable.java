@@ -13,7 +13,7 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public interface WeightedItemCollection
+public interface LootTable
 {
     ItemStack getRandomItemStack(WorldServer server, Random random);
 

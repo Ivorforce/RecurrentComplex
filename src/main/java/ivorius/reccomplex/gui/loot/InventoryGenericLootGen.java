@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.inventorygen;
+package ivorius.reccomplex.gui.loot;
 
 import ivorius.reccomplex.gui.InventoryWatcher;
 import ivorius.reccomplex.world.storage.loot.WeightedRandomChestContent;
@@ -23,14 +23,14 @@ import java.util.List;
  */
 
 @SideOnly(Side.CLIENT)
-public class InventoryGenericInvGen implements IInventory
+public class InventoryGenericLootGen implements IInventory
 {
     public List<WeightedRandomChestContent> chestContents;
     private List<ItemStack> cachedItemStacks = new ArrayList<>();
 
     private List<InventoryWatcher> watchers = new ArrayList<>();
 
-    public InventoryGenericInvGen(List<WeightedRandomChestContent> chestContents)
+    public InventoryGenericLootGen(List<WeightedRandomChestContent> chestContents)
     {
         this.chestContents = chestContents;
 
@@ -102,7 +102,7 @@ public class InventoryGenericInvGen implements IInventory
 //                chestContents.remove(stackIndex);
 
             ItemStack returnStack = cachedItemStacks.get(var1).splitStack(var2);
-            markDirtyFromInventoryGenerator();
+            markDirtyFromLootGenerator();
             return returnStack;
         }
         else
@@ -157,7 +157,7 @@ public class InventoryGenericInvGen implements IInventory
             }
         }
 
-        markDirtyFromInventoryGenerator();
+        markDirtyFromLootGenerator();
     }
 
     private static void validateMinMax(WeightedRandomChestContent chestContent)
@@ -188,7 +188,7 @@ public class InventoryGenericInvGen implements IInventory
         }
     }
 
-    public void markDirtyFromInventoryGenerator()
+    public void markDirtyFromLootGenerator()
     {
         buildCachedStacks();
 
@@ -220,7 +220,7 @@ public class InventoryGenericInvGen implements IInventory
             }
         }
 
-        chestContents.forEach(InventoryGenericInvGen::validateMinMax);
+        chestContents.forEach(InventoryGenericLootGen::validateMinMax);
     }
 
     private void buildCachedStacks()

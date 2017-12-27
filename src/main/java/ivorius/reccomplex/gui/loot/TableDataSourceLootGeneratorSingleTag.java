@@ -3,12 +3,12 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.inventorygen;
+package ivorius.reccomplex.gui.loot;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.cell.TableCellFloatSlider;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
-import ivorius.reccomplex.item.ItemInventoryGenSingleTag;
+import ivorius.reccomplex.item.ItemLootGenSingleTag;
 import ivorius.reccomplex.utils.scale.Scales;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -18,9 +18,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 
 @SideOnly(Side.CLIENT)
-public class TableDataSourceInvGenSingleTag extends TableDataSourceItem<ItemInventoryGenSingleTag>
+public class TableDataSourceLootGeneratorSingleTag extends TableDataSourceItem<ItemLootGenSingleTag>
 {
-    public TableDataSourceInvGenSingleTag()
+    public TableDataSourceLootGeneratorSingleTag()
     {
         addSegment(0, () -> {
             TableCellFloatSlider cell = new TableCellFloatSlider("itemCount", item.getItemChance(stack), 0, 1);

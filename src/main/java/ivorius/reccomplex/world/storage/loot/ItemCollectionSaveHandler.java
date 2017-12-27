@@ -28,19 +28,19 @@ public class ItemCollectionSaveHandler
         GsonBuilder builder = new GsonBuilder();
 
         builder.setPrettyPrinting();
-        builder.registerTypeAdapter(GenericItemCollection.Component.class, new GenericItemCollection.Component.Serializer());
+        builder.registerTypeAdapter(GenericLootTable.Component.class, new GenericLootTable.Component.Serializer());
         NBTToJson.registerSafeNBTSerializer(builder);
 
         return builder.create();
     }
 
-    public void write(ByteBuf data, GenericItemCollection.Component component)
+    public void write(ByteBuf data, GenericLootTable.Component component)
     {
         ByteBufUtils.writeUTF8String(data, toJSON(component));
     }
 
     @Nullable
-    public GenericItemCollection.Component read(ByteBuf data)
+    public GenericLootTable.Component read(ByteBuf data)
     {
         try
         {
@@ -54,16 +54,16 @@ public class ItemCollectionSaveHandler
         return null;
     }
 
-    public String toJSON(GenericItemCollection.Component inventoryGenerator)
+    public String toJSON(GenericLootTable.Component component)
     {
-        return gson.toJson(inventoryGenerator, GenericItemCollection.Component.class);
+        return gson.toJson(component, GenericLootTable.Component.class);
     }
 
-    public GenericItemCollection.Component fromJSON(String json) throws InventoryLoadException
+    public GenericLootTable.Component fromJSON(String json) throws InventoryLoadException
     {
         try
         {
-            return gson.fromJson(json, GenericItemCollection.Component.class);
+            return gson.fromJson(json, GenericLootTable.Component.class);
         }
         catch (JsonSyntaxException e)
         {

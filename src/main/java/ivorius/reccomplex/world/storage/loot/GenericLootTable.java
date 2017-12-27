@@ -27,7 +27,7 @@ import java.util.Random;
 /**
  * Created by lukas on 25.05.14.
  */
-public class GenericItemCollection implements WeightedItemCollection
+public class GenericLootTable implements LootTable
 {
     public static final int LATEST_VERSION = 2;
 
@@ -74,18 +74,18 @@ public class GenericItemCollection implements WeightedItemCollection
     {
         public final List<RandomizedItemStack> items = new ArrayList<>();
         public final DependencyExpression dependencies = new DependencyExpression();
-        public String inventoryGeneratorID;
+        public String tableID;
 
         public Component()
         {
             super(0);
-            inventoryGeneratorID = "";
+            tableID = "";
         }
 
-        public Component(String inventoryGeneratorID, List<RandomizedItemStack> items, String dependencies)
+        public Component(String tableID, List<RandomizedItemStack> items, String dependencies)
         {
             super(0);
-            this.inventoryGeneratorID = inventoryGeneratorID;
+            this.tableID = tableID;
             this.items.addAll(items);
             this.dependencies.setExpression(dependencies);
         }
@@ -176,7 +176,7 @@ public class GenericItemCollection implements WeightedItemCollection
 
                 jsonObject.addProperty("version", LATEST_VERSION);
 
-                jsonObject.addProperty("inventoryGeneratorID", src.inventoryGeneratorID);
+                jsonObject.addProperty("inventoryGeneratorID", src.tableID);
 
                 jsonObject.add("items", gson.toJsonTree(src.items));
 

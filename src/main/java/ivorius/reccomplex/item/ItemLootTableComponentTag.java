@@ -7,7 +7,7 @@ package ivorius.reccomplex.item;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiHandler;
-import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
+import ivorius.reccomplex.world.storage.loot.GenericLootTable.Component;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -36,7 +36,7 @@ import java.util.Random;
 /**
  * Created by lukas on 05.01.15.
  */
-public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
+public class ItemLootTableComponentTag extends Item implements GeneratingItem
 {
     public static String componentKey(ItemStack stack)
     {
@@ -68,7 +68,7 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
     {
         ItemStack itemStackIn = playerIn.getHeldItem(handIn);
         if (!worldIn.isRemote)
-            RCGuiHandler.editInventoryGenComponent(playerIn, componentKey(itemStackIn), component(itemStackIn), null);
+            RCGuiHandler.editLootTableComponent(playerIn, componentKey(itemStackIn), component(itemStackIn), null);
 
         return super.onItemRightClick(worldIn, playerIn, handIn);
     }
@@ -102,7 +102,7 @@ public class ItemInventoryGenComponentTag extends Item implements GeneratingItem
 
         if (component != null)
         {
-            tooltip.add(component.inventoryGeneratorID);
+            tooltip.add(component.tableID);
             tooltip.add(GenericItemCollectionRegistry.INSTANCE.hasActive(componentKey(stack))
                     ? IvTranslations.format("inventoryGen.active", TextFormatting.GREEN, TextFormatting.RESET)
                     : IvTranslations.format("inventoryGen.inactive", TextFormatting.RED, TextFormatting.RESET));

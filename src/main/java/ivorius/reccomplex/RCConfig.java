@@ -146,9 +146,9 @@ public class RCConfig
             structureGenerationMatcher.setExpression(config.getString("structureGenerationMatcher", CATEGORY_BALANCING, "", "Resource Expression that will be applied to each loading structure, determining if it should be set to 'active'."));
             logExpressionException(structureGenerationMatcher, "structureGenerationMatcher", RecurrentComplex.logger);
 
-            inventoryGeneratorLoadMatcher.setExpression(config.getString("inventoryGeneratorLoadMatcher", CATEGORY_BALANCING, "", "Resource Expression that will be applied to each loading inventory generator, determining if it should be loaded."));
+            inventoryGeneratorLoadMatcher.setExpression(config.getString("inventoryGeneratorLoadMatcher", CATEGORY_BALANCING, "", "Resource Expression that will be applied to each loading loot table, determining if it should be loaded."));
             logExpressionException(inventoryGeneratorLoadMatcher, "inventoryGeneratorLoadMatcher", RecurrentComplex.logger);
-            inventoryGeneratorGenerationMatcher.setExpression(config.getString("inventoryGeneratorGenerationMatcher", CATEGORY_BALANCING, "", "Resource Expression that will be applied to each loading inventory generator, determining if it should be set to 'active'."));
+            inventoryGeneratorGenerationMatcher.setExpression(config.getString("inventoryGeneratorGenerationMatcher", CATEGORY_BALANCING, "", "Resource Expression that will be applied to each loading loot table, determining if it should be set to 'active'."));
             logExpressionException(inventoryGeneratorGenerationMatcher, "inventoryGeneratorGenerationMatcher", RecurrentComplex.logger);
 
             universalBiomeExpression.setExpression(config.getString("universalBiomeMatcher", CATEGORY_BALANCING, "", "Biome Expression that will be checked for every single structure. Use this if you want to blacklist / whitelist specific biomes that shouldn't have structures."));
@@ -161,11 +161,11 @@ public class RCConfig
             logExpressionException(failingStructureLogExpression, "failingStructureLogExpression", RecurrentComplex.logger);
 
             customArtifactTag = Pair.of(
-                    config.getString("customArtifactTag", CATEGORY_BALANCING, "", "Custom Inventory Generator to override when an artifact generation tag fires."),
+                    config.getString("customArtifactTag", CATEGORY_BALANCING, "", "Custom Loot Table to override when an artifact generation tag fires."),
                     config.getFloat("customArtifactChance", CATEGORY_BALANCING, 0.0f, 0, 1, "Chance to use the customArtifactTag when an artifact generation tag fires.")
             );
             customBookTag = Pair.of(
-                    config.getString("customBookTag", CATEGORY_BALANCING, "", "Custom Inventory Generator to override when a book generation tag fires."),
+                    config.getString("customBookTag", CATEGORY_BALANCING, "", "Custom Loot Table to override when a book generation tag fires."),
                     config.getFloat("customBookChance", CATEGORY_BALANCING, 0.0f, 0, 1, "Chance to use the customArtifactTag when a book generation tag fires.")
             );
 
@@ -257,9 +257,9 @@ public class RCConfig
         return structureGenerationMatcher.test(new RawResourceLocation(domain, id));
     }
 
-    public static boolean shouldInventoryGeneratorGenerate(String id, String domain)
+    public static boolean shouldLootGenerate(String tableID, String domain)
     {
-        return inventoryGeneratorGenerationMatcher.test(new RawResourceLocation(domain, id));
+        return inventoryGeneratorGenerationMatcher.test(new RawResourceLocation(domain, tableID));
     }
 
     public static float tweakedSpawnRate(String structure)

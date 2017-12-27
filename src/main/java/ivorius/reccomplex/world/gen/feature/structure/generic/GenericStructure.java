@@ -41,7 +41,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.generation.Natural
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.Transformer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
-import ivorius.reccomplex.world.storage.loot.InventoryGenerationHandler;
+import ivorius.reccomplex.world.storage.loot.LootGenerationHandler;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -156,13 +156,13 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
     public static void generateEntityContents(@Nonnull StructureSpawnContext context, Entity entity)
     {
         if (!context.generateAsSource && ItemHandlers.hasModifiable(entity, null))
-            InventoryGenerationHandler.generateAllTags(context, ItemHandlers.getModifiable(entity, null));
+            LootGenerationHandler.generateAllTags(context, ItemHandlers.getModifiable(entity, null));
     }
 
     public static void generateTileEntityContents(@Nonnull StructureSpawnContext context, TileEntity tileEntity)
     {
         if (!context.generateAsSource && ItemHandlers.hasModifiable(tileEntity, null))
-            InventoryGenerationHandler.generateAllTags(context, ItemHandlers.getModifiable(tileEntity, null));
+            LootGenerationHandler.generateAllTags(context, ItemHandlers.getModifiable(tileEntity, null));
     }
 
     @Nonnull

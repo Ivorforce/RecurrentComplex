@@ -16,5 +16,5 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class RCCreativeTabs
 {
     public static CreativeTabs tabStructureTools;
-    public static CreativeTabs tabInventoryGenerators;
+    public static CreativeTabs tabLoot;
 }

@@ -45,7 +45,7 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.*;
 import ivorius.reccomplex.world.gen.script.*;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import ivorius.reccomplex.world.storage.loot.ItemCollectionSaveHandler;
-import ivorius.reccomplex.world.storage.loot.RCInventoryGenerators;
+import ivorius.reccomplex.world.storage.loot.RCLoot;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -66,7 +66,7 @@ import java.util.ArrayList;
 
 import static ivorius.reccomplex.RecurrentComplex.*;
 import static ivorius.reccomplex.block.RCBlocks.*;
-import static ivorius.reccomplex.gui.RCCreativeTabs.tabInventoryGenerators;
+import static ivorius.reccomplex.gui.RCCreativeTabs.tabLoot;
 import static ivorius.reccomplex.gui.RCCreativeTabs.tabStructureTools;
 import static ivorius.reccomplex.item.RCItems.*;
 
@@ -88,12 +88,12 @@ public class RCRegistryHandler
                     return new ItemStack(RCItems.blockSelector);
                 }
             };
-            tabInventoryGenerators = new CreativeTabs("inventoryGenerators")
+            tabLoot = new CreativeTabs("inventoryGenerators")
             {
                 @Override
                 public ItemStack getTabIconItem()
                 {
-                    return new ItemStack(RCItems.inventoryGenerationTag);
+                    return new ItemStack(RCItems.lootGenerationTag);
                 }
             };
         }
@@ -114,27 +114,27 @@ public class RCRegistryHandler
         register(blockSelectorFloating, "block_selector_floating");
         RecurrentComplex.cremapper.registerLegacyIDs(blockSelectorFloating, "blockSelectorFloating");
 
-        inventoryGenerationTag = (ItemInventoryGenMultiTag) new ItemInventoryGenMultiTag().setUnlocalizedName("inventoryGenerationTag");
-        inventoryGenerationTag.setCreativeTab(tabInventoryGenerators);
-        register(inventoryGenerationTag, "inventory_generation_tag");
-        RecurrentComplex.cremapper.registerLegacyIDs(inventoryGenerationTag, "inventoryGenerationTag");
+        lootGenerationTag = (ItemLootGenMultiTag) new ItemLootGenMultiTag().setUnlocalizedName("inventoryGenerationTag");
+        lootGenerationTag.setCreativeTab(tabLoot);
+        register(lootGenerationTag, "inventory_generation_tag");
+        RecurrentComplex.cremapper.registerLegacyIDs(lootGenerationTag, "inventoryGenerationTag");
 
-        inventoryGenerationSingleTag = (ItemInventoryGenSingleTag) new ItemInventoryGenSingleTag().setUnlocalizedName("inventoryGenerationSingleTag");
-        inventoryGenerationSingleTag.setCreativeTab(tabInventoryGenerators);
-        register(inventoryGenerationSingleTag, "inventory_generation_single_tag");
-        RecurrentComplex.cremapper.registerLegacyIDs(inventoryGenerationSingleTag, "inventoryGenerationSingleTag");
+        lootGenerationSingleTag = (ItemLootGenSingleTag) new ItemLootGenSingleTag().setUnlocalizedName("inventoryGenerationSingleTag");
+        lootGenerationSingleTag.setCreativeTab(tabLoot);
+        register(lootGenerationSingleTag, "inventory_generation_single_tag");
+        RecurrentComplex.cremapper.registerLegacyIDs(lootGenerationSingleTag, "inventoryGenerationSingleTag");
 
-        inventoryGenerationComponentTag = (ItemInventoryGenComponentTag) new ItemInventoryGenComponentTag().setUnlocalizedName("inventoryGenerationComponentTag");
-        inventoryGenerationComponentTag.setCreativeTab(tabInventoryGenerators);
-        register(inventoryGenerationComponentTag, "inventory_generation_component_tag");
+        lootGenerationComponentTag = (ItemLootTableComponentTag) new ItemLootTableComponentTag().setUnlocalizedName("inventoryGenerationComponentTag");
+        lootGenerationComponentTag.setCreativeTab(tabLoot);
+        register(lootGenerationComponentTag, "inventory_generation_component_tag");
 
         artifactGenerationTag = new ItemArtifactGenerator().setUnlocalizedName("artifactGenerationTag");
-        artifactGenerationTag.setCreativeTab(tabInventoryGenerators);
+        artifactGenerationTag.setCreativeTab(tabLoot);
         register(artifactGenerationTag, "artifact_generation_tag");
         RecurrentComplex.cremapper.registerLegacyIDs(artifactGenerationTag, "artifactGenerationTag");
 
         bookGenerationTag = new ItemBookGenerator().setUnlocalizedName("bookGenerationTag");
-        bookGenerationTag.setCreativeTab(tabInventoryGenerators);
+        bookGenerationTag.setCreativeTab(tabLoot);
         register(bookGenerationTag, "book_generation_tag");
         RecurrentComplex.cremapper.registerLegacyIDs(bookGenerationTag, "bookGenerationTag");
 
@@ -331,7 +331,7 @@ public class RCRegistryHandler
         OperationRegistry.register("clearArea", OperationClearArea.class);
 
 //        GameRegistry.registerWorldGenerator(new WorldGenStructures(), 50);
-        RCInventoryGenerators.registerVanillaInventoryGenerators();
+        RCLoot.registerVanillaLootTables();
 //        MapGenStructureIO.func_143031_a(GenericVillagePiece.class, "RcGSP");
 //        VillagerRegistry.instance().registerVillageCreationHandler(new GenericVillageCreationHandler("DesertHut"));
 
@@ -354,7 +354,7 @@ public class RCRegistryHandler
     protected static void registerServerPackets()
     {
         network.registerMessage(PacketGuiActionHandler.class, PacketGuiAction.class, 1, Side.SERVER);
-        network.registerMessage(PacketSaveInvGenComponentHandler.class, PacketSaveInvGenComponent.class, 2, Side.SERVER);
+        network.registerMessage(PacketSaveLootTableHandler.class, PacketSaveLootTable.class, 2, Side.SERVER);
         network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 5, Side.SERVER);
         network.registerMessage(PacketSaveStructureHandler.class, PacketSaveStructure.class, 7, Side.SERVER);
         network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 9, Side.SERVER);
@@ -368,7 +368,7 @@ public class RCRegistryHandler
     protected static void registerClientPackets()
     {
         network.registerMessage(PacketEntityCapabilityDataHandler.class, PacketEntityCapabilityData.class, 0, Side.CLIENT);
-        network.registerMessage(PacketEditInvGenComponentHandler.class, PacketEditInvGenComponent.class, 3, Side.CLIENT);
+        network.registerMessage(PacketEditLootTableHandler.class, PacketEditLootTable.class, 3, Side.CLIENT);
         network.registerMessage(PacketEditTileEntityHandler.class, PacketEditTileEntity.class, 4, Side.CLIENT);
         network.registerMessage(PacketEditStructureHandler.class, PacketEditStructure.class, 6, Side.CLIENT);
         network.registerMessage(PacketSyncItemHandler.class, PacketSyncItem.class, 8, Side.CLIENT);

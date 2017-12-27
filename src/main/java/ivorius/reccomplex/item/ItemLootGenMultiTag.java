@@ -9,9 +9,9 @@ import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.item.IvItemStacks;
-import ivorius.reccomplex.gui.inventorygen.GuiEditItemStack;
-import ivorius.reccomplex.gui.inventorygen.TableDataSourceInvGenMultiTag;
-import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
+import ivorius.reccomplex.gui.loot.GuiEditItemStack;
+import ivorius.reccomplex.gui.loot.TableDataSourceLootGenMultiTag;
+import ivorius.reccomplex.world.storage.loot.LootTable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag implements ItemSyncableTags
+public class ItemLootGenMultiTag extends ItemLootGenerationTag implements ItemSyncableTags
 {
     public static TIntList emptySlots(IItemHandler inv)
     {
@@ -59,17 +59,17 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
     @SideOnly(Side.CLIENT)
     private void openGui(EntityPlayer player, int slot)
     {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditItemStack<>(player, slot, new TableDataSourceInvGenMultiTag()));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditItemStack<>(player, slot, new TableDataSourceLootGenMultiTag()));
     }
 
     @Override
     public void generateInInventory(WorldServer server, IItemHandlerModifiable inventory, Random random, ItemStack stack, int fromSlot)
     {
-        WeightedItemCollection weightedItemCollection = inventoryGenerator(stack);
+        LootTable lootTable = lootTable(stack);
 
         inventory.setStackInSlot(fromSlot, ItemStack.EMPTY);
 
-        if (weightedItemCollection != null)
+        if (lootTable != null)
         {
             IntegerRange range = getGenerationCount(stack);
             int amount = range.getMin() < range.getMax() ? random.nextInt(range.getMax() - range.getMin() + 1) + range.getMin() : 0;
@@ -82,7 +82,7 @@ public class ItemInventoryGenMultiTag extends ItemInventoryGenerationTag impleme
                         ? random.nextInt(inventory.getSlots())
                         : emptySlots.removeAt(random.nextInt(emptySlots.size()));
 
-                ItemStack generated = weightedItemCollection.getRandomItemStack(server, random);
+                ItemStack generated = lootTable.getRandomItemStack(server, random);
 
                 if (generated != null)
                     inventory.setStackInSlot(slot, generated);

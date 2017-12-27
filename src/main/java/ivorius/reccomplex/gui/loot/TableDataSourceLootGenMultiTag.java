@@ -3,12 +3,12 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.inventorygen;
+package ivorius.reccomplex.gui.loot;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.cell.TableCellIntegerRange;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
-import ivorius.reccomplex.item.ItemInventoryGenMultiTag;
+import ivorius.reccomplex.item.ItemLootGenMultiTag;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -17,9 +17,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 
 @SideOnly(Side.CLIENT)
-public class TableDataSourceInvGenMultiTag extends TableDataSourceItem<ItemInventoryGenMultiTag>
+public class TableDataSourceLootGenMultiTag extends TableDataSourceItem<ItemLootGenMultiTag>
 {
-    public TableDataSourceInvGenMultiTag()
+    public TableDataSourceLootGenMultiTag()
     {
         addSegment(0, () -> {
             TableCellIntegerRange cell = new TableCellIntegerRange("itemCount", item.getGenerationCount(stack), 0, 64);

@@ -14,16 +14,16 @@ import java.util.Collection;
 /**
  * Created by lukas on 07.06.14.
  */
-public class RCInventoryGenerators
+public class RCLoot
 {
-    public static void registerVanillaInventoryGenerators()
+    public static void registerVanillaLootTables()
     {
-        registerVanillaInventoryGenerators(LootTableList.getAll());
+        registerVanillaLootTables(LootTableList.getAll());
     }
 
-    private static void registerVanillaInventoryGenerators(Collection<ResourceLocation> keys)
+    private static void registerVanillaLootTables(Collection<ResourceLocation> keys)
     {
         for (ResourceLocation key : keys)
-            WeightedItemCollectionRegistry.INSTANCE.register(key.toString(), "minecraft", new VanillaItemCollection(key), true, LeveledRegistry.Level.INTERNAL);
+            WeightedItemCollectionRegistry.INSTANCE.register(key.toString(), "minecraft", new VanillaLootTable(key), true, LeveledRegistry.Level.INTERNAL);
     }
 }

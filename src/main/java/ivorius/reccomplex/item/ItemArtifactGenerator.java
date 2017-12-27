@@ -31,7 +31,7 @@ public class ItemArtifactGenerator extends Item implements GeneratingItem
     {
         ItemStack stack = playerIn.getHeldItem(hand);
         if (!worldIn.isRemote)
-            return ItemInventoryGenerationTag.applyGeneratorToInventory((WorldServer) worldIn, pos, this, stack) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
+            return ItemLootGenerationTag.applyGeneratorToInventory((WorldServer) worldIn, pos, this, stack) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
 
         return EnumActionResult.SUCCESS;
     }

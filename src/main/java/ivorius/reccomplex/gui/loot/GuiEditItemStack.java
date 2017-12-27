@@ -3,7 +3,7 @@
  *  * http://lukas.axxim.net
  */
 
-package ivorius.reccomplex.gui.inventorygen;
+package ivorius.reccomplex.gui.loot;
 
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.table.GuiTable;

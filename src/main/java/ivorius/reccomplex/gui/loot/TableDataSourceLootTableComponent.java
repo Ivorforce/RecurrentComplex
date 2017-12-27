@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.inventorygen;
+package ivorius.reccomplex.gui.loot;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
@@ -19,7 +19,7 @@ import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.utils.SaveDirectoryData;
-import ivorius.reccomplex.world.storage.loot.GenericItemCollection;
+import ivorius.reccomplex.world.storage.loot.GenericLootTable;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollectionRegistry;
 import net.minecraft.entity.player.EntityPlayer;
@@ -33,10 +33,10 @@ import javax.annotation.Nonnull;
  */
 
 @SideOnly(Side.CLIENT)
-public class TableDataSourceItemCollectionComponent extends TableDataSourceSegmented
+public class TableDataSourceLootTableComponent extends TableDataSourceSegmented
 {
     public String key;
-    public GenericItemCollection.Component component;
+    public GenericLootTable.Component component;
 
     private SaveDirectoryData saveDirectoryData;
 
@@ -45,7 +45,7 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
     public TableNavigator navigator;
     public TableDelegate delegate;
 
-    public TableDataSourceItemCollectionComponent(String key, GenericItemCollection.Component component, SaveDirectoryData saveDirectoryData, EntityPlayer player, TableNavigator navigator, TableDelegate delegate)
+    public TableDataSourceLootTableComponent(String key, GenericLootTable.Component component, SaveDirectoryData saveDirectoryData, EntityPlayer player, TableNavigator navigator, TableDelegate delegate)
     {
         this.key = key;
         this.component = component;
@@ -70,12 +70,12 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
         addSegment(1, new TableDataSourceSupplied(() -> TableElementSaveDirectory.create(saveDirectoryData, () -> key, delegate)));
 
         addSegment(2, () -> {
-            TableCellString cell = new TableCellString(null, component.inventoryGeneratorID);
+            TableCellString cell = new TableCellString(null, component.tableID);
             cell.setShowsValidityState(true);
             cell.setValidityState(currentGroupIDState());
             cell.addListener(val ->
             {
-                component.inventoryGeneratorID = val;
+                component.tableID = val;
                 cell.setValidityState(currentGroupIDState());
             });
             return new TitledCell(IvTranslations.get("reccomplex.gui.inventorygen.groupid"), cell)
@@ -84,7 +84,7 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
 
         addSegment(3, TableDataSourceExpression.constructDefault(IvTranslations.get("reccomplex.inventorygen.dependencies"), IvTranslations.getLines("reccomplex.inventorygen.dependencies.tooltip"), this.component.dependencies, RecurrentComplex.saver));
         addSegment(4, TableCellMultiBuilder.create(navigator, delegate)
-                .addAction(() -> RCGuiHandler.editInventoryGenComponentItems(this.player, this.key, this.component, this.saveDirectoryData), () -> IvTranslations.format("reccomplex.gui.inventorygen.items.summary", String.valueOf(this.component.items.size())), null)
+                .addAction(() -> RCGuiHandler.editLootTableComponentItems(this.player, this.key, this.component, this.saveDirectoryData), () -> IvTranslations.format("reccomplex.gui.inventorygen.items.summary", String.valueOf(this.component.items.size())), null)
                 .withTitle("")
                 .buildDataSource());
     }
@@ -115,8 +115,8 @@ public class TableDataSourceItemCollectionComponent extends TableDataSourceSegme
 
     private GuiValidityStateIndicator.State currentGroupIDState()
     {
-        return component.inventoryGeneratorID.trim().isEmpty() ? GuiValidityStateIndicator.State.INVALID
-                : WeightedItemCollectionRegistry.INSTANCE.get(component.inventoryGeneratorID) instanceof GenericItemCollection
+        return component.tableID.trim().isEmpty() ? GuiValidityStateIndicator.State.INVALID
+                : WeightedItemCollectionRegistry.INSTANCE.get(component.tableID) instanceof GenericLootTable
                 ? GuiValidityStateIndicator.State.VALID : GuiValidityStateIndicator.State.SEMI_VALID;
     }
 }

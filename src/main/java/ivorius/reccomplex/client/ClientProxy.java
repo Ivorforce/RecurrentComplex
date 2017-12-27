@@ -80,7 +80,7 @@ public class ClientProxy implements RCProxy
         if (!RecurrentComplex.isLite())
         {
             registerItemsForDefaultRender(blockSelector, blockSelectorFloating);
-            registerItemsForDefaultRender(inventoryGenerationTag, inventoryGenerationSingleTag, inventoryGenerationComponentTag);
+            registerItemsForDefaultRender(lootGenerationTag, lootGenerationSingleTag, lootGenerationComponentTag);
             registerItemsForDefaultRender(artifactGenerationTag, bookGenerationTag);
             registerItemsForDefaultRender(inspector);
 

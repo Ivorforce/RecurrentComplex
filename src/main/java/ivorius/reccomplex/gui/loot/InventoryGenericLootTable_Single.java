@@ -3,16 +3,14 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.inventorygen;
+package ivorius.reccomplex.gui.loot;
 
 import ivorius.reccomplex.gui.InventoryWatcher;
-import ivorius.reccomplex.world.storage.loot.GenericItemCollection;
+import ivorius.reccomplex.world.storage.loot.GenericLootTable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,13 +20,13 @@ import java.util.List;
  * Created by lukas on 27.05.14.
  */
 
-public class InventoryGenericInvGen_Single implements IInventory
+public class InventoryGenericLootTable_Single implements IInventory
 {
-    public List<GenericItemCollection.RandomizedItemStack> weightedRandomChestContents;
+    public List<GenericLootTable.RandomizedItemStack> weightedRandomChestContents;
 
     private List<InventoryWatcher> watchers = new ArrayList<>();
 
-    public InventoryGenericInvGen_Single(List<GenericItemCollection.RandomizedItemStack> weightedRandomChestContents)
+    public InventoryGenericLootTable_Single(List<GenericLootTable.RandomizedItemStack> weightedRandomChestContents)
     {
         this.weightedRandomChestContents = weightedRandomChestContents;
     }
@@ -57,7 +55,7 @@ public class InventoryGenericInvGen_Single implements IInventory
     @Override
     public boolean isEmpty()
     {
-        for (GenericItemCollection.RandomizedItemStack randomized : this.weightedRandomChestContents)
+        for (GenericLootTable.RandomizedItemStack randomized : this.weightedRandomChestContents)
         {
             if (!randomized.itemStack.isEmpty())
             {
@@ -129,7 +127,7 @@ public class InventoryGenericInvGen_Single implements IInventory
         else
         {
             if (!stack.isEmpty())
-                weightedRandomChestContents.add(new GenericItemCollection.RandomizedItemStack(stack, 1, stack.getMaxStackSize(), 1.0));
+                weightedRandomChestContents.add(new GenericLootTable.RandomizedItemStack(stack, 1, stack.getMaxStackSize(), 1.0));
         }
 
         if (!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())

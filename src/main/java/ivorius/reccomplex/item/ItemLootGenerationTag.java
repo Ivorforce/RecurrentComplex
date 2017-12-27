@@ -8,8 +8,8 @@ package ivorius.reccomplex.item;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.ItemHandlers;
-import ivorius.reccomplex.world.storage.loot.InventoryGenerationHandler;
-import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
+import ivorius.reccomplex.world.storage.loot.LootGenerationHandler;
+import ivorius.reccomplex.world.storage.loot.LootTable;
 import ivorius.reccomplex.world.storage.loot.WeightedItemCollectionRegistry;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -34,9 +34,9 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-public abstract class ItemInventoryGenerationTag extends Item implements GeneratingItem
+public abstract class ItemLootGenerationTag extends Item implements GeneratingItem
 {
-    public ItemInventoryGenerationTag()
+    public ItemLootGenerationTag()
     {
     }
 
@@ -50,7 +50,7 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
             {
                 IItemHandlerModifiable itemHandler = ItemHandlers.getModifiable(rightClicked);
                 generatingItem.generateInInventory(world, itemHandler, world.rand, stack, world.rand.nextInt(itemHandler.getSlots()));
-                InventoryGenerationHandler.generateAllTags(world, itemHandler, RecurrentComplex.specialRegistry.itemHidingMode(), world.rand);
+                LootGenerationHandler.generateAllTags(world, itemHandler, RecurrentComplex.specialRegistry.itemHidingMode(), world.rand);
             }
 
             return true;
@@ -59,7 +59,7 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
         return false;
     }
 
-    public static String inventoryGeneratorKey(ItemStack stack)
+    public static String lootTableKey(ItemStack stack)
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("itemCollectionKey", Constants.NBT.TAG_STRING))
             return stack.getTagCompound().getString("itemCollectionKey");
@@ -73,9 +73,9 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
         return null;
     }
 
-    public static WeightedItemCollection inventoryGenerator(ItemStack stack)
+    public static LootTable lootTable(ItemStack stack)
     {
-        return WeightedItemCollectionRegistry.INSTANCE.get(inventoryGeneratorKey(stack));
+        return WeightedItemCollectionRegistry.INSTANCE.get(lootTableKey(stack));
     }
 
     public static void setItemStackGeneratorKey(ItemStack stack, String generatorKey)
@@ -108,7 +108,7 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     @ParametersAreNonnullByDefault
     public String getItemStackDisplayName(ItemStack stack)
     {
-        String key = inventoryGeneratorKey(stack);
+        String key = lootTableKey(stack);
 
         return key != null ? key : super.getItemStackDisplayName(stack);
     }
@@ -116,7 +116,7 @@ public abstract class ItemInventoryGenerationTag extends Item implements Generat
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
-        WeightedItemCollection generator = inventoryGenerator(stack);
+        LootTable generator = lootTable(stack);
         if (generator != null)
             tooltip.add(generator.getDescriptor());
         else

@@ -6,9 +6,9 @@
 package ivorius.reccomplex.item;
 
 import ivorius.ivtoolkit.item.IvItemStacks;
-import ivorius.reccomplex.gui.inventorygen.GuiEditItemStack;
-import ivorius.reccomplex.gui.inventorygen.TableDataSourceInvGenSingleTag;
-import ivorius.reccomplex.world.storage.loot.WeightedItemCollection;
+import ivorius.reccomplex.gui.loot.GuiEditItemStack;
+import ivorius.reccomplex.gui.loot.TableDataSourceLootGeneratorSingleTag;
+import ivorius.reccomplex.world.storage.loot.LootTable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,16 +29,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class ItemInventoryGenSingleTag extends ItemInventoryGenerationTag implements ItemSyncableTags
+public class ItemLootGenSingleTag extends ItemLootGenerationTag implements ItemSyncableTags
 {
     @Override
     public void generateInInventory(WorldServer server, IItemHandlerModifiable inventory, Random random, ItemStack stack, int fromSlot)
     {
-        WeightedItemCollection weightedItemCollection = inventoryGenerator(stack);
+        LootTable lootTable = lootTable(stack);
 
-        if (weightedItemCollection != null)
+        if (lootTable != null)
         {
-            ItemStack generated = random.nextFloat() < getItemChance(stack) ? weightedItemCollection.getRandomItemStack(server, random) : null;
+            ItemStack generated = random.nextFloat() < getItemChance(stack) ? lootTable.getRandomItemStack(server, random) : null;
 
             if (generated != null)
                 inventory.setStackInSlot(fromSlot, generated);
@@ -58,7 +58,7 @@ public class ItemInventoryGenSingleTag extends ItemInventoryGenerationTag implem
     @SideOnly(Side.CLIENT)
     private void openGui(EntityPlayer player, int slot)
     {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiEditItemStack<>(player, slot, new TableDataSourceInvGenSingleTag()));
+        Minecraft.getMinecraft().displayGuiScreen(new GuiEditItemStack<>(player, slot, new TableDataSourceLootGeneratorSingleTag()));
     }
 
     @Override

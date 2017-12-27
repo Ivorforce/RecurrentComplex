@@ -39,7 +39,7 @@ public class LootEntryItemCollection extends LootEntry
     @Override
     public void addLoot(Collection<ItemStack> stacks, Random rand, LootContext context)
     {
-        GenericItemCollection.Component component = GenericItemCollectionRegistry.INSTANCE.get(itemCollectionID);
+        GenericLootTable.Component component = GenericItemCollectionRegistry.INSTANCE.get(itemCollectionID);
         if (component != null)
             stacks.add(component.getRandomItemStack(rand));
     }

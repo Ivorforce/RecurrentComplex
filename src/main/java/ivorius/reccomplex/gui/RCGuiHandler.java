@@ -13,19 +13,17 @@ import ivorius.reccomplex.files.loading.RCFileSuffix;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
 import ivorius.reccomplex.gui.container.IvGuiHandler;
 import ivorius.reccomplex.gui.container.IvGuiRegistry;
-import ivorius.reccomplex.gui.inventorygen.ContainerEditInventoryGenItems;
-import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGen;
-import ivorius.reccomplex.gui.inventorygen.GuiEditInventoryGenItems;
+import ivorius.reccomplex.gui.loot.ContainerEditLootTableItems;
+import ivorius.reccomplex.gui.loot.GuiEditLootTable;
+import ivorius.reccomplex.gui.loot.GuiEditLootTableItems;
 import ivorius.reccomplex.utils.SaveDirectoryData;
-import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
+import ivorius.reccomplex.world.storage.loot.GenericLootTable.Component;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import ivorius.reccomplex.world.storage.loot.ItemCollectionSaveHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Created by lukas on 26.05.14.
@@ -33,8 +31,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class RCGuiHandler implements IvGuiHandler
 {
-    public static final int editInventoryGen = 0;
-    public static final int editInventoryGenItems = 1;
+    public static final int editLootTable = 0;
+    public static final int editLootTableItems = 1;
 
     protected static void openComponentGui(EntityPlayer player, String key, Component component, SaveDirectoryData saveDirectoryData, int guiID)
     {
@@ -60,24 +58,24 @@ public class RCGuiHandler implements IvGuiHandler
         IvGuiRegistry.INSTANCE.openGui(player, RecurrentComplex.MOD_ID, guiID, buf);
     }
 
-    public static void editInventoryGenComponent(EntityPlayer player, String key, Component component, SaveDirectoryData saveDirectoryData)
+    public static void editLootTableComponent(EntityPlayer player, String key, Component component, SaveDirectoryData saveDirectoryData)
     {
-        openComponentGui(player, key, component, saveDirectoryData, RCGuiHandler.editInventoryGen);
+        openComponentGui(player, key, component, saveDirectoryData, RCGuiHandler.editLootTable);
     }
 
-    public static void editInventoryGenComponentItems(EntityPlayer player, String key, Component component, SaveDirectoryData saveDirectoryData)
+    public static void editLootTableComponentItems(EntityPlayer player, String key, Component component, SaveDirectoryData saveDirectoryData)
     {
-        openComponentGui(player, key, component, saveDirectoryData, editInventoryGenItems);
+        openComponentGui(player, key, component, saveDirectoryData, editLootTableItems);
     }
 
     @Override
     public Container getServerGuiElement(int id, EntityPlayerMP player, ByteBuf data)
     {
-        if (id == editInventoryGen)
+        if (id == editLootTable)
         {
             return null;
         }
-        else if (id == editInventoryGenItems)
+        else if (id == editLootTableItems)
         {
             if (!player.canUseCommand(2, "give"))
                 return null; // Potential source of spoof otherwise
@@ -86,7 +84,7 @@ public class RCGuiHandler implements IvGuiHandler
             Component component = ItemCollectionSaveHandler.INSTANCE.read(data);
 
             if (component != null)
-                return new ContainerEditInventoryGenItems(player, key, component);
+                return new ContainerEditLootTableItems(player, key, component);
         }
 
         return null;
@@ -95,7 +93,7 @@ public class RCGuiHandler implements IvGuiHandler
     @Override
     public Object getClientGuiElement(int id, EntityPlayer player, ByteBuf data)
     {
-        if (id == editInventoryGen || id == editInventoryGenItems)
+        if (id == editLootTable || id == editLootTableItems)
         {
             String key = ByteBufUtils.readUTF8String(data);
             Component component = ItemCollectionSaveHandler.INSTANCE.read(data);
@@ -103,10 +101,10 @@ public class RCGuiHandler implements IvGuiHandler
 
             if (component != null)
             {
-                if (id == editInventoryGen)
-                    return new GuiEditInventoryGen(player, component, key, saveDirectoryData);
+                if (id == editLootTable)
+                    return new GuiEditLootTable(player, component, key, saveDirectoryData);
                 else
-                    return new GuiEditInventoryGenItems(player, component, key, saveDirectoryData);
+                    return new GuiEditLootTableItems(player, component, key, saveDirectoryData);
             }
         }
 

@@ -10,7 +10,7 @@ import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.commands.RCCommands;
 import ivorius.reccomplex.files.RCFileSaver;
 import ivorius.reccomplex.files.loading.ResourceDirectory;
-import ivorius.reccomplex.item.ItemInventoryGenComponentTag;
+import ivorius.reccomplex.item.ItemLootTableComponentTag;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -24,10 +24,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 /**
  * Created by lukas on 03.08.14.
  */
-public class PacketSaveInvGenComponentHandler extends SchedulingMessageHandler<PacketSaveInvGenComponent, IMessage>
+public class PacketSaveLootTableHandler extends SchedulingMessageHandler<PacketSaveLootTable, IMessage>
 {
     @Override
-    public void processServer(PacketSaveInvGenComponent message, MessageContext ctx, WorldServer server)
+    public void processServer(PacketSaveLootTable message, MessageContext ctx, WorldServer server)
     {
         NetHandlerPlayServer playServer = ctx.getServerHandler();
         EntityPlayerMP player = playServer.player;
@@ -41,17 +41,17 @@ public class PacketSaveInvGenComponentHandler extends SchedulingMessageHandler<P
         ResourceDirectory saveDir = saveDirectoryDataResult.directory;
         ResourceDirectory delDir = saveDir.opposite();
 
-        GenericItemCollectionRegistry.INSTANCE.register(id, "", message.getInventoryGenerator(), saveDir.isActive(), saveDir.getLevel());
+        GenericItemCollectionRegistry.INSTANCE.register(id, "", message.getComponent(), saveDir.isActive(), saveDir.getLevel());
 
-        if (RCCommands.informSaveResult((message.getInventoryGenerator() != null && id != null) &&
+        if (RCCommands.informSaveResult((message.getComponent() != null && id != null) &&
                 RecurrentComplex.saver.trySave(saveDir.toPath(), RCFileSaver.INVENTORY_GENERATION_COMPONENT, id), player, saveDir, RCFileSaver.INVENTORY_GENERATION_COMPONENT, id))
         {
             if (saveDirectoryDataResult.deleteOther)
                 RCCommands.informDeleteResult(RecurrentComplex.saver.tryDeleteWithID(delDir.toPath(), RCFileSaver.INVENTORY_GENERATION_COMPONENT, id), player, RCFileSaver.INVENTORY_GENERATION_COMPONENT, id, delDir);
 
             ItemStack heldItem = playServer.player.getHeldItem(EnumHand.MAIN_HAND);
-            if (heldItem != null && heldItem.getItem() instanceof ItemInventoryGenComponentTag)
-                ItemInventoryGenComponentTag.setComponentKey(heldItem, id);
+            if (heldItem != null && heldItem.getItem() instanceof ItemLootTableComponentTag)
+                ItemLootTableComponentTag.setComponentKey(heldItem, id);
             player.openContainer.detectAndSendChanges();
         }
     }

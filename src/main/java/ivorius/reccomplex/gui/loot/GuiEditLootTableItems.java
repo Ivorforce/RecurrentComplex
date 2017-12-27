@@ -3,7 +3,7 @@
  *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.gui.inventorygen;
+package ivorius.reccomplex.gui.loot;
 
 import ivorius.ivtoolkit.gui.*;
 import ivorius.ivtoolkit.network.PacketGuiAction;
@@ -15,8 +15,8 @@ import ivorius.reccomplex.gui.RCGuiHandler;
 import ivorius.reccomplex.utils.SaveDirectoryData;
 import ivorius.reccomplex.utils.scale.Scale;
 import ivorius.reccomplex.utils.scale.Scales;
-import ivorius.reccomplex.world.storage.loot.GenericItemCollection;
-import ivorius.reccomplex.world.storage.loot.GenericItemCollection.Component;
+import ivorius.reccomplex.world.storage.loot.GenericLootTable;
+import ivorius.reccomplex.world.storage.loot.GenericLootTable.Component;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -39,7 +39,7 @@ import java.util.List;
  */
 
 @SideOnly(Side.CLIENT)
-public class GuiEditInventoryGenItems extends GuiContainer implements InventoryWatcher
+public class GuiEditLootTableItems extends GuiContainer implements InventoryWatcher
 {
     public static ResourceLocation textureBackground = new ResourceLocation(RecurrentComplex.MOD_ID, RecurrentComplex.filePathTextures + "gui_edit_inventory_gen.png");
     public static Scale WEIGHT_SCALE = Scales.pow(5);
@@ -58,17 +58,17 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
 
     private int currentPage;
 
-    public GuiEditInventoryGenItems(EntityPlayer player, GenericItemCollection.Component component, String key, SaveDirectoryData saveDirectoryData)
+    public GuiEditLootTableItems(EntityPlayer player, GenericLootTable.Component component, String key, SaveDirectoryData saveDirectoryData)
     {
-        super(new ContainerEditInventoryGenItems(player, key, component));
+        super(new ContainerEditLootTableItems(player, key, component));
 
         this.key = key;
         this.component = component;
         this.saveDirectoryData = saveDirectoryData;
 
-        this.xSize = ContainerEditInventoryGenItems.SEGMENT_WIDTH * ContainerEditInventoryGenItems.ITEM_COLUMNS + 20;
+        this.xSize = ContainerEditLootTableItems.SEGMENT_WIDTH * ContainerEditLootTableItems.ITEM_COLUMNS + 20;
         this.ySize = 219;
-        ((ContainerEditInventoryGenItems) inventorySlots).inventory.addWatcher(this);
+        ((ContainerEditLootTableItems) inventorySlots).inventory.addWatcher(this);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
 
         int leftEdge = width / 2 - xSize / 2;
         int topEdge = height / 2 - ySize / 2;
-        int shiftRightPage = leftEdge + ContainerEditInventoryGenItems.ITEM_COLUMNS * ContainerEditInventoryGenItems.SEGMENT_WIDTH;
+        int shiftRightPage = leftEdge + ContainerEditLootTableItems.ITEM_COLUMNS * ContainerEditLootTableItems.SEGMENT_WIDTH;
 
         this.buttonList.add(this.backBtn = new GuiButton(0, leftEdge, this.height / 2 + 90, xSize / 3 - 1, 20, IvTranslations.get("gui.back")));
 
@@ -98,24 +98,24 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
         this.buttonList.add(this.nextPageBtn = new GuiButton(10, shiftRightPage, this.height / 2 - 80, 20, 20, ">"));
         this.buttonList.add(this.prevPageBtn = new GuiButton(11, shiftRightPage, this.height / 2 - 50, 20, 20, "<"));
 
-        for (int col = 0; col < ContainerEditInventoryGenItems.ITEM_COLUMNS; ++col)
+        for (int col = 0; col < ContainerEditLootTableItems.ITEM_COLUMNS; ++col)
         {
-            for (int row = 0; row < ContainerEditInventoryGenItems.ITEM_ROWS; ++row)
+            for (int row = 0; row < ContainerEditLootTableItems.ITEM_ROWS; ++row)
             {
-                int availableSize = ContainerEditInventoryGenItems.SEGMENT_WIDTH - 22 - 4;
-                int baseX = leftEdge + 20 + col * ContainerEditInventoryGenItems.SEGMENT_WIDTH;
+                int availableSize = ContainerEditLootTableItems.SEGMENT_WIDTH - 22 - 4;
+                int baseX = leftEdge + 20 + col * ContainerEditLootTableItems.SEGMENT_WIDTH;
                 int onePart = availableSize / 5;
 
                 GuiSliderRange minMaxSlider = new GuiSliderRange(100, baseX, topEdge + 18 + row * 18, onePart * 2 - 2, 18, "");
                 minMaxSlider.addListener(slider -> {
-                    List<GenericItemCollection.RandomizedItemStack> chestContents = component.items;
+                    List<GenericLootTable.RandomizedItemStack> chestContents = component.items;
                     if (slider.id < 300)
                     {
                         int stackIndex = slider.id - 200;
 
                         if (stackIndex < chestContents.size())
                         {
-                            GenericItemCollection.RandomizedItemStack chestContent = chestContents.get(stackIndex);
+                            GenericLootTable.RandomizedItemStack chestContent = chestContents.get(stackIndex);
                             IntegerRange intRange = Ranges.roundedIntRange(minMaxSlider.getRange());
                             chestContent.min = intRange.getMin();
                             chestContent.max = intRange.getMax();
@@ -132,7 +132,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
 
                 GuiSlider weightSlider = new GuiSlider(200, baseX + onePart * 2, topEdge + 18 + row * 18, onePart * 3, 18, IvTranslations.get("reccomplex.gui.random.weight"));
                 weightSlider.addListener(slider -> {
-                    List<GenericItemCollection.RandomizedItemStack> chestContents = component.items;
+                    List<GenericLootTable.RandomizedItemStack> chestContents = component.items;
                     if (slider.id < 200 && slider.id >= 100)
                     {
                         int stackIndex = slider.id - 100;
@@ -156,7 +156,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
     public void setPage(int colShift)
     {
         currentPage = colShift;
-        ((ContainerEditInventoryGenItems) inventorySlots).scrollTo(colShift);
+        ((ContainerEditLootTableItems) inventorySlots).scrollTo(colShift);
 
         updateAllItemSliders();
         updatePageButtons();
@@ -164,19 +164,19 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
 
     private void updateAllItemSliders()
     {
-        List<GenericItemCollection.RandomizedItemStack> chestContents = component.items;
+        List<GenericLootTable.RandomizedItemStack> chestContents = component.items;
 
         for (int i = 0; i < weightSliders.size(); i++)
         {
             GuiSlider weightSlider = weightSliders.get(i);
             GuiSliderRange minMaxSlider = minMaxSliders.get(i);
 
-            int index = i + currentPage * ContainerEditInventoryGenItems.ITEMS_PER_PAGE;
+            int index = i + currentPage * ContainerEditLootTableItems.ITEMS_PER_PAGE;
             weightSlider.id = index + 100;
             minMaxSlider.id = index + 200;
             if (index < chestContents.size())
             {
-                GenericItemCollection.RandomizedItemStack chestContent = chestContents.get(index);
+                GenericLootTable.RandomizedItemStack chestContent = chestContents.get(index);
                 minMaxSlider.setRange(new FloatRange(chestContent.min, chestContent.max));
                 minMaxSlider.setMaxValue(chestContent.itemStack.getMaxStackSize());
                 minMaxSlider.enabled = true;
@@ -202,9 +202,9 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
 
     private void updatePageButtons()
     {
-        List<GenericItemCollection.RandomizedItemStack> chestContents = component.items;
+        List<GenericLootTable.RandomizedItemStack> chestContents = component.items;
         int neededSlots = chestContents.size() + 1;
-        nextPageBtn.enabled = ((currentPage + 1) * ContainerEditInventoryGenItems.ITEMS_PER_PAGE) <= neededSlots;
+        nextPageBtn.enabled = ((currentPage + 1) * ContainerEditLootTableItems.ITEMS_PER_PAGE) <= neededSlots;
         prevPageBtn.enabled = currentPage > 0;
     }
 
@@ -215,7 +215,7 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
         {
             if (button.id == 0)
             {
-                RCGuiHandler.editInventoryGenComponent(mc.player, key, component, saveDirectoryData);
+                RCGuiHandler.editLootTableComponent(mc.player, key, component, saveDirectoryData);
             }
             else if (button.id == 2)
             {
@@ -281,9 +281,9 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
         GlStateManager.color(1.0f, 1.0f, 1.0f);
         drawTexturedModalRect(width / 2 - 176 / 2 - 20 / 2 - 1, height / 2 - 13, 0, 0, 176, 90);
 
-        for (int i = 0; i < ContainerEditInventoryGenItems.ITEM_ROWS; i++)
+        for (int i = 0; i < ContainerEditLootTableItems.ITEM_ROWS; i++)
         {
-            drawTexturedModalRect(width / 2 - ContainerEditInventoryGenItems.SEGMENT_WIDTH / 2 - 11, height / 2 - 91 + i * 18, 7, 7, 18, 18);
+            drawTexturedModalRect(width / 2 - ContainerEditLootTableItems.SEGMENT_WIDTH / 2 - 11, height / 2 - 91 + i * 18, 7, 7, 18, 18);
         }
 //        for (int i = 0; i < ContainerEditInventoryGen.ITEM_COLUMNS; i++)
 //        {
@@ -324,6 +324,6 @@ public class GuiEditInventoryGenItems extends GuiContainer implements InventoryW
 
 //    public void updateSaveButtonEnabled()
 //    {
-//        backBtn.enabled = key.trim().length() > 0 && component.inventoryGeneratorID.trim().length() > 0;
+//        backBtn.enabled = key.trim().length() > 0 && component.tableID.trim().length() > 0;
 //    }
 }

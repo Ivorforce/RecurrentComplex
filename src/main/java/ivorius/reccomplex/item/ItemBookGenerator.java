@@ -26,6 +26,11 @@ import java.util.Random;
  */
 public class ItemBookGenerator extends Item implements GeneratingItem
 {
+    public ItemBookGenerator()
+    {
+        setMaxStackSize(1);
+    }
+
     @Override
     public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {

@@ -7,8 +7,8 @@ package ivorius.reccomplex.item;
 
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.RCGuiHandler;
-import ivorius.reccomplex.world.storage.loot.GenericLootTable.Component;
 import ivorius.reccomplex.world.storage.loot.GenericItemCollectionRegistry;
+import ivorius.reccomplex.world.storage.loot.GenericLootTable.Component;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,6 +38,11 @@ import java.util.Random;
  */
 public class ItemLootTableComponentTag extends Item implements GeneratingItem
 {
+    public ItemLootTableComponentTag()
+    {
+        setMaxStackSize(1);
+    }
+
     public static String componentKey(ItemStack stack)
     {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("itemCollectionKey", Constants.NBT.TAG_STRING))

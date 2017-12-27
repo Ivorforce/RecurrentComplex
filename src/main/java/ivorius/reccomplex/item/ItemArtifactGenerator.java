@@ -26,6 +26,11 @@ import java.util.*;
  */
 public class ItemArtifactGenerator extends Item implements GeneratingItem
 {
+    public ItemArtifactGenerator()
+    {
+        setMaxStackSize(1);
+    }
+
     @Override
     public EnumActionResult onItemUse(EntityPlayer playerIn, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {

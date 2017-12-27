@@ -38,6 +38,7 @@ public abstract class ItemLootGenerationTag extends Item implements GeneratingIt
 {
     public ItemLootGenerationTag()
     {
+        setMaxStackSize(1);
     }
 
     public static boolean applyGeneratorToInventory(WorldServer world, BlockPos pos, GeneratingItem generatingItem, ItemStack stack)

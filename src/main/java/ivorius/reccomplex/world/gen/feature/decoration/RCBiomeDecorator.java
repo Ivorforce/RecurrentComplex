@@ -95,7 +95,7 @@ public class RCBiomeDecorator
     protected static int doDecorate(WorldServer worldIn, Random random, BlockPos blockPos, DecorationType type, int amount, boolean lowChance)
     {
         ChunkPos chunkPos = new ChunkPos(blockPos);
-        double baseWeight = RCConfig.baseDecorationWeights.get(type);
+        double baseWeight = RCConfig.baseDecorationWeights.get(type) * (RCConfig.isGenerationEnabled(worldIn.provider) ? 1 : 0);
 
         if (baseWeight <= 0)
             return amount;
@@ -116,7 +116,7 @@ public class RCBiomeDecorator
     public static Pair<Structure<?>, VanillaDecorationGeneration> selectDecoration(WorldServer worldIn, Random random, BlockPos blockPos, DecorationType type)
     {
         ChunkPos chunkPos = new ChunkPos(blockPos);
-        double baseWeight = RCConfig.baseDecorationWeights.get(type);
+        double baseWeight = RCConfig.baseDecorationWeights.get(type) * (RCConfig.isGenerationEnabled(worldIn.provider) ? 1 : 0);
 
         if (baseWeight <= 0)
             return null;
@@ -129,6 +129,10 @@ public class RCBiomeDecorator
         double totalWeight = selector.totalWeight(type);
 
         if (totalWeight <= 0)
+            return null;
+
+        // Select none
+        if (random.nextFloat() * (totalWeight * baseWeight + 1) < 1)
             return null;
 
         return selector.selectOne(random, type, totalWeight);

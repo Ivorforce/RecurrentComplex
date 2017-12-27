@@ -58,7 +58,12 @@ public class TableDataSourceVanillaDecorationGeneration extends TableDataSourceS
                 .withTitle("")
                 .buildDataSource());
 
-        addSegment(4, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift,
+        addSegment(4, TableCellMultiBuilder.create(navigator, delegate)
+                .addNavigation(() -> new TableDataSourceSelectivePlacer(generationInfo.placer, navigator, delegate), () -> IvTranslations.get("reccomplex.placer"), () -> IvTranslations.getLines("reccomplex.placer.tooltip"))
+                .withTitle("")
+                .buildDataSource());
+
+        addSegment(5, new TableDataSourceBlockPos(generationInfo.spawnShift, generationInfo::setSpawnShift,
                 IvTranslations.get("reccomplex.gui.blockpos.shift"), IvTranslations.getLines("reccomplex.gui.blockpos.shift.tooltip")));
     }
 }

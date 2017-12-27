@@ -5,14 +5,25 @@
 
 package ivorius.reccomplex.events.handlers;
 
+import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.world.gen.feature.decoration.RCBiomeDecorator;
 import ivorius.reccomplex.world.gen.feature.sapling.RCSaplingGenerator;
+import ivorius.reccomplex.world.gen.feature.structure.MapGenStructureHook;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.minecraft.world.chunk.ChunkPrimer;
+import net.minecraft.world.gen.structure.*;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.terraingen.DecorateBiomeEvent;
+import net.minecraftforge.event.terraingen.InitMapGenEvent;
 import net.minecraftforge.event.terraingen.SaplingGrowTreeEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import javax.annotation.Nullable;
+import java.util.Random;
 
 /**
  * Created by lukas on 14.09.16.
@@ -96,4 +107,272 @@ public class RCTerrainGenEventHandler
         }
     }
 
+    @SubscribeEvent
+    public void onInitMapGen(InitMapGenEvent event)
+    {
+        if (RCConfig.decorationHacks)
+        {
+            InitMapGenEvent.EventType type = event.getType();
+
+            // All need to inherit from the base type
+            MapGenStructureHook hook;
+
+            switch (type)
+            {
+                case OCEAN_MONUMENT:
+
+                    hook = new MapGenStructureHook((MapGenStructure) event.getNewGen(), RCBiomeDecorator.DecorationType.OCEAN_MONUMENT);
+                    event.setNewGen(new StructureOceanMonument()
+                    {
+                        @Override
+                        public String getStructureName()
+                        {
+                            return hook.getStructureName();
+                        }
+
+                        @Override
+                        public boolean generateStructure(World worldIn, Random randomIn, ChunkPos chunkCoord)
+                        {
+                            return hook.generateStructure(worldIn, randomIn, chunkCoord);
+                        }
+
+                        @Override
+                        public boolean isInsideStructure(BlockPos pos)
+                        {
+                            return hook.isInsideStructure(pos);
+                        }
+
+                        @Override
+                        public boolean isPositionInStructure(World worldIn, BlockPos pos)
+                        {
+                            return hook.isPositionInStructure(worldIn, pos);
+                        }
+
+                        @Override
+                        @Nullable
+                        public BlockPos getNearestStructurePos(World worldIn, BlockPos pos, boolean findUnexplored)
+                        {
+                            return hook.getNearestStructurePos(worldIn, pos, findUnexplored);
+                        }
+
+                        @Override
+                        public void generate(World worldIn, int x, int z, ChunkPrimer primer)
+                        {
+                            hook.generate(worldIn, x, z, primer);
+                        }
+                    });
+                    break;
+                case SCATTERED_FEATURE:
+                    hook = new MapGenStructureHook((MapGenStructure) event.getNewGen(), RCBiomeDecorator.DecorationType.SCATTERED_FEATURE);
+                    event.setNewGen(new MapGenScatteredFeature()
+                    {
+                        @Override
+                        public String getStructureName()
+                        {
+                            return hook.getStructureName();
+                        }
+
+                        @Override
+                        public boolean generateStructure(World worldIn, Random randomIn, ChunkPos chunkCoord)
+                        {
+                            return hook.generateStructure(worldIn, randomIn, chunkCoord);
+                        }
+
+                        @Override
+                        public boolean isInsideStructure(BlockPos pos)
+                        {
+                            return hook.isInsideStructure(pos);
+                        }
+
+                        @Override
+                        public boolean isPositionInStructure(World worldIn, BlockPos pos)
+                        {
+                            return hook.isPositionInStructure(worldIn, pos);
+                        }
+
+                        @Override
+                        @Nullable
+                        public BlockPos getNearestStructurePos(World worldIn, BlockPos pos, boolean findUnexplored)
+                        {
+                            return hook.getNearestStructurePos(worldIn, pos, findUnexplored);
+                        }
+
+                        @Override
+                        public void generate(World worldIn, int x, int z, ChunkPrimer primer)
+                        {
+                            hook.generate(worldIn, x, z, primer);
+                        }
+                    });
+                    break;
+                case VILLAGE:
+                    hook = new MapGenStructureHook((MapGenStructure) event.getNewGen(), RCBiomeDecorator.DecorationType.VILLAGE);
+                    event.setNewGen(new MapGenVillage()
+                    {
+                        @Override
+                        public String getStructureName()
+                        {
+                            return hook.getStructureName();
+                        }
+
+                        @Override
+                        public boolean generateStructure(World worldIn, Random randomIn, ChunkPos chunkCoord)
+                        {
+                            return hook.generateStructure(worldIn, randomIn, chunkCoord);
+                        }
+
+                        @Override
+                        public boolean isInsideStructure(BlockPos pos)
+                        {
+                            return hook.isInsideStructure(pos);
+                        }
+
+                        @Override
+                        public boolean isPositionInStructure(World worldIn, BlockPos pos)
+                        {
+                            return hook.isPositionInStructure(worldIn, pos);
+                        }
+
+                        @Override
+                        @Nullable
+                        public BlockPos getNearestStructurePos(World worldIn, BlockPos pos, boolean findUnexplored)
+                        {
+                            return hook.getNearestStructurePos(worldIn, pos, findUnexplored);
+                        }
+
+                        @Override
+                        public void generate(World worldIn, int x, int z, ChunkPrimer primer)
+                        {
+                            hook.generate(worldIn, x, z, primer);
+                        }
+                    });
+                    break;
+                case NETHER_BRIDGE:
+                    hook = new MapGenStructureHook((MapGenStructure) event.getNewGen(), RCBiomeDecorator.DecorationType.NETHER_BRIDGE);
+                    event.setNewGen(new MapGenNetherBridge()
+                    {
+                        @Override
+                        public String getStructureName()
+                        {
+                            return hook.getStructureName();
+                        }
+
+                        @Override
+                        public boolean generateStructure(World worldIn, Random randomIn, ChunkPos chunkCoord)
+                        {
+                            return hook.generateStructure(worldIn, randomIn, chunkCoord);
+                        }
+
+                        @Override
+                        public boolean isInsideStructure(BlockPos pos)
+                        {
+                            return hook.isInsideStructure(pos);
+                        }
+
+                        @Override
+                        public boolean isPositionInStructure(World worldIn, BlockPos pos)
+                        {
+                            return hook.isPositionInStructure(worldIn, pos);
+                        }
+
+                        @Override
+                        @Nullable
+                        public BlockPos getNearestStructurePos(World worldIn, BlockPos pos, boolean findUnexplored)
+                        {
+                            return hook.getNearestStructurePos(worldIn, pos, findUnexplored);
+                        }
+
+                        @Override
+                        public void generate(World worldIn, int x, int z, ChunkPrimer primer)
+                        {
+                            hook.generate(worldIn, x, z, primer);
+                        }
+                    });
+                    break;
+                case STRONGHOLD:
+                    hook = new MapGenStructureHook((MapGenStructure) event.getNewGen(), RCBiomeDecorator.DecorationType.STRONGHOLD);
+                    event.setNewGen(new MapGenStronghold()
+                    {
+                        @Override
+                        public String getStructureName()
+                        {
+                            return hook.getStructureName();
+                        }
+
+                        @Override
+                        public boolean generateStructure(World worldIn, Random randomIn, ChunkPos chunkCoord)
+                        {
+                            return hook.generateStructure(worldIn, randomIn, chunkCoord);
+                        }
+
+                        @Override
+                        public boolean isInsideStructure(BlockPos pos)
+                        {
+                            return hook.isInsideStructure(pos);
+                        }
+
+                        @Override
+                        public boolean isPositionInStructure(World worldIn, BlockPos pos)
+                        {
+                            return hook.isPositionInStructure(worldIn, pos);
+                        }
+
+                        @Override
+                        @Nullable
+                        public BlockPos getNearestStructurePos(World worldIn, BlockPos pos, boolean findUnexplored)
+                        {
+                            return hook.getNearestStructurePos(worldIn, pos, findUnexplored);
+                        }
+
+                        @Override
+                        public void generate(World worldIn, int x, int z, ChunkPrimer primer)
+                        {
+                            hook.generate(worldIn, x, z, primer);
+                        }
+                    });
+                    break;
+                case MINESHAFT:
+                    hook = new MapGenStructureHook((MapGenStructure) event.getNewGen(), RCBiomeDecorator.DecorationType.MINESHAFT);
+                    event.setNewGen(new MapGenMineshaft()
+                    {
+                        @Override
+                        public String getStructureName()
+                        {
+                            return hook.getStructureName();
+                        }
+
+                        @Override
+                        public boolean generateStructure(World worldIn, Random randomIn, ChunkPos chunkCoord)
+                        {
+                            return hook.generateStructure(worldIn, randomIn, chunkCoord);
+                        }
+
+                        @Override
+                        public boolean isInsideStructure(BlockPos pos)
+                        {
+                            return hook.isInsideStructure(pos);
+                        }
+
+                        @Override
+                        public boolean isPositionInStructure(World worldIn, BlockPos pos)
+                        {
+                            return hook.isPositionInStructure(worldIn, pos);
+                        }
+
+                        @Override
+                        @Nullable
+                        public BlockPos getNearestStructurePos(World worldIn, BlockPos pos, boolean findUnexplored)
+                        {
+                            return hook.getNearestStructurePos(worldIn, pos, findUnexplored);
+                        }
+
+                        @Override
+                        public void generate(World worldIn, int x, int z, ChunkPrimer primer)
+                        {
+                            hook.generate(worldIn, x, z, primer);
+                        }
+                    });
+                    break;
+            }
+        }
+    }
 }

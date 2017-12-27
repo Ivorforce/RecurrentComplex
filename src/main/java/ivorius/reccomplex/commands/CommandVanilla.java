@@ -5,7 +5,6 @@
 
 package ivorius.reccomplex.commands;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.mcopts.commands.CommandSplit;
 import ivorius.mcopts.commands.SimpleCommand;
@@ -23,6 +22,7 @@ import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.utils.RCStructureBoundingBoxes;
 import ivorius.reccomplex.utils.accessor.RCAccessorMapGenStructure;
 import ivorius.reccomplex.utils.accessor.SafeReflector;
+import ivorius.reccomplex.world.gen.feature.structure.MapGenStructureHook;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -98,9 +98,7 @@ public class CommandVanilla extends CommandSplit
                     ReflectionHelper.setPrivateValue(MapGenBase.class, gen, random, "rand", "field_75038_b");
                     recursiveGenerate(gen, world, chunkPos);
 
-                    Long2ObjectMap<StructureStart> structureMap = ReflectionHelper.getPrivateValue(MapGenStructure.class, gen, "structureMap", "field_75053_d");
-
-                    StructureStart structureStart = structureMap.get(ChunkPos.asLong(chunkPos.x, chunkPos.z));
+                    StructureStart structureStart = MapGenStructureHook.getStructureStart(gen, chunkPos);
 
                     if (structureStart == null || !RCStructureBoundingBoxes.valid(structureStart.getBoundingBox()))
                         throw new CommandException("Failed to place structure!");

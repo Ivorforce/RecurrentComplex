@@ -12,6 +12,7 @@ import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
+import ivorius.ivtoolkit.tools.NBTTagLists;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.utils.RCAxisAlignedTransform;
@@ -163,9 +164,15 @@ public class WorldStructureGenerationData extends WorldSavedData
     public void readFromNBT(NBTTagCompound compound)
     {
         entryMap.clear();
-
+        chunkMap.clear();
+        instanceMap.clear();
         NBTCompoundObjects.readListFrom(compound, "entries", StructureEntry::new).forEach(this::addEntry);
         NBTCompoundObjects.readListFrom(compound, "customEntries", CustomEntry::new).forEach(this::addEntry);
+
+        checkedChunks.clear();
+        NBTTagLists.intArraysFrom(compound, "checkedChunks").forEach(ints -> checkedChunks.add(new ChunkPos(ints[0], ints[1])));
+        checkedChunksFinal.clear();
+        NBTTagLists.intArraysFrom(compound, "checkedChunksFinal").forEach(ints -> checkedChunksFinal.add(new ChunkPos(ints[0], ints[1])));
     }
 
     @Override
@@ -173,6 +180,9 @@ public class WorldStructureGenerationData extends WorldSavedData
     {
         NBTCompoundObjects.writeListTo(compound, "entries", entryMap.values().stream().filter(e -> e instanceof StructureEntry).collect(Collectors.toList()));
         NBTCompoundObjects.writeListTo(compound, "customEntries", entryMap.values().stream().filter(e -> e instanceof CustomEntry).collect(Collectors.toList()));
+
+        NBTTagLists.writeIntArraysTo(compound, "checkedChunks", checkedChunks.stream().map(c -> new int[]{c.x, c.z}).collect(Collectors.toList()));
+        NBTTagLists.writeIntArraysTo(compound, "checkedChunksFinal", checkedChunksFinal.stream().map(c -> new int[]{c.x, c.z}).collect(Collectors.toList()));
 
         return compound;
     }

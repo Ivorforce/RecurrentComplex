@@ -59,6 +59,7 @@ public class RCConfig
     public static boolean honorStructureGenerationOption;
 
     public static boolean generateNature;
+    public static boolean decorationHacks;
     public static final TObjectDoubleMap<RCBiomeDecorator.DecorationType> baseDecorationWeights = new TObjectDoubleHashMap<>();
 
     public static int baseVillageSpawnWeight;
@@ -131,6 +132,7 @@ public class RCConfig
             honorStructureGenerationOption = config.getBoolean("honorStructureGenerationOption", CATEGORY_BALANCING, true, "If disabled, Recurrent Complex will generate structures in worlds without the structure generation option.");
 
             generateNature = config.getBoolean("generateNature", CATEGORY_BALANCING, true, "Whether the nature (e.g. trees, mushrooms) added by the mod should be actively generating.");
+            decorationHacks = config.getBoolean("decorationHacks", CATEGORY_BALANCING, true, "Enable hacks for a few decoration types. Disabling this may fix problems but will deactivate ReC overriding those types of structures.");
 
             minDistToSpawnForGeneration = config.getFloat("minDistToSpawnForGeneration", CATEGORY_BALANCING, 30.0f, 0.0f, 500.0f, "Within this block radius, default structures won't spawn (in the main dimension).");
             structureSpawnChanceModifier = config.getFloat("structureSpawnChance", CATEGORY_BALANCING, 1.0f, 0.0f, 10.0f, "How often do structures spawn?");

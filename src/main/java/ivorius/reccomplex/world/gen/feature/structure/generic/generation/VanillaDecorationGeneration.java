@@ -53,6 +53,7 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
     public RCBiomeDecorator.DecorationType type;
 
     public BlockPos spawnShift;
+    public SelectivePlacer placer;
 
     public VanillaDecorationGeneration()
     {
@@ -60,6 +61,7 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
 
         biomeWeights.setPreset("overworld");
         dimensionWeights.setPreset("overworld");
+        placer = new SelectivePlacer();
     }
 
     public VanillaDecorationGeneration(@Nullable String id, Double generationWeight, RCBiomeDecorator.DecorationType type, BlockPos spawnShift)
@@ -119,7 +121,7 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
     @Override
     public Placer placer()
     {
-        return SelectivePlacer.surfacePlacer(0);
+        return placer;
     }
 
     @SideOnly(Side.CLIENT)
@@ -167,6 +169,10 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
             PresettedObjects.read(jsonObject, gson, genInfo.biomeWeights, "biomeWeightsPreset", "generationBiomes", new TypeToken<ArrayList<WeightedBiomeMatcher>>() {}.getType());
             PresettedObjects.read(jsonObject, gson, genInfo.dimensionWeights, "dimensionWeightsPreset", "generationDimensions", new TypeToken<ArrayList<WeightedDimensionMatcher>>() {}.getType());
 
+            genInfo.placer = JsonUtils.has(jsonObject, "placer")
+                    ? SelectivePlacer.gson.fromJson(JsonUtils.getJsonObject(jsonObject, "placer"), SelectivePlacer.class)
+                    : SelectivePlacer.surfacePlacer(0);
+
             return genInfo;
         }
 
@@ -187,6 +193,8 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
 
             PresettedObjects.write(jsonObject, gson, src.biomeWeights, "biomeWeightsPreset", "generationBiomes");
             PresettedObjects.write(jsonObject, gson, src.dimensionWeights, "dimensionWeightsPreset", "generationDimensions");
+
+            jsonObject.add("placer", SelectivePlacer.gson.toJsonTree(src.placer));
 
             return jsonObject;
         }

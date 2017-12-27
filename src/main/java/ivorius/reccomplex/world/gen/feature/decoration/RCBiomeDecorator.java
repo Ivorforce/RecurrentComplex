@@ -110,7 +110,28 @@ public class RCBiomeDecorator
         if (totalWeight <= 0)
             return amount;
 
-        return trySurface(worldIn, random, chunkPos, selector, type, totalWeight, baseWeight, amount, lowChance);
+        return tryGenerate(worldIn, random, chunkPos, selector, type, totalWeight, baseWeight, amount, lowChance);
+    }
+
+    public static Pair<Structure<?>, VanillaDecorationGeneration> selectDecoration(WorldServer worldIn, Random random, BlockPos blockPos, DecorationType type)
+    {
+        ChunkPos chunkPos = new ChunkPos(blockPos);
+        double baseWeight = RCConfig.baseDecorationWeights.get(type);
+
+        if (baseWeight <= 0)
+            return null;
+
+        Biome biomeIn = worldIn.getBiome(chunkPos.getBlock(16, 0, 16));
+
+        StructureSelector<VanillaDecorationGeneration, DecorationType> selector = VanillaDecorationGeneration.selectors(StructureRegistry.INSTANCE)
+                .get(biomeIn, worldIn.provider);
+
+        double totalWeight = selector.totalWeight(type);
+
+        if (totalWeight <= 0)
+            return null;
+
+        return selector.selectOne(random, type, totalWeight);
     }
 
     public static Adapter adapter(WorldServer worldIn, BlockPos chunkPos, DecorationType type, Biome biomeIn, BiomeDecorator decorator)
@@ -118,7 +139,7 @@ public class RCBiomeDecorator
         return adapters.stream().filter(a -> a.matches(worldIn, biomeIn, decorator, chunkPos, type)).findFirst().orElse(vanillaAdapter);
     }
 
-    public static int trySurface(WorldServer worldIn, Random random, ChunkPos chunkPos, StructureSelector<VanillaDecorationGeneration, DecorationType> selector, DecorationType type, double totalWeight, double baseWeight, int vanillaAmount, boolean mayGiveUp)
+    public static int tryGenerate(WorldServer worldIn, Random random, ChunkPos chunkPos, StructureSelector<VanillaDecorationGeneration, DecorationType> selector, DecorationType type, double totalWeight, double baseWeight, int vanillaAmount, boolean mayGiveUp)
     {
         int rcAmount = amount(random, totalWeight * baseWeight, vanillaAmount);
 
@@ -128,14 +149,14 @@ public class RCBiomeDecorator
         for (int i = 0; i < rcAmount; i++)
         {
             for (int t = 0; t < STRUCTURE_TRIES; t++)
-                if (generateSurface(selector.selectOne(random, type, totalWeight), worldIn, chunkPos, random))
+                if (generate(selector.selectOne(random, type, totalWeight), worldIn, chunkPos, random))
                     break;
         }
 
         return vanillaAmount - rcAmount;
     }
 
-    public static boolean generateSurface(Pair<Structure<?>, VanillaDecorationGeneration> generation, WorldServer worldIn, ChunkPos chunkPos, Random random)
+    public static boolean generate(Pair<Structure<?>, VanillaDecorationGeneration> generation, WorldServer worldIn, ChunkPos chunkPos, Random random)
     {
         long seed = random.nextLong();
         BlockPos shift = generation.getRight().spawnShift;
@@ -144,8 +165,8 @@ public class RCBiomeDecorator
                 .seed(seed).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
                 .memorize(RCConfig.memorizeDecoration).allowOverlaps(true)
                 .randomPosition(WorldGenStructures.randomSurfacePos(chunkPos, seed).add(shift.getX(), shift.getZ()),
-                        // Shift +1 because surface placer goes -1
-                        shift(generation.getRight().placer(), shift.getY() + 1)).fromCenter(true)
+                        // TODO Remove shift because we now have a placer anyway
+                        shift(generation.getRight().placer(), shift.getY())).fromCenter(true)
                 .generate() != null;
     }
 
@@ -176,7 +197,19 @@ public class RCBiomeDecorator
         @SerializedName("desert_well")
         DESERT_WELL,
         @SerializedName("fossil")
-        FOSSIL;
+        FOSSIL,
+        @SerializedName("ocean_monument")
+        OCEAN_MONUMENT,
+        @SerializedName("scattered_feature")
+        SCATTERED_FEATURE,
+        @SerializedName("village")
+        VILLAGE,
+        @SerializedName("nether_bridge")
+        NETHER_BRIDGE,
+        @SerializedName("stronghold")
+        STRONGHOLD,
+        @SerializedName("mineshaft")
+        MINESHAFT;
 
         public static DecorationType byID(String id)
         {

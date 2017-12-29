@@ -51,6 +51,7 @@ public class SelectivePlacer implements Placer
     {
         this.placer.setContents(placer);
         this.baseline = baseline;
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), "");
     }
 
     public static Gson createGson()

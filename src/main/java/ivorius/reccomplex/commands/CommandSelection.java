@@ -62,7 +62,7 @@ public class CommandSelection extends CommandSplit implements CommandVirtual
             }
         });
 
-        add(set = new Command("set", expect -> expect.then(MCE::xyz).required().flag("first").flag("second"))
+        add(set = new Command("set", expect -> expect.then(MCE::xyz).then(MCE::xyz).required().flag("first").flag("second"))
         {
             @Override
             public void execute(MockWorld world, ICommandSender sender, Parameters parameters, SelectionOwner owner) throws CommandException

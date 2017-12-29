@@ -44,7 +44,7 @@ public class SelectivePlacer implements Placer
     {
         placer.setPreset("surface");
         baseline = 0;
-        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), "");
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), "!(air | reccomplex:generic_space)");
     }
 
     public SelectivePlacer(GenericPlacer placer, int baseline)

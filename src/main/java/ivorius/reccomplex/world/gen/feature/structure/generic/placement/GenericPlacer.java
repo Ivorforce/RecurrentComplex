@@ -18,21 +18,15 @@ import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.ivtoolkit.world.WorldCache;
-import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayAverageMatcher;
-import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayDynamicPosition;
-import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayMatcher;
-import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayMove;
-import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPlacerPresets;
 import ivorius.ivtoolkit.util.LineSelection;
 import ivorius.ivtoolkit.util.LineSelections;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
-import ivorius.reccomplex.utils.presets.PresettedObject;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -54,7 +48,7 @@ public class GenericPlacer
         this.factors.addAll(factors);
     }
 
-    public int place(StructurePlaceContext context, @Nullable IvBlockCollection blockCollection, int baseline)
+    public int place(StructurePlaceContext context, @Nullable IvBlockCollection blockCollection, Set<BlockPos> surface)
     {
         if (factors.isEmpty())
             return Placer.DONT_GENERATE;
@@ -69,7 +63,7 @@ public class GenericPlacer
 
         factors.forEach(factor ->
         {
-            List<Pair<LineSelection, Float>> consideration = factor.consider(cache, considerable, blockCollection, baseline, context);
+            List<Pair<LineSelection, Float>> consideration = factor.consider(cache, considerable, blockCollection, surface, context);
 
             // Quick remove null considerations
             consideration.stream().filter(p -> p.getRight() <= 0).forEach(p -> considerable.set(p.getLeft(), true, false));
@@ -87,7 +81,7 @@ public class GenericPlacer
                         .reduce(1f, (left, right) -> left * right)))
                 .filter(p -> p.getRight() > 0).collect(Collectors.toSet());
 
-        return applicable.size() > 0 ? WeightedSelector.select(context.random, applicable, Pair::getRight).getLeft() - baseline : Placer.DONT_GENERATE;
+        return applicable.size() > 0 ? WeightedSelector.select(context.random, applicable, Pair::getRight).getLeft() : Placer.DONT_GENERATE;
     }
 
     public static abstract class Factor
@@ -112,7 +106,7 @@ public class GenericPlacer
         @SideOnly(Side.CLIENT)
         public abstract TableDataSource tableDataSource(TableNavigator navigator, TableDelegate delegate);
 
-        public abstract List<Pair<LineSelection, Float>> consider(WorldCache cache, LineSelection considerable, @Nullable IvBlockCollection blockCollection, int baseline, StructurePlaceContext context);
+        public abstract List<Pair<LineSelection, Float>> consider(WorldCache cache, LineSelection considerable, @Nullable IvBlockCollection blockCollection, Set<BlockPos> surface, StructurePlaceContext context);
     }
 
     public static class Serializer implements JsonSerializer<GenericPlacer>, JsonDeserializer<GenericPlacer>

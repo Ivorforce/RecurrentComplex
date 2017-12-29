@@ -9,8 +9,7 @@
             {
               "type": "dynpos",
               "ray": {
-                "type": "world_height",
-                "weight": 1.0
+                "type": "world_height"
               }
             },
             {

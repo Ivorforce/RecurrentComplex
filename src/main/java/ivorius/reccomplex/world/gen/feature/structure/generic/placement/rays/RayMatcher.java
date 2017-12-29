@@ -6,11 +6,14 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays;
 
 import com.google.gson.*;
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.ivtoolkit.util.IvStreams;
+import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
 import ivorius.reccomplex.gui.table.cell.TableCellFloatSlider;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
@@ -18,16 +21,16 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
-import ivorius.ivtoolkit.blocks.BlockSurfaceArea;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.reflect.Type;
 import java.util.OptionalInt;
+import java.util.Set;
 
 import static ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit.getRayRegistry;
 
@@ -53,17 +56,18 @@ public class RayMatcher extends FactorLimit.Ray
         this.destMatcher.setExpression(destExpression);
     }
 
-    protected boolean matches(WorldCache cache, BlockSurfaceArea surfaceArea, int y, float needed)
+    protected boolean matches(WorldCache cache, Set<BlockPos> surface, int y, float needed)
     {
-        int[] chances = new int[]{1};
-        for (int i : surfaceArea.areaSize()) chances[0] += i;
+        int[] chances = new int[]{surface.size()};
 
         int[] need = new int[]{(int) (chances[0] * needed)};
         chances[0] -= need[0];
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
-        IvStreams.visit(surfaceArea.stream(), pos ->
+        IvStreams.visit(surface.stream(), surfacePos ->
         {
-            if (destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(cache, pos.blockPos(y))))
+            pos.setPos(surfacePos.getX(), surfacePos.getY() + y, surfacePos.getZ());
+            if (destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(cache, pos)))
                 return --need[0] > 0;
             else
                 return --chances[0] > 0; // Already lost
@@ -73,9 +77,9 @@ public class RayMatcher extends FactorLimit.Ray
     }
 
     @Override
-    public OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y)
+    public OptionalInt cast(WorldCache cache, StructurePlaceContext context, IvBlockCollection collection, Set<BlockPos> surface, int y)
     {
-        BlockSurfaceArea surfaceArea = BlockSurfaceArea.from(context.boundingBox);
+        Set<BlockPos> shiftedSurface = RayAverageMatcher.shifted(context, collection, surface);
 
         int height = cache.world.getHeight();
         while (true)
@@ -83,7 +87,7 @@ public class RayMatcher extends FactorLimit.Ray
             if (y < 0 || y >= height) // Found none
                 return OptionalInt.empty();
 
-            if (matches(cache, surfaceArea, y, requiredRatio))
+            if (matches(cache, shiftedSurface, y, requiredRatio))
                 break;
 
             y += up ? 1 : -1;

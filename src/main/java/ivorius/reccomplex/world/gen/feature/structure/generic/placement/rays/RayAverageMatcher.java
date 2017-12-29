@@ -8,31 +8,35 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays;
 import com.google.gson.*;
 import gnu.trove.list.TIntList;
 import gnu.trove.list.array.TIntArrayList;
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.blocks.IvMutableBlockPos;
 import ivorius.ivtoolkit.tools.IvTranslations;
+import ivorius.ivtoolkit.world.WorldCache;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.TableDataSourceExpression;
-import ivorius.reccomplex.gui.table.*;
+import ivorius.reccomplex.gui.table.TableDelegate;
+import ivorius.reccomplex.gui.table.TableNavigator;
 import ivorius.reccomplex.gui.table.cell.TableCellBoolean;
 import ivorius.reccomplex.gui.table.cell.TitledCell;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.reccomplex.utils.expression.PositionedBlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.lang.reflect.Type;
 import java.util.OptionalInt;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit.getRayRegistry;
 
@@ -68,27 +72,24 @@ public class RayAverageMatcher extends FactorLimit.Ray
     }
 
     // From StructureVillagePieces
-    public static int getAverageGroundLevel(boolean up, int y, StructureBoundingBox boundingBox, Predicate<BlockPos> predicate, int wHeight, double samples, Random random)
+    public static int getAverageGroundLevel(boolean up, int y, Set<BlockPos> surface, Predicate<BlockPos> predicate, int wHeight, double samples, Random random)
     {
-        TIntList list = new TIntArrayList(boundingBox.getXSize() * boundingBox.getZSize());
+        TIntList list = new TIntArrayList(surface.size());
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
 
-        for (int k = boundingBox.minZ; k <= boundingBox.maxZ; ++k)
+        for (BlockPos surfacePos : surface)
         {
-            for (int l = boundingBox.minX; l <= boundingBox.maxX; ++l)
-            {
 //                Added
-                if (samples >= 1 || random.nextDouble() < samples)
-                {
-                    pos.setPos(l, y, k);
+            if (samples >= 1 || random.nextDouble() < samples)
+            {
+                pos.setPos(surfacePos.getX(), surfacePos.getY() + y, surfacePos.getZ());
 
 //                if (structurebb.isVecInside(pos))
-                    {
-                        // Ignore voiding rays
-                        BlockPos found = findFirstBlock(pos, predicate, up, wHeight);
-                        if (found != null)
-                            list.add(found.getY());
-                    }
+                {
+                    // Ignore voiding rays
+                    BlockPos found = findFirstBlock(pos, predicate, up, wHeight);
+                    if (found != null)
+                        list.add(found.getY() - surfacePos.getY());
                 }
             }
         }
@@ -129,15 +130,27 @@ public class RayAverageMatcher extends FactorLimit.Ray
         return (val1 > val2) ? val1 - val2 : val2 - val1;
     }
 
-    @Override
-    public OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y)
+    public static Set<BlockPos> shifted(StructurePlaceContext context, IvBlockCollection collection, Set<BlockPos> surface)
     {
-        int floorBlocks = context.boundingBox.getXSize() * context.boundingBox.getZSize();
+        int[] size = collection.area().areaSize();
+        BlockPos lower = StructureBoundingBoxes.min(context.boundingBox);
+
+        return surface.stream()
+                .map(p -> context.transform.apply(p, size).add(lower))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public OptionalInt cast(WorldCache cache, StructurePlaceContext context, IvBlockCollection collection, Set<BlockPos> surface, int y)
+    {
+        int floorBlocks = surface.size();
         // Under a chunk size we can use every block no problem.
         // Afterwards we slowly increase total sample size, i.e. decrease chance.
         double samples = floorBlocks < 16 * 16 ? 1 : Math.pow((16f * 16f) / floorBlocks, 0.7f);
 
-        int averageGroundLevel = getAverageGroundLevel(up, y, context.boundingBox,
+        Set<BlockPos> shiftedSurface = shifted(context, collection, surface);
+
+        int averageGroundLevel = getAverageGroundLevel(up, y, shiftedSurface,
                 blockPos -> destMatcher.evaluate(() -> PositionedBlockExpression.Argument.at(cache, blockPos)), cache.world.getHeight(),
                 samples, context.random);
         return averageGroundLevel >= 0 ? OptionalInt.of(averageGroundLevel) : OptionalInt.empty();

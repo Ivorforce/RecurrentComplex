@@ -607,7 +607,7 @@ reccomplex.placer.factors.limit.rays.dynpos.type.bedrock.tooltip=Bottom of the w
 reccomplex.placer.factors.limit.rays.dynpos.type.sealevel=Sea level
 reccomplex.placer.factors.limit.rays.dynpos.type.sealevel.tooltip=The ocean height: y=63
 reccomplex.placer.factors.limit.rays.dynpos.type.world_height=Top (World Height)
-reccomplex.placer.factors.limit.rays.dynpos.type.world_height.tooltip=Top of the world: y=255
+reccomplex.placer.factors.limit.rays.dynpos.type.world_height.tooltip=Top of the world:<br>y = 255 - structure_height
 
 reccomplex.placer.factors.limit.rays.dynmove=Dynamic Move
 reccomplex.placer.factors.limit.rays.dynmove.tooltip=Move a dynamic amount of blocks

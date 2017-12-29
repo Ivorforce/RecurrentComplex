@@ -84,7 +84,7 @@ public class FactorMatch extends GenericPlacer.Factor
     }
 
     @Override
-    public List<Pair<LineSelection, Float>> consider(WorldCache cache, LineSelection considerable, @Nullable IvBlockCollection blockCollection, int baseline, StructurePlaceContext context)
+    public List<Pair<LineSelection, Float>> consider(WorldCache cache, LineSelection considerable, @Nullable IvBlockCollection blockCollection, Set<BlockPos> surface, StructurePlaceContext context)
     {
         if (blockCollection == null)
             throw new IllegalArgumentException("Missing a block collection!");
@@ -95,7 +95,7 @@ public class FactorMatch extends GenericPlacer.Factor
         BlockPos lowerCoord = StructureBoundingBoxes.min(context.boundingBox);
         Set<BlockPos.MutableBlockPos> sources = BlockAreas.streamMutablePositions(blockCollection.area())
                 .filter(p -> sourceMatcher.evaluate(() -> blockCollection.getBlockState(p)))
-                .map(p -> new BlockPos.MutableBlockPos(context.transform.apply(p, size).add(lowerCoord.getX(), -baseline, lowerCoord.getZ())))
+                .map(p -> new BlockPos.MutableBlockPos(context.transform.apply(p, size).add(lowerCoord.getX(), 0, lowerCoord.getZ())))
                 .collect(Collectors.toSet());
 
         for (IntegerRange range : (Iterable<IntegerRange>) considerable.streamSections(null, true)::iterator)

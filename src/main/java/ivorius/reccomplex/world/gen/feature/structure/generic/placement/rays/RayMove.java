@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays;
 
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.table.cell.TableCellIntTextField;
@@ -15,10 +16,12 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSourceSupplied;
 import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.OptionalInt;
+import java.util.Set;
 
 import static ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit.getRayRegistry;
 
@@ -41,7 +44,7 @@ public class RayMove extends FactorLimit.Ray
     }
 
     @Override
-    public OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y)
+    public OptionalInt cast(WorldCache cache, StructurePlaceContext context, IvBlockCollection collection, Set<BlockPos> surface, int y)
     {
         y += distance;
         return y >= 0 && y < cache.world.getHeight() ? OptionalInt.of(y) : OptionalInt.empty();

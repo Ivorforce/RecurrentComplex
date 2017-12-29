@@ -7,21 +7,29 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.placement;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import ivorius.ivtoolkit.blocks.BlockAreas;
+import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.blocks.IvBlockCollection;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.json.JsonUtils;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
+import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.utils.presets.PresettedObject;
 import ivorius.reccomplex.utils.presets.PresettedObjects;
 import ivorius.reccomplex.world.gen.feature.structure.Placer;
-import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayAverageMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayDynamicPosition;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayMatcher;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays.RayMove;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.GenericPlacerPresets;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SelectivePlacer implements Placer
 {
@@ -30,11 +38,13 @@ public class SelectivePlacer implements Placer
     public final PresettedObject<GenericPlacer> placer = new PresettedObject<>(GenericPlacerPresets.instance(), null);
 
     public int baseline;
+    public BlockExpression sourceMatcher;
 
     public SelectivePlacer()
     {
         placer.setPreset("surface");
         baseline = 0;
+        this.sourceMatcher = ExpressionCache.of(new BlockExpression(RecurrentComplex.specialRegistry), "");
     }
 
     public SelectivePlacer(GenericPlacer placer, int baseline)
@@ -74,7 +84,10 @@ public class SelectivePlacer implements Placer
     @Override
     public int place(StructurePlaceContext context, IvBlockCollection blockCollection)
     {
-        return placer.getContents().place(context, blockCollection, baseline);
+        Set<BlockPos> surface = BlockAreas.side(blockCollection.area(), EnumFacing.DOWN).stream()
+                .map(p -> BlockSurfacePos.from(p).blockPos(baseline))
+                .filter(p -> sourceMatcher.evaluate(blockCollection.getBlockState(p))).collect(Collectors.toSet());
+        return placer.getContents().place(context, blockCollection, surface);
     }
 
     public static class Serializer implements JsonSerializer<SelectivePlacer>, JsonDeserializer<SelectivePlacer>
@@ -144,6 +157,7 @@ public class SelectivePlacer implements Placer
             }
 
             selectivePlacer.baseline = JsonUtils.getInt(jsonObject, "baseline", 0);
+            selectivePlacer.sourceMatcher.setExpression(JsonUtils.getString(jsonObject, "sourceExpression", ""));
 
             return selectivePlacer;
         }
@@ -154,7 +168,9 @@ public class SelectivePlacer implements Placer
             JsonObject jsonObject = new JsonObject();
 
             PresettedObjects.write(jsonObject, gson, src.placer, "placerPreset", "placer");
+
             jsonObject.addProperty("baseline", src.baseline);
+            jsonObject.addProperty("sourceExpression", src.sourceMatcher.getExpression());
 
             return jsonObject;
         }

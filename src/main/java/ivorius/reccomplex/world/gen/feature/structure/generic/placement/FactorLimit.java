@@ -22,6 +22,7 @@ import ivorius.reccomplex.utils.IntegerRanges;
 import ivorius.ivtoolkit.util.LineSelection;
 import ivorius.reccomplex.utils.scale.Scales;
 import ivorius.ivtoolkit.world.WorldCache;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
@@ -73,7 +74,7 @@ public class FactorLimit extends GenericPlacer.Factor
     }
 
     @Override
-    public List<Pair<LineSelection, Float>> consider(WorldCache cache, LineSelection considerable, @Nullable IvBlockCollection blockCollection, int baseline, StructurePlaceContext context)
+    public List<Pair<LineSelection, Float>> consider(WorldCache cache, LineSelection considerable, @Nullable IvBlockCollection blockCollection, Set<BlockPos> surface, StructurePlaceContext context)
     {
         List<Pair<LineSelection, Float>> consideration = new ArrayList<>();
         int height = cache.world.getHeight();
@@ -82,7 +83,7 @@ public class FactorLimit extends GenericPlacer.Factor
         for (Ray ray : rays)
         {
             int before = pos;
-            OptionalInt cast = ray.cast(cache, context, pos);
+            OptionalInt cast = ray.cast(cache, context, blockCollection, surface, pos);
             if (cast.isPresent())
             {
                 pos = cast.getAsInt();
@@ -134,7 +135,7 @@ public class FactorLimit extends GenericPlacer.Factor
             this.weight = weight;
         }
 
-        public abstract OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y);
+        public abstract OptionalInt cast(WorldCache cache, StructurePlaceContext context, IvBlockCollection collection, Set<BlockPos> surface, int y);
 
         @SuppressWarnings("NewExpressionSideOnly")
         @SideOnly(Side.CLIENT)

@@ -6,6 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.placement.rays;
 
 import com.google.gson.annotations.SerializedName;
+import ivorius.ivtoolkit.blocks.IvBlockCollection;
 import ivorius.ivtoolkit.tools.IvGsonHelper;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.*;
@@ -19,10 +20,12 @@ import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
 import ivorius.ivtoolkit.world.WorldCache;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.FactorLimit;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.OptionalInt;
+import java.util.Set;
 
 /**
  * Created by lukas on 19.09.16.
@@ -44,7 +47,7 @@ public class RayDynamicMove extends FactorLimit.Ray
     }
 
     @Override
-    public OptionalInt cast(WorldCache cache, StructurePlaceContext context, int y)
+    public OptionalInt cast(WorldCache cache, StructurePlaceContext context, IvBlockCollection collection, Set<BlockPos> surface, int y)
     {
         int mod = up ? 1 : -1;
 

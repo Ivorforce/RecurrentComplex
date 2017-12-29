@@ -6,6 +6,7 @@
 package ivorius.reccomplex.world.gen.feature.decoration;
 
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.world.gen.feature.RCWorldgenMonitor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.biome.Biome;
@@ -64,6 +65,8 @@ public class VanillaDecorationAdapter implements RCBiomeDecorator.Adapter
     @Override
     public void generate(WorldServer worldIn, Random random, Biome biomeIn, BiomeDecorator decorator, BlockPos chunkPos, RCBiomeDecorator.DecorationType type)
     {
+        RCWorldgenMonitor.start("simulating vanilla decoration");
+
         try
         {
             switch (type)
@@ -126,5 +129,7 @@ public class VanillaDecorationAdapter implements RCBiomeDecorator.Adapter
         {
             RecurrentComplex.logger.error("Error trying to emulate vanilla decoration", e);
         }
+
+        RCWorldgenMonitor.stop();
     }
 }

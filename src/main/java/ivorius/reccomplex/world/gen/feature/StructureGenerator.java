@@ -154,8 +154,7 @@ public class StructureGenerator<S extends NBTStorable>
                 MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, boundingBox, spawn.generationLayer, firstTime));
         }
 
-        RCWorldgenMonitor.action = "preparing " + structureID();
-
+        RCWorldgenMonitor.start("generating " + structureID());
         try
         {
             structure.generate(spawn, instanceData, transformer != null ? transformer.transformer : RCConfig.getUniversalTransformer());
@@ -165,8 +164,10 @@ public class StructureGenerator<S extends NBTStorable>
             RecurrentComplex.logger.error("Error on structure generation", e);
             return failGenerate("exception on generation");
         }
-
-        RCWorldgenMonitor.action = null;
+        finally
+        {
+            RCWorldgenMonitor.stop();
+        }
 
         if (!firstTime)
             return Optional.empty();
@@ -211,11 +212,9 @@ public class StructureGenerator<S extends NBTStorable>
                 if (oldBB.intersectsWith(generationBB))
                     continue; // Skip those that we just generated in, especially the same chunk
 
-                RCWorldgenMonitor.action = "pre-complementing " + structureID();
-
+                RCWorldgenMonitor.start("pre-complementing " + structureID());
                 structure.generate(spawn().get(), instanceData, RCConfig.getUniversalTransformer());
-
-                RCWorldgenMonitor.action = null;
+                RCWorldgenMonitor.stop();
             }
             generationBB(oldBB);
         }
@@ -387,11 +386,9 @@ public class StructureGenerator<S extends NBTStorable>
 
                 if (placed)
                 {
-                    RCWorldgenMonitor.action = "placing " + structureID();
-
+                    RCWorldgenMonitor.start("placing " + structureID());
                     int y = placer.place(place(), structure().blockCollection());
-
-                    RCWorldgenMonitor.action = null;
+                    RCWorldgenMonitor.stop();
 
                     if (y < 0) return Optional.empty();
                     boundingBox.minY += y;
@@ -504,7 +501,11 @@ public class StructureGenerator<S extends NBTStorable>
         {
             try
             {
-                return Optional.ofNullable(structure().prepareInstanceData(prepare, RCConfig.getUniversalTransformer()));
+                RCWorldgenMonitor.start("preparing " + structureID());
+                Optional<S> prepared = Optional.ofNullable(structure().prepareInstanceData(prepare, RCConfig.getUniversalTransformer()));
+                RCWorldgenMonitor.stop();
+
+                return prepared;
             }
             catch (Exception e)
             {

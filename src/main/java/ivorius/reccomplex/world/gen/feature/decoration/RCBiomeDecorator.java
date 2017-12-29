@@ -17,6 +17,7 @@ import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.VanillaDecorationGeneration;
+import net.minecraft.init.Biomes;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
@@ -62,6 +63,9 @@ public class RCBiomeDecorator
         Biome biomeIn = worldIn.getBiome(chunkPos.add(16, 0, 16));
         BiomeDecorator decorator = biomeIn.decorator;
         Adapter adapter = adapter(worldIn, chunkPos, type, biomeIn, decorator);
+
+        if (biomeIn == Biomes.ROOFED_FOREST || biomeIn == Biomes.MUTATED_ROOFED_FOREST)
+            return Event.Result.ALLOW; // TOOD Don't fuck with these until the addMushrooms position is fixed to be the chunk position as there is no way to differentiate the fucked events yet
 
         int origAmount = adapter.amount(worldIn, random, biomeIn, decorator, chunkPos, type);
 

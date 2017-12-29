@@ -154,6 +154,8 @@ public class StructureGenerator<S extends NBTStorable>
                 MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, boundingBox, spawn.generationLayer, firstTime));
         }
 
+        RCWorldgenMonitor.action = "preparing " + structureID();
+
         try
         {
             structure.generate(spawn, instanceData, transformer != null ? transformer.transformer : RCConfig.getUniversalTransformer());
@@ -163,6 +165,8 @@ public class StructureGenerator<S extends NBTStorable>
             RecurrentComplex.logger.error("Error on structure generation", e);
             return failGenerate("exception on generation");
         }
+
+        RCWorldgenMonitor.action = null;
 
         if (!firstTime)
             return Optional.empty();
@@ -204,9 +208,14 @@ public class StructureGenerator<S extends NBTStorable>
             {
                 generationBB(Structures.chunkBoundingBox(existingChunk, true));
 
-                if (oldBB.intersectsWith(generationBB)) continue; // Skip those that we just generated in, especially the same chunk
+                if (oldBB.intersectsWith(generationBB))
+                    continue; // Skip those that we just generated in, especially the same chunk
+
+                RCWorldgenMonitor.action = "pre-complementing " + structureID();
 
                 structure.generate(spawn().get(), instanceData, RCConfig.getUniversalTransformer());
+
+                RCWorldgenMonitor.action = null;
             }
             generationBB(oldBB);
         }
@@ -378,7 +387,12 @@ public class StructureGenerator<S extends NBTStorable>
 
                 if (placed)
                 {
+                    RCWorldgenMonitor.action = "placing " + structureID();
+
                     int y = placer.place(place(), structure().blockCollection());
+
+                    RCWorldgenMonitor.action = null;
+
                     if (y < 0) return Optional.empty();
                     boundingBox.minY += y;
                     boundingBox.maxY += y;
@@ -496,7 +510,7 @@ public class StructureGenerator<S extends NBTStorable>
             {
                 if (e instanceof ExpectedException && ((ExpectedException) e).isExpected())
                     RecurrentComplex.logger.error(String.format("Error preparing structure: %s, Cause: %s", structure(), e.getMessage()));
-               else
+                else
                     RecurrentComplex.logger.error("Error preparing structure: " + structure(), e);
             }
 

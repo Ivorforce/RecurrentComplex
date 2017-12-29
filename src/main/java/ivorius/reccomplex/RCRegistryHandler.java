@@ -28,6 +28,7 @@ import ivorius.reccomplex.random.Poem;
 import ivorius.reccomplex.utils.FMLUtils;
 import ivorius.reccomplex.utils.presets.PresetRegistry;
 import ivorius.reccomplex.world.gen.feature.GenerationSanityChecker;
+import ivorius.reccomplex.world.gen.feature.RCWorldgenMonitor;
 import ivorius.reccomplex.world.gen.feature.selector.NaturalStructureSelector;
 import ivorius.reccomplex.world.gen.feature.structure.StructureRegistry;
 import ivorius.reccomplex.world.gen.feature.structure.generic.StructureSaveHandler;
@@ -337,6 +338,8 @@ public class RCRegistryHandler
 
         // So it's placeable in furnaces
         GameRegistry.registerFuelHandler(fuel -> fuel.getItem() instanceof GeneratingItem ? 1 : 0);
+
+        RCWorldgenMonitor.create();
     }
 
     protected static <T> void dumpAll(PresetRegistry<T> presets)
@@ -379,4 +382,5 @@ public class RCRegistryHandler
         network.registerMessage(PacketInspectEntityHandler.class, PacketInspectEntity.class, 18, Side.CLIENT);
         network.registerMessage(PacketWorldDataHandler.class, PacketWorldData.class, 19, Side.CLIENT);
     }
+
 }

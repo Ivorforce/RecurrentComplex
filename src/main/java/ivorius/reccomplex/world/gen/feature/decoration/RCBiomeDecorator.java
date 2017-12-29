@@ -167,7 +167,9 @@ public class RCBiomeDecorator
 
         return new StructureGenerator<>(generation.getLeft()).generationInfo(generation.getRight()).world(worldIn)
                 .seed(seed).maturity(StructureSpawnContext.GenerateMaturity.SUGGEST)
-                .memorize(RCConfig.memorizeDecoration).allowOverlaps(true)
+                .partially(true, chunkPos)
+//                .memorize(RCConfig.memorizeDecoration) // Always memorize for partial gen
+                .allowOverlaps(true)
                 .randomPosition(WorldGenStructures.randomSurfacePos(chunkPos, seed).add(shift.getX(), shift.getZ()),
                         // TODO Remove shift because we now have a placer anyway
                         shift(generation.getRight().placer(), shift.getY())).fromCenter(true)

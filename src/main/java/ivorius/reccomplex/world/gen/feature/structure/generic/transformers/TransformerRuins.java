@@ -97,8 +97,8 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
 
     public TransformerRuins()
     {
-        this(null, EnumFacing.DOWN, 0.1f, 0.8f, 0.4f, 0.01f,
-                true, 0.3f, 0.05f, 0.02f);
+        this(null, EnumFacing.DOWN, 0.0f, 0.8f, 0.6f, 0.005f,
+                true, 0.3f, 0.08f, 0.03f);
     }
 
     public TransformerRuins(@Nullable String id, EnumFacing decayDirection, float minDecay, float maxDecay, float decayChaos, float decayValueDensity, boolean gravity, float blockErosion, float vineGrowth, float cobwebGrowth)
@@ -388,13 +388,13 @@ public class TransformerRuins extends Transformer<TransformerRuins.InstanceData>
             instanceData.surfaceField = new BlurredValueField(surfaceSize);
             int surfaceValues = MathHelper.floor(product(surfaceSize) * decayValueDensity + 0.5);
             for (int i = 0; i < surfaceValues; i++)
-                instanceData.surfaceField.addValue((context.random.nextDouble() - context.random.nextDouble()) * decayChaos * 1.25, context.random);
+                instanceData.surfaceField.addValue((context.random.nextDouble() - context.random.nextDouble()) * decayChaos * 1.5, context.random);
 
             int[] volumeSize = sourceArea.areaSize();
             instanceData.volumeField = new BlurredValueField(volumeSize);
             int volumeValues = MathHelper.floor(product(volumeSize) * decayValueDensity * 0.25 + 0.5);
             for (int i = 0; i < volumeValues; i++)
-                instanceData.volumeField.addValue((context.random.nextDouble() - context.random.nextDouble()) * decayChaos * 0.75, context.random);
+                instanceData.volumeField.addValue((context.random.nextDouble() - context.random.nextDouble()) * decayChaos * 0.5, context.random);
 
             instanceData.clearDecayCache();
         }

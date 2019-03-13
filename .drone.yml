@@ -1,0 +1,9 @@
+kind: pipeline
+name: default
+
+steps:
+  - name: build
+    image: openjdk:8
+    commands:
+      - ./gradlew setupDevWorkspace
+      - ./gradlew build

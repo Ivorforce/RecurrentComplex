@@ -16,12 +16,15 @@ buildscript {
     }
 }
 
+def ENV = System.getenv()
+
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.github.johnrengelman.shadow'
+if (!ENV.DRONE) { // Currently incompatible (because drone can't gradle?)
+    apply plugin: 'com.github.johnrengelman.shadow'
+}
 apply plugin: 'maven-publish'
 
 version = "1.4.7"
-def ENV = System.getenv()
 if (ENV.DRONE_BUILD_NUMBER) {
     version += ".n" + ENV.DRONE_BUILD_NUMBER
 }
@@ -41,17 +44,19 @@ dependencies {
     deobfCompile 'ivorius.mcopts:MCOpts:0.9.9.4'
 }
 
-shadowJar {
-    exclude 'META-INF/*', 'META-INF/maven/**'
-    relocate 'ivorius.mcopts', project.group + '.shadow.mcopts'
-    classifier=''
-}
+if (!ENV.DRONE) {
+    shadowJar {
+        exclude 'META-INF/*', 'META-INF/maven/**'
+        relocate 'ivorius.mcopts', project.group + '.shadow.mcopts'
+        classifier=''
+    }
 
-reobf {
-    shadowJar { mappingType = 'SEARGE' }
-}
+    reobf {
+        shadowJar { mappingType = 'SEARGE' }
+    }
 
-tasks.build.dependsOn reobfShadowJar
+    tasks.build.dependsOn reobfShadowJar
+}
 
 processResources
 {

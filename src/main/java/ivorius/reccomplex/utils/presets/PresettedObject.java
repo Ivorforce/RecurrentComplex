@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.utils.presets;
 
+import com.google.common.collect.Lists;
 import ivorius.reccomplex.RecurrentComplex;
 
 import javax.annotation.Nonnull;
@@ -50,13 +51,19 @@ public class PresettedObject<T>
     @Nonnull
     public Optional<String> presetTitle()
     {
-        return Optional.ofNullable(getPreset()).flatMap(id -> presetRegistry.title(id));
+        return Optional.ofNullable(getPreset())
+                .map(id -> presetRegistry.title(id)
+                        .orElse(String.format("Missing Preset (%s)", id))
+                );
     }
 
     @Nonnull
     public Optional<List<String>> presetDescription()
     {
-        return Optional.ofNullable(getPreset()).flatMap(id -> presetRegistry.description(id));
+        return Optional.ofNullable(getPreset())
+                .map(id -> presetRegistry.description(id)
+                        .orElse(Lists.newArrayList(String.format("Missing Preset (%s)", id)))
+                );
     }
 
     public boolean setPreset(@Nullable String preset)

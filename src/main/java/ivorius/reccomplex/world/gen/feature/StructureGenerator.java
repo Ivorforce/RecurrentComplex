@@ -183,7 +183,8 @@ public class StructureGenerator<S extends NBTStorable>
 
         String generationInfoID = generationType != null ? generationType.id() : null;
 
-        WorldStructureGenerationData.StructureEntry structureEntry = WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, boundingBox, spawn.transform, !partially);
+        WorldStructureGenerationData.StructureEntry structureEntry =
+                WorldStructureGenerationData.StructureEntry.complete(structureID, generationInfoID, boundingBox, spawn.transform, !partially);
         structureEntry.blocking = structure.isBlocking();
         structureEntry.firstTime = false; // Been there done that
         structureEntry.seed = seed();
@@ -197,7 +198,8 @@ public class StructureGenerator<S extends NBTStorable>
             RecurrentComplex.logger.error(String.format("Error saving instance data for structure %s in %s", structure, boundingBox), e);
         }
 
-        Collection<ChunkPos> existingChunks = WorldStructureGenerationData.get(world).addEntry(structureEntry).stream().collect(Collectors.toList());
+        Collection<ChunkPos> existingChunks = WorldStructureGenerationData.get(world)
+                .addEntry(structureEntry);
 
         // Complement in all chunks that already exist
         if (partially)
@@ -236,9 +238,14 @@ public class StructureGenerator<S extends NBTStorable>
 
     public StructureGenerator<S> asChild(StructureSpawnContext context)
     {
-        return environment(context.environment.child()).seed(context.random.nextLong()).transform(context.transform)
-                .generationBB(context.generationBB).generationPredicate(context.generationPredicate).generationLayer(context.generationLayer + 1)
-                .asSource(context.generateAsSource).maturity(context.generateMaturity.isFirstTime() ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT);
+        return environment(context.environment.child())
+                .seed(context.random.nextLong())
+                .transform(context.transform)
+                .generationBB(context.generationBB)
+                .generationPredicate(context.generationPredicate)
+                .generationLayer(context.generationLayer + 1)
+                .asSource(context.generateAsSource)
+                .maturity(context.generateMaturity.isFirstTime() ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT);
     }
 
     public StructureGenerator<S> world(@Nonnull WorldServer world)
@@ -350,7 +357,10 @@ public class StructureGenerator<S extends NBTStorable>
             Structure<S> structure = structure();
             Random random = new Random(seed() ^ TRANSFORM_SEED);
 
-            AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(structure.isRotatable() ? random.nextInt(4) : 0, structure.isMirrorable() && random.nextBoolean());
+            AxisAlignedTransform2D transform = AxisAlignedTransform2D.from(
+                    structure.isRotatable() ? random.nextInt(4) : 0,
+                    structure.isMirrorable() && random.nextBoolean()
+            );
             return this.transform = transform;
         }
     }

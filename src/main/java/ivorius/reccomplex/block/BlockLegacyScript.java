@@ -107,11 +107,5 @@ public class BlockLegacyScript extends Block
         {
             script.generate(context, transformer, instanceData, pos);
         }
-
-        @Override
-        public boolean shouldPlaceInWorld(StructureSpawnContext context, I instanceData)
-        {
-            return false;
-        }
     }
 }

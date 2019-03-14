@@ -54,7 +54,9 @@ public class WorldScriptMulti implements WorldScript<WorldScriptMulti.InstanceDa
     @Override
     public InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
     {
-        return new InstanceData(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound(), scripts, context);
+        return new InstanceData(nbt instanceof NBTTagCompound
+                ? (NBTTagCompound) nbt
+                : new NBTTagCompound(), scripts, context);
     }
 
     @Override

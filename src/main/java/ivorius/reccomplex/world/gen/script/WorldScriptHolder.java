@@ -71,6 +71,10 @@ public class WorldScriptHolder implements WorldScript<NBTNone>
     @Override
     public void generate(StructureSpawnContext context, RunTransformer transformer, NBTNone instanceData, BlockPos pos)
     {
+        if (worldData == null) {
+            return;
+        }
+
         GenericStructure structure = new GenericStructure();
         structure.worldDataCompound = worldData.copy();
 

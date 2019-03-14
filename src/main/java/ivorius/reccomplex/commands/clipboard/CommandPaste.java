@@ -84,7 +84,7 @@ public class CommandPaste extends CommandExpecting
         structure.worldDataCompound = worldData;
 
         // TODO Generate with generation info?
-        OperationRegistry.queueOperation(new OperationGenerateStructure(structure, null, transform, pos, generate)
+        OperationRegistry.queueOperation(new OperationGenerateStructure(structure, null, transform, pos, !generate)
                 .withSeed(seed)
                 .prepare(world), sender);
 

@@ -13,6 +13,8 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,12 +41,12 @@ public class ItemHandlers
         return new CombinedInvWrapper(handlers.toArray(new IItemHandlerModifiable[0]));
     }
 
-    public static boolean hasModifiable(ICapabilityProvider provider, EnumFacing side)
+    public static boolean hasModifiable(@Nonnull ICapabilityProvider provider, @Nullable EnumFacing side)
     {
         return getModifiable(provider, side) != null;
     }
 
-    public static IItemHandlerModifiable getModifiable(ICapabilityProvider provider, EnumFacing side)
+    public static IItemHandlerModifiable getModifiable(@Nonnull ICapabilityProvider provider, @Nullable EnumFacing side)
     {
         if (!provider.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, side))
             return null;
@@ -52,7 +54,7 @@ public class ItemHandlers
         return (capability instanceof IItemHandlerModifiable) ? (IItemHandlerModifiable) capability : null;
     }
 
-    public static boolean hasModifiable(ICapabilityProvider provider)
+    public static boolean hasModifiable(@Nonnull ICapabilityProvider provider)
     {
         return hasModifiable(provider, null);
     }

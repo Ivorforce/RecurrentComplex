@@ -45,7 +45,7 @@ public abstract class ItemLootGenerationTag extends Item implements GeneratingIt
     {
         TileEntity rightClicked = world.getTileEntity(pos);
 
-        if (ItemHandlers.hasModifiable(rightClicked))
+        if (rightClicked != null && ItemHandlers.hasModifiable(rightClicked))
         {
             if (!world.isRemote)
             {

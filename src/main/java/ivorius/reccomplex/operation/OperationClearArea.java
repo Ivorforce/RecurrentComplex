@@ -51,7 +51,8 @@ public class OperationClearArea implements Operation
     public static void emptyOut(World world, BlockPos pos)
     {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if (ItemHandlers.hasModifiable(tileEntity))
+
+        if (tileEntity != null && ItemHandlers.hasModifiable(tileEntity))
             ItemHandlers.clear(ItemHandlers.getModifiable(tileEntity));
     }
 

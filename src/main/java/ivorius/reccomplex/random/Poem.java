@@ -6,7 +6,9 @@
 package ivorius.reccomplex.random;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
+import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.files.SimpleLeveledRegistry;
 import ivorius.reccomplex.utils.tokenizer.SymbolTokenizer;
 import ivorius.reccomplex.utils.tokenizer.TokenReplacer;
@@ -36,7 +38,7 @@ public class Poem
 
     public static Poem randomPoem(Random random, Integer maxTitleLength, Person author)
     {
-        Map<String, List<List<TokenReplacer.Token>>> stitchedTheme = stitchStyledTheme(author);
+        StitchedTheme theme = StitchedTheme.random(author);
 
         PoemContext poemContext = new PoemContext();
         //noinspection StatementWithEmptyBody
@@ -46,55 +48,46 @@ public class Poem
         while (poemContext.add(random, poemContext.places, 0.3f, Place.randomPlace(random).getFullPlaceType()))
             ;
 
-        String title = randomTitle(random, poemContext, maxTitleLength, stitchedTheme);
-        String phrase = evaluate(random, stitchedTheme.get("text"), poemContext, stitchedTheme);
+        String title = randomTitle(random, poemContext, maxTitleLength, theme);
+        String phrase = null;
+
+        try {
+            phrase = evaluate(random, theme.get("text"), poemContext, theme);
+        }
+        catch (TokenReplacer.OverpoemedException e) {
+            RecurrentComplex.logger.error(String.format("Too much text with theme: %s", theme));
+            phrase = String.format("ERROR: %s", theme);
+        }
 
         return new Poem(title, phrase);
     }
 
-    public static Map<String, List<List<TokenReplacer.Token>>> stitchStyledTheme(Person author)
-    {
-        Random styleRandom = new Random(author.hashCode());
-
-        SymbolTokenizer<TokenReplacer.Token> tokenizer = new SymbolTokenizer<>(
-                new SymbolTokenizer.SimpleCharacterRules('\\', null, new char[0], null),
-                factory()
-        );
-
-        // Stitch together from random themes
-        HashMultimap<String, List<TokenReplacer.Token>> map = HashMultimap.create();
-        do
-        {
-            Theme theme = getRandomElementFrom(THEME_REGISTRY.allActive().stream().collect(Collectors.toList()), styleRandom);
-            float acceptance = styleRandom.nextFloat();
-
-            Multimap<String, List<TokenReplacer.Token>> builtTheme = theme.build(HashMultimap.create(), tokenizer);
-
-            // remove roughly acceptance% words but never all
-            builtTheme.asMap().values()
-                    .forEach(v -> v.removeIf(p -> styleRandom.nextFloat() < acceptance && v.size() > 1));
-
-            map.putAll(builtTheme);
-        }
-        while (styleRandom.nextBoolean());
-
-        return Theme.build(map);
-    }
-
     @Nonnull
-    protected static String randomTitle(Random random, PoemContext poemContext, Integer maxLength, Map<String, List<List<TokenReplacer.Token>>> built)
+    protected static String randomTitle(Random random, PoemContext poemContext, Integer maxLength, StitchedTheme theme)
     {
-        for (int i = 0; i < TITLE_TRIES; i++)
-        {
-            String title = evaluate(random, built.get("title"), poemContext, built).trim();
+        for (int i = 0; i <= TITLE_TRIES; i++) {
+            String title;
+
+            try {
+                title = evaluate(random, theme.get("title"), poemContext, theme).trim();
+            }
+            catch (TokenReplacer.OverpoemedException e) {
+                RecurrentComplex.logger.error(String.format("Too much title with theme: %s", theme));
+                return String.format("ERROR: %s", theme);
+            }
+
+            if (i == TITLE_TRIES) {
+                return StringUtils.abbreviate(title, maxLength);
+            }
+
             if (maxLength == null || title.length() < maxLength)
                 return title;
         }
 
-        return StringUtils.abbreviate(evaluate(random, built.get("title"), poemContext, built).trim(), maxLength);
+        throw new RuntimeException("Shouldn't be here");
     }
 
-    private static String evaluate(Random random, List<List<TokenReplacer.Token>> patterns, PoemContext context, Map<String, List<List<TokenReplacer.Token>>> theme)
+    private static String evaluate(Random random, List<List<TokenReplacer.Token>> patterns, PoemContext context, StitchedTheme theme) throws TokenReplacer.OverpoemedException
     {
         return TokenReplacer.evaluate(random, getRandomElementFrom(patterns, random), context, theme);
     }
@@ -112,8 +105,7 @@ public class Poem
             @Nonnull
             protected TokenReplacer.Exploder<PoemContext> exploder(String tag, List<String> params)
             {
-                switch (tag)
-                {
+                switch (tag) {
                     case "br":
                         return TokenReplacer.Exploder.string((token, theme, context, random) -> "\n");
                     case "place":
@@ -183,6 +175,62 @@ public class Poem
         protected TokenReplacer.Theme getOther(String include)
         {
             return Poem.THEME_REGISTRY.get(include);
+        }
+    }
+
+    public static class StitchedTheme
+    {
+        protected Map<String, List<List<TokenReplacer.Token>>> converters;
+        protected List<String> titles = new ArrayList<>();
+
+        public static StitchedTheme random(Person author)
+        {
+            Random styleRandom = new Random(author.hashCode());
+
+            SymbolTokenizer<TokenReplacer.Token> tokenizer = new SymbolTokenizer<>(
+                    new SymbolTokenizer.SimpleCharacterRules('\\', null, new char[0], null),
+                    factory()
+            );
+
+            StitchedTheme stitchedTheme = new StitchedTheme();
+
+            // Stitch together from random themes
+            HashMultimap<String, List<TokenReplacer.Token>> map = HashMultimap.create();
+            do {
+                Theme theme = getRandomElementFrom(new ArrayList<>(THEME_REGISTRY.allActive()), styleRandom);
+                stitchedTheme.titles.add(THEME_REGISTRY.id(theme));
+
+                float acceptance = styleRandom.nextFloat();
+
+                Multimap<String, List<TokenReplacer.Token>> builtTheme = theme.build(HashMultimap.create(), tokenizer);
+
+                // remove roughly acceptance% words but never all
+                builtTheme.asMap().values()
+                        .forEach(v -> v.removeIf(p -> styleRandom.nextFloat() < acceptance && v.size() > 1));
+
+                map.putAll(builtTheme);
+            }
+            while (styleRandom.nextBoolean());
+
+            stitchedTheme.converters = build(map);
+            return stitchedTheme;
+        }
+
+        public static Map<String, List<List<TokenReplacer.Token>>> build(Multimap<String, List<TokenReplacer.Token>> build)
+        {
+            return build.asMap().entrySet().stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, k -> Lists.newArrayList(k.getValue())));
+        }
+
+        public List<List<TokenReplacer.Token>> get(String title)
+        {
+            return converters.get(title);
+        }
+
+        @Override
+        public String toString()
+        {
+            return String.format("Stitched: %s", titles);
         }
     }
 }

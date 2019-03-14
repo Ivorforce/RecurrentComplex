@@ -10,6 +10,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.google.common.io.LineReader;
 import ivorius.reccomplex.RecurrentComplex;
+import ivorius.reccomplex.random.Poem;
+import ivorius.reccomplex.utils.PassLimiter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,9 +26,13 @@ import java.util.stream.Collectors;
  */
 public class TokenReplacer
 {
-    public static <T> String evaluate(Random random, List<Token> text, T context, Map<String, List<List<Token>>> theme)
+    public static final int MAX_EXPLODES = 1000;
+
+    public static <T> String evaluate(Random random, List<Token> text, T context, Poem.StitchedTheme theme) throws OverpoemedException
     {
         StringBuilder builder = new StringBuilder();
+        PassLimiter<OverpoemedException> limiter = new PassLimiter<>(OverpoemedException::new, MAX_EXPLODES);
+
         ArrayDeque<Token> queue = new ArrayDeque<>();
         queue.addAll(text);
 
@@ -34,24 +40,27 @@ public class TokenReplacer
 
         Token token;
         boolean nextUpper = true;
-        while ((token = queue.poll()) != null)
-        {
-            if (token instanceof ExplodingToken)
-            {
+        while ((token = queue.poll()) != null) {
+            if (token instanceof ExplodingToken) {
                 ExplodingToken<T> symbol = (ExplodingToken) token;
                 boolean remember = symbol.flags.contains("rem");
                 boolean repeat = symbol.flags.contains("rep");
 
-                List<Token> tokens = repeat ? repeats.get(symbol.tag) : symbol.explode(theme, context, random);
-                if (repeat && tokens == null) tokens = Collections.singletonList(new StringToken(symbol.startIndex, symbol.endIndex, "EMPTY_REPEAT"));
-                if (remember) repeats.put(symbol.tag, tokens);
+                List<Token> addTokens = repeat
+                        ? repeats.get(symbol.tag)
+                        : symbol.explode(theme, context, random);
+
+                if (repeat && addTokens == null)
+                    addTokens = Collections.singletonList(new StringToken(symbol.startIndex, symbol.endIndex, "EMPTY_REPEAT"));
+                if (remember) repeats.put(symbol.tag, addTokens);
 
                 // Add it backwards since it's reversed
-                for (int i = tokens.size() - 1; i >= 0; i--)
-                    queue.addFirst(tokens.get(i));
+                for (int i = addTokens.size() - 1; i >= 0; i--)
+                    queue.addFirst(addTokens.get(i));
+
+                limiter.add(addTokens.size());
             }
-            else if (token instanceof StringToken)
-            {
+            else if (token instanceof StringToken) {
                 String string = ((StringToken) token).string;
                 builder.append(nextUpper ? firstCharUppercase(string) : string);
                 nextUpper = string.matches(".*[.?!]$");
@@ -75,11 +84,11 @@ public class TokenReplacer
                             exploder.evaluate(token, theme, context, random)));
         }
 
-        List<Token> explode(ExplodingToken token, Map<String, List<List<Token>>> theme, T context, Random random);
+        List<Token> explode(ExplodingToken token, Poem.StitchedTheme theme, T context, Random random);
 
         interface StringExploder<T>
         {
-            String evaluate(ExplodingToken token, Map<String, List<List<Token>>> theme, T context, Random random);
+            String evaluate(ExplodingToken token, Poem.StitchedTheme theme, T context, Random random);
         }
     }
 
@@ -105,7 +114,7 @@ public class TokenReplacer
             this.exploder = exploder;
         }
 
-        public List<Token> explode(Map<String, List<List<Token>>> theme, T context, Random random)
+        public List<Token> explode(Poem.StitchedTheme theme, T context, Random random)
         {
             return exploder.explode(this, theme, context, random);
         }
@@ -135,8 +144,7 @@ public class TokenReplacer
         @Override
         public SymbolTokenizer.Token tryConstructSymbolTokenAt(int index, @Nonnull String string)
         {
-            if (string.charAt(index) == '<')
-            {
+            if (string.charAt(index) == '<') {
                 int end = string.indexOf('>', index);
                 String contents = string.substring(index + 1, end);
                 List<String> parts = Arrays.asList(contents.split(" "));
@@ -166,12 +174,6 @@ public class TokenReplacer
     {
         public Multimap<String, String> contents = HashMultimap.create();
 
-        public static Map<String, List<List<Token>>> build(Multimap<String, List<Token>> build)
-        {
-            return build.asMap().entrySet().stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, k -> Lists.newArrayList(k.getValue())));
-        }
-
         public static String parameter(List<String> flags, int index, String def)
         {
             return flags.size() > index ? flags.get(index) : def;
@@ -183,39 +185,31 @@ public class TokenReplacer
 
             Collection<String> currentList = null;
             String line;
-            try
-            {
-                while ((line = reader.readLine()) != null)
-                {
-                    if (line.startsWith("***"))
-                    {
+            try {
+                while ((line = reader.readLine()) != null) {
+                    if (line.startsWith("***")) {
                         String tag = line.substring(4).trim();
                         currentList = contents.get(tag);
                     }
-                    else
-                    {
+                    else {
                         String word = line.trim();
-                        if (word.length() > 0 && currentList != null)
-                        {
+                        if (word.length() > 0 && currentList != null) {
                             currentList.add(word);
                         }
                     }
                 }
             }
-            catch (IOException e)
-            {
+            catch (IOException e) {
                 RecurrentComplex.logger.error(e);
             }
         }
 
         public Multimap<String, List<Token>> build(Multimap<String, List<Token>> map, SymbolTokenizer<Token> tokenizer)
         {
-            for (String include : contents.get("include"))
-            {
+            for (String include : contents.get("include")) {
                 Theme theme = getOther(include);
 
-                if (theme == null)
-                {
+                if (theme == null) {
                     RecurrentComplex.logger.error("Can't find theme to include: " + include);
                     continue;
                 }
@@ -227,12 +221,10 @@ public class TokenReplacer
                 map.putAll(key, contents.get(key).stream()
                         .<List<Token>>map(s ->
                         {
-                            try
-                            {
+                            try {
                                 return tokenizer.tokenize(s);
                             }
-                            catch (ParseException e)
-                            {
+                            catch (ParseException e) {
                                 RecurrentComplex.logger.warn("Unable to read line: " + s, e);
                                 return Collections.emptyList();
                             }
@@ -242,5 +234,10 @@ public class TokenReplacer
         }
 
         protected abstract Theme getOther(String include);
+    }
+
+    public static class OverpoemedException extends Exception
+    {
+
     }
 }

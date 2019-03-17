@@ -101,7 +101,9 @@ public class TransformerGenerationBehavior extends Transformer<TransformerGenera
     @Override
     public boolean skipGeneration(InstanceData instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
-        return instanceData.blockedCoords.contains(sourcePos);
+        // Block
+        return instanceData.tileEntities.containsKey(sourcePos)
+                && !instanceData.allowedGTECoords.contains(sourcePos);
     }
 
     @Override
@@ -116,8 +118,6 @@ public class TransformerGenerationBehavior extends Transformer<TransformerGenera
         {
             asGeneratingTileEntity(context, IvTileEntityHelper.getAnyWorld(), areaSize, origin, tileEntityCompound, (src, tileEntity) ->
             {
-                boolean shouldPlace = false;
-
                 NBTStorable tileEntityInstanceData = (NBTStorable) tileEntity.prepareInstanceData(context);
                 if (tileEntityInstanceData != null) // Otherwise, don't generate
                 {
@@ -125,12 +125,8 @@ public class TransformerGenerationBehavior extends Transformer<TransformerGenera
 
                     //noinspection unchecked
                     if (tileEntity.shouldPlaceInWorld(context, tileEntityInstanceData)) {
-                        shouldPlace = true;
+                        instanceData.allowedGTECoords.add(src);
                     }
-                }
-
-                if (!shouldPlace) {
-                    instanceData.blockedCoords.add(src);
                 }
             });
         });
@@ -149,7 +145,7 @@ public class TransformerGenerationBehavior extends Transformer<TransformerGenera
         public static final String KEY_TILE_ENTITIES = "tileEntities";
 
         public final Map<BlockPos, NBTStorable> tileEntities = new HashMap<>();
-        public final Set<BlockPos> blockedCoords = new HashSet<>();
+        public final Set<BlockPos> allowedGTECoords = new HashSet<>();
 
         protected static NBTBase getTileEntityTag(NBTTagCompound tileEntityCompound, BlockPos coord)
         {
@@ -178,8 +174,8 @@ public class TransformerGenerationBehavior extends Transformer<TransformerGenera
                 });
             });
 
-            blockedCoords.clear();
-            blockedCoords.addAll(NBTTagLists.intArraysFrom(compound, "blockedCoords").stream()
+            allowedGTECoords.clear();
+            allowedGTECoords.addAll(NBTTagLists.intArraysFrom(compound, "allowedCoords").stream()
                     .map(BlockPositions::fromIntArray)
                     .collect(Collectors.toSet()));
         }
@@ -194,7 +190,7 @@ public class TransformerGenerationBehavior extends Transformer<TransformerGenera
                 tileEntityCompound.setTag(getTileEntityKey(entry.getKey()), entry.getValue().writeToNBT());
             compound.setTag(KEY_TILE_ENTITIES, tileEntityCompound);
 
-            NBTTagLists.writeIntArraysTo(compound, "blockedCoords", blockedCoords.stream()
+            NBTTagLists.writeIntArraysTo(compound, "allowedGTECoords", allowedGTECoords.stream()
                     .map(BlockPositions::toIntArray)
                     .collect(Collectors.toList()));
 

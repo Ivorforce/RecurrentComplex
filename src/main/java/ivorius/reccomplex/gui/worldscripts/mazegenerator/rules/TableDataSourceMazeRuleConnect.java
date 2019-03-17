@@ -37,12 +37,12 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
     {
         this.rule = rule;
 
-        TableCellTitle startTitle = new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connect.expect"));
-        addSegment(1, new TableDataSourcePreloaded(new TitledCell(startTitle).withTitleTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.expect.tooltip"))));
+        TableCellTitle startTitle = new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connect.start"));
+        addSegment(1, new TableDataSourcePreloaded(new TitledCell(startTitle).withTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.start.tooltip"))));
         addSegment(2, new TableDataSourceMazePathList(rule.start, tableDelegate, navigator, bounds));
 
         TableCellTitle endTitle = new TableCellTitle("", IvTranslations.get("reccomplex.mazerule.connect.end"));
-        addSegment(3, new TableDataSourcePreloaded(new TitledCell(endTitle).withTitleTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.end.tooltip"))));
+        addSegment(3, new TableDataSourcePreloaded(new TitledCell(endTitle).withTooltip(IvTranslations.formatLines("reccomplex.mazerule.connect.end.tooltip"))));
         addSegment(4, new TableDataSourceMazePathList(rule.end, tableDelegate, navigator, bounds));
     }
 
@@ -66,7 +66,7 @@ public class TableDataSourceMazeRuleConnect extends TableDataSourceSegmented
         {
             TableCellBoolean preventCell = new TableCellBoolean("prevent", rule.preventConnection,
                     TextFormatting.GOLD + IvTranslations.get("reccomplex.mazerule.connect.prevent"),
-                    TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.prevent"));
+                    TextFormatting.GREEN + IvTranslations.get("reccomplex.mazerule.connect.ensure"));
             preventCell.addListener(val -> rule.preventConnection = val);
             return new TitledCell(preventCell);
         }

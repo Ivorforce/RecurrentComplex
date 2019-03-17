@@ -34,7 +34,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
     @Override
     public boolean skipGeneration(S instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
-        return matches(context.environment, instanceData, state);
+        return matches(context.environment, instanceData, sourcePos, state);
     }
 
     @Override
@@ -65,7 +65,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
 
             IBlockState state = blockCollection.getBlockState(sourceCoord);
 
-            if (matches(context.environment, instanceData, state))
+            if (matches(context.environment, instanceData, sourceCoord, state))
                 transformBlock(instanceData, Phase.BEFORE, context, transformer, areaSize, worldCoord, state);
         }
 
@@ -74,7 +74,7 @@ public abstract class TransformerSingleBlock<S extends NBTStorable> extends Tran
 
     public abstract boolean generatesInPhase(S instanceData, Phase phase);
 
-    public abstract boolean matches(Environment environment, S instanceData, IBlockState state);
+    public abstract boolean matches(Environment environment, S instanceData, BlockPos sourcePos, IBlockState state);
 
     public abstract void transformBlock(S instanceData, Phase phase, StructureSpawnContext context, RunTransformer transformer, int[] areaSize, BlockPos coord, IBlockState sourceState);
 }

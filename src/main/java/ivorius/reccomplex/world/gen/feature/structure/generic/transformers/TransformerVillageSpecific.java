@@ -57,7 +57,7 @@ public class TransformerVillageSpecific extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(Environment environment, NBTNone instanceData, IBlockState state)
+    public boolean matches(Environment environment, NBTNone instanceData, BlockPos sourcePos, IBlockState state)
     {
         return village.trySetType(environment.villageType) && sourceMatcher.test(state) && village.getBiomeSpecificBlockState(state) != state;
     }

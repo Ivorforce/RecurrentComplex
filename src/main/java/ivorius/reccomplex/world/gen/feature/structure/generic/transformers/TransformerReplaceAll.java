@@ -73,7 +73,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     }
 
     @Override
-    public boolean matches(Environment environment, InstanceData instanceData, IBlockState state)
+    public boolean matches(Environment environment, InstanceData instanceData, BlockPos sourcePos, IBlockState state)
     {
         return sourceMatcher.test(state);
     }

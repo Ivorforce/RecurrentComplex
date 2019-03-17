@@ -78,7 +78,7 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(Environment environment, NBTNone instanceData, IBlockState state)
+    public boolean matches(Environment environment, NBTNone instanceData, BlockPos sourcePos, IBlockState state)
     {
         return sourceMatcher.test(state);
     }

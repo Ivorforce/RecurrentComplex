@@ -5,6 +5,7 @@
 
 package ivorius.reccomplex.world.gen.feature;
 
+import com.google.common.collect.Sets;
 import ivorius.ivtoolkit.blocks.BlockSurfacePos;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
@@ -198,8 +199,8 @@ public class StructureGenerator<S extends NBTStorable>
             RecurrentComplex.logger.error(String.format("Error saving instance data for structure %s in %s", structure, boundingBox), e);
         }
 
-        Collection<ChunkPos> existingChunks = WorldStructureGenerationData.get(world)
-                .addEntry(structureEntry);
+        Collection<ChunkPos> existingChunks = Sets.newHashSet(WorldStructureGenerationData.get(world)
+                .addEntry(structureEntry));
 
         // Complement in all chunks that already exist
         if (partially)

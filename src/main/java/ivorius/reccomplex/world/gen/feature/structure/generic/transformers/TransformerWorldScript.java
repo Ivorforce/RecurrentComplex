@@ -58,7 +58,7 @@ public class TransformerWorldScript extends TransformerSingleBlock<TransformerWo
     }
 
     @Override
-    public boolean matches(Environment environment, InstanceData instanceData, IBlockState state)
+    public boolean matches(Environment environment, InstanceData instanceData, BlockPos sourcePos, IBlockState state)
     {
         return sourceMatcher.test(state);
     }

@@ -22,7 +22,7 @@ public interface GeneratingTileEntity<S>
 
     void generate(StructureSpawnContext context, RunTransformer transformer, S instanceData);
 
-    default boolean shouldPlaceInWorld(StructureSpawnContext context, S instanceData) {
+    default boolean shouldPlaceInWorld(StructurePrepareContext context, S instanceData) {
         return false;
     }
 }

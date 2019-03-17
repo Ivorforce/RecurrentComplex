@@ -6,6 +6,8 @@
 package ivorius.reccomplex.world.gen.feature.structure.context;
 
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
+import ivorius.ivtoolkit.world.chunk.gen.StructureBoundingBoxes;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 import javax.annotation.Nonnull;
@@ -29,4 +31,13 @@ public class StructureContext
         this.generateAsSource = generateAsSource;
     }
 
+    public BlockPos lowerCoord()
+    {
+        return StructureBoundingBoxes.min(boundingBox);
+    }
+
+    public int[] areaSize()
+    {
+        return StructureBoundingBoxes.size(boundingBox);
+    }
 }

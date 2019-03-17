@@ -73,7 +73,7 @@ public class TileEntityBlockScript extends TileEntity implements GeneratingTileE
     }
 
     @Override
-    public boolean shouldPlaceInWorld(StructureSpawnContext context, WorldScriptMulti.InstanceData instanceData)
+    public boolean shouldPlaceInWorld(StructurePrepareContext context, WorldScriptMulti.InstanceData instanceData)
     {
         return redstoneTriggerable;
     }

@@ -24,7 +24,7 @@ if (!ENV.DRONE) { // Currently incompatible (because drone can't gradle?)
 }
 apply plugin: 'maven-publish'
 
-version = "1.4.8"
+version = "1.4.8.1"
 if (ENV.DRONE_BUILD_NUMBER) {
     version += ".n" + ENV.DRONE_BUILD_NUMBER
 }

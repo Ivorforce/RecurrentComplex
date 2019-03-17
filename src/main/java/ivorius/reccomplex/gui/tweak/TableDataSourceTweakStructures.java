@@ -52,6 +52,6 @@ public class TableDataSourceTweakStructures extends TableDataSourceSegmented
     @Override
     public String title()
     {
-        return "Tweak Structures";
+        return "Tweak Structure Spawn Rates";
     }
 }

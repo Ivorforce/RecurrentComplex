@@ -238,7 +238,7 @@ public class RCForgeEventHandler
                 ITextComponent list = new TextComponentString("[List]");
                 list.getStyle().setColor(TextFormatting.AQUA);
                 list.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Show List")));
-                list.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s", RCCommands.list.getName())));
+                list.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, String.format("/%s", RCCommands.structures.list())));
 
                 ITextComponent add = new TextComponentString("[Add]");
                 add.getStyle().setColor(TextFormatting.GREEN);

@@ -93,7 +93,7 @@ public class CommandSearchStructure extends CommandExpecting
     @Override
     public String getName()
     {
-        return RCConfig.commandPrefix + "search";
+        return "search";
     }
 
     public int getRequiredPermissionLevel()

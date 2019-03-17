@@ -34,7 +34,7 @@ public class CommandLookupStructure extends CommandExpecting
     @Override
     public String getName()
     {
-        return RCConfig.commandPrefix + "lookup";
+        return "lookup";
     }
 
     public int getRequiredPermissionLevel()

@@ -62,7 +62,7 @@ public class CommandListStructures extends CommandExpecting
     public static void linkToPage(ITextComponent component, int page, ITextComponent hoverTitle)
     {
         component.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s %d", RCCommands.list.getName(), page)));
+                String.format("/%s", RCCommands.structures.list(page))));
         component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverTitle));
         component.getStyle().setColor(TextFormatting.AQUA);
     }
@@ -70,7 +70,7 @@ public class CommandListStructures extends CommandExpecting
     @Override
     public String getName()
     {
-        return RCConfig.commandPrefix + "list";
+        return "list";
     }
 
     public int getRequiredPermissionLevel()

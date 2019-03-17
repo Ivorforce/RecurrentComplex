@@ -81,7 +81,7 @@ public class RCTextStyle
     {
         TextComponentString comp = new TextComponentString(id);
         comp.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                String.format("/%s %s", RCCommands.lookup.getName(), id)));
+                String.format("/%s", RCCommands.structures.lookup(id))));
         comp.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 RecurrentComplex.translations.get("commands.rcsearch.lookup")));
         comp.getStyle().setColor(TextFormatting.AQUA);

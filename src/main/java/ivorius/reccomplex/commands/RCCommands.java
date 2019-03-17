@@ -65,8 +65,7 @@ public class RCCommands
     @Nullable
     public static ICommand cancel;
 
-    public static ICommand lookup;
-    public static ICommand list;
+    public static CommandStructures structures;
 
     public static ICommand reopen;
 
@@ -89,8 +88,7 @@ public class RCCommands
         if (RCConfig.asCommandPermissionLevel >= 0)
             event.registerServerCommand(new CommandAs());
 
-        if (!RecurrentComplex.isLite())
-        {
+        if (!RecurrentComplex.isLite()) {
             event.registerServerCommand(new CommandExportStructure());
             event.registerServerCommand(new CommandEditStructure());
         }
@@ -101,8 +99,7 @@ public class RCCommands
 
         event.registerServerCommand(select = new CommandSelection());
 
-        if (!RecurrentComplex.isLite())
-        {
+        if (!RecurrentComplex.isLite()) {
             event.registerServerCommand(new CommandPreview());
             event.registerServerCommand(confirm = new CommandConfirm());
             event.registerServerCommand(cancel = new CommandCancel());
@@ -115,8 +112,7 @@ public class RCCommands
 
         event.registerServerCommand(new CommandFill());
         event.registerServerCommand(new CommandSetProperty());
-        if (!RecurrentComplex.isLite())
-        {
+        if (!RecurrentComplex.isLite()) {
             event.registerServerCommand(new CommandSplit(RCConfig.commandPrefix + "natural",
                     new CommandNaturalAll(),
                     new CommandNaturalSpace(),
@@ -143,9 +139,11 @@ public class RCCommands
         event.registerServerCommand(sight = new CommandSight());
         event.registerServerCommand(new CommandSightCheck(RCConfig.commandPrefix + "whatisthis", true));
 
-        event.registerServerCommand(lookup = new CommandLookupStructure());
-        event.registerServerCommand(list = new CommandListStructures());
-        event.registerServerCommand(new CommandSearchStructure());
+        event.registerServerCommand(structures = new CommandStructures(RCConfig.commandPrefix + "structures",
+                new CommandLookupStructure(),
+                new CommandListStructures(),
+                new CommandSearchStructure()
+        ));
 
         event.registerServerCommand(new CommandRetrogen());
         event.registerServerCommand(new CommandDecorate());
@@ -188,8 +186,7 @@ public class RCCommands
 
     public static void ensureValidSelection(SelectionOwner owner, boolean inferSecond) throws CommandException
     {
-        if (!owner.hasValidSelection())
-        {
+        if (!owner.hasValidSelection()) {
             if (inferSecond && owner.getSelectedPoint1() != null)
                 owner.setSelectedPoint2(owner.getSelectedPoint1());
             else if (inferSecond && owner.getSelectedPoint2() != null)
@@ -224,8 +221,7 @@ public class RCCommands
     {
         ITextComponent pathComponent = RCTextStyle.path(directory, id);
 
-        if (result)
-        {
+        if (result) {
             sender.sendMessage(RecurrentComplex.translations.format("reccomplex.save.full",
                     RecurrentComplex.translations.format("reccomplex.save.success", filetype, pathComponent),
                     RCTextStyle.submit(id))
@@ -245,16 +241,13 @@ public class RCCommands
 
     public static void tryReload(@Nonnull FileLoader loader, @Nonnull LeveledRegistry.Level level) throws CommandException
     {
-        try
-        {
+        try {
             ResourceDirectory.reload(loader, level);
         }
-        catch (IllegalArgumentException e)
-        {
+        catch (IllegalArgumentException e) {
             throw new CommandException("Invalid reload type!");
         }
-        catch (RCFiles.ResourceLocationLoadException e)
-        {
+        catch (RCFiles.ResourceLocationLoadException e) {
             RecurrentComplex.logger.error("Can't load from resource '" + e.getLocation() + "'", e);
 
             throw new CommandException(reason(e));

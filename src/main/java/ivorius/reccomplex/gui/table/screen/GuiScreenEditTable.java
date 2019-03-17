@@ -34,6 +34,10 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
 
     protected GuiButton escButton;
 
+    public GuiScreenEditTable()
+    {
+    }
+
     public GuiTable setDataSource(T dataSource, Consumer<T> saver)
     {
         this.saver = saver;
@@ -60,8 +64,7 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
     @Override
     public void initGui()
     {
-        if (currentTable() != null)
-        {
+        if (currentTable() != null) {
             currentTable().setBounds(Bounds.fromAxes(leftEdge(), uWidth(), HEIGHT_INSET, uHeight() - 22));
         }
         super.initGui();
@@ -95,22 +98,18 @@ public class GuiScreenEditTable<T extends TableDataSource> extends GuiScreenModa
     {
         super.actionPerformed(button);
 
-        if (button.id == 0)
-        {
+        if (button.id == 0) {
             saver.accept(this.t);
 
             this.mc.player.closeScreen();
         }
-        else if (button.id == 1)
-        {
+        else if (button.id == 1) {
             this.mc.player.closeScreen();
         }
-        else if (button.id == 2)
-        {
+        else if (button.id == 2) {
             popTable();
         }
-        else if (button.id == 3)
-        {
+        else if (button.id == 3) {
             if (currentTable().getDataSource().canVisualize())
                 GuiHider.hideGUI(currentTable().getDataSource().visualizer());
             else

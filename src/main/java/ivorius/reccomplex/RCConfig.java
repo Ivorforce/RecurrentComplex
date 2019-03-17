@@ -53,7 +53,7 @@ public class RCConfig
     public static boolean hideRedundantNegativeSpace;
 
     public static float minDistToSpawnForGeneration;
-    private static final TObjectFloatMap<String> spawnTweaks = new TObjectFloatHashMap<>(Hash.DEFAULT_INITIAL_SIZE, Hash.DEFAULT_LOAD_FACTOR, 1);
+    public static final TObjectFloatMap<String> spawnTweaks = new TObjectFloatHashMap<>(Hash.DEFAULT_INITIAL_SIZE, Hash.DEFAULT_LOAD_FACTOR, 1);
     public static float structureSpawnChanceModifier = 1.0f;
     public static boolean avoidOverlappingGeneration;
     public static boolean honorStructureGenerationOption;

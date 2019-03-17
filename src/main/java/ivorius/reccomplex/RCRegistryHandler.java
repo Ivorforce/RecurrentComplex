@@ -82,8 +82,7 @@ public class RCRegistryHandler
 
     public static void preInit(FMLPreInitializationEvent event, RecurrentComplex mod)
     {
-        if (!RecurrentComplex.isLite())
-        {
+        if (!RecurrentComplex.isLite()) {
             tabStructureTools = new CreativeTabs("structureTools")
             {
                 @Override
@@ -210,13 +209,11 @@ public class RCRegistryHandler
         block.setRegistryName(id);
         item.setRegistryName(id);
 
-        if (!RecurrentComplex.isLite())
-        {
+        if (!RecurrentComplex.isLite()) {
             ForgeRegistries.BLOCKS.register(block);
             ForgeRegistries.ITEMS.register(item);
         }
-        else
-        {
+        else {
             specialRegistry.register(block.getRegistryName(), block);
             specialRegistry.register(item.getRegistryName(), item);
         }
@@ -369,6 +366,8 @@ public class RCRegistryHandler
         network.registerMessage(PacketOpenGuiHandler.class, PacketOpenGui.class, 15, Side.SERVER);
         network.registerMessage(PacketInspectEntityHandler.class, PacketInspectEntity.class, 17, Side.SERVER);
         network.registerMessage(PacketWorldDataHandler.class, PacketWorldData.class, 20, Side.SERVER);
+
+        network.registerMessage(PacketSpawnTweaksHandler.class, PacketSpawnTweaks.class, 21, Side.SERVER);
     }
 
     protected static void registerClientPackets()
@@ -384,6 +383,8 @@ public class RCRegistryHandler
         network.registerMessage(PacketReopenGuiHandler.class, PacketReopenGui.class, 16, Side.CLIENT);
         network.registerMessage(PacketInspectEntityHandler.class, PacketInspectEntity.class, 18, Side.CLIENT);
         network.registerMessage(PacketWorldDataHandler.class, PacketWorldData.class, 19, Side.CLIENT);
+
+        network.registerMessage(PacketSpawnTweaksHandler.class, PacketSpawnTweaks.class, 22, Side.CLIENT);
     }
 
 }

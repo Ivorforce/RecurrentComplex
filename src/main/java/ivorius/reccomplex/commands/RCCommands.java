@@ -142,7 +142,8 @@ public class RCCommands
         event.registerServerCommand(structures = new CommandStructures(RCConfig.commandPrefix + "structures",
                 new CommandLookupStructure(),
                 new CommandListStructures(),
-                new CommandSearchStructure()
+                new CommandSearchStructure(),
+                new CommandTweakStructures()
         ));
 
         event.registerServerCommand(new CommandRetrogen());

@@ -32,7 +32,7 @@ public class TableDataSourceTweakStructures extends TableDataSourceSegmented
         TableDataSourceTweakStructuresList tdsList = new TableDataSourceTweakStructuresList(delegate, tweaks);
 
         addSegment(0, () -> {
-            TableCellString cell = new TableCellString("search", search);
+            TableCellString cell = new TableCellString(null, search);
             cell.addListener(s -> {
                 delegate.setLocked("search", true);
 
@@ -42,7 +42,7 @@ public class TableDataSourceTweakStructures extends TableDataSourceSegmented
                 delegate.setLocked("search", false);
             });
 
-            return new TitledCell("Search", cell);
+            return new TitledCell("search", "Search", cell);
         });
 
         addSegment(1, tdsList);

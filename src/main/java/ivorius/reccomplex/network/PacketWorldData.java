@@ -28,11 +28,6 @@ public class PacketWorldData implements IMessage
     {
     }
 
-    public PacketWorldData(NBTTagCompound worldData)
-    {
-        this.worldData = worldData;
-    }
-
     public PacketWorldData(NBTTagCompound worldData, BlockPos source, BlockPos capturePoint1, BlockPos capturePoint2)
     {
         this.worldData = worldData;

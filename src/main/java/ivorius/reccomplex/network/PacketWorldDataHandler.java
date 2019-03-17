@@ -59,21 +59,27 @@ public class PacketWorldDataHandler extends SchedulingMessageHandler<PacketWorld
         if (!(dataSource instanceof TableDataSourceWorldScriptHolder))
             throw new RuntimeException();
 
-        ((TableDataSourceWorldScriptHolder) dataSource).script.worldData = message.worldData;
+        WorldScriptHolder script = ((TableDataSourceWorldScriptHolder) dataSource).script;
+        script.worldData = message.worldData;
+        // From now this MUST be lower corner
+        script.origin = new BlockArea(message.capturePoint1, message.capturePoint2).getLowerCorner();
+
         if (screen instanceof TableDelegate) ((TableDelegate) screen).reloadData();
     }
 
     @Override
     public void processServer(PacketWorldData message, MessageContext ctx, WorldServer world)
     {
-        BlockPos left = message.capturePoint1.add(message.source);
-        BlockPos right = message.capturePoint2.add(message.source);
+        BlockPos origin = message.source;
+        BlockArea area = new BlockArea(message.capturePoint1.add(origin), message.capturePoint2.add(origin));
 
         // Send captured back
-        IvWorldData worldData = IvWorldData.capture(world, new BlockArea(left, right), true);
+        IvWorldData worldData = IvWorldData.capture(world, area, true);
         // Unsupported because of recursion and TE scripts not working anyway
         worldData.tileEntities.removeIf(te -> TileEntity.create(world, te) instanceof TileEntityBlockScript);
-        RecurrentComplex.network.sendTo(new PacketWorldData(worldData.createTagCompound()), ctx.getServerHandler().player);
+
+        PacketWorldData packet = new PacketWorldData(worldData.createTagCompound(), origin, message.capturePoint1, message.capturePoint2);
+        RecurrentComplex.network.sendTo(packet, ctx.getServerHandler().player);
 
         if (message.worldData != null)
         {
@@ -82,8 +88,8 @@ public class PacketWorldDataHandler extends SchedulingMessageHandler<PacketWorld
 
             new StructureGenerator<>(structure)
                     .world(world)
-                    .lowerCoord(left)
-                    .generationPredicate(p -> !p.equals(message.source))
+                    .lowerCoord(message.capturePoint1.add(origin))
+                    .generationPredicate(p -> !p.equals(origin))
                     .generate();
         }
     }

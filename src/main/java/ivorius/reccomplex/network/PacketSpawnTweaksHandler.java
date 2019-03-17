@@ -17,6 +17,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nonnull;
 
@@ -44,6 +46,7 @@ public class PacketSpawnTweaksHandler extends SchedulingMessageHandler<PacketSpa
         RecurrentComplex.config.save();
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void processClient(PacketSpawnTweaks message, MessageContext ctx)
     {

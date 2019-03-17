@@ -12,13 +12,13 @@ public interface UnstableBlock
     static boolean shouldSkipState(IBlockState state)
     {
         if (state.getBlock() instanceof UnstableBlock) {
-            return ((UnstableBlock) state.getBlock()).shouldSkip(state);
+            return ((UnstableBlock) state.getBlock()).shouldSkipOnGeneration(state);
         }
 
         return false;
     }
 
-    default boolean shouldSkip(IBlockState state)
+    default boolean shouldSkipOnGeneration(IBlockState state)
     {
         return true;
     }

@@ -156,9 +156,12 @@ public class RCBiomeDecorator
 
         for (int i = 0; i < rcAmount; i++)
         {
-            for (int t = 0; t < STRUCTURE_TRIES; t++)
-                if (generate(selector.selectOne(random, type, totalWeight), worldIn, chunkPos, random))
+            for (int t = 0; t < STRUCTURE_TRIES; t++) {
+                Pair<Structure<?>, VanillaDecorationGeneration> structurePair = selector.selectOne(random, type, totalWeight);
+
+                if (generate(structurePair, worldIn, chunkPos, random))
                     break;
+            }
         }
 
         return vanillaAmount - rcAmount;

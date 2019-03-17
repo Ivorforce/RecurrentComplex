@@ -19,7 +19,7 @@
             {
               "block": "minecraft:air",
               "metadata": 0,
-              "tileEntityInfo": ""
+              "tileEntity": "null"
             }
           ]
         }
@@ -60,7 +60,7 @@
         "transformer": {
           "id": "multi_7de49dd2",
           "data": {
-            "environmentMatcher": "",
+            "environmentMatcher": "gen.type\u003dsapling",
             "transformers": [
               {
                 "type": "ensureBlocks",

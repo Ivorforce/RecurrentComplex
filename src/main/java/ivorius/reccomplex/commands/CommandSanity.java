@@ -49,7 +49,7 @@ public class CommandSanity extends CommandExpecting
 
     public static Stream<World> dimensions(MinecraftServer server)
     {
-        return Stream.of(DimensionManager.getIDs()).map(server::getWorld);
+        return Stream.of(DimensionManager.getStaticDimensionIDs()).map(server::getWorld);
     }
 
     @Override

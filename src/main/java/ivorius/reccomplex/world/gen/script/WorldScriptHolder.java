@@ -78,10 +78,14 @@ public class WorldScriptHolder implements WorldScript<NBTNone>
         GenericStructure structure = new GenericStructure();
         structure.worldDataCompound = worldData.copy();
 
+        int[] strucSize = structure.size();
+        BlockPos strucCoord = context.transform.apply(origin, new int[]{1, 1, 1})
+                .subtract(context.transform.apply(BlockPos.ORIGIN, strucSize)).add(pos);
+
         new StructureGenerator<>(structure)
                 .asChild(context)
                 .transformer(transformer)
-                .lowerCoord(origin.add(pos))
+                .lowerCoord(strucCoord)
                 .generationPredicate(p -> !p.equals(pos))
                 .generate();
 

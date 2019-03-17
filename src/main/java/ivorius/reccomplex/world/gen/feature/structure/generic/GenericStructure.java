@@ -259,6 +259,8 @@ public class GenericStructure implements Structure<GenericStructure.InstanceData
                 this.transformer,
                 foreignTransformer
         ));
+        fused.setID("FusedStructureTransformer");
+
         return new RunTransformer(fused, fused.fuseDatas(Arrays.asList(
                 instanceData.transformerGenerationBehavior,
                 instanceData.transformerData,

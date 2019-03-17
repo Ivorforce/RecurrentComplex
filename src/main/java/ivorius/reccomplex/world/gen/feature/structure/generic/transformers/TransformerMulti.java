@@ -81,7 +81,7 @@ public class TransformerMulti extends Transformer<TransformerMulti.InstanceData>
 
     public static TransformerMulti fuse(List<Transformer> transformers)
     {
-        TransformerMulti transformer = new TransformerMulti();
+        TransformerMulti transformer = new TransformerMulti("fused", "");
         transformers.forEach(t -> transformer.getTransformers().add(t));
         return transformer;
     }

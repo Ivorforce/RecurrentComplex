@@ -78,7 +78,6 @@ public class WorldScriptHolder implements WorldScript<NBTNone>
         GenericStructure structure = new GenericStructure();
         structure.worldDataCompound = worldData.copy();
 
-        // TODO Pass the transformer of context
         new StructureGenerator<>(structure)
                 .asChild(context)
                 .transformer(transformer)

@@ -480,6 +480,7 @@ reccomplex.worldscript.strucGen.rotation.random=Random (if rotatable)
 reccomplex.worldscript.strucGen.mirror.random=Random (if mirrorable)
 
 reccomplex.worldscript.holder=Holder
+reccomplex.worldscript.holder.tooltip=A script holding an area<br>that will generate from the<br>script on structure generation.<br>For complex use-cases, use<br>list generation instead.
 reccomplex.worldscript.holder.capture=§aCopy area
 reccomplex.worldscript.holder.delete=§cDelete held area
 reccomplex.worldscript.holder.switch=§bSwap Areas

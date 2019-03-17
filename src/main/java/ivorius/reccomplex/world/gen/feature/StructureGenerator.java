@@ -24,6 +24,7 @@ import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnCont
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
 import ivorius.reccomplex.world.gen.feature.structure.generic.placement.StructurePlaceContext;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
+import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -158,7 +159,7 @@ public class StructureGenerator<S extends NBTStorable>
         RCWorldgenMonitor.start("generating " + structureID());
         try
         {
-            structure.generate(spawn, instanceData, transformer != null ? transformer.transformer : RCConfig.getUniversalTransformer());
+            structure.generate(spawn, instanceData, foreignTransformer());
         }
         catch (Exception e)
         {
@@ -223,6 +224,12 @@ public class StructureGenerator<S extends NBTStorable>
         }
 
         return Optional.of(structureEntry);
+    }
+
+    @Nonnull
+    public TransformerMulti foreignTransformer()
+    {
+        return transformer != null ? transformer.transformer : RCConfig.getUniversalTransformer();
     }
 
     @Nullable
@@ -511,13 +518,13 @@ public class StructureGenerator<S extends NBTStorable>
     public Optional<S> instanceData()
     {
         return this.instanceData != null ? Optional.of(this.instanceData)
-                : this.instanceDataNBT != null ? load().map(load -> structure().loadInstanceData(load, this.instanceDataNBT, RCConfig.getUniversalTransformer()))
+                : this.instanceDataNBT != null ? load().map(load -> structure().loadInstanceData(load, this.instanceDataNBT, foreignTransformer()))
                 : prepare().flatMap(prepare ->
         {
             try
             {
                 RCWorldgenMonitor.start("preparing " + structureID());
-                Optional<S> prepared = Optional.ofNullable(structure().prepareInstanceData(prepare, RCConfig.getUniversalTransformer()));
+                Optional<S> prepared = Optional.ofNullable(structure().prepareInstanceData(prepare, foreignTransformer()));
                 RCWorldgenMonitor.stop();
 
                 return prepared;

@@ -20,6 +20,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.common.ForgeModContainer;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -32,6 +36,7 @@ import java.util.function.Function;
 public class BlockExpression extends BoolFunctionExpressionCache<IBlockState, Object>
 {
     public static final String BLOCK_ID_PREFIX = "id=";
+    public static final String DOMAIN_PREFIX = "domain=";
     public static final String METADATA_PREFIX = "metadata=";
     public static final String PROPERTY_PREFIX = "property[";
 
@@ -44,6 +49,7 @@ public class BlockExpression extends BoolFunctionExpressionCache<IBlockState, Ob
         this.registry = registry;
 
         addTypes(new IDVariableType(BLOCK_ID_PREFIX, "", registry), t -> t.alias("", ""));
+        addTypes(new DomainVariableType(DOMAIN_PREFIX, "", registry));
         addTypes(new MetadataVariableType(METADATA_PREFIX, ""), t -> t.alias("#", ""));
         addTypes(new PropertyVariableType(PROPERTY_PREFIX, ""), t -> t.alias("$[", ""));
     }
@@ -86,6 +92,33 @@ public class BlockExpression extends BoolFunctionExpressionCache<IBlockState, Ob
             ResourceLocation location = new ResourceLocation(var); // Since MC defaults to air now
             return registry.blockFromID(location) != Blocks.AIR || location.equals(Block.REGISTRY.getNameForObject(Blocks.AIR))
                     ? Validity.KNOWN : Validity.UNKNOWN;
+        }
+    }
+
+    public class DomainVariableType extends VariableType<Boolean, IBlockState, Object>
+    {
+        public MCRegistry registry;
+
+        public DomainVariableType(String prefix, String suffix, MCRegistry registry)
+        {
+            super(prefix, suffix);
+            this.registry = registry;
+        }
+
+        @Override
+        public Function<SupplierCache<IBlockState>, Boolean> parse(String var)
+        {
+            return s -> registry.idFromBlock(s.get().getBlock()).getResourceDomain().equals(var);
+        }
+
+        @Override
+        public Validity validity(String var, Object object)
+        {
+            if (Loader.instance().getIndexedModList().keySet().contains(var)) {
+                return Validity.KNOWN;
+            }
+
+            return Validity.UNKNOWN;
         }
     }
 

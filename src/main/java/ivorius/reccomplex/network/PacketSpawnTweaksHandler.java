@@ -40,6 +40,8 @@ public class PacketSpawnTweaksHandler extends SchedulingMessageHandler<PacketSpa
     {
         RCConfig.spawnTweaks.clear();
         RCConfig.spawnTweaks.putAll(message.getData());
+
+        RecurrentComplex.config.save();
     }
 
     @Override

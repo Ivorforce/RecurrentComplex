@@ -65,6 +65,7 @@ public class RCCommands
     @Nullable
     public static ICommand cancel;
 
+    public static ICommand generate;
     public static CommandStructures structures;
 
     public static ICommand reopen;
@@ -92,7 +93,7 @@ public class RCCommands
             event.registerServerCommand(new CommandExportStructure());
             event.registerServerCommand(new CommandEditStructure());
         }
-        event.registerServerCommand(new CommandGenerateStructure());
+        event.registerServerCommand(generate = new CommandGenerateStructure());
         event.registerServerCommand(new CommandImportStructure());
 
         event.registerServerCommand(new CommandMapStructure());

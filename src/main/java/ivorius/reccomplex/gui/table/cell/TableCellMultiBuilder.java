@@ -5,6 +5,9 @@
 
 package ivorius.reccomplex.gui.table.cell;
 
+import gnu.trove.list.TFloatList;
+import gnu.trove.map.TIntObjectMap;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.TableCells;
@@ -32,6 +35,7 @@ public class TableCellMultiBuilder
 {
     protected final List<Supplier<TableCellDefault>> cells = new ArrayList<>();
     protected final List<BooleanSupplier> enabledSuppliers = new ArrayList<>();
+    protected final TIntObjectMap<Supplier<Float>> sizers = new TIntObjectHashMap<>();
 
     public TableNavigator navigator;
     public TableDelegate delegate;
@@ -123,6 +127,12 @@ public class TableCellMultiBuilder
         return this;
     }
 
+    public TableCellMultiBuilder sized(Supplier<Float> sizer)
+    {
+        sizers.put(cells.size() - 1, sizer);
+        return this;
+    }
+
     @Nonnull
     public TableDataSource buildDataSource()
     {
@@ -149,8 +159,7 @@ public class TableCellMultiBuilder
     {
         List<TableCellDefault> cells = new ArrayList<>();
 
-        for (int i = 0; i < this.cells.size(); i++)
-        {
+        for (int i = 0; i < this.cells.size(); i++) {
             TableCellDefault cell = this.cells.get(i).get();
 
 //            cell.setId("action." + i);
@@ -164,6 +173,12 @@ public class TableCellMultiBuilder
         }
 
         TableCellMulti multi = new TableCellMulti(cells);
+
+        sizers.forEachEntry((idx, supplier) -> {
+            multi.setSize(idx, supplier.get());
+            return true;
+        });
+
         return title != null ? new TitledCell(title, multi).withTitleTooltip(titleTooltip) : multi;
     }
 }

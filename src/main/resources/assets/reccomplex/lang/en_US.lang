@@ -563,6 +563,9 @@ reccomplex.gui.inventorygen.groupid=Group ID
 reccomplex.gui.inventorygen.multi.count=Item Count
 reccomplex.gui.inventorygen.single.chance=Item Chance
 
+gui.tweakStructures.generate=Gen
+gui.tweakStructures.generate.tooltip=Generate this structure.
+
 reccomplex.gui.blockpos=Position
 reccomplex.gui.blockpos.tooltip=The coordinates x, y and z.
 reccomplex.gui.blockpos.x=x

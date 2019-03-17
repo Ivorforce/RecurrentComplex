@@ -254,7 +254,11 @@ public class RCConfig
 
     public static boolean shouldStructureGenerate(String id, String domain)
     {
-        return structureGenerationMatcher.test(new RawResourceLocation(domain, id));
+        if (!structureGenerationMatcher.test(new RawResourceLocation(domain, id))) {
+            return false;
+        }
+
+        return tweakedSpawnRate(id) > 0;
     }
 
     public static boolean shouldLootGenerate(String tableID, String domain)

@@ -1,10 +1,11 @@
 /*
  *  Copyright (c) 2014, Lukas Tenbrink.
- *  * http://lukas.axxim.net
+ *  * http://ivorius.net
  */
 
-package ivorius.reccomplex.block;
+package ivorius.reccomplex.block.legacy;
 
+import ivorius.reccomplex.block.BlockLegacyScript;
 import ivorius.reccomplex.world.gen.script.WorldScriptMazeGenerator;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.world.World;

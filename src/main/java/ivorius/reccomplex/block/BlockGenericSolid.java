@@ -6,11 +6,12 @@
 package ivorius.reccomplex.block;
 
 import ivorius.reccomplex.block.materials.RCMaterials;
+import ivorius.reccomplex.utils.UnstableBlock;
 
 /**
  * Created by lukas on 06.06.14.
  */
-public class BlockGenericSolid extends BlockTyped
+public class BlockGenericSolid extends BlockTyped implements UnstableBlock
 {
     public BlockGenericSolid()
     {

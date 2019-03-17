@@ -9,6 +9,7 @@ import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.nbt.NBTStorable;
 import ivorius.reccomplex.network.PacketEditTileEntity;
+import ivorius.reccomplex.utils.UnstableBlock;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.RunTransformer;
 import ivorius.reccomplex.world.gen.feature.structure.generic.transformers.TransformerMulti;
@@ -39,7 +40,7 @@ import java.util.Random;
 /**
  * Created by lukas on 06.06.14.
  */
-public class BlockScript extends Block
+public class BlockScript extends Block implements UnstableBlock
 {
     public BlockScript()
     {

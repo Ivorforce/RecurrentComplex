@@ -8,6 +8,7 @@ package ivorius.reccomplex.block;
 import com.google.common.collect.Lists;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.block.materials.RCMaterials;
+import ivorius.reccomplex.utils.UnstableBlock;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
@@ -26,7 +27,7 @@ import java.util.stream.Stream;
 /**
  * Created by lukas on 25.05.14.
  */
-public class BlockGenericSpace extends BlockTyped
+public class BlockGenericSpace extends BlockTyped implements UnstableBlock
 {
     public static final PropertyBool VISIBLE = PropertyBool.create("visible");
 

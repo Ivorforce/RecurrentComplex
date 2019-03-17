@@ -19,6 +19,7 @@ import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.nbt.NBTStorable;
 import ivorius.reccomplex.temp.RCMover;
 import ivorius.reccomplex.temp.RCPosTransformer;
+import ivorius.reccomplex.utils.UnstableBlock;
 import ivorius.reccomplex.world.gen.feature.structure.context.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import net.minecraft.block.state.IBlockState;
@@ -102,8 +103,7 @@ public class TransformerGenerationBehavior extends Transformer<TransformerGenera
     public boolean skipGeneration(InstanceData instanceData, StructureLiveContext context, BlockPos pos, IBlockState state, IvWorldData worldData, BlockPos sourcePos)
     {
         // Block
-        return instanceData.tileEntities.containsKey(sourcePos)
-                && !instanceData.allowedGTECoords.contains(sourcePos);
+        return UnstableBlock.shouldSkipState(state) && !instanceData.allowedGTECoords.contains(sourcePos);
     }
 
     @Override

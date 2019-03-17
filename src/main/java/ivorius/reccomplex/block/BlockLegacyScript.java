@@ -6,6 +6,7 @@
 package ivorius.reccomplex.block;
 
 import ivorius.reccomplex.nbt.NBTStorable;
+import ivorius.reccomplex.utils.UnstableBlock;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
@@ -27,7 +28,7 @@ import net.minecraft.world.World;
 /**
  * Created by lukas on 07.10.16.
  */
-public class BlockLegacyScript extends Block
+public class BlockLegacyScript extends Block implements UnstableBlock
 {
     public BlockLegacyScript()
     {

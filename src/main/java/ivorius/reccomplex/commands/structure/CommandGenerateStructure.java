@@ -104,8 +104,13 @@ public class CommandGenerateStructure extends SimpleCommand
         }
         else
         {
-            if (!generator.generate().isPresent())
-                throw RecurrentComplex.translations.commandException("commands.strucGen.noPlace");
+            StructureGenerator.GenerationResult result = generator.generate();
+
+            if (result instanceof StructureGenerator.GenerationResult.Failure) {
+                String reason = ((StructureGenerator.GenerationResult.Failure) result).description;
+                
+                throw RecurrentComplex.translations.commandException("commands.strucGen.failure", reason);
+            }
         }
 
         if (parameters.has("select")) RCCommands.select(sender, RCBlockAreas.from(generator.boundingBox().get()));

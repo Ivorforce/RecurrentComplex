@@ -158,8 +158,7 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
 
         BlockPos structureShift = transform.apply(vanillaGenInfo.spawnShift, new int[]{1, 1, 1});
 
-        if (this.averageGroundLvl < 0)
-        {
+        if (this.averageGroundLvl < 0) {
             this.averageGroundLvl = this.getAverageGroundLevel(world, boundingBox);
 
             if (this.averageGroundLvl < 0)
@@ -181,11 +180,16 @@ public class GenericVillagePiece extends StructureVillagePieces.Village
             prepare(world);
 
         boolean firstTime = !startedGeneration;
-        Optional<WorldStructureGenerationData.StructureEntry> entry = new StructureGenerator<>(structure).environment(environment(world, generationType))
+        StructureGenerator.GenerationResult result = new StructureGenerator<>(structure).environment(environment(world, generationType))
                 .seed(seed).lowerCoord(StructureBoundingBoxes.min(boundingBox)).transform(transform).generationBB(StructureBoundingBoxes.wholeHeightBoundingBox(world, generationBB))
                 .generationLayer(componentType).structureID(structureID).maturity(firstTime ? StructureSpawnContext.GenerateMaturity.FIRST : StructureSpawnContext.GenerateMaturity.COMPLEMENT)
                 .instanceData(this.instanceData).generate();
-        entry.ifPresent(structureEntry -> structureEntry.setPreventComplementation(true));
+
+        if (result instanceof StructureGenerator.GenerationResult.Success.New) {
+            WorldStructureGenerationData.StructureEntry sight = ((StructureGenerator.GenerationResult.Success.New) result).sight;
+            
+            sight.setPreventComplementation(true);
+        }
 
         startedGeneration = true;
     }

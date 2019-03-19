@@ -116,6 +116,7 @@ public class OperationGenerateStructure implements Operation
 
         StructureGenerator<GenericStructure.InstanceData> generator = generator(world);
         instanceData.load(generator);
+
         generator.generate();
     }
 
@@ -137,15 +138,11 @@ public class OperationGenerateStructure implements Operation
     @Override
     public boolean checkDead(ICommandSender target)
     {
-        if (!instanceData.exists())
+        if (!instanceData.exists() || lowerCoord == null)
         {
-            target.sendMessage(RecurrentComplex.translations.get("commands.strucGen.canceled"));
-            return true;
-        }
+            String reason = StructureGenerator.GenerationResult.Failure.placement.description;
+            target.sendMessage(RecurrentComplex.translations.format("commands.strucGen.failure", reason));
 
-        if (lowerCoord == null)
-        {
-            target.sendMessage(RecurrentComplex.translations.get("commands.strucGen.noPlace"));
             return true;
         }
 

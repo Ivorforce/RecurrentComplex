@@ -178,7 +178,7 @@ public class RCBiomeDecorator
                 .allowOverlaps(true)
                 .randomPosition(WorldGenStructures.randomSurfacePos(chunkPos, seed),
                         generation.getRight().placer()).fromCenter(true)
-                .generate().isPresent();
+                .generate().succeeded();
     }
 
     protected static Placer shift(Placer placer, int y)

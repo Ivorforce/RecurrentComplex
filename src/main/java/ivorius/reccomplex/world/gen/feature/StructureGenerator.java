@@ -126,12 +126,12 @@ public class StructureGenerator<S extends NBTStorable>
      * @return null when creation failed, empty when no entry was created and an entry when there was
      */
     @Nonnull
-    public Optional<WorldStructureGenerationData.StructureEntry> generate()
+    public GenerationResult generate()
     {
         Optional<S> optionalInstanceData = instanceData();
 
         if (!optionalInstanceData.isPresent())
-            return failGenerate("failed to place");
+            return failGenerate(GenerationResult.Failure.placement);
 
         S instanceData = optionalInstanceData.get();
         StructureSpawnContext spawn = spawn().get();
@@ -142,38 +142,40 @@ public class StructureGenerator<S extends NBTStorable>
         WorldServer world = spawn.environment.world;
         StructureBoundingBox boundingBox = spawn.boundingBox;
 
-        if (maturity().isSuggest() && (
-                boundingBox.minY < MIN_DIST_TO_LIMIT || boundingBox.maxY > world.getHeight() - 1 - MIN_DIST_TO_LIMIT
-                        || (RCConfig.avoidOverlappingGeneration && !allowOverlaps && !WorldStructureGenerationData.get(world).entriesAt(boundingBox).noneMatch(WorldStructureGenerationData.Entry::blocking))
-                        || RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structure, spawn))
-                        || (structureID != null && MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, boundingBox, spawn.generationLayer, firstTime)))
-        ))
-            return failGenerate("unknown reason");
+        if (maturity().isSuggest()) {
+            if (boundingBox.minY < MIN_DIST_TO_LIMIT || boundingBox.maxY > world.getHeight() - 1 - MIN_DIST_TO_LIMIT) {
+                return failGenerate(GenerationResult.Failure.outOfBounds);
+            }
 
-        if (firstTime)
-        {
+            if (RCConfig.avoidOverlappingGeneration && !allowOverlaps && !WorldStructureGenerationData.get(world).entriesAt(boundingBox).noneMatch(WorldStructureGenerationData.Entry::blocking)) {
+                return failGenerate(GenerationResult.Failure.structureOverlap);
+            }
+
+            if (RCEventBus.INSTANCE.post(new StructureGenerationEvent.Suggest(structure, spawn))
+                    || (structureID != null && MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Suggest(world, structureID, boundingBox, spawn.generationLayer, firstTime)))) {
+                return failGenerate(GenerationResult.Failure.cancel);
+            }
+        }
+
+        if (firstTime) {
             RCEventBus.INSTANCE.post(new StructureGenerationEvent.Pre(structure, spawn));
             if (structureID != null)
                 MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Pre(world, structureID, boundingBox, spawn.generationLayer, firstTime));
         }
 
         RCWorldgenMonitor.start("generating " + structureID());
-        try
-        {
+        try {
             structure.generate(spawn, instanceData, foreignTransformer());
         }
-        catch (Exception e)
-        {
-            RecurrentComplex.logger.error("Error on structure generation", e);
-            return failGenerate("exception on generation");
+        catch (Exception e) {
+            return failGenerate(new GenerationResult.Failure.Exception(e));
         }
-        finally
-        {
+        finally {
             RCWorldgenMonitor.stop();
         }
 
         if (!firstTime)
-            return Optional.empty();
+            return GenerationResult.Success.complement;
 
         RecurrentComplex.logger.trace(String.format("Generated structure '%s' in %s (%d)", name(structureID), boundingBox, world.provider.getDimension()));
 
@@ -182,7 +184,7 @@ public class StructureGenerator<S extends NBTStorable>
             MinecraftForge.EVENT_BUS.post(new StructureGenerationEventLite.Post(world, structureID, boundingBox, spawn.generationLayer, firstTime));
 
         if (structureID == null || !memorize)
-            return Optional.empty();
+            return GenerationResult.Success.contemporary;
 
         String generationInfoID = generationType != null ? generationType.id() : null;
 
@@ -192,12 +194,10 @@ public class StructureGenerator<S extends NBTStorable>
         structureEntry.firstTime = false; // Been there done that
         structureEntry.seed = seed();
 
-        try
-        {
+        try {
             structureEntry.instanceData = instanceData.writeToNBT();
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             RecurrentComplex.logger.error(String.format("Error saving instance data for structure %s in %s", structure, boundingBox), e);
         }
 
@@ -205,13 +205,11 @@ public class StructureGenerator<S extends NBTStorable>
                 .addEntry(structureEntry));
 
         // Complement in all chunks that already exist
-        if (partially)
-        {
+        if (partially) {
             maturity(StructureSpawnContext.GenerateMaturity.COMPLEMENT);
 
             StructureBoundingBox oldBB = generationBB;
-            for (ChunkPos existingChunk : existingChunks)
-            {
+            for (ChunkPos existingChunk : existingChunks) {
                 generationBB(Structures.chunkBoundingBox(existingChunk, true));
 
                 if (oldBB.intersectsWith(generationBB))
@@ -224,7 +222,7 @@ public class StructureGenerator<S extends NBTStorable>
             generationBB(oldBB);
         }
 
-        return Optional.of(structureEntry);
+        return new GenerationResult.Success.New(structureEntry);
     }
 
     @Nonnull
@@ -233,16 +231,22 @@ public class StructureGenerator<S extends NBTStorable>
         return transformer != null ? transformer.transformer : RCConfig.getUniversalTransformer();
     }
 
-    @Nullable
-    protected Optional<WorldStructureGenerationData.StructureEntry> failGenerate(String reason)
+    @Nonnull
+    protected GenerationResult.Failure failGenerate(@Nonnull GenerationResult.Failure failure)
     {
         if (RCConfig.logFailingStructure(structure)) {
             Optional<Integer> dim = Optional.ofNullable(world).map(w -> w.provider.getDimension());
 
-            RecurrentComplex.logger.trace(String.format("%s canceled generation at %s (%s) (%s)",
-                    structure, lowerCoord().orElse(null), dim.map(String::valueOf).orElse("Unknown"), reason));
+            RecurrentComplex.logger.trace(String.format("%s canceled generation at %s (%s): %s",
+                    structure, lowerCoord().orElse(null), dim.map(String::valueOf).orElse("Unknown"), failure));
+
+            if (failure instanceof GenerationResult.Failure.Exception) {
+                RecurrentComplex.logger.error("Error on structure generation",
+                        ((GenerationResult.Failure.Exception) failure).exception);
+            }
         }
-        return null;
+
+        return failure;
     }
 
     public StructureGenerator<S> asChild(StructureSpawnContext context)
@@ -361,8 +365,7 @@ public class StructureGenerator<S extends NBTStorable>
     {
         if (this.transform != null)
             return this.transform;
-        else
-        {
+        else {
             Structure<S> structure = structure();
             Random random = new Random(seed() ^ TRANSFORM_SEED);
 
@@ -397,18 +400,15 @@ public class StructureGenerator<S extends NBTStorable>
     {
         StructureBoundingBox boundingBox = this.boundingBox != null ? this.boundingBox : null;
 
-        if (boundingBox == null)
-        {
+        if (boundingBox == null) {
             int[] size = structureSize();
 
             if (this.lowerCoord != null)
                 boundingBox = Structures.boundingBox(fromCenter ? lowerCoord.subtract(new Vec3i(size[0] / 2, 0, size[2] / 2)) : lowerCoord, size);
-            else if (surfacePos != null && placer != null)
-            {
+            else if (surfacePos != null && placer != null) {
                 boundingBox = Structures.boundingBox((fromCenter ? surfacePos.subtract(size[0] / 2, size[2] / 2) : surfacePos).blockPos(0), size);
 
-                if (placed)
-                {
+                if (placed) {
                     RCWorldgenMonitor.start("placing " + structureID());
                     int y = placer.place(place(), structure().blockCollection());
                     RCWorldgenMonitor.stop();
@@ -522,16 +522,14 @@ public class StructureGenerator<S extends NBTStorable>
                 : this.instanceDataNBT != null ? load().map(load -> structure().loadInstanceData(load, this.instanceDataNBT, foreignTransformer()))
                 : prepare().flatMap(prepare ->
         {
-            try
-            {
+            try {
                 RCWorldgenMonitor.start("preparing " + structureID());
                 Optional<S> prepared = Optional.ofNullable(structure().prepareInstanceData(prepare, foreignTransformer()));
                 RCWorldgenMonitor.stop();
 
                 return prepared;
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 if (e instanceof ExpectedException && ((ExpectedException) e).isExpected())
                     RecurrentComplex.logger.error(String.format("Error preparing structure: %s, Cause: %s", structure(), e.getMessage()));
                 else
@@ -588,5 +586,62 @@ public class StructureGenerator<S extends NBTStorable>
     public interface ExpectedException
     {
         boolean isExpected();
+    }
+
+    public static class GenerationResult
+    {
+        public boolean succeeded()
+        {
+            return false;
+        }
+
+        public static class Success extends GenerationResult
+        {
+            public static Success
+                    complement = new Success(),
+                    contemporary = new Success();
+
+            @Override
+            public boolean succeeded()
+            {
+                return true;
+            }
+
+            public static class New extends Success
+            {
+                public final WorldStructureGenerationData.StructureEntry sight;
+
+                public New(WorldStructureGenerationData.StructureEntry sight)
+                {
+                    this.sight = sight;
+                }
+            }
+        }
+
+        public static class Failure extends GenerationResult
+        {
+            public static Failure
+                    placement = new Failure("No suitable place"),
+                    structureOverlap = new Failure("Overlapping Structure"),
+                    outOfBounds = new Failure("Out of Bounds"),
+                    cancel = new Failure("Cancelled for Other Reasons");
+            public final String description;
+
+            public Failure(String description)
+            {
+                this.description = description;
+            }
+
+            public static class Exception extends Failure
+            {
+                public final java.lang.Exception exception;
+
+                public Exception(java.lang.Exception exception)
+                {
+                    super("Error during generation");
+                    this.exception = exception;
+                }
+            }
+        }
     }
 }

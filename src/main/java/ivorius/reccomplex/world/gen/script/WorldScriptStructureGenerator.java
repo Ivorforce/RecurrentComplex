@@ -270,7 +270,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
     }
 
     @Nonnull
-    protected <T extends NBTStorable> Optional<WorldStructureGenerationData.StructureEntry> generate(StructureSpawnContext context, InstanceData instanceData, Structure<T> structure, ReadableInstanceData<T> structureData, String generationInfo)
+    protected <T extends NBTStorable> StructureGenerator.GenerationResult generate(StructureSpawnContext context, InstanceData instanceData, Structure<T> structure, ReadableInstanceData<T> structureData, String generationInfo)
     {
         StructureGenerator<T> generator = new StructureGenerator<>(structure).structureID(instanceData.structureID).asChild(context).generationInfo(generationInfo)
                 .lowerCoord(instanceData.lowerCoord).transform(instanceData.structureTransform);

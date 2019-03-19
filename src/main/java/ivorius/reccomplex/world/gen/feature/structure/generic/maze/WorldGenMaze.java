@@ -56,7 +56,7 @@ public class WorldGenMaze
         if (!context.generateMaturity.isFirstTime() && context.generationBB != null && !context.generationBB.intersectsWith(generator.boundingBox().get()))
             return null;
 
-        return generator.generate() != null;
+        return generator.generate().isPresent();
     }
 
     protected static BlockPos lowerCoord(Structure structure, BlockPos lowerCoord, AxisAlignedTransform2D placedTransform, BlockPos pos, AxisAlignedTransform2D transform)

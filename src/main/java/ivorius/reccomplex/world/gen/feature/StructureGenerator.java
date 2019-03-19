@@ -125,6 +125,7 @@ public class StructureGenerator<S extends NBTStorable>
     /**
      * @return null when creation failed, empty when no entry was created and an entry when there was
      */
+    @Nonnull
     public Optional<WorldStructureGenerationData.StructureEntry> generate()
     {
         Optional<S> optionalInstanceData = instanceData();

@@ -60,7 +60,7 @@
         "transformer": {
           "id": "multi_7de49dd2",
           "data": {
-            "environmentMatcher": "gen.type\u003dsapling",
+            "environmentMatcher": "",
             "transformers": [
               {
                 "type": "ensureBlocks",

@@ -52,7 +52,6 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
 
     public RCBiomeDecorator.DecorationType type;
 
-    public BlockPos spawnShift;
     public SelectivePlacer placer;
 
     public VanillaDecorationGeneration()
@@ -69,7 +68,6 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
         super(id != null ? id : randomID(VanillaDecorationGeneration.class));
         this.type = type;
         this.generationWeight = generationWeight;
-        this.spawnShift = spawnShift;
     }
 
     public static Gson createGson()
@@ -104,11 +102,6 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
     public void setID(@Nonnull String id)
     {
         this.id = id;
-    }
-
-    public void setSpawnShift(BlockPos spawnShift)
-    {
-        this.spawnShift = spawnShift;
     }
 
     @Override
@@ -186,10 +179,6 @@ public class VanillaDecorationGeneration extends GenerationType implements Envir
             if (src.generationWeight != null)
                 jsonObject.addProperty("generationWeight", src.generationWeight);
             jsonObject.add("type", context.serialize(src.type));
-
-            jsonObject.addProperty("spawnShiftX", src.spawnShift.getX());
-            jsonObject.addProperty("spawnShiftY", src.spawnShift.getY());
-            jsonObject.addProperty("spawnShiftZ", src.spawnShift.getZ());
 
             PresettedObjects.write(jsonObject, gson, src.biomeWeights, "biomeWeightsPreset", "generationBiomes");
             PresettedObjects.write(jsonObject, gson, src.dimensionWeights, "dimensionWeightsPreset", "generationDimensions");

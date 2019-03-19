@@ -104,7 +104,7 @@ public class CommandGenerateStructure extends SimpleCommand
         }
         else
         {
-            if (generator.generate() == null)
+            if (!generator.generate().isPresent())
                 throw RecurrentComplex.translations.commandException("commands.strucGen.noPlace");
         }
 

@@ -86,6 +86,11 @@ public class BlockScript extends Block implements UnstableBlock
     {
         boolean flag = worldIn.isBlockPowered(pos) || worldIn.isBlockPowered(pos.up());
         TileEntityBlockScript tileEntity = (TileEntityBlockScript) worldIn.getTileEntity(pos);
+
+        if (!tileEntity.redstoneTriggerable) {
+            return;
+        }
+
         boolean flag1 = tileEntity.redstoneTriggered;
 
         if (flag && !flag1)

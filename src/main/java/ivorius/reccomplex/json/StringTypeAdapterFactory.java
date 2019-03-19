@@ -8,6 +8,7 @@ package ivorius.reccomplex.json;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.*;
+import org.apache.commons.lang3.tuple.Pair;
 
 
 import javax.annotation.Nullable;
@@ -24,6 +25,8 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
     private Map<String, JsonDeserializer<? extends B>> deserializerMap = new HashMap<>();
     private Map<Class<? extends B>, JsonSerializer<? extends B>> serializerMap = new HashMap<>();
     private BiMap<Class<? extends B>, String> classMap = HashBiMap.create();
+
+    private Map<String, Pair<Class<? extends B>, JsonDeserializer<? extends B>>> legacyMap = new HashMap<>();
 
     private Gson gson = new Gson();
 
@@ -52,6 +55,11 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
     public String getObjectKey()
     {
         return objectKey;
+    }
+
+    public <T extends B> void registerLegacy(String id, Class<? extends T> clazz, @Nullable JsonDeserializer<T> deserializer)
+    {
+        legacyMap.put(id, Pair.of(clazz, deserializer));
     }
 
     public <T extends B> void register(String id, Class<? extends T> clazz, @Nullable JsonSerializer<T> serializer, @Nullable JsonDeserializer<T> deserializer)
@@ -103,18 +111,24 @@ public class StringTypeAdapterFactory<B> implements JsonSerializer<B>, JsonDeser
             if (jsonObject.has(typeKey) && jsonObject.has(objectKey))
             {
                 String type = JsonUtils.getString(jsonObject, typeKey);
+                JsonElement objectElement = jsonObject.get(objectKey);
+
+                Pair<Class<? extends B>, JsonDeserializer<? extends B>> legacy = legacyMap.get(type);
+                if (legacy != null) {
+                    return legacy.getRight().deserialize(objectElement, legacy.getLeft(), context);
+                }
+
                 Class<? extends B> typeClass = objectClass(type);
 
-                if (typeClass != null)
-                {
-                    JsonDeserializer<? extends B> deserializer = deserializer(type);
-
-                    return deserializer != null
-                        ? deserializer.deserialize(jsonObject.get(objectKey), typeClass, context)
-                        : gson.fromJson(jsonObject.get(objectKey), typeClass);
-                }
-                else
+                if (typeClass == null) {
                     throw new JsonParseException("Unknown type: " + type);
+                }
+
+                JsonDeserializer<? extends B> deserializer = deserializer(type);
+
+                return deserializer != null
+                    ? deserializer.deserialize(objectElement, typeClass, context)
+                    : gson.fromJson(objectElement, typeClass);
             }
         }
 

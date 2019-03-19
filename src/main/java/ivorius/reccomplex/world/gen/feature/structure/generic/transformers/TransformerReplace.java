@@ -8,34 +8,36 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.transformers;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import ivorius.ivtoolkit.blocks.BlockStates;
-import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.IvWorldData;
+import ivorius.reccomplex.utils.algebra.ExpressionCache;
+import ivorius.reccomplex.world.gen.feature.structure.Environment;
+import ivorius.reccomplex.utils.presets.PresettedObjects;
+import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
+import net.minecraft.util.math.BlockPos;
+import ivorius.ivtoolkit.gui.IntegerRange;
+import ivorius.ivtoolkit.random.WeightedSelector;
 import ivorius.ivtoolkit.tools.MCRegistry;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.gui.editstructure.transformers.TableDataSourceBTReplace;
+import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;
-import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.json.JsonUtils;
-import ivorius.reccomplex.nbt.NBTNone;
-import ivorius.reccomplex.utils.algebra.ExpressionCache;
-import ivorius.reccomplex.utils.expression.BlockExpression;
-import ivorius.reccomplex.utils.presets.PresettedList;
-import ivorius.reccomplex.utils.presets.PresettedObjects;
-import ivorius.reccomplex.world.gen.feature.structure.Environment;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureLoadContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructurePrepareContext;
 import ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext;
-import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.WeightedBlockState;
+import ivorius.reccomplex.utils.expression.BlockExpression;
 import ivorius.reccomplex.world.gen.feature.structure.generic.presets.WeightedBlockStatePresets;
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import ivorius.reccomplex.nbt.NBTStorable;
+import ivorius.reccomplex.utils.presets.PresettedList;
+import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -43,19 +45,22 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.function.Supplier;
 
 /**
  * Created by lukas on 25.05.14.
  */
-public class TransformerReplace extends TransformerSingleBlock<NBTNone>
+public class TransformerReplace extends TransformerSingleBlock<TransformerReplace.InstanceData>
 {
     public final PresettedList<WeightedBlockState> destination = new PresettedList<>(WeightedBlockStatePresets.instance(), null);
+
     public BlockExpression sourceMatcher;
+    public boolean uniformly;
 
     public TransformerReplace()
     {
-        this(null, BlockExpression.of(RecurrentComplex.specialRegistry, Blocks.WOOL));
+        this(null, BlockExpression.of(RecurrentComplex.specialRegistry, Blocks.WOOL, new IntegerRange(0, 15)));
         destination.setPreset("air");
     }
 
@@ -78,33 +83,22 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean matches(Environment environment, NBTNone instanceData, BlockPos sourcePos, IBlockState state)
+    public boolean matches(Environment environment, InstanceData instanceData, BlockPos sourcePos, IBlockState state)
     {
         return sourceMatcher.test(state);
     }
 
     @Override
-    public void transformBlock(NBTNone instanceData, Phase phase, StructureSpawnContext context, RunTransformer transformer, int[] areaSize, BlockPos coord, IBlockState sourceState)
+    public void transformBlock(InstanceData instanceData, Phase phase, StructureSpawnContext context, RunTransformer transformer, int[] areaSize, BlockPos coord, IBlockState sourceState)
     {
-        WeightedBlockState blockState;
-        if (destination.getContents().size() > 0)
-            blockState = WeightedSelector.selectItem(context.random, destination.getContents());
-        else
-            blockState = new WeightedBlockState(null, null, null);
+        if (uniformly) {
+            setBlock(context, areaSize, coord, instanceData.blockState, () -> instanceData.tileEntityInfo);
+        }
+        else {
+            WeightedBlockState state = selectRandomBlockState(context.random);
 
-        setBlock(context, areaSize, coord, blockState, () -> blockState.tileEntityInfo);
-    }
-
-    @Override
-    public NBTNone prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
-    {
-        return new NBTNone();
-    }
-
-    @Override
-    public NBTNone loadInstanceData(StructureLoadContext context, NBTBase nbt)
-    {
-        return new NBTNone();
+            setBlock(context, areaSize, coord, state, () -> state.tileEntityInfo);
+        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -122,9 +116,72 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
     }
 
     @Override
-    public boolean generatesInPhase(NBTNone instanceData, Phase phase)
+    public InstanceData prepareInstanceData(StructurePrepareContext context, IvWorldData worldData)
+    {
+        WeightedBlockState blockState = selectRandomBlockState(context.random);
+
+        return new InstanceData(
+                blockState,
+                blockState.tileEntityInfo != null ? blockState.tileEntityInfo.copy() : null
+        );
+    }
+
+    public WeightedBlockState selectRandomBlockState(Random random)
+    {
+        WeightedBlockState blockState;
+
+        if (destination.getContents().size() > 0)
+            blockState = WeightedSelector.selectItem(random, destination.getContents());
+        else
+            blockState = new WeightedBlockState(null, Blocks.AIR.getDefaultState(), null);
+
+        return blockState;
+    }
+
+    @Override
+    public InstanceData loadInstanceData(StructureLoadContext context, NBTBase nbt)
+    {
+        return new InstanceData(nbt instanceof NBTTagCompound ? (NBTTagCompound) nbt : new NBTTagCompound());
+    }
+
+    @Override
+    public boolean generatesInPhase(InstanceData instanceData, Phase phase)
     {
         return phase == Phase.BEFORE;
+    }
+
+    public static class InstanceData implements NBTStorable
+    {
+        public WeightedBlockState blockState;
+        public NBTTagCompound tileEntityInfo;
+
+        public InstanceData(WeightedBlockState blockState, NBTTagCompound tileEntityInfo)
+        {
+            this.blockState = blockState;
+            this.tileEntityInfo = tileEntityInfo;
+        }
+
+        public InstanceData(NBTTagCompound compound)
+        {
+            this.blockState = new WeightedBlockState(RecurrentComplex.specialRegistry, compound.getCompoundTag("blockState"));
+
+            this.tileEntityInfo = compound.hasKey("tileEntityInfo", Constants.NBT.TAG_COMPOUND)
+                    ? compound.getCompoundTag("tileEntityInfo").copy()
+                    : null;
+        }
+
+        @Override
+        public NBTBase writeToNBT()
+        {
+            NBTTagCompound compound = new NBTTagCompound();
+
+            compound.setTag("blockState", blockState.writeToNBT(RecurrentComplex.specialRegistry));
+
+            if (tileEntityInfo != null)
+                compound.setTag("tileEntityInfo", tileEntityInfo.copy());
+
+            return compound;
+        }
     }
 
     public static class Serializer implements JsonDeserializer<TransformerReplace>, JsonSerializer<TransformerReplace>
@@ -163,12 +220,15 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
 
             TransformerReplace transformer = new TransformerReplace(id, expression);
 
-            PresettedObjects.read(jsonObject, gson, transformer.destination, "destinationPreset", "destination", new TypeToken<ArrayList<WeightedBlockState>>() {}.getType());
+            transformer.uniformly = JsonUtils.getBoolean(jsonObject, "uniform", true);
+
+            PresettedObjects.read(jsonObject, gson, transformer.destination, "destinationPreset", "destination", new TypeToken<ArrayList<WeightedBlockState>>(){}.getType());
 
             if (jsonObject.has("dest"))
             {
                 // Legacy
-                Block dest = registry.blockFromID(new ResourceLocation(JsonUtils.getString(jsonObject, "dest")));
+                String destBlock = JsonUtils.getString(jsonObject, "dest");
+                Block dest = registry.blockFromID(new ResourceLocation(destBlock));
                 byte[] destMeta = context.deserialize(jsonObject.get("destMetadata"), byte[].class);
 
                 transformer.destination.setToCustom();
@@ -184,12 +244,32 @@ public class TransformerReplace extends TransformerSingleBlock<NBTNone>
         {
             JsonObject jsonObject = new JsonObject();
 
+            jsonObject.addProperty("uniform", transformer.uniformly);
             jsonObject.addProperty("id", transformer.id());
             jsonObject.addProperty("sourceExpression", transformer.sourceMatcher.getExpression());
 
             PresettedObjects.write(jsonObject, gson, transformer.destination, "destinationPreset", "destination");
 
             return jsonObject;
+        }
+    }
+
+    public static class NonUniformSerializer implements JsonDeserializer<TransformerReplace>
+    {
+        protected Serializer serializer;
+
+        public NonUniformSerializer(Serializer serializer)
+        {
+            this.serializer = serializer;
+        }
+
+
+        @Override
+        public TransformerReplace deserialize(JsonElement jsonElement, Type par2Type, JsonDeserializationContext context)
+        {
+            TransformerReplace transformer = serializer.deserialize(jsonElement, par2Type, context);
+            transformer.uniformly = false;
+            return transformer;
         }
     }
 }

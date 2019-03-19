@@ -36,6 +36,11 @@ public class SerializableStringTypeRegistry<T>
         return adapterFactory;
     }
 
+    public <T1 extends T> void registerLegacy(String id, Class<T1> clazz, @Nullable JsonDeserializer<T1> deserializer)
+    {
+        adapterFactory.registerLegacy(id, clazz, deserializer);
+    }
+
     public <TI extends T> void registerType(String id, Class<TI> clazz, JsonSerializer<TI> serializer, JsonDeserializer<TI> deserializer)
     {
         adapterFactory.register(id, clazz, serializer, deserializer);

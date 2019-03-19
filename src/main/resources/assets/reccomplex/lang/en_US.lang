@@ -346,11 +346,12 @@ reccomplex.transformer.pillar=Pillar
 reccomplex.transformer.pillar.dest.block=Dest Block
 reccomplex.transformer.pillar.dest.metadata= Dest Metadata
 reccomplex.transformer.pillar.tooltip=Constructs pillars down to the floor
-reccomplex.transformer.replaceAll=Replace Uniformly
-reccomplex.transformer.replaceAll.tooltip=Replaces blocks uniformly
-reccomplex.transformer.replace=Replace
+reccomplex.transformer.replaceAll=Replace
+reccomplex.transformer.replaceAll.tooltip=Replaces blocks on generation
+reccomplex.transformer.replace.uniformity.true=Uniformly
+reccomplex.transformer.replace.uniformity.false=Each differently
+reccomplex.transformer.replace.uniformity.tooltip=Whether all blocks should be<br>replaced by the same block.
 reccomplex.transformer.replace.destinations=Replace With
-reccomplex.transformer.replace.tooltip=Replaces blocks individually
 
 reccomplex.transformer.ruins=Ruins
 reccomplex.transformer.ruins.tooltip=Deconstructs and decays the structure

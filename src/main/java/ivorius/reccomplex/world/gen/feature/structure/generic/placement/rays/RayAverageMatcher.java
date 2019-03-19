@@ -159,7 +159,10 @@ public class RayAverageMatcher extends FactorLimit.Ray
     @Override
     public String displayString()
     {
-        return IvTranslations.get("reccomplex.placer.factors.limit.rays." + getRayRegistry().iDForType(getClass()) + (up ? ".title.up" : ".title.down"));
+        return String.format("%s %s",
+                directionArrow(up),
+                IvTranslations.get("reccomplex.placer.factors.limit.rays.average")
+        );
     }
 
     @SideOnly(Side.CLIENT)

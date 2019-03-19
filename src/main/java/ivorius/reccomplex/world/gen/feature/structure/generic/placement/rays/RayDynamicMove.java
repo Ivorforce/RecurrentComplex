@@ -63,7 +63,10 @@ public class RayDynamicMove extends FactorLimit.Ray
     @Override
     public String displayString()
     {
-        return IvTranslations.format("reccomplex.placer.factors.limit.rays.dynmove.title." + (up ? "up" : "down"), IvTranslations.get("reccomplex.placer.factors.limit.rays.dynmove.type." + IvGsonHelper.serializedName(type)));
+        return String.format("%s %s",
+                directionArrow(up),
+                IvTranslations.get("reccomplex.placer.factors.limit.rays.dynmove.type." + IvGsonHelper.serializedName(type))
+        );
     }
 
     @SideOnly(Side.CLIENT)

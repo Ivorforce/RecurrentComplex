@@ -26,6 +26,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -133,6 +134,16 @@ public class FactorLimit extends GenericPlacer.Factor
         public Ray(Float weight)
         {
             this.weight = weight;
+        }
+
+        @NotNull
+        public static String directionArrow(Boolean up)
+        {
+            if (up == null) {
+                return "▶";
+            }
+
+            return up ? "▲" : "▼";
         }
 
         public abstract OptionalInt cast(WorldCache cache, StructurePlaceContext context, IvBlockCollection collection, Set<BlockPos> surface, int y);

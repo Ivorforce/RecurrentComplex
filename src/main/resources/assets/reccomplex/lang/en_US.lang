@@ -597,8 +597,8 @@ reccomplex.placer.factors.limit.ray.weight.tooltip=The ratio to which this area 
 
 reccomplex.placer.factors.limit.rays.move=Move
 reccomplex.placer.factors.limit.rays.move.tooltip=Move a specific amount of blocks.
-reccomplex.placer.factors.limit.rays.move.title=Move %s
-reccomplex.placer.factors.limit.rays.move.title.mark=Mark %s
+reccomplex.placer.factors.limit.rays.move.title=Move
+reccomplex.placer.factors.limit.rays.move.title.mark=Mark
 reccomplex.placer.factors.limit.rays.move.tooltip=Move up or down a specified distance
 reccomplex.placer.factors.limit.rays.move.distance=Distance
 
@@ -614,16 +614,12 @@ reccomplex.placer.factors.limit.rays.dynpos.type.world_height.tooltip=Top of the
 
 reccomplex.placer.factors.limit.rays.dynmove=Dynamic Move
 reccomplex.placer.factors.limit.rays.dynmove.tooltip=Move a dynamic amount of blocks
-reccomplex.placer.factors.limit.rays.dynmove.title.up=Up: %s
-reccomplex.placer.factors.limit.rays.dynmove.title.down=Down: %s
 reccomplex.placer.factors.limit.rays.dynmove.type=Amount
 reccomplex.placer.factors.limit.rays.dynmove.type.structure_height=Structure Height
 reccomplex.placer.factors.limit.rays.dynmove.type.structure_height.tooltip=The height of the spawning structure
 
 reccomplex.placer.factors.limit.rays.matcher=Finder
 reccomplex.placer.factors.limit.rays.matcher.tooltip=Move until the terrain fulfills<br>the set criteria.
-reccomplex.placer.factors.limit.rays.matcher.title.up=Finder (upwards)
-reccomplex.placer.factors.limit.rays.matcher.title.down=Finder (downwards)
 reccomplex.placer.factors.limit.rays.matcher.condition=Condition
 reccomplex.placer.factors.limit.rays.matcher.direction=Ray Direction
 reccomplex.placer.factors.limit.rays.matcher.ratio=Required Ratio
@@ -631,8 +627,6 @@ reccomplex.placer.factors.limit.rays.matcher.ratio.tooltip=The ratio of matched 
 
 reccomplex.placer.factors.limit.rays.average=Surface Finder
 reccomplex.placer.factors.limit.rays.average.tooltip=Find the average surface height<br>fulfilling the criteria.
-reccomplex.placer.factors.limit.rays.average.title.up=Average Ceiling
-reccomplex.placer.factors.limit.rays.average.title.down=Average Surface
 
 reccomplex.placer.factors.match=Match
 reccomplex.placer.factors.match.tooltip=Ensure specific blocks from the<br>structure to have fitting<br>terrain to spawn in.

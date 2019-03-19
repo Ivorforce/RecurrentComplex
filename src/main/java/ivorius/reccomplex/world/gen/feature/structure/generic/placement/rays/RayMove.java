@@ -53,7 +53,12 @@ public class RayMove extends FactorLimit.Ray
     @Override
     public String displayString()
     {
-        return IvTranslations.format(String.format("reccomplex.placer.factors.limit.rays.%s.title%s", getRayRegistry().iDForType(getClass()), weight != null ? ".mark" : ""), String.valueOf(distance));
+        return String.format("%s %s %s",
+                directionArrow(distance == 0 ? null : distance > 0),
+                IvTranslations.get(String.format("reccomplex.placer.factors.limit.rays.%s.title%s",
+                        getRayRegistry().iDForType(getClass()), weight != null ? ".mark" : "")),
+                String.valueOf(Math.abs(distance))
+        );
     }
 
     @SideOnly(Side.CLIENT)

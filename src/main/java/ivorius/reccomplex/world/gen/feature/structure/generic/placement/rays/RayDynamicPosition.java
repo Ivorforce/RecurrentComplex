@@ -62,7 +62,10 @@ public class RayDynamicPosition extends FactorLimit.Ray
     @Override
     public String displayString()
     {
-        return IvTranslations.get("reccomplex.placer.factors.limit.rays.dynpos.type." + IvGsonHelper.serializedName(type));
+        return String.format("%s %s",
+                directionArrow(null),
+                IvTranslations.get("reccomplex.placer.factors.limit.rays.dynpos.type." + IvGsonHelper.serializedName(type))
+        );
     }
 
     @SideOnly(Side.CLIENT)

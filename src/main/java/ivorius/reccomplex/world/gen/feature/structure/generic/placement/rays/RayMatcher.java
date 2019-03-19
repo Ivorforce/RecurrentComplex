@@ -82,8 +82,7 @@ public class RayMatcher extends FactorLimit.Ray
         Set<BlockPos> shiftedSurface = RayAverageMatcher.shifted(context, collection, surface);
 
         int height = cache.world.getHeight();
-        while (true)
-        {
+        while (true) {
             if (y < 0 || y >= height) // Found none
                 return OptionalInt.empty();
 
@@ -99,7 +98,10 @@ public class RayMatcher extends FactorLimit.Ray
     @Override
     public String displayString()
     {
-        return IvTranslations.get("reccomplex.placer.factors.limit.rays." + getRayRegistry().iDForType(getClass()) + (up ? ".title.up" : ".title.down"));
+        return String.format("%s %s",
+                directionArrow(up),
+                IvTranslations.get("reccomplex.placer.factors.limit.rays.matcher")
+        );
     }
 
     @SideOnly(Side.CLIENT)

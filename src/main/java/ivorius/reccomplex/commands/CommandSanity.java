@@ -77,6 +77,10 @@ public class CommandSanity extends CommandExpecting
         Parameters parameters = Parameters.of(args, expect()::declare);
         boolean sane = true;
 
+        if (RecurrentComplex.isLite()) {
+            commandSender.sendMessage(new TextComponentString("Recurrent Complex is in lightweight mode!"));
+        }
+
         if (StructureRegistry.INSTANCE.ids().isEmpty())
         {
             commandSender.sendMessage(new TextComponentString("No registered structures!"));

@@ -57,7 +57,7 @@ commands.rc.large.error=The selection is too big! (And if it weren't, this comma
 commands.structure.notGeneric=Structure '%s' is not generic!
 commands.structure.notRegistered=No structure found by name '%s'!
 
-commands.strucGen.noPlace=The structure failed to spawn: %s
+commands.strucGen.failure=The structure failed to spawn: %s
 commands.strucGen.noStructure=No structure registered by the name of '%s'
 
 commands.strucImport.noStructure=No structure registered by the name of '%s'

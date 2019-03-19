@@ -9,9 +9,7 @@ import gnu.trove.map.TObjectFloatMap;
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
-import ivorius.reccomplex.gui.table.screen.GuiScreenEditTable;
 import ivorius.reccomplex.gui.tweak.GuiTweakStructures;
-import ivorius.reccomplex.gui.tweak.TableDataSourceTweakStructures;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.WorldServer;
@@ -43,6 +41,7 @@ public class PacketSpawnTweaksHandler extends SchedulingMessageHandler<PacketSpa
         RCConfig.spawnTweaks.clear();
         RCConfig.spawnTweaks.putAll(message.getData());
 
+        RCConfig.writeSpawnTweaks();
         RecurrentComplex.config.save();
     }
 

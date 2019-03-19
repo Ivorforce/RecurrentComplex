@@ -86,7 +86,12 @@ public class TableDataSourceTweakStructuresList extends TableDataSourceSegmented
                 .addCell(() -> {
                     TableCellFloatNullable cell = new TableCellFloatNullable(null, getTweak(id), 1, 0, 10, "D", "T");
                     cell.setScale(Scales.pow(5));
-                    cell.addListener(value -> tweaks.put(id, value));
+                    cell.addListener(value -> {
+                        if (value == null)
+                            tweaks.remove(id);
+                        else
+                            tweaks.put(id, value);
+                    });
                     return cell;
                 })
                 .addAction(() -> {

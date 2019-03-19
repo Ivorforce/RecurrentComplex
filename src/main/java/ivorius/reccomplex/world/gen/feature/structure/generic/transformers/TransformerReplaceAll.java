@@ -88,7 +88,7 @@ public class TransformerReplaceAll extends TransformerSingleBlock<TransformerRep
     @Override
     public String getDisplayString()
     {
-        return "Replace All: " + sourceMatcher.getDisplayString(null);
+        return "Replace Uniformly: " + sourceMatcher.getDisplayString(null);
     }
 
     @SideOnly(Side.CLIENT)

@@ -61,7 +61,7 @@ public class TableDataSourceTweakStructuresList extends TableDataSourceSegmented
         editingIDs.addAll(StructureRegistry.INSTANCE.ids());
 
         if (search != null) {
-            editingIDs.removeIf(id -> !id.toLowerCase.contains(search.toLowerCase()));
+            editingIDs.removeIf(id -> !id.toLowerCase().contains(search.toLowerCase()));
         }
 
         editingIDs.sort(String::compareTo);

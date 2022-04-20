@@ -212,7 +212,9 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
         }
         else
         {
-            Collection<Pair<Structure<?>, ListGeneration>> generationInfos = ListGeneration.structures(StructureRegistry.INSTANCE, structureListID, front).collect(Collectors.toList());
+            EnumFacing curFront = front != null ? Directions.rotate(front, transform) : front;
+
+            Collection<Pair<Structure<?>, ListGeneration>> generationInfos = ListGeneration.structures(StructureRegistry.INSTANCE, structureListID, curFront).collect(Collectors.toList());
 
             if (generationInfos.size() > 0)
             {
@@ -226,7 +228,6 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                 int rotations;
                 if (front != null)
                 {
-                    EnumFacing curFront = Directions.rotate(front, transform);
                     mirrorX = structure.isMirrorable() && structure.isRotatable() && random.nextBoolean();
                     Integer neededRotations = Directions.getHorizontalClockwiseRotations(generationInfo.front, curFront, mirrorX);
                     rotations = neededRotations != null ? neededRotations : 0;

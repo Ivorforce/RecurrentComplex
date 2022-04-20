@@ -140,10 +140,10 @@ public class FactorLimit extends GenericPlacer.Factor
         public static String directionArrow(Boolean up)
         {
             if (up == null) {
-                return "▶";
+                return "\u25ba";
             }
 
-            return up ? "▲" : "▼";
+            return up ? "\u25b2" : "\u25bc";
         }
 
         public abstract OptionalInt cast(WorldCache cache, StructurePlaceContext context, IvBlockCollection collection, Set<BlockPos> surface, int y);

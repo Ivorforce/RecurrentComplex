@@ -228,7 +228,7 @@ public class WorldScriptStructureGenerator implements WorldScript<WorldScriptStr
                 {
                     EnumFacing curFront = Directions.rotate(front, transform);
                     mirrorX = structure.isMirrorable() && structure.isRotatable() && random.nextBoolean();
-                    Integer neededRotations = Directions.getHorizontalClockwiseRotations(curFront, generationInfo.front, mirrorX);
+                    Integer neededRotations = Directions.getHorizontalClockwiseRotations(generationInfo.front, curFront, mirrorX);
                     rotations = neededRotations != null ? neededRotations : 0;
                 }
                 else

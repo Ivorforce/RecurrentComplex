@@ -36,8 +36,8 @@ public class TableDataSourceNBTList extends TableDataSourceSegmented
 
     protected NBTTagList nbt;
 
-    protected String earlierTitle = TextFormatting.BOLD + "↑";
-    protected String laterTitle = TextFormatting.BOLD + "↓";
+    protected String earlierTitle = TextFormatting.BOLD + "\u2191";
+    protected String laterTitle = TextFormatting.BOLD + "\u2193";
     protected String deleteTitle = TextFormatting.RED + "-";
     protected String addTitle = TextFormatting.GREEN + "+";
 

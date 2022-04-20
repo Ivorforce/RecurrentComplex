@@ -136,9 +136,9 @@ public class GuiTable extends Gui
 
         int roundedScrollIndex = MathHelper.floor(currentScroll + 0.5f);
 
-        scrollUpButton = new GuiButton(-1, tableBounds.getMaxX() + SCROLL_BAR_MARGIN, tableBounds.getMinY(), SCROLL_BAR_WIDTH - SCROLL_BAR_MARGIN, 20, TextFormatting.BOLD + "↑");
+        scrollUpButton = new GuiButton(-1, tableBounds.getMaxX() + SCROLL_BAR_MARGIN, tableBounds.getMinY(), SCROLL_BAR_WIDTH - SCROLL_BAR_MARGIN, 20, TextFormatting.BOLD + "\u2191");
         delegate.addButtonToTable(scrollUpButton);
-        scrollDownButton = new GuiButton(-1, tableBounds.getMaxX() + SCROLL_BAR_MARGIN, tableBounds.getMaxY() - 20, SCROLL_BAR_WIDTH - SCROLL_BAR_MARGIN, 20, TextFormatting.BOLD + "↓");
+        scrollDownButton = new GuiButton(-1, tableBounds.getMaxX() + SCROLL_BAR_MARGIN, tableBounds.getMaxY() - 20, SCROLL_BAR_WIDTH - SCROLL_BAR_MARGIN, 20, TextFormatting.BOLD + "\u2193");
         delegate.addButtonToTable(scrollDownButton);
 
         boolean needsUpScroll = canScrollUp(numberOfCells);

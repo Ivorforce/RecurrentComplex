@@ -74,11 +74,11 @@ public class RCStrings
                 {
                     char fst = str.charAt(i);
                     char scd = str.charAt(i + 1);
-                    if (fst == '§' && scd != '§')
+                    if (fst == '\u00a7' && scd != '\u00a7')
                         prevFormat = fst + (scd + prevFormat);
                 }
 
-            if (str.charAt(abbreviate.getLeft() - 1) == '§')
+            if (str.charAt(abbreviate.getLeft() - 1) == '\u00a7')
                 abbreviated = abbreviated.substring(1); // Cut off format char
 
             abbreviated = "..." + prevFormat + abbreviated;
@@ -86,7 +86,7 @@ public class RCStrings
 
         if (abbreviate.getRight() < str.length())
         {
-            if (str.charAt(abbreviate.getRight() - 1) == '§')
+            if (str.charAt(abbreviate.getRight() - 1) == '\u00a7')
                 abbreviated = abbreviated.substring(0, abbreviated.length() - 1); // Cut off format char
 
             abbreviated = abbreviated + TextFormatting.RESET + "...";

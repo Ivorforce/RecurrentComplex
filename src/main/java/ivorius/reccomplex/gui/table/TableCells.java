@@ -11,7 +11,6 @@ import ivorius.reccomplex.gui.table.cell.TableCellPresetAction;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -80,7 +79,7 @@ public class TableCells
                 add(enabled, type, IvTranslations.get(baseKey + type), getTooltip(baseKey, type)))).collect(Collectors.toList());
     }
 
-    @NotNull
+    @Nonnull
     public static List<String> getTooltip(String baseKey, String type)
     {
         return IvTranslations.formatLines(baseKey + type + ".tooltip");

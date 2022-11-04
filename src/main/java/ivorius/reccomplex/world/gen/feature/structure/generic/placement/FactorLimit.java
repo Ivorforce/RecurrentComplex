@@ -26,7 +26,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -136,7 +135,7 @@ public class FactorLimit extends GenericPlacer.Factor
             this.weight = weight;
         }
 
-        @NotNull
+        @Nonnull
         public static String directionArrow(Boolean up)
         {
             if (up == null) {

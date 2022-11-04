@@ -25,7 +25,6 @@ import ivorius.reccomplex.world.gen.feature.structure.generic.maze.SavedMazePath
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -126,7 +125,7 @@ public class TableDataSourceMazePath extends TableDataSourceSegmented
         selection.add(Selection.Area.from(true, path.getDestRoom().getCoordinates(), path.getDestRoom().getCoordinates(), "d"));
     }
 
-    @NotNull
+    @Nonnull
     public static GuiHider.Visualizer visualizePaths(MazeVisualizationContext visualizationContext, Collection<SavedMazePath> mazePaths)
     {
         if (mazePaths.size() <= 0)

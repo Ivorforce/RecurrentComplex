@@ -11,8 +11,8 @@ import ivorius.ivtoolkit.maze.components.MazeRoom;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 
 public class MazeVisualizationContext
@@ -26,7 +26,7 @@ public class MazeVisualizationContext
         this.scale = scale != null ? scale : new int[]{1, 1, 1};
     }
 
-    @NotNull
+    @Nonnull
     public Selection mapSelection(Selection selection)
     {
         Selection realWorldSelection = new Selection(3);
@@ -42,7 +42,7 @@ public class MazeVisualizationContext
         return realWorldSelection;
     }
 
-    @NotNull
+    @Nonnull
     protected BlockPos apply(int[] coordinates)
     {
         return lowerCoord.add(BlockPositions.fromIntArray(IvVecMathHelper.mul(scale, coordinates)));

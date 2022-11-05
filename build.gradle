@@ -1,14 +1,7 @@
 buildscript {
     repositories {
-        jcenter()
-        maven {
-            name = "forge"
-            url = "https://maven.minecraftforge.net"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
+        maven { url = 'https://maven.minecraftforge.net/' }
+        mavenCentral()
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:3.+'
@@ -55,16 +48,32 @@ minecraft {
         }
     }
 }
+task listrepos {
+    doLast {
+        println "Repositories:"
+        project.repositories.each {
+            if (it.name == '__plugin_repository__Gradle Central Plugin Repository') {
+                println "Name: " + it.name + "; url: " + it.url
+            } else {
+                println "Name: " + it.displayName
+            }
+        }
+    }
+}
 
 configurations {
     shade
     implementation.extendsFrom shade
 }
 
+repositories {
+    mavenLocal()
+}
+
 dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2859'
-    deobf 'ivorius.ivtoolkit:IvToolkit:1.3.3-1.12'
-    shade 'ivorius.mcopts:MCOpts:0.9.9.4'
+    compile fg.deobf('ivorius.ivtoolkit:IvToolkit:1.3.3-1.12')
+    shade fg.deobf('ivorius.mcopts:MCOpts:0.9.9.4')
 }
 
 jar {

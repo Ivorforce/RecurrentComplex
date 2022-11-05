@@ -33,7 +33,7 @@ public class RCAccessorWorldServer
             }
         }
         if (blockEventQueueField == null)
-            blockEventQueueField = ReflectionHelper.findField(WorldServer.class, "field_147490_S", "blockEventQueue");
+            blockEventQueueField = ReflectionHelper.findField(WorldServer.class, "blockEventQueue", "field_147490_S");
         if (blockEventListConstructor == null)
         {
             blockEventListConstructor = worldServerServerBlockEventListClass.getDeclaredConstructors()[0];

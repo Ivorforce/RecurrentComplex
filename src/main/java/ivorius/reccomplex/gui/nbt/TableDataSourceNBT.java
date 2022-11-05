@@ -74,7 +74,7 @@ public class TableDataSourceNBT
             {
                 if (value >= Byte.MIN_VALUE && value <= Byte.MAX_VALUE)
                 {
-                    ReflectionHelper.setPrivateValue(NBTTagByte.class, cNBT, (byte) (int) value, "field_74756_a", "data");
+                    ReflectionHelper.setPrivateValue(NBTTagByte.class, cNBT, (byte) (int) value, "data", "field_74756_a");
                     cell.setValidityState(GuiValidityStateIndicator.State.VALID);
                 }
                 else
@@ -90,7 +90,7 @@ public class TableDataSourceNBT
             {
                 if (value >= Short.MIN_VALUE && value <= Short.MAX_VALUE)
                 {
-                    ReflectionHelper.setPrivateValue(NBTTagShort.class, cNBT, (short) (int) value, "field_74752_a", "data");
+                    ReflectionHelper.setPrivateValue(NBTTagShort.class, cNBT, (short) (int) value, "data", "field_74752_a");
                     cell.setValidityState(GuiValidityStateIndicator.State.VALID);
                 }
                 else
@@ -102,7 +102,7 @@ public class TableDataSourceNBT
         {
             NBTTagInt cNBT = (NBTTagInt) nbt;
             TableCellIntTextField cell = new TableCellIntTextField(null, cNBT.getInt());
-            cell.addListener(value -> ReflectionHelper.setPrivateValue(NBTTagInt.class, cNBT, value, "field_74748_a", "data"));
+            cell.addListener(value -> ReflectionHelper.setPrivateValue(NBTTagInt.class, cNBT, value, "data", "field_74748_a"));
             return cell;
         }
         else if (nbt instanceof NBTTagLong)
@@ -110,7 +110,7 @@ public class TableDataSourceNBT
             NBTTagLong cNBT = (NBTTagLong) nbt;
             TableCellStringLong cell = new TableCellStringLong(null, cNBT.getLong());
             cell.addListener(value ->
-                    ReflectionHelper.setPrivateValue(NBTTagLong.class, cNBT, value, "field_74753_a", "data"));
+                    ReflectionHelper.setPrivateValue(NBTTagLong.class, cNBT, value, "data", "field_74753_a"));
             return cell;
         }
         else if (nbt instanceof NBTTagFloat)
@@ -118,7 +118,7 @@ public class TableDataSourceNBT
             NBTTagFloat cNBT = (NBTTagFloat) nbt;
             TableCellStringDouble cell = new TableCellStringDouble(null, cNBT.getDouble());
             cell.addListener(value ->
-                    ReflectionHelper.setPrivateValue(NBTTagFloat.class, cNBT, (float) (double) value, "field_74750_a", "data"));
+                    ReflectionHelper.setPrivateValue(NBTTagFloat.class, cNBT, (float) (double) value, "data", "field_74750_a"));
             return cell;
         }
         else if (nbt instanceof NBTTagDouble)
@@ -126,7 +126,7 @@ public class TableDataSourceNBT
             NBTTagDouble cNBT = (NBTTagDouble) nbt;
             TableCellStringDouble cell = new TableCellStringDouble(null, cNBT.getDouble());
             cell.addListener(value ->
-                    ReflectionHelper.setPrivateValue(NBTTagDouble.class, cNBT, value, "field_74755_a", "data"));
+                    ReflectionHelper.setPrivateValue(NBTTagDouble.class, cNBT, value, "data", "field_74755_a"));
             return cell;
         }
         else if (nbt instanceof NBTTagByteArray)
@@ -144,7 +144,7 @@ public class TableDataSourceNBT
                 else
                 {
                     cell.setValidityState(GuiValidityStateIndicator.State.VALID);
-                    ReflectionHelper.setPrivateValue(NBTTagByteArray.class, cNBT, bytes, "field_74754_a", "data");
+                    ReflectionHelper.setPrivateValue(NBTTagByteArray.class, cNBT, bytes, "data", "field_74754_a");
                 }
             });
             return cell;
@@ -155,7 +155,7 @@ public class TableDataSourceNBT
             NBTTagString cNBT = (NBTTagString) nbt;
             TableCellString cell = new TableCellString(null, cNBT.getString());
             cell.addListener(value ->
-                    ReflectionHelper.setPrivateValue(NBTTagString.class, cNBT, value, "field_74751_a", "data"));
+                    ReflectionHelper.setPrivateValue(NBTTagString.class, cNBT, value, "data", "field_74751_a"));
             return cell;
         }
         else if (nbt instanceof NBTTagList)
@@ -185,7 +185,7 @@ public class TableDataSourceNBT
                 else
                 {
                     cell.setValidityState(GuiValidityStateIndicator.State.VALID);
-                    ReflectionHelper.setPrivateValue(NBTTagIntArray.class, cNBT, ints, "field_74749_a", "intArray");
+                    ReflectionHelper.setPrivateValue(NBTTagIntArray.class, cNBT, ints, "intArray", "field_74749_a");
                 }
             });
             return cell;

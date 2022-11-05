@@ -21,7 +21,7 @@ public class RCAccessorCommandBase
     private static void initializeUniqueID()
     {
         if (commandAdmin == null)
-            commandAdmin = ReflectionHelper.findField(CommandBase.class, "field_71533_a", "commandListener");
+            commandAdmin = ReflectionHelper.findField(CommandBase.class, "commandListener", "field_71533_a");
     }
 
     public static ICommandListener getCommandAdmin()

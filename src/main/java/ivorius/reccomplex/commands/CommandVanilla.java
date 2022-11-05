@@ -137,7 +137,7 @@ public class CommandVanilla extends CommandSplit
 
     public static void setBiomeProvider(WorldProvider provider, BiomeProvider biomeProvider)
     {
-        ReflectionHelper.setPrivateValue(WorldProvider.class, provider, biomeProvider, "field_76578_c", "biomeProvider");
+        ReflectionHelper.setPrivateValue(WorldProvider.class, provider, biomeProvider, "biomeProvider", "field_76578_c");
     }
 
     public static List<ITextComponent> sightNames(World world, BlockPos pos)

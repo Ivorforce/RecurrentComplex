@@ -21,7 +21,7 @@ public class RCAccessorEntity
     private static void initializeUniqueID()
     {
         if (uniqueID == null)
-            uniqueID = ReflectionHelper.findField(Entity.class, "field_96093_i", "entityUniqueID");
+            uniqueID = ReflectionHelper.findField(Entity.class, "entityUniqueID", "field_96093_i");
     }
 
     public static void setEntityUniqueID(Entity entity, UUID uuid)

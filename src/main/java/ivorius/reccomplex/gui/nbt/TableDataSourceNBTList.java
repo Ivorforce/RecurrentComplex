@@ -120,7 +120,7 @@ public class TableDataSourceNBTList extends TableDataSourceSegmented
                             {
                                 while (!nbt.hasNoTags())
                                     nbt.removeTag(nbt.tagCount() - 1);
-                                ReflectionHelper.setPrivateValue(NBTTagList.class, nbt, (byte) id, "field_74746_b", "tagType");
+                                ReflectionHelper.setPrivateValue(NBTTagList.class, nbt, (byte) id, "tagType", "field_74746_b");
                                 delegate.reloadData();
                             }))
                             .collect(Collectors.toList())

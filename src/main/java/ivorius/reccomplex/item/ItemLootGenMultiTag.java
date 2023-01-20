@@ -69,24 +69,28 @@ public class ItemLootGenMultiTag extends ItemLootGenerationTag implements ItemSy
 
         inventory.setStackInSlot(fromSlot, ItemStack.EMPTY);
 
-        if (lootTable != null)
+        if (lootTable == null)
+            return;
+            
+        IntegerRange range = getGenerationCount(stack);
+
+        if (range.getMin() > range.getMax())
+            return;  // Just a sanity check, otherwise the next line might crash
+            
+        int amount = random.nextInt(range.getMax() - range.getMin() + 1) + range.getMin();
+
+        TIntList emptySlots = emptySlots(inventory);
+
+        for (int i = 0; i < amount; i++)
         {
-            IntegerRange range = getGenerationCount(stack);
-            int amount = range.getMin() < range.getMax() ? random.nextInt(range.getMax() - range.getMin() + 1) + range.getMin() : 0;
+            int slot = emptySlots.isEmpty()
+                ? random.nextInt(inventory.getSlots())
+                : emptySlots.removeAt(random.nextInt(emptySlots.size()));
 
-            TIntList emptySlots = emptySlots(inventory);
+            ItemStack generated = lootTable.getRandomItemStack(server, random);
 
-            for (int i = 0; i < amount; i++)
-            {
-                int slot = emptySlots.isEmpty()
-                        ? random.nextInt(inventory.getSlots())
-                        : emptySlots.removeAt(random.nextInt(emptySlots.size()));
-
-                ItemStack generated = lootTable.getRandomItemStack(server, random);
-
-                if (generated != null)
-                    inventory.setStackInSlot(slot, generated);
-            }
+            if (generated != null)
+                inventory.setStackInSlot(slot, generated);
         }
     }
 

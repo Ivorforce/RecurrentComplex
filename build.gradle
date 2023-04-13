@@ -30,9 +30,7 @@ if (ENV.DRONE_BUILD_NUMBER) {
 }
 
 repositories {
-	flatDir {
-       dirs("libs")
-    }
+    mavenLocal()
 }
 
 group = "ivorius.reccomplex" // http://maven.apache.org/guides/mini/guide-naming-conventions.html

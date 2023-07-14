@@ -96,7 +96,7 @@ jar {
 shadowJar {
     archiveClassifier = ''
     configurations = [project.configurations.shade]
-    relocate 'ivorius.mcopts', "${project.group}..shadow.mcopts"
+    relocate 'ivorius.mcopts', "${project.group}.shadow.mcopts"
     finalizedBy 'reobfShadowJar'
 }
 

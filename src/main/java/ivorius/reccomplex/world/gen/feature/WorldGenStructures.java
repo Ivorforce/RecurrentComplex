@@ -50,10 +50,12 @@ public class WorldGenStructures
             if (structurePredicate != null && !structurePredicate.test(structure))
                 return;
 
-            new StructureGenerator<>(structure).world(world).generationInfo(staticGenInfo)
-                    .seed(random.nextLong()).randomPosition(pos, staticGenInfo.placer).fromCenter(true)
-                    .partially(RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES, chunkPos)
-                    .generate();
+            if (chunkPos.x == (pos.getX() >> 4) && chunkPos.z == (pos.getZ() >> 4)) {
+                new StructureGenerator<>(structure).world(world).generationInfo(staticGenInfo)
+                        .seed(random.nextLong()).randomPosition(pos, staticGenInfo.placer).fromCenter(true)
+                        .partially(RecurrentComplex.PARTIALLY_SPAWN_NATURAL_STRUCTURES, chunkPos)
+                        .generate();
+            }
         });
     }
 

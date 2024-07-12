@@ -98,10 +98,15 @@ public class StaticGeneration extends GenerationType
         return statics.flatMap(pair ->
         {
             StaticGeneration info = pair.getRight();
+            Stream<BlockSurfacePos> stream;
             //noinspection ConstantConditions
-            return info.hasPattern()
-                    ? Chunks.repeatIntersections(chunkPos, info.getPos(spawnPos), info.pattern.repeatX, info.pattern.repeatZ).map(pos -> Triple.of(pair.getLeft(), info, pos))
-                    : Stream.of(Triple.of(pair.getLeft(), info, info.getPos(spawnPos)));
+            if (info.hasPattern()) {
+                stream = Chunks.repeatIntersections(chunkPos, info.getPos(spawnPos), info.pattern.repeatX, info.pattern.repeatZ);
+
+            } else {
+                stream = Stream.of(info.getPos(spawnPos));
+            }
+            return stream.map(pos -> new BlockSurfacePos(pos.getX() + (int) (((Math.random() - 0.5f) * 2) * info.pattern.randomShiftX), pos.getZ() + (int) (((Math.random() - 0.5f) * 2) * info.pattern.randomShiftZ))).map(pos -> Triple.of(pair.getLeft(), info, pos));
         });
     }
 

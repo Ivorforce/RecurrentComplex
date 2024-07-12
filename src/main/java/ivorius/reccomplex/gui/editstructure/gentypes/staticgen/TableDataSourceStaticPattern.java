@@ -46,12 +46,12 @@ public class TableDataSourceStaticPattern extends TableDataSourceSegmented
         });
 
         addSegment(1, () -> {
-            TableCellIntSlider cell = new TableCellIntSlider("shiftX", pattern.randomShiftX, 0, 10);
+            TableCellIntSlider cell = new TableCellIntSlider("shiftX", pattern.randomShiftX, 0, 256);
             cell.addListener(val -> pattern.randomShiftX = val);
             return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.x"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift.tooltip"));
         }, () -> {
-            TableCellIntSlider cell = new TableCellIntSlider("shiftZ", pattern.randomShiftZ, 0, 10);
+            TableCellIntSlider cell = new TableCellIntSlider("shiftZ", pattern.randomShiftZ, 0, 256);
             cell.addListener(val -> pattern.randomShiftZ = val);
             return new TitledCell(IvTranslations.get("reccomplex.generationInfo.static.pattern.rshift.z"), cell)
                     .withTitleTooltip(IvTranslations.getLines("reccomplex.generationInfo.static.pattern.rshift.tooltip"));

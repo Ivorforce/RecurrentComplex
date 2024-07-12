@@ -24,6 +24,8 @@ archivesBaseName = "RecurrentComplex"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
+compileJava.options.encoding = "UTF-8"
+
 minecraft {
     mappings channel: 'snapshot', version: '20171003-1.12'
 
@@ -68,6 +70,9 @@ configurations {
 
 repositories {
     mavenLocal()
+    flatDir {
+        dir 'libs'
+    }
 }
 
 dependencies {

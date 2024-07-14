@@ -264,6 +264,10 @@ reccomplex.generationInfo.static.pattern.repeat.tooltip=Number of blocks after w
 reccomplex.generationInfo.static.pattern.rshift.tooltip=Random displacement for each<br>placement of the structure.
 reccomplex.generationInfo.static.pattern.rshift.x=Random shift (x)
 reccomplex.generationInfo.static.pattern.rshift.z=Random shift (z)
+reccomplex.generationInfo.static.pattern.biomes=Biomes List
+reccomplex.generationInfo.static.pattern.biomes.tooltip=List of biomes where structure can<br>be/cannot be generated, depending<br>on whitelist/blacklist setting
+reccomplex.generationInfo.static.pattern.biomes.whitelist=Biome List mode
+reccomplex.generationInfo.static.pattern.biomes.whitelist.tooltip=Toggles Whitelist/Blacklist<br>for biome settings. Biomes must be<br>put in format "modid:name, modid:name"
 
 reccomplex.generationInfo.structureList=Structure List
 reccomplex.generationInfo.structureList.tooltip=As part of a structure list<br>(Used in structure blocks)

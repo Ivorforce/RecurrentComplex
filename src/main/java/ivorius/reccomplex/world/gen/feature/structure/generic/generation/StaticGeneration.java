@@ -34,6 +34,9 @@ import org.apache.commons.lang3.tuple.Triple;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -94,19 +97,26 @@ public class StaticGeneration extends GenerationType
                     && (info.pattern != null || Chunks.contains(chunkPos, info.getPos(spawnPos)));
         };
         Stream<Pair<Structure<?>, StaticGeneration>> statics = registry.getGenerationTypes(StaticGeneration.class).stream().filter(predicate);
-
         return statics.flatMap(pair ->
         {
             StaticGeneration info = pair.getRight();
             Stream<BlockSurfacePos> stream;
             //noinspection ConstantConditions
             if (info.hasPattern()) {
-                stream = Chunks.repeatIntersections(chunkPos, info.getPos(spawnPos), info.pattern.repeatX, info.pattern.repeatZ);
-
+                stream = Chunks
+                        .repeatIntersections(chunkPos, info.getPos(spawnPos), info.pattern.repeatX, info.pattern.repeatZ)
+                        .map(pos ->
+                                new BlockSurfacePos(
+                                        pos.getX() + (int) (((Math.random() - 0.5f) * 2) * info.pattern.randomShiftX),
+                                        pos.getZ() + (int) (((Math.random() - 0.5f) * 2) * info.pattern.randomShiftZ)))
+                        .filter(pos -> {
+                            String biome = world.getBiome(pos.blockPos(0)).getRegistryName().toString();
+                            return info.pattern.biomeList(biome);
+                        });
             } else {
                 stream = Stream.of(info.getPos(spawnPos));
             }
-            return stream.map(pos -> new BlockSurfacePos(pos.getX() + (int) (((Math.random() - 0.5f) * 2) * info.pattern.randomShiftX), pos.getZ() + (int) (((Math.random() - 0.5f) * 2) * info.pattern.randomShiftZ))).map(pos -> Triple.of(pair.getLeft(), info, pos));
+            return stream.map(pos -> Triple.of(pair.getLeft(), info, pos));
         });
     }
 
@@ -179,7 +189,19 @@ public class StaticGeneration extends GenerationType
         public int randomShiftX = 0;
         @SerializedName("randomShiftZ")
         public int randomShiftZ = 0;
+
+        @SerializedName("biomeList")
+        public String biomeList = "";
+        @SerializedName("whitelist")
+        public boolean white = false;
+
+        public boolean biomeList(String biome) {
+            List<String> biomes = Arrays.asList(biomeList.replace(" ", "").split(","));
+            return white == biomes.contains(biome);
+        }
     }
+
+
 
     public static class Serializer implements JsonSerializer<StaticGeneration>, JsonDeserializer<StaticGeneration>
     {

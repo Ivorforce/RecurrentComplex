@@ -122,11 +122,11 @@ public class TransformerGenerationBehavior extends Transformer<TransformerGenera
                 if (tileEntityInstanceData != null) // Otherwise, don't generate
                 {
                     instanceData.tileEntities.put(src, tileEntityInstanceData);
+                }
 
-                    //noinspection unchecked
-                    if (tileEntity.shouldPlaceInWorld(context, tileEntityInstanceData)) {
-                        instanceData.allowedGTECoords.add(src);
-                    }
+                //noinspection unchecked
+                if (tileEntity.shouldPlaceInWorld(context, tileEntityInstanceData)) {
+                    instanceData.allowedGTECoords.add(src);
                 }
             });
         });

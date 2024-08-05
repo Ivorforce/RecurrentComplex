@@ -29,6 +29,7 @@ import ivorius.reccomplex.world.gen.feature.structure.Placer;
 import ivorius.reccomplex.world.gen.feature.structure.Structure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.GenericStructure;
 import ivorius.reccomplex.world.gen.feature.structure.generic.generation.GenerationType;
+import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
@@ -63,6 +64,7 @@ public class CommandGenerateStructure extends SimpleCommand
                 .named("gen").then(RCE::generationType, p -> p.get(0))
                 .named("rotation", "r").then(MCE::rotation)
                 .named("seed").words(RCE::randomString).descriptionU("seed")
+                .named("y").then(MCE::y).descriptionU("y position")
                 .flag("mirror", "m")
                 .flag("select", "s")
                 .flag("suggest", "t")
@@ -91,6 +93,10 @@ public class CommandGenerateStructure extends SimpleCommand
                 .structureID(structureID).randomPosition(pos, placer).fromCenter(true)
                 .maturity(suggest ? SUGGEST : FIRST)
                 .transform(transform);
+
+        if (parameters.has("y")) {
+            generator.lowerCoord(pos.blockPos(parameters.get("y").map(CommandBase::parseInt).get()));
+        }
 
         if (structure instanceof GenericStructure && world == sender.getEntityWorld())
         {

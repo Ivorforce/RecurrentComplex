@@ -21,7 +21,6 @@ import ivorius.reccomplex.commands.parameters.expect.IvE;
 import ivorius.reccomplex.commands.parameters.expect.RCE;
 import ivorius.reccomplex.operation.OperationGenerateStructure;
 import ivorius.reccomplex.operation.OperationRegistry;
-import ivorius.reccomplex.random.Person;
 import ivorius.reccomplex.utils.RCBlockAreas;
 import ivorius.reccomplex.utils.RCStrings;
 import ivorius.reccomplex.world.gen.feature.StructureGenerator;
@@ -33,12 +32,12 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.WorldServer;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
-import java.util.Random;
 
 import static ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext.GenerateMaturity.FIRST;
 import static ivorius.reccomplex.world.gen.feature.structure.context.StructureSpawnContext.GenerateMaturity.SUGGEST;
@@ -95,7 +94,9 @@ public class CommandGenerateStructure extends SimpleCommand
                 .transform(transform);
 
         if (parameters.has("y")) {
-            generator.lowerCoord(pos.blockPos(parameters.get("y").map(CommandBase::parseInt).get()));
+            Double yPosition = parameters.get("y").map(y -> CommandBase.parseDouble(sender.getPosition().getY(), y, -30000000, 30000000, false)).get();
+
+            generator.lowerCoord(pos.blockPos(MathHelper.floor(yPosition)));
         }
 
         if (structure instanceof GenericStructure && world == sender.getEntityWorld())

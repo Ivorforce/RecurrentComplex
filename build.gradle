@@ -1,42 +1,43 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven {
-            name = "forge"
-            url = "http://files.minecraftforge.net/maven"
-        }
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
+        maven { url = "https://maven.minecraftforge.net/" }
+        maven { url = "https://maven.anatawa12.com/snapshots/" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+        // anatawa12's ForgeGradle 1.2 fork: builds 1.7.10 on modern Gradle/JDK
+        classpath('com.anatawa12.forge:ForgeGradle:1.2-1.0.+') { changing = true }
     }
 }
 
 apply plugin: 'forge'
 
 version = "0.9.7.1.1"
-def ENV = System.getenv()
-if (ENV.DRONE_BUILD_NUMBER) {
-    version += ".n" + ENV.DRONE_BUILD_NUMBER
-}
-
-group= "ivorius.reccomplex" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group = "ivorius.reccomplex"
 archivesBaseName = "RecurrentComplex"
 
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
 minecraft {
-    version = "1.7.10-10.13.4.1558-1.7.10"
-    runDir = "eclipse"
+    version = "1.7.10-10.13.4.1614-1.7.10"
+    runDir = "run"
+    // No explicit mappings: use forge's packaged MCP conf, which is what the
+    // original 1.7 build compiled against (adding stable_12 mismatched the source).
+}
+
+repositories {
+    // Local prebuilt IvToolkit 1.2.1 (dev jar) — the 1.7.10-compatible build
+    maven { url "file:///Users/lukas/Downloads/" }
 }
 
 dependencies {
     compile 'ivorius.ivtoolkit:IvToolkit:1.2.1:dev'
 }
 
-processResources
-{
+processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
@@ -44,96 +45,11 @@ processResources
     // replace stuff in mcmod.info, nothing else
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
-        
-    // copy everything else, thats not the mcmod.info
+
+    // copy everything else, that's not the mcmod.info
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-    }
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
-}
-
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'dev'
-}
-
-artifacts {
-    archives sourceJar
-    archives deobfJar
-}
-
-uploadArchives() {
-    dependsOn reobf
-
-    if (project.hasProperty("mavenUrl") && project.hasProperty("mavenUser") && project.hasProperty("mavenPassword")) {
-        repositories {
-            logger.info('Publishing to files server')
-
-            mavenDeployer {
-
-                repository(url: project."mavenUrl") {
-                    authentication(userName: project."mavenUser", password: project."mavenPassword")
-                }
-
-                addFilter('deobf') {artifact, file ->
-                    artifact.attributes['classifier'] == 'dev'
-                }
-                pom('deobf').version = project.version
-                addFilter('sources') {artifact, file ->
-                    artifact.attributes['classifier'] == 'sources'
-                }
-                pom('sources').version = project.version
-                addFilter('universal') {artifact, file ->
-                    artifact.attributes['classifier'] == null
-                }
-                pom('universal').version = project.version
-
-                pom {
-                    groupId = project.group
-                    version = project.version
-                    artifactId = project.archivesBaseName
-                    project {
-                        name project.archivesBaseName
-                        packaging 'jar'
-                        description 'Handles structures for the game Minecraft'
-                        url 'https://github.com/Ivorforce/RecurrentComplex'
-
-                        scm {
-                            url 'scm:git:git@github.com:Ivorforce/RecurrentComplex.git'
-                            connection 'scm:git:git@github.com:Ivorforce/RecurrentComplex.git'
-                            developerConnection 'scm:git:git@github.com:Ivorforce/RecurrentComplex.git'
-                        }
-
-                        issueManagement {
-                            system 'github'
-                            url 'https://github.com/Ivorforce/RecurrentComplex/issues'
-                        }
-
-                        developers {
-                            developer {
-                                id 'Ivorius'
-                                name 'Ivorius'
-                                roles { role 'developer' }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    else {
-        logger.log(LogLevel.ERROR, 'No upload variables defined!');
     }
 }

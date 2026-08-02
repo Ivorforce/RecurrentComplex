@@ -70,6 +70,8 @@ public class PacketWorldDataHandler extends SchedulingMessageHandler<PacketWorld
     @Override
     public void processServer(PacketWorldData message, MessageContext ctx, WorldServer world)
     {
+        if (RecurrentComplex.checkPerms(ctx.getServerHandler().player)) return;
+
         BlockPos origin = message.source;
         BlockArea area = new BlockArea(message.capturePoint1.add(origin), message.capturePoint2.add(origin));
 

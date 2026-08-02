@@ -6,7 +6,6 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 
 import com.google.gson.JsonObject;
-import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.table.datasource.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;

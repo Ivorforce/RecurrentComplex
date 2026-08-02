@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableSet;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
 import ivorius.ivtoolkit.math.Transforms;
-import ivorius.ivtoolkit.maze.components.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.*;
 import ivorius.reccomplex.RCConfig;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.nbt.NBTStorable;

@@ -8,7 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.maze;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;

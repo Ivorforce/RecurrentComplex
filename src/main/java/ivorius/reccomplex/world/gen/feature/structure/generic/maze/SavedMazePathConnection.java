@@ -7,8 +7,8 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.maze;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import ivorius.ivtoolkit.maze.components.MazePassage;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.MazePassage;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.json.JsonUtils;
 import ivorius.reccomplex.utils.algebra.ExpressionCache;

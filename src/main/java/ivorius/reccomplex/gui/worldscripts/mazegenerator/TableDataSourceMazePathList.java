@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.MazeRoom;
 import ivorius.reccomplex.gui.table.TableCells;
 import ivorius.reccomplex.gui.table.TableDelegate;
 import ivorius.reccomplex.gui.table.TableNavigator;

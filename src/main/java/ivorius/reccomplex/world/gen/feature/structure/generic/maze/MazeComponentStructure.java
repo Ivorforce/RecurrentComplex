@@ -11,9 +11,9 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
-import ivorius.ivtoolkit.maze.components.MazePassage;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.ivtoolkit.maze.components.WeightedMazeComponent;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.MazePassage;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.MazeRoom;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.WeightedMazeComponent;
 import ivorius.reccomplex.world.gen.feature.structure.VariableDomain;
 
 import java.util.Map;

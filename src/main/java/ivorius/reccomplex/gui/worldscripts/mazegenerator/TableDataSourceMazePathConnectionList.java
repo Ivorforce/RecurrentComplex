@@ -6,7 +6,7 @@
 package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import com.google.common.collect.Lists;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.MazeRoom;
 import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.gui.table.TableCells;

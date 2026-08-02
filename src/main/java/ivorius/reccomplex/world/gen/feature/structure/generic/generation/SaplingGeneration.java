@@ -6,7 +6,6 @@
 package ivorius.reccomplex.world.gen.feature.structure.generic.generation;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.maze.classic.MazeRoom;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.reccomplex.client.rendering.MazeVisualizationContext;
 import ivorius.reccomplex.gui.editstructure.gentypes.TableDataSourceSaplingGeneration;

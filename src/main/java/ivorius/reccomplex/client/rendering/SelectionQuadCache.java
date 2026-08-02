@@ -7,7 +7,7 @@ package ivorius.reccomplex.client.rendering;
 
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.MazeRoom;
 import ivorius.ivtoolkit.rendering.grid.GridQuadCache;
 import ivorius.reccomplex.gui.GuiHider;
 import ivorius.reccomplex.world.gen.feature.structure.generic.Selection;

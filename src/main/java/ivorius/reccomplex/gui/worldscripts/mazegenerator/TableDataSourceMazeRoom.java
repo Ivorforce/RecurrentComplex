@@ -7,7 +7,7 @@ package ivorius.reccomplex.gui.worldscripts.mazegenerator;
 
 import com.google.common.collect.ImmutableList;
 import ivorius.ivtoolkit.gui.IntegerRange;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.MazeRoom;
 import ivorius.reccomplex.gui.table.GuiTable;
 import ivorius.reccomplex.gui.table.cell.*;
 import ivorius.reccomplex.gui.table.datasource.TableDataSourceSegmented;

@@ -8,7 +8,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules;
 import com.google.common.collect.Sets;
 import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
-import ivorius.ivtoolkit.maze.components.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

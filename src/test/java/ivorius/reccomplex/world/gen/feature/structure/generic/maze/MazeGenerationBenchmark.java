@@ -7,7 +7,7 @@ package ivorius.reccomplex.world.gen.feature.structure.generic.maze;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
-import ivorius.ivtoolkit.maze.components.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.*;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.BlockedConnectorStrategy;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.LimitAABBStrategy;
 import ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules.ReachabilityStrategy;

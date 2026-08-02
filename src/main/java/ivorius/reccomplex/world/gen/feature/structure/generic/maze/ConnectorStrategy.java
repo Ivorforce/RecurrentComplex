@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.maze;
 
-import ivorius.ivtoolkit.maze.components.ConnectionStrategy;
-import ivorius.ivtoolkit.maze.components.MazePassage;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.ConnectionStrategy;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.MazePassage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.maze;
 
-import ivorius.ivtoolkit.maze.components.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.*;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;

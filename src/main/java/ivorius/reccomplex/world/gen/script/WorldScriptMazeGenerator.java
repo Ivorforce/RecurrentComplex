@@ -10,7 +10,7 @@ import gnu.trove.list.array.TIntArrayList;
 import ivorius.ivtoolkit.blocks.BlockPositions;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
-import ivorius.ivtoolkit.maze.components.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.*;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import ivorius.ivtoolkit.tools.IvTranslations;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;

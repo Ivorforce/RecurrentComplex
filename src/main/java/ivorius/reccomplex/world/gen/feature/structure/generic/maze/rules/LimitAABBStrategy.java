@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.maze.rules;
 
-import ivorius.ivtoolkit.maze.components.*;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.*;
 
 import javax.annotation.Nonnull;
 import java.util.function.Predicate;

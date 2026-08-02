@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.world.gen.feature.structure.generic.maze;
 
-import ivorius.ivtoolkit.maze.components.MazePassage;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.MazePassage;
+import ivorius.reccomplex.world.gen.feature.structure.generic.maze.components.MazeRoom;
 import ivorius.reccomplex.world.gen.feature.structure.Environment;
 
 import java.util.Map;

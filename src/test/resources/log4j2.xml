@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Quietens IvToolkit during maze tests. It warns once per room it can't fill, which is expected
+  Quietens the maze connector during tests. It warns once per room it can't fill, which is expected
   when the benchmark deliberately starves the connector of tile shapes.
 -->
 <Configuration status="OFF">
@@ -10,7 +10,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="ivtoolkit" level="ERROR"/>
+        <Logger name="reccomplex" level="ERROR"/>
         <Root level="ERROR">
             <AppenderRef ref="Console"/>
         </Root>

@@ -28,6 +28,9 @@ public class PacketEditTileEntityHandler extends SchedulingMessageHandler<Packet
     public void processServer(PacketEditTileEntity message, MessageContext ctx, WorldServer server)
     {
         EntityPlayer player = ctx.getServerHandler().player;
+
+        if (RecurrentComplex.checkPerms(player)) return;
+
         World world = player.world;
 
         TileEntity tileEntity = world.getTileEntity(message.getPos());

@@ -79,6 +79,21 @@ public class StructureSaveHandler implements FileTypeHandler
         File parent = RCFileTypeRegistry.getStructuresDirectory(activeFolder);
         if (parent != null)
         {
+            // Guard against path traversal: structureName may originate from a network packet
+            try
+            {
+                if (!new File(parent, structureName).getCanonicalPath().startsWith(parent.getCanonicalPath() + File.separator))
+                {
+                    RecurrentComplex.logger.error("Refusing to save structure outside its directory: " + structureName);
+                    return false;
+                }
+            }
+            catch (IOException e)
+            {
+                RecurrentComplex.logger.error("Error validating structure path: " + structureName, e);
+                return false;
+            }
+
             String json = registry.createJSONFromStructure(info);
 
             if (RecurrentComplex.USE_ZIP_FOR_STRUCTURE_FILES)

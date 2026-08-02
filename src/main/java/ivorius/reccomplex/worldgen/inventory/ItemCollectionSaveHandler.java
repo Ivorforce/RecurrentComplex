@@ -73,6 +73,22 @@ public class ItemCollectionSaveHandler implements FileTypeHandler
             if (inventoryGeneratorsFile != null)
             {
                 File newFile = new File(inventoryGeneratorsFile, String.format("%s.%s", name, FILE_SUFFIX));
+
+                // Guard against path traversal: name may originate from a network packet
+                try
+                {
+                    if (!newFile.getCanonicalPath().startsWith(inventoryGeneratorsFile.getCanonicalPath() + File.separator))
+                    {
+                        RecurrentComplex.logger.error("Refusing to save inventory generator outside its directory: " + name);
+                        return false;
+                    }
+                }
+                catch (IOException e)
+                {
+                    RecurrentComplex.logger.error("Error validating inventory generator path: " + name, e);
+                    return false;
+                }
+
                 String json = GenericItemCollectionRegistry.INSTANCE.createJSONFromComponent(info);
 
                 try

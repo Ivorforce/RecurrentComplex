@@ -50,19 +50,31 @@ public class MazeGenerationBenchmark
 
     public static Result run(int width, int depth, int tiles, int reversesPerRoom, long seed)
     {
+        return run(width, depth, components(tiles), reversesPerRoom, seed, false);
+    }
+
+    /**
+     * @param preventConnection runs the reachability rule in its opposite mode, where the two
+     *                          openings must end up unreachable from one another.
+     */
+    public static Result run(int width, int depth, List<Piece> components, int reversesPerRoom, long seed, boolean preventConnection)
+    {
         MazePassage entry = new MazePassage(new MazeRoom(-1, 0, 0), new MazeRoom(0, 0, 0));
         MazePassage exit = new MazePassage(new MazeRoom(width, 0, depth - 1), new MazeRoom(width - 1, 0, depth - 1));
 
-        MorphingMazeComponent<Connector> maze = shell(width, depth, Arrays.asList(entry, exit));
-        List<Piece> components = components(tiles);
+        // A shell that joins up its own openings would connect them whatever the rule decides
+        MorphingMazeComponent<Connector> maze = shell(width, depth, Arrays.asList(entry, exit), !preventConnection);
         ConnectorStrategy strategy = new ConnectorStrategy();
 
         int[] bounds = new int[]{width, 1, depth};
         List<Collection<MazePassage>> points = Arrays.asList(Collections.singleton(entry), Collections.singleton(exit));
 
         List<MazePredicate<Connector>> predicates = new ArrayList<>();
-        predicates.add(ReachabilityStrategy.connect(points, new LimitAABBStrategy<>(bounds),
-                ReachabilityStrategy.compileAbilities(components), strategy));
+        if (preventConnection)
+            predicates.add(ReachabilityStrategy.preventConnection(points, new LimitAABBStrategy<>(bounds), strategy));
+        else
+            predicates.add(ReachabilityStrategy.connect(points, new LimitAABBStrategy<>(bounds),
+                    ReachabilityStrategy.compileAbilities(components), strategy));
         predicates.add(new LimitAABBStrategy<>(bounds));
         predicates.add(new BlockedConnectorStrategy<>(BLOCKED));
 
@@ -74,7 +86,7 @@ public class MazeGenerationBenchmark
         long nanos = System.nanoTime() - start;
 
         return new Result(layout(placed), placed.size(), connects(maze, entry, exit),
-                counting.canPlaceCalls, counting.canPlaceTrue, nanos, counting.canPlaceNanos);
+                counting.canPlaceCalls, counting.canPlaceTrue, counting.reversals, nanos, counting.canPlaceNanos);
     }
 
     /**
@@ -108,9 +120,75 @@ public class MazeGenerationBenchmark
     }
 
     /**
+     * Room offsets per piece shape: single, domino along x, domino along z, L, square. The single
+     * has to be in the mix, since without it the connector cannot fill a one-room gap and gives up
+     * before placing anything.
+     */
+    public static final int[][][] SHAPES = {
+            {{0, 0, 0}},
+            {{0, 0, 0}, {1, 0, 0}},
+            {{0, 0, 0}, {0, 0, 1}},
+            {{0, 0, 0}, {1, 0, 0}, {0, 0, 1}},
+            {{0, 0, 0}, {1, 0, 0}, {0, 0, 1}, {1, 0, 1}},
+    };
+
+    /**
+     * Pieces spanning up to four rooms, with pseudo-random openings.
+     * <p>
+     * Worth covering separately from {@link #components}: a piece covering several rooms carries
+     * reachability between its own exits, so taking one back has to undo edges rather than just
+     * rooms and exits. Single-room pieces never produce that case.
+     */
+    public static List<Piece> multiRoomComponents(int variantsPerShape, long seed)
+    {
+        Random random = new Random(seed);
+        List<Piece> pieces = new ArrayList<>();
+
+        for (int shape = 0; shape < SHAPES.length; shape++)
+        {
+            Set<MazeRoom> rooms = new LinkedHashSet<>();
+            for (int[] offset : SHAPES[shape])
+                rooms.add(new MazeRoom(offset));
+
+            List<MazePassage> boundary = new ArrayList<>();
+            for (MazeRoom room : rooms)
+                MazeRooms.neighborPassages(room)
+                        .filter(passage -> !(rooms.contains(passage.getLeft()) && rooms.contains(passage.getRight())))
+                        .filter(passage -> passage.getRight().getCoordinate(1) == 0) // Horizontal only
+                        .forEach(boundary::add);
+
+            for (int variant = 0; variant < variantsPerShape; variant++)
+            {
+                Map<MazePassage, Connector> exits = new LinkedHashMap<>();
+                int open = 0;
+
+                for (MazePassage passage : boundary)
+                {
+                    boolean isOpen = random.nextInt(3) > 0;
+                    open += isOpen ? 1 : 0;
+                    exits.put(passage, isOpen ? PATH : WALL);
+                }
+
+                if (open < 2)
+                    continue; // A dead end makes the search fail outright rather than backtrack
+
+                addMissingExits(rooms, exits, WALL);
+                pieces.add(new Piece("S" + shape + "V" + variant, rooms, exits, reachability(exits)));
+            }
+        }
+
+        return pieces;
+    }
+
+    /**
      * The enclosing wall, with the given openings punched into it for a rule to connect.
      */
     public static MorphingMazeComponent<Connector> shell(int width, int depth, Collection<MazePassage> openings)
+    {
+        return shell(width, depth, openings, true);
+    }
+
+    public static MorphingMazeComponent<Connector> shell(int width, int depth, Collection<MazePassage> openings, boolean connectOpenings)
     {
         Set<MazeRoom> rooms = new LinkedHashSet<>();
         for (int x = -1; x <= width; x++)
@@ -124,7 +202,7 @@ public class MazeGenerationBenchmark
         addMissingExits(rooms, exits, WALL);
 
         MorphingMazeComponent<Connector> maze = new SetMazeComponent<>();
-        maze.add(new SetMazeComponent<>(rooms, exits, reachability(exits)));
+        maze.add(new SetMazeComponent<>(rooms, exits, reachability(exits, connectOpenings)));
         return maze;
     }
 
@@ -142,12 +220,18 @@ public class MazeGenerationBenchmark
 
     protected static Multimap<MazePassage, MazePassage> reachability(Map<MazePassage, Connector> exits)
     {
+        return reachability(exits, true);
+    }
+
+    protected static Multimap<MazePassage, MazePassage> reachability(Map<MazePassage, Connector> exits, boolean connectOpenings)
+    {
         Multimap<MazePassage, MazePassage> reachability = HashMultimap.create();
 
         Set<MazePassage> open = exits.keySet().stream().filter(passage -> !BLOCKED.contains(exits.get(passage)))
                 .collect(Collectors.toCollection(LinkedHashSet::new));
 
-        SetMazeComponent.connectAll(open, reachability);
+        if (connectOpenings)
+            SetMazeComponent.connectAll(open, reachability);
         open.forEach(passage -> reachability.put(passage, passage.inverse())); // Leading outside
 
         return reachability;
@@ -209,8 +293,9 @@ public class MazeGenerationBenchmark
                 predicateNanos += result.predicateNanos;
                 calls += result.canPlaceCalls;
 
-                System.out.printf("  seed=%-3d rooms=%-4d canPlace=%-8d %7.1f ms  connected=%-5b layout=%s%n",
-                        seed, result.placed, result.canPlaceCalls, result.nanos / 1e6, result.connected, result.layout);
+                System.out.printf("  seed=%-3d rooms=%-4d canPlace=%-8d reversals=%-7d %7.1f ms  connected=%-5b layout=%s%n",
+                        seed, result.placed, result.canPlaceCalls, result.reversals, result.nanos / 1e6,
+                        result.connected, result.layout);
             }
 
             System.out.printf("%dx%d tiles=%s: %.1f ms over %d mazes, %.0f%% in predicates, %d canPlace calls%n%n",
@@ -226,16 +311,19 @@ public class MazeGenerationBenchmark
         public final boolean connected;
         public final long canPlaceCalls;
         public final long canPlaceAccepted;
+        /** How often the search took a placement back - i.e. how hard this run exercised undo. */
+        public final long reversals;
         public final long nanos;
         public final long predicateNanos;
 
-        public Result(String layout, int placed, boolean connected, long canPlaceCalls, long canPlaceAccepted, long nanos, long predicateNanos)
+        public Result(String layout, int placed, boolean connected, long canPlaceCalls, long canPlaceAccepted, long reversals, long nanos, long predicateNanos)
         {
             this.layout = layout;
             this.placed = placed;
             this.connected = connected;
             this.canPlaceCalls = canPlaceCalls;
             this.canPlaceAccepted = canPlaceAccepted;
+            this.reversals = reversals;
             this.nanos = nanos;
             this.predicateNanos = predicateNanos;
         }
@@ -252,6 +340,7 @@ public class MazeGenerationBenchmark
         public long canPlaceCalls;
         public long canPlaceTrue;
         public long canPlaceNanos;
+        public long reversals;
 
         public Counting(MazePredicate<C> delegate)
         {
@@ -286,6 +375,7 @@ public class MazeGenerationBenchmark
         @Override
         public void willUnplace(MorphingMazeComponent<C> maze, ShiftedMazeComponent<?, C> component)
         {
+            reversals++; // Exactly one per taken-back placement
             delegate.willUnplace(maze, component);
         }
 

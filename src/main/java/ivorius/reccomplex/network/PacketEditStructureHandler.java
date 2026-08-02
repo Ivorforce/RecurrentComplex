@@ -56,6 +56,9 @@ public class PacketEditStructureHandler implements IMessageHandler<PacketEditStr
         {
             NetHandlerPlayServer netHandlerPlayServer = ctx.getServerHandler();
             EntityPlayerMP player = netHandlerPlayServer.playerEntity;
+
+            if (!player.canCommandSenderUseCommand(2, "")) return null;
+
             StructureEntityInfo structureEntityInfo = StructureEntityInfo.getStructureEntityInfo(player);
 
             GenericStructureInfo genericStructureInfo = message.getStructureInfo();

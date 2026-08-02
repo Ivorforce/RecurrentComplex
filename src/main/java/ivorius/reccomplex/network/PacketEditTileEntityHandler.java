@@ -32,6 +32,9 @@ public class PacketEditTileEntityHandler implements IMessageHandler<PacketEditTi
         else
         {
             EntityPlayer player = ctx.getServerHandler().playerEntity;
+
+            if (!player.canCommandSenderUseCommand(2, "")) return null;
+
             World world = player.worldObj;
 
             TileEntity tileEntity = world.getTileEntity(message.getX(), message.getY(), message.getZ());

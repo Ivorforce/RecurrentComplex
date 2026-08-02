@@ -39,6 +39,8 @@ public class PacketEditInventoryGeneratorHandler implements IMessageHandler<Pack
             NetHandlerPlayServer playServer = ctx.getServerHandler();
             EntityPlayerMP player = playServer.playerEntity;
 
+            if (!player.canCommandSenderUseCommand(2, "")) return null;
+
             if (ItemCollectionSaveHandler.saveInventoryGenerator(message.getInventoryGenerator(), message.getKey()))
             {
                 player.addChatMessage(ServerTranslations.format("inventorygen.save.success", message.getKey()));

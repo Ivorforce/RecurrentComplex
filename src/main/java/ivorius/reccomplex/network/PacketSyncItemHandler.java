@@ -18,7 +18,7 @@ public class PacketSyncItemHandler extends PacketEditInventoryItemHandler<Packet
     @Override
     public void affectItem(EntityPlayerMP player, ItemStack stack, PacketSyncItem message)
     {
-        if (stack != null)
+        if (stack != null && stack.getItem() instanceof ItemSyncable)
         {
             ItemSyncable itemSyncable = (ItemSyncable) stack.getItem();
             itemSyncable.readSyncedNBT(message.data, stack);

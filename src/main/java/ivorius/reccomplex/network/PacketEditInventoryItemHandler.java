@@ -27,6 +27,9 @@ public abstract class PacketEditInventoryItemHandler<P extends PacketEditInvento
         {
             NetHandlerPlayServer playServer = ctx.getServerHandler();
             EntityPlayerMP player = playServer.playerEntity;
+
+            if (!player.canCommandSenderUseCommand(2, "")) return null;
+
             affectItem(player, player.inventory.getStackInSlot(message.getInventorySlot()), message);
             player.openContainer.detectAndSendChanges();
         }

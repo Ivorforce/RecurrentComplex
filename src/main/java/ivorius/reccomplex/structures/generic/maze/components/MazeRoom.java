@@ -137,6 +137,6 @@ public class MazeRoom
 
     public NBTTagIntArray storeInNBT()
     {
-        return new NBTTagIntArray(coordinates);
+        return new NBTTagIntArray(coordinates.clone());
     }
 }

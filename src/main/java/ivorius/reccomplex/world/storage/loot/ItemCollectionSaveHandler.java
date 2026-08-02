@@ -22,27 +22,37 @@ public class ItemCollectionSaveHandler
     public static final ItemCollectionSaveHandler INSTANCE = new ItemCollectionSaveHandler();
 
     private Gson gson = createGson();
+    // Compact (no pretty-printing) variant, ~2-3x smaller output, used only for network payloads
+    // as a stopgap for #314 (see write()). Files keep using the pretty-printed `gson`.
+    private Gson gsonCompact = createGson(false);
 
     public Gson createGson()
     {
+        return createGson(true);
+    }
+
+    public Gson createGson(boolean prettyPrinting)
+    {
         GsonBuilder builder = new GsonBuilder();
 
-        builder.setPrettyPrinting();
+        if (prettyPrinting)
+            builder.setPrettyPrinting();
         builder.registerTypeAdapter(GenericLootTable.Component.class, new GenericLootTable.Component.Serializer());
         NBTToJson.registerSafeNBTSerializer(builder);
 
         return builder.create();
     }
 
-    // TODO (next minor bump): writeUTF8String caps the payload at 32767 bytes, so large loot
-    // tables crash with "string too long for this encoding" (#314). Switch this and read() to an
-    // int-length-prefixed UTF-8 encoding to remove the ceiling. Deferred because it changes the
-    // packet wire format (PacketEditLootTable / PacketSaveLootTable / RCGuiHandler sync) and would
-    // break server<->client compat across patch versions. The on-disk format (toJSON/fromJSON) is
-    // unaffected either way.
+    // Uses compact JSON to keep the payload well below the 32767-byte writeUTF8String ceiling, which
+    // otherwise crashes on large loot tables with "string too long for this encoding" (#314). This
+    // only raises the effective size limit; it does not remove it.
+    // TODO (next minor bump): switch this and read() to an int-length-prefixed UTF-8 encoding to drop
+    // the ceiling entirely. Deferred because it changes the packet wire format (PacketEditLootTable /
+    // PacketSaveLootTable / RCGuiHandler sync) and would break server<->client compat across patch
+    // versions. The on-disk format (toJSON/fromJSON) is unaffected either way.
     public void write(ByteBuf data, GenericLootTable.Component component)
     {
-        ByteBufUtils.writeUTF8String(data, toJSON(component));
+        ByteBufUtils.writeUTF8String(data, gsonCompact.toJson(component, GenericLootTable.Component.class));
     }
 
     @Nullable

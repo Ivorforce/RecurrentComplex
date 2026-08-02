@@ -6,7 +6,7 @@
 package ivorius.reccomplex.structures.generic.maze.rules;
 
 import com.google.common.collect.Iterables;
-import ivorius.ivtoolkit.maze.components.*;
+import ivorius.reccomplex.structures.generic.maze.components.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

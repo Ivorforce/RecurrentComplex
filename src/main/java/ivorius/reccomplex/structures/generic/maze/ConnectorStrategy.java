@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.structures.generic.maze;
 
-import ivorius.ivtoolkit.maze.components.ConnectionStrategy;
-import ivorius.ivtoolkit.maze.components.MazePassage;
-import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
+import ivorius.reccomplex.structures.generic.maze.components.ConnectionStrategy;
+import ivorius.reccomplex.structures.generic.maze.components.MazePassage;
+import ivorius.reccomplex.structures.generic.maze.components.MazeRoomConnection;
 
 import javax.annotation.Nonnull;
 

@@ -5,9 +5,9 @@
 
 package ivorius.reccomplex.structures.generic.maze.rules.saved;
 
-import ivorius.ivtoolkit.maze.components.MazeComponent;
-import ivorius.ivtoolkit.maze.components.MazePassage;
-import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
+import ivorius.reccomplex.structures.generic.maze.components.MazeComponent;
+import ivorius.reccomplex.structures.generic.maze.components.MazePassage;
+import ivorius.reccomplex.structures.generic.maze.components.MazeRoomConnection;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;

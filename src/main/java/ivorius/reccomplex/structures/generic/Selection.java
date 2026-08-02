@@ -8,7 +8,7 @@ package ivorius.reccomplex.structures.generic;
 import com.google.gson.annotations.SerializedName;
 import ivorius.ivtoolkit.gui.IntegerRange;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.structures.generic.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.IvNBTHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;

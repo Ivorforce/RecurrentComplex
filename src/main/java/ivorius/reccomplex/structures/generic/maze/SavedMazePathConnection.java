@@ -6,8 +6,8 @@
 package ivorius.reccomplex.structures.generic.maze;
 
 import com.google.gson.*;
-import ivorius.ivtoolkit.maze.components.MazePassage;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.structures.generic.maze.components.MazePassage;
+import ivorius.reccomplex.structures.generic.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.json.JsonUtils;
 import net.minecraft.nbt.NBTTagCompound;

@@ -5,8 +5,8 @@
 
 package ivorius.reccomplex.structures.generic.maze.rules;
 
-import ivorius.ivtoolkit.maze.components.MazeComponent;
-import ivorius.ivtoolkit.maze.components.MazePredicate;
+import ivorius.reccomplex.structures.generic.maze.components.MazeComponent;
+import ivorius.reccomplex.structures.generic.maze.components.MazePredicate;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.reccomplex.gui.table.TableDataSource;
 import ivorius.reccomplex.gui.table.TableDelegate;

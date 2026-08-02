@@ -9,7 +9,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.gson.*;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.structures.generic.maze.components.MazeRoom;
 import ivorius.ivtoolkit.tools.NBTCompoundObject;
 import ivorius.ivtoolkit.tools.NBTCompoundObjects;
 import ivorius.ivtoolkit.tools.NBTTagLists;

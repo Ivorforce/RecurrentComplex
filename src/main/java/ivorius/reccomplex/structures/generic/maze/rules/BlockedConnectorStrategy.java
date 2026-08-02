@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.structures.generic.maze.rules;
 
-import ivorius.ivtoolkit.maze.components.*;
+import ivorius.reccomplex.structures.generic.maze.components.*;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;

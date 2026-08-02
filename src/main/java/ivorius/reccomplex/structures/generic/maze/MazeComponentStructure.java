@@ -11,10 +11,10 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
-import ivorius.ivtoolkit.maze.components.MazePassage;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.ivtoolkit.maze.components.MazeRoomConnection;
-import ivorius.ivtoolkit.maze.components.WeightedMazeComponent;
+import ivorius.reccomplex.structures.generic.maze.components.MazePassage;
+import ivorius.reccomplex.structures.generic.maze.components.MazeRoom;
+import ivorius.reccomplex.structures.generic.maze.components.MazeRoomConnection;
+import ivorius.reccomplex.structures.generic.maze.components.WeightedMazeComponent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Arrays;

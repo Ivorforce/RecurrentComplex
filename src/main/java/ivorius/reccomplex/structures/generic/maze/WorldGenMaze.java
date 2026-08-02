@@ -9,7 +9,7 @@ import com.google.common.collect.*;
 import ivorius.ivtoolkit.blocks.BlockCoord;
 import ivorius.ivtoolkit.math.AxisAlignedTransform2D;
 import ivorius.ivtoolkit.math.IvVecMathHelper;
-import ivorius.ivtoolkit.maze.components.*;
+import ivorius.reccomplex.structures.generic.maze.components.*;
 import ivorius.ivtoolkit.tools.GuavaCollectors;
 import ivorius.reccomplex.RecurrentComplex;
 import ivorius.reccomplex.structures.*;

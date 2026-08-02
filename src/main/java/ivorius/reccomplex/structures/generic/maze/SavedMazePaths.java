@@ -8,9 +8,9 @@ package ivorius.reccomplex.structures.generic.maze;
 import com.google.common.collect.ImmutableSet;
 import gnu.trove.set.TIntSet;
 import gnu.trove.set.hash.TIntHashSet;
-import ivorius.ivtoolkit.maze.components.MazePassage;
-import ivorius.ivtoolkit.maze.components.MazeRoom;
-import ivorius.ivtoolkit.maze.components.MazeRooms;
+import ivorius.reccomplex.structures.generic.maze.components.MazePassage;
+import ivorius.reccomplex.structures.generic.maze.components.MazeRoom;
+import ivorius.reccomplex.structures.generic.maze.components.MazeRooms;
 import ivorius.ivtoolkit.tools.Ranges;
 
 import java.util.Map;

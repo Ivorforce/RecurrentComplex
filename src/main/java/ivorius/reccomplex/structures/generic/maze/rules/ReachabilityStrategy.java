@@ -11,7 +11,7 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import gnu.trove.map.TObjectIntMap;
 import gnu.trove.map.hash.TObjectIntHashMap;
-import ivorius.ivtoolkit.maze.components.*;
+import ivorius.reccomplex.structures.generic.maze.components.*;
 import ivorius.ivtoolkit.tools.GuavaCollectors;
 import ivorius.ivtoolkit.tools.Visitor;
 import org.apache.commons.lang3.tuple.Pair;

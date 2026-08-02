@@ -5,7 +5,7 @@
 
 package ivorius.reccomplex.gui.worldscripts.mazegenerator.reachability;
 
-import ivorius.ivtoolkit.maze.components.MazeRoom;
+import ivorius.reccomplex.structures.generic.maze.components.MazeRoom;
 import ivorius.reccomplex.gui.table.*;
 import ivorius.reccomplex.gui.worldscripts.mazegenerator.TableDataSourceMazePath;
 import ivorius.reccomplex.structures.generic.maze.SavedMazePath;

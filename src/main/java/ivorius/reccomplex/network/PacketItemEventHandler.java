@@ -17,7 +17,7 @@ public class PacketItemEventHandler extends PacketEditInventoryItemHandler<Packe
     @Override
     public void affectItem(EntityPlayerMP player, ItemStack stack, PacketItemEvent message)
     {
-        if (stack != null)
+        if (stack.getItem() instanceof ItemEventHandler)
         {
             ItemEventHandler itemEventHandler = (ItemEventHandler) stack.getItem();
             itemEventHandler.onClientEvent(message.context, message.payload, player, stack, message.getInventorySlot());

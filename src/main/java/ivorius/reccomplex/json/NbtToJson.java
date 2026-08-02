@@ -140,9 +140,13 @@ public class NbtToJson
 
         try
         {
-            return CompressedStreamTools.func_152457_a(nbtBytes, NBTSizeTracker.field_152451_a);
+            // Bounded size tracker: this base64 NBT can arrive from a network packet
+            // (PacketEditStructure decodes it in fromBytes, before any permission check), so an
+            // unbounded tracker lets a small packet gzip-expand to gigabytes of NBT -> OOM. 64 MB is
+            // far above any real structure while stopping decompression-bomb expansion.
+            return CompressedStreamTools.func_152457_a(nbtBytes, new NBTSizeTracker(67108864L));
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }

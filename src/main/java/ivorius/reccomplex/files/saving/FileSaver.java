@@ -89,7 +89,7 @@ public class FileSaver extends FileHandler
         }
         catch (IllegalArgumentException e)
         {
-            RecurrentComplex.logger.error(String.format("No handler found: %s", path.getFileName()), e);
+            RecurrentComplex.logger.error(String.format("Illegal name or no handler saving '%s' in %s", name, RCFiles.extension(path)), e);
         }
         catch (Exception e)
         {
@@ -103,7 +103,11 @@ public class FileSaver extends FileHandler
     {
         FileSaverAdapter adapterObj = forceGet(adapter);
 
-        Path path = directory.resolve(name + "." + adapterObj.getSuffix());
+        Path path = directory.resolve(name + "." + adapterObj.getSuffix()).normalize();
+
+        // Guard against path traversal: 'name' may originate from a network packet (e.g. structure/loot id)
+        if (!path.startsWith(directory.normalize()))
+            throw new IllegalArgumentException("Illegal file name (path traversal): " + name);
 
         Files.deleteIfExists(path);
         adapterObj.saveFile(path, name);

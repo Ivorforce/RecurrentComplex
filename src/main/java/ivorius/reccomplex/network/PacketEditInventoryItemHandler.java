@@ -6,6 +6,7 @@
 package ivorius.reccomplex.network;
 
 import ivorius.ivtoolkit.network.SchedulingMessageHandler;
+import ivorius.reccomplex.RecurrentComplex;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -23,6 +24,9 @@ public abstract class PacketEditInventoryItemHandler<P extends PacketEditInvento
     {
         NetHandlerPlayServer playServer = ctx.getServerHandler();
         EntityPlayerMP player = playServer.player;
+
+        if (RecurrentComplex.checkPerms(player)) return;
+
         affectItem(player, player.inventory.getStackInSlot(message.getInventorySlot()), message);
         player.openContainer.detectAndSendChanges();
     }

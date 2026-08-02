@@ -30,14 +30,21 @@ public class MazeRoom
     @Nonnull
     private final int[] coordinates;
 
+    /**
+     * Rooms are immutable and are the key type of every map in a maze search, so this is worth
+     * paying for once rather than on every lookup.
+     */
+    private final int hash;
+
     public MazeRoom(@Nonnull int... coordinates)
     {
         this.coordinates = coordinates.clone();
+        this.hash = Arrays.hashCode(this.coordinates);
     }
 
     public MazeRoom(NBTTagIntArray intArray)
     {
-        coordinates = intArray.func_150302_c().clone();
+        this(intArray.func_150302_c());
     }
 
     public int getDimensions()
@@ -112,14 +119,14 @@ public class MazeRoom
 
         MazeRoom mazeRoom = (MazeRoom) o;
 
-        return Arrays.equals(coordinates, mazeRoom.coordinates);
+        return hash == mazeRoom.hash && Arrays.equals(coordinates, mazeRoom.coordinates);
 
     }
 
     @Override
     public int hashCode()
     {
-        return Arrays.hashCode(coordinates);
+        return hash;
     }
 
     @Override

@@ -23,6 +23,20 @@ public interface MorphingMazeComponent<C> extends MazeComponent<C>
 {
     void add(MazeComponent<C> component);
 
+    /**
+     * Adds the component, returning a task that undoes exactly this add.
+     * <p>
+     * Only valid while this is the most recent add still applied - callers must undo in reverse
+     * order. The default snapshots the whole maze; implementations that can track their own changes
+     * should override, since a maze search adds and undoes once per placement.
+     */
+    default Runnable addReversibly(MazeComponent<C> component)
+    {
+        MorphingMazeComponent<C> before = copy();
+        add(component);
+        return () -> set(before);
+    }
+
     void set(MazeComponent<C> component);
 
     MorphingMazeComponent<C> copy();

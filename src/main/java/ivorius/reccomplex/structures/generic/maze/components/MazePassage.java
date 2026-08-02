@@ -29,6 +29,12 @@ public class MazePassage extends Pair<MazeRoom, MazeRoom>
     private final MazeRoom source;
     private final MazeRoom dest;
 
+    /**
+     * Passages are immutable and are the key type of every reachability map, so this is worth
+     * paying for once rather than on every lookup.
+     */
+    private final int hash;
+
     public MazePassage(MazeRoom source, MazeRoom dest)
     {
         this.source = source;
@@ -36,6 +42,10 @@ public class MazePassage extends Pair<MazeRoom, MazeRoom>
 
         if (source.getDimensions() != dest.getDimensions())
             throw new IllegalArgumentException();
+
+        int hash = super.hashCode();
+        hash = 31 * hash + source.hashCode();
+        this.hash = 31 * hash + dest.hashCode();
     }
 
     public MazeRoom getSource()
@@ -124,6 +134,7 @@ public class MazePassage extends Pair<MazeRoom, MazeRoom>
 
         MazePassage that = (MazePassage) o;
 
+        if (hash != that.hash) return false;
         if (source != null ? !source.equals(that.source) : that.source != null) return false;
         return dest != null ? dest.equals(that.dest) : that.dest == null;
 
@@ -132,10 +143,7 @@ public class MazePassage extends Pair<MazeRoom, MazeRoom>
     @Override
     public int hashCode()
     {
-        int result = super.hashCode();
-        result = 31 * result + (source != null ? source.hashCode() : 0);
-        result = 31 * result + (dest != null ? dest.hashCode() : 0);
-        return result;
+        return hash;
     }
 
     @Override

@@ -17,6 +17,7 @@
 package ivorius.reccomplex.structures.generic.maze.components;
 
 import com.google.common.collect.*;
+import ivorius.ivtoolkit.tools.GuavaCollectors;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
@@ -29,9 +30,20 @@ public class ShiftedMazeComponent<M extends MazeComponent<C>, C> implements Maze
     private final M component;
     private final MazeRoom shift;
 
-    private final ImmutableSet<MazeRoom> rooms;
-    private final ImmutableMap<MazePassage, C> exits;
-    private final ImmutableMultimap<MazePassage, MazePassage> reachability;
+    private ImmutableSet<MazeRoom> rooms;
+    private ImmutableMap<MazePassage, C> exits;
+    private ImmutableMultimap<MazePassage, MazePassage> reachability;
+
+    /**
+     * Shifts the given component lazily. The connector creates one of these for every position a
+     * component could go, but only looks at a small fraction of them, so shifting each view is
+     * deferred until something asks for it.
+     */
+    public ShiftedMazeComponent(M component, MazeRoom shift)
+    {
+        this.component = component;
+        this.shift = shift;
+    }
 
     @Deprecated
     public ShiftedMazeComponent(M component, MazeRoom shift, ImmutableSet<MazeRoom> rooms, ImmutableMap<MazePassage, C> exits)
@@ -68,18 +80,28 @@ public class ShiftedMazeComponent<M extends MazeComponent<C>, C> implements Maze
     @Override
     public Set<MazeRoom> rooms()
     {
+        if (rooms == null)
+            rooms = component.rooms().stream().map(r -> r != null ? r.add(shift) : null)
+                    .collect(GuavaCollectors.immutableSet());
         return rooms;
     }
 
     @Override
     public Map<MazePassage, C> exits()
     {
+        if (exits == null)
+            exits = component.exits().keySet().stream()
+                    .collect(GuavaCollectors.toMap(c -> c != null ? c.add(shift) : null, component.exits()::get));
         return exits;
     }
 
     @Override
     public Multimap<MazePassage, MazePassage> reachability()
     {
+        if (reachability == null)
+            reachability = component.reachability().keySet().stream()
+                    .collect(GuavaCollectors.toMultimap(c -> c.add(shift),
+                            c -> component.reachability().get(c).stream().map(c2 -> c2.add(shift))::iterator));
         return reachability;
     }
 }

@@ -41,11 +41,7 @@ public class MazeComponents
 
     public static <M extends MazeComponent<C>, C> ShiftedMazeComponent<M, C> shift(final M component, final MazeRoom shift)
     {
-        return new ShiftedMazeComponent<>(component, shift,
-                component.rooms().stream().map(r -> r != null ? r.add(shift) : null).collect(GuavaCollectors.immutableSet()),
-                component.exits().keySet().stream().collect(GuavaCollectors.toMap(c1 -> c1 != null ? c1.add(shift) : null, component.exits()::get)),
-                component.reachability().keySet().stream().collect(GuavaCollectors.toMultimap(c -> c.add(shift), c -> component.reachability().get(c).stream().map(c2 -> c2.add(shift))::iterator))
-        );
+        return new ShiftedMazeComponent<>(component, shift);
     }
 
     public static <C> Predicate<? extends MazeComponent<C>> compatibilityPredicate(final MazeComponent<C> component, final ConnectionStrategy<C> strategy)

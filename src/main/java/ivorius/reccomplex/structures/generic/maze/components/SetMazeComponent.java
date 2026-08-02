@@ -98,12 +98,47 @@ public class SetMazeComponent<C> implements MorphingMazeComponent<C>
     @Override
     public void add(MazeComponent<C> component)
     {
-        rooms.addAll(component.rooms());
+        addReversibly(component); // One implementation, so the two can't drift apart
+    }
 
-        // Remove all solved connections, and add the ones still open from the other component
-        component.exits().entrySet().stream().filter(entry -> exits.remove(entry.getKey()) == null).forEach(entry -> exits.put(entry.getKey(), entry.getValue()));
+    @Override
+    public Runnable addReversibly(MazeComponent<C> component)
+    {
+        List<MazeRoom> addedRooms = new ArrayList<>();
+        for (MazeRoom room : component.rooms())
+            if (rooms.add(room))
+                addedRooms.add(room);
 
-        reachability.putAll(component.reachability());
+        // Same as add: an exit the maze already had is solved by this component, so both go away
+        List<MazePassage> openedExits = new ArrayList<>();
+        Map<MazePassage, C> solvedExits = new HashMap<>();
+        for (Map.Entry<MazePassage, C> entry : component.exits().entrySet())
+        {
+            C previous = exits.remove(entry.getKey());
+
+            if (previous == null)
+            {
+                exits.put(entry.getKey(), entry.getValue());
+                openedExits.add(entry.getKey());
+            }
+            else
+                solvedExits.put(entry.getKey(), previous);
+        }
+
+        List<Map.Entry<MazePassage, MazePassage>> addedReachability = new ArrayList<>();
+        for (Map.Entry<MazePassage, MazePassage> entry : component.reachability().entries())
+            if (reachability.put(entry.getKey(), entry.getValue())) // Another component may already have it
+                addedReachability.add(new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), entry.getValue()));
+
+        return () ->
+        {
+            rooms.removeAll(addedRooms);
+
+            openedExits.forEach(exits::remove);
+            exits.putAll(solvedExits);
+
+            addedReachability.forEach(entry -> reachability.remove(entry.getKey(), entry.getValue()));
+        };
     }
 
     @Override

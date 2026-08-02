@@ -111,7 +111,6 @@ public class MazeComponentConnector
                 // Backing Up
                 reversing = new ReverseInfo<>();
                 reversing.exitStack = exitStack.clone();
-                reversing.maze = maze.copy();
                 reversing.shuffleSeed = random.nextLong();
             }
             else
@@ -120,7 +119,7 @@ public class MazeComponentConnector
                 predicate.willUnplace(maze, reversing.placed);
 
                 exitStack = reversing.exitStack.clone(); // TODO Do a more efficient DIFF approach
-                maze.set(reversing.maze); // TODO Do a more efficient DIFF approach
+                reversing.undo.run();
 
                 predicate.didUnplace(maze, reversing.placed);
 
@@ -179,7 +178,7 @@ public class MazeComponentConnector
             predicate.willPlace(maze, placing);
 
             addAllExits(predicate, exitStack, placing.exits().entrySet());
-            maze.add(placing);
+            reversing.undo = maze.addReversibly(placing);
             result.add(placing);
 
             predicate.didPlace(maze, placing);
@@ -215,7 +214,13 @@ public class MazeComponentConnector
         public long shuffleSeed;
         public int triedIndices;
 
-        public MorphingMazeComponent<C> maze;
+        /**
+         * Takes {@link #placed} back out of the maze. Only valid as long as it is the most recent
+         * placement still standing, which holds because placeOrder is a stack and this is replaced
+         * every time the same slot is filled again. Reversing out of that order corrupts the maze
+         * silently, so keep it strictly last-in-first-out.
+         */
+        public Runnable undo;
         public ArrayDeque<Triple<MazeRoom, MazePassage, C>> exitStack;
         public ShiftedMazeComponent<M, C> placed;
     }

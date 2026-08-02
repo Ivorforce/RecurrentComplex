@@ -74,6 +74,32 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2859'
     compile fg.deobf('ivorius.ivtoolkit:IvToolkit:1.3.3-1.12')
     shade fg.deobf('ivorius.mcopts:MCOpts:0.9.9.4')
+
+    testCompile 'junit:junit:4.13.2'
+}
+
+// Tests cover the parts of the mod that don't touch Minecraft (currently maze generation), so they
+// run as plain unit tests without bootstrapping Forge.
+test {
+    useJUnit()
+    systemProperty 'org.apache.logging.log4j.simplelog.level', 'ERROR' // IvToolkit warns per unfillable dead end
+    testLogging {
+        events 'passed', 'failed', 'skipped'
+        showStandardStreams = true
+    }
+}
+
+// ./gradlew mazeBenchmark [-PmazeArgs='<size> <trials> <warmup>']
+task mazeBenchmark(type: JavaExec) {
+    group = 'verification'
+    description = 'Times headless maze generation, for comparing before and after an optimization.'
+
+    classpath = sourceSets.test.runtimeClasspath
+    main = 'ivorius.reccomplex.world.gen.feature.structure.generic.maze.MazeGenerationBenchmark'
+    systemProperty 'org.apache.logging.log4j.simplelog.level', 'ERROR'
+
+    if (project.hasProperty('mazeArgs'))
+        args((project.mazeArgs as String).split(' '))
 }
 
 jar {

@@ -34,6 +34,12 @@ public class ItemCollectionSaveHandler
         return builder.create();
     }
 
+    // TODO (next minor bump): writeUTF8String caps the payload at 32767 bytes, so large loot
+    // tables crash with "string too long for this encoding" (#314). Switch this and read() to an
+    // int-length-prefixed UTF-8 encoding to remove the ceiling. Deferred because it changes the
+    // packet wire format (PacketEditLootTable / PacketSaveLootTable / RCGuiHandler sync) and would
+    // break server<->client compat across patch versions. The on-disk format (toJSON/fromJSON) is
+    // unaffected either way.
     public void write(ByteBuf data, GenericLootTable.Component component)
     {
         ByteBufUtils.writeUTF8String(data, toJSON(component));
